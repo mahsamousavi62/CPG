@@ -1,0 +1,19 @@
+﻿using Daryaftyar.Domain.SharedKernel;
+using MediatR;
+
+namespace Daryaftyar.Domain.AggregateModels.DaryaftyarUserAggregate.Events
+{
+    public class DaryaftyarUserBorrowedBookEvent : INotification
+    {
+        public long DaryaftyarUserId { get; }
+        public long BookId { get; }
+        public DateTimePeriod BorrowPeriod { get; }
+
+        public DaryaftyarUserBorrowedBookEvent(long DaryaftyarUserId, long bookId, DateTimePeriod borrowPeriod)
+        {
+            DaryaftyarUserId = DaryaftyarUserId;
+            BookId = bookId;
+            BorrowPeriod = borrowPeriod;
+        }
+    }
+}

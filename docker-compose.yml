@@ -1,0 +1,55 @@
+version: '3.4'
+
+services:
+  daryaftyar.api:
+    image: ${DOCKER_REGISTRY-}daryaftyarapi
+    container_name: lca-api
+    build:
+      context: .
+      dockerfile: src/daryaftyar.API/Dockerfile
+    ports:
+      - "5000:443"
+    depends_on:
+      - db
+    networks:
+      - lca
+
+  db:
+    image: "mcr.microsoft.com/mssql/server:2019-latest"
+    container_name: lca-db
+    ports:
+      - "1433:1433"
+    networks:
+      - lca
+
+  #elasticsearch:
+  #  container_name: lca-elasticsearch
+  #  image: docker.elastic.co/elasticsearch/elasticsearch:7.6.2
+  #  ports:
+  #    - 9200:9200
+  #  volumes:
+  #    - elasticsearch-data:/usr/share/elasticsearch/data
+  #  environment:
+  #    - discovery.type=single-node
+  #  networks:
+  #    - lca
+
+  #kibana:
+  #  container_name: lca-kibana
+  #  image: docker.elastic.co/kibana/kibana:7.6.2
+  #  ports:
+  #    - 5601:5601
+  #  depends_on:
+  #    - elasticsearch
+  #  environment:
+  #    - ELASTICSEARCH_URL=http://localhost:9200
+  #  networks:
+  #    - lca
+  
+networks:
+  lca:
+    driver: bridge
+
+#volumes:
+#  elasticsearch-data:
+#    driver: local
