@@ -23,7 +23,7 @@ namespace Daryaftyar.Domain.AggregateModels.DaryaftyarUserAggregate
         public Email Email => _email;
         public bool IsActive => _isActive;
         public IReadOnlyCollection<Loan> ActiveLoans => _activeLoans.Where(x => x.IsActive).ToList();
-        
+
         internal DaryaftyarUser()
         {
             _activeLoans = new List<Loan>();
@@ -43,7 +43,7 @@ namespace Daryaftyar.Domain.AggregateModels.DaryaftyarUserAggregate
             var user = new DaryaftyarUser(credentials, name, email);
 
             user.AddDomainEvent(new DaryaftyarUserCreatedEvent(user));
-            
+
             return user;
         }
 
@@ -51,7 +51,7 @@ namespace Daryaftyar.Domain.AggregateModels.DaryaftyarUserAggregate
         {
             if (ActiveLoans.Count == 3)
                 throw new DaryaftyarUserMaximumBooksBorrowedExceededException();
-            
+
             _activeLoans.Add(Loan.Create(bookId, Id, borrowPeriod));
 
             AddDomainEvent(new DaryaftyarUserBorrowedBookEvent(Id, bookId, borrowPeriod));
@@ -60,12 +60,12 @@ namespace Daryaftyar.Domain.AggregateModels.DaryaftyarUserAggregate
         public void ReturnBook(long bookId)
         {
             var bookLoanEntry = ActiveLoans.FirstOrDefault(x => x.BookId == bookId);
-            
+
             if (bookLoanEntry is null)
                 throw new DaryaftyarUserDoesNotHaveBookBorrowed(bookId);
-            
+
             bookLoanEntry.Finish();
-            
+
             AddDomainEvent(new DaryaftyarUserReturnedBookEvent(Id, bookId));
         }
     }

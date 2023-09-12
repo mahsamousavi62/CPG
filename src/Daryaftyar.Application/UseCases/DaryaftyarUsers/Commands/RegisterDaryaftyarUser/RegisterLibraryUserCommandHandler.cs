@@ -22,7 +22,7 @@ namespace Daryaftyar.Application.UseCases.DaryaftyarUsers.Commands.RegisterDarya
         {
             var spec = new DaryaftyarUserByEmailSpec(command.Email);
             var existingDaryaftyarUser = await _repository.GetBySpecAsync(spec, cancellationToken);
-            
+
             if (existingDaryaftyarUser is not null)
                 throw new DaryaftyarUserAlreadyExistsException(command.Email);
 

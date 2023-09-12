@@ -19,7 +19,7 @@ namespace Daryaftyar.Domain.AggregateModels.DaryaftyarUserAggregate
             try
             {
                 var emailAddress = new MailAddress(email);
-                
+
                 Value = emailAddress.Address;
             }
             catch (Exception ex)

@@ -1,4 +1,5 @@
 ﻿using Ardalis.Specification;
+using Daryaftyar.Domain.AggregateModels.DaryaftyarUserAggregate;
 
 namespace Daryaftyar.Domain.AggregateModels.DaryaftyarUserAggregate.Specifications
 {

@@ -9,9 +9,9 @@ namespace Daryaftyar.Domain.AggregateModels.DaryaftyarUserAggregate.Events
         public long BookId { get; }
         public DateTimePeriod BorrowPeriod { get; }
 
-        public DaryaftyarUserBorrowedBookEvent(long DaryaftyarUserId, long bookId, DateTimePeriod borrowPeriod)
+        public DaryaftyarUserBorrowedBookEvent(long daryaftyarUserId, long bookId, DateTimePeriod borrowPeriod)
         {
-            DaryaftyarUserId = DaryaftyarUserId;
+            DaryaftyarUserId = daryaftyarUserId;
             BookId = bookId;
             BorrowPeriod = borrowPeriod;
         }

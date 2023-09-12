@@ -7,9 +7,9 @@ namespace Daryaftyar.Domain.AggregateModels.DaryaftyarUserAggregate.Events
         public long DaryaftyarUserId { get; }
         public long BookId { get; }
 
-        public DaryaftyarUserReturnedBookEvent(long DaryaftyarUserId, long bookId)
+        public DaryaftyarUserReturnedBookEvent(long daryaftyarUserId, long bookId)
         {
-            DaryaftyarUserId = DaryaftyarUserId;
+            DaryaftyarUserId = daryaftyarUserId;
             BookId = bookId;
         }
     }
