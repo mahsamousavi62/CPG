@@ -7,7 +7,6 @@
   <ItemGroup>
     <PackageReference Include="Ardalis.Specification" Version="7.0.0" />
     <PackageReference Include="Ardalis.Specification.EntityFrameworkCore" Version="7.0.0" />
-    <PackageReference Include="Confluent.Kafka" Version="2.2.0" />
     <PackageReference Include="HotChocolate.Abstractions" Version="13.5.1" />
     <PackageReference Include="HotChocolate.AspNetCore" Version="13.5.1" />
     <PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="13.5.1" />
