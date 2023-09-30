@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Daryaftyar.Application\Daryaftyar.Application.csproj" />
     <ProjectReference Include="..\..\src\Daryaftyar.Domain\Daryaftyar.Domain.csproj" />
     <ProjectReference Include="..\Daryaftyar.Tests.Base\Daryaftyar.Tests.Base.csproj" />
   </ItemGroup>

@@ -7,7 +7,7 @@ namespace Daryaftyar.Domain.AggregateModels.BookAggregate.Exceptions
         public override string Code => "book_is_not_borrowed";
         public long BookId { get; }
 
-        public BookIsInStockException(long bookId) : base($"Book with ID {bookId} is not borrowed.")
+        public BookIsInStockException(long bookId) : base(string.Format(Resource.BookNotBorrowed, bookId))
             => BookId = bookId;
     }
 }

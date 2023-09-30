@@ -2,11 +2,14 @@ using Daryaftyar.Application;
 using Daryaftyar.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 
 namespace Daryaftyar.API
 {
@@ -31,6 +34,19 @@ namespace Daryaftyar.API
 
             services.AddInfrastructure(Configuration);
             services.AddApplication(Configuration);
+
+            services.AddLocalization();
+            services.Configure<RequestLocalizationOptions>(opt =>
+            {
+                var supportedLanguages = new List<CultureInfo> {
+                    new CultureInfo("en"),
+                    new CultureInfo("fa")
+                };
+
+                opt.DefaultRequestCulture = new RequestCulture("fa", "fa");
+                opt.SupportedCultures = supportedLanguages;
+                opt.SupportedUICultures = supportedLanguages;
+            });
 
             if (enableSwagger)
             {
@@ -78,6 +94,8 @@ namespace Daryaftyar.API
             }
 
             app.UseInfrastructure(Configuration, env);
+
+            app.UseRequestLocalization();
 
             app.UseEndpoints(endpoints =>
             {
