@@ -1,5 +1,5 @@
 ﻿namespace Daryaftyar.API;
 
-public class AssemblyReference
+public class WebApiAssembly
 {
 }

@@ -26,7 +26,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Daryaftyar.Application\Daryaftyar.Application.csproj" />
     <ProjectReference Include="..\Daryaftyar.Domain\Daryaftyar.Domain.csproj" />
-    <ProjectReference Include="..\Daryaftyar.Presentation\Daryaftyar.Presentation.csproj" />
   </ItemGroup>
 
 </Project>
