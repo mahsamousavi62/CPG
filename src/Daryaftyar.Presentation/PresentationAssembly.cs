@@ -1,5 +1,5 @@
 ﻿namespace Daryaftyar.Presentation;
 
-public class AssemblyReference
+public class PresentationAssembly
 {
 }

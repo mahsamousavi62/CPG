@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using Daryaftyar.Domain.AggregateModels.BookAggregate.Exceptions;
 
 namespace Daryaftyar.Domain.SharedKernel

@@ -1,65 +1,56 @@
-using System;
+using Daryaftyar.Application;
+using Daryaftyar.Infrastructure;
 using Daryaftyar.Infrastructure.Persistence;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Localization;
 using Serilog;
+using System.Globalization;
 
-namespace Daryaftyar.API
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddControllers();
+builder.Services.AddHealthChecks();
+
+var configuration = builder.Configuration;
+
+builder.Services
+    .AddInfrastructure(configuration)
+    .AddApplication(configuration);
+
+builder.Host.UseSerilog((context, configuation) =>
+    configuation.ReadFrom.Configuration(context.Configuration));
+
+builder.Services.AddLocalization();
+builder.Services.Configure<RequestLocalizationOptions>(opt =>
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            try
-            {
-                ConfigureLogging();
-                CreateHost(args);
-            }
-            catch (Exception ex)
-            {
-                Log.Fatal(ex, "Host terminated unexpectedly");
-            }
-            finally
-            {
-                Log.CloseAndFlush();
-            }
-        }
+    var supportedLanguages = new List<CultureInfo> {
+                    new CultureInfo("en"),
+                    new CultureInfo("fa")
+                };
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder
-                        .UseStartup<Startup>()
-                        .UseSerilog();
-                });
+    opt.DefaultRequestCulture = new RequestCulture("fa", "fa");    
+    opt.SupportedCultures = supportedLanguages;
+    opt.SupportedUICultures = supportedLanguages;
+});
 
-        private static void ConfigureLogging()
-        {
-            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-            var configuration = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile(
-                    $"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json",
-                    optional: true)
-                .Build();
+var app = builder.Build();
 
-            Log.Logger = new LoggerConfiguration()
-                .Enrich.FromLogContext()
-                .Enrich.WithMachineName()
-                .Enrich.WithProperty("Environment", environment)
-                .ReadFrom.Configuration(configuration)
-                .CreateLogger();
-        }
-
-        private static void CreateHost(string[] args)
-        {
-            Log.Information("Starting web host");
-            CreateHostBuilder(args)
-                .Build()
-                .MigrateDatabase()
-                .Run();
-        }
-    }
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+    app.UseDeveloperExceptionPage();
 }
+
+app.UseInfrastructure(configuration, app.Environment);
+
+app.UseSerilogRequestLogging();
+
+app.UseHttpsRedirection();
+
+app.UseRequestLocalization();
+
+app.MigrateDatabase();
+
+app.Run();

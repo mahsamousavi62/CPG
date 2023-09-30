@@ -1,5 +1,5 @@
 ﻿namespace Daryaftyar.Infrastructure;
 
-public class AssemblyReference
+public class InfrastructureAssembly
 {
 }

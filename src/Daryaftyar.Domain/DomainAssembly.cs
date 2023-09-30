@@ -1,5 +1,5 @@
 ﻿namespace Daryaftyar.Domain;
 
-public class AssemblyReference
+public class DomainAssembly
 {
 }

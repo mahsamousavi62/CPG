@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Daryaftyar.Infrastructure.Persistence
 {
@@ -80,9 +81,8 @@ namespace Daryaftyar.Infrastructure.Persistence
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
-                    // Apply logger here
-                    //var logger = services.GetRequiredService<ILogger<Program>>();
-                    //logger.LogError(ex, "An error occurred while migrating the database.");
+                    var logger = services.GetRequiredService<ILogger<WriteDbContext>>();
+                    logger.LogError(ex, "An error occurred while migrating the database.");
                 }
             }
 

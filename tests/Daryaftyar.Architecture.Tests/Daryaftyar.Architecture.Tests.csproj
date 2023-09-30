@@ -29,7 +29,6 @@
     <ProjectReference Include="..\..\src\Daryaftyar.Infrastructure.Authorization\Daryaftyar.Infrastructure.Authorization.csproj" />
     <ProjectReference Include="..\..\src\Daryaftyar.Infrastructure.Persistence\Daryaftyar.Infrastructure.Persistence.csproj" />
     <ProjectReference Include="..\..\src\Daryaftyar.Infrastructure\Daryaftyar.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\src\Daryaftyar.Presentation\Daryaftyar.Presentation.csproj" />
   </ItemGroup>
 
 </Project>

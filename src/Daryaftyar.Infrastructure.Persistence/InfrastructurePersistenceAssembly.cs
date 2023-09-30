@@ -1,5 +1,5 @@
 ﻿namespace Daryaftyar.Infrastructure.Persistence;
 
-public class AssemblyReference
+public class InfrastructurePersistenceAssembly
 {
 }

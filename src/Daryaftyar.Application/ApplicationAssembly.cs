@@ -1,5 +1,5 @@
 ﻿namespace Daryaftyar.Application;
 
-public class AssemblyReference
+public class ApplicationAssembly
 {
 }
