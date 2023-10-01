@@ -6,7 +6,7 @@ namespace Daryaftyar.Domain.AggregateModels.BookAggregate.Exceptions
     {
         public override string Code => "book_is_already_borrowed";
 
-        public BookIsNotInStockException() : base($"Book is already borrowed.")
+        public BookIsNotInStockException() : base(Resource.BookIsAlreadyBorrowed)
         {
         }
     }
