@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Confluent.Kafka" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CPG.Application\CPG.Application.csproj" />
+    <ProjectReference Include="..\CPG.Domain\CPG.Domain.csproj" />
+    <ProjectReference Include="..\CPG.Infrastructure.Authorization\CPG.Infrastructure.Authorization.csproj" />
+    <ProjectReference Include="..\CPG.Infrastructure.Persistence\CPG.Infrastructure.Persistence.csproj" />
+  </ItemGroup>
+
+</Project>
