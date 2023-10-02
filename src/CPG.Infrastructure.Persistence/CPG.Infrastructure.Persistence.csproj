@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Ardalis.Specification" Version="7.0.0" />
+    <PackageReference Include="Ardalis.Specification.EntityFrameworkCore" Version="7.0.0" />
+    <PackageReference Include="HotChocolate.Abstractions" Version="13.5.1" />
+    <PackageReference Include="HotChocolate.AspNetCore" Version="13.5.1" />
+    <PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="13.5.1" />
+    <PackageReference Include="HotChocolate.Data" Version="13.5.1" />
+    <PackageReference Include="HotChocolate.Data.EntityFramework" Version="13.5.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.10">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CPG.Application\CPG.Application.csproj" />
+    <ProjectReference Include="..\CPG.Domain\CPG.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
