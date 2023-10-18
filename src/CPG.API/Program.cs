@@ -43,6 +43,13 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 
+app.UseRouting();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
+
 app.UseInfrastructure(configuration, app.Environment);
 
 app.UseSerilogRequestLogging();

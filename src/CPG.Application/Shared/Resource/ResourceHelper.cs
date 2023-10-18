@@ -15,6 +15,7 @@ namespace CPG.Application.Shared.Resource
         {
             resourceManager = new ResourceManager(resourceFullyQualifiedName, typeof(GlobalResource).Assembly);
         }
+
         public Dictionary<string, string> GetResources()
         {
             var resourceDictionary = new Dictionary<string, string>();
