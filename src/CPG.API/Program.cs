@@ -21,6 +21,19 @@ builder.Services
 builder.Host.UseSerilog((context, configuation) =>
     configuation.ReadFrom.Configuration(context.Configuration));
 
+const string DefaultCorsPolicyName = "localhost";
+
+builder.Services.AddCors(
+                options => options.AddPolicy(
+                    DefaultCorsPolicyName,
+                    builder => builder
+                        .WithOrigins(configuration["CorsOrigins"]!
+                            .Split(",", StringSplitOptions.RemoveEmptyEntries)
+                            .ToArray()!)
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .SetIsOriginAllowed((host) => true)
+                        .AllowCredentials()));
 builder.Services.AddLocalization();
 builder.Services.Configure<RequestLocalizationOptions>(opt =>
 {
@@ -35,6 +48,8 @@ builder.Services.Configure<RequestLocalizationOptions>(opt =>
 });
 
 var app = builder.Build();
+
+app.UseCors(DefaultCorsPolicyName);
 
 if (app.Environment.IsDevelopment())
 {
