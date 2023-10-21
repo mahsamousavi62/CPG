@@ -49,7 +49,7 @@ steps:
   condition: eq(variables['Build.SourceBranch'], 'refs/heads/develop')
   inputs:
     containerRegistry: 'Charisma Docker Registry'
-    repository: cpg-api/dev/cpg-api-backend
+    repository: cpg/dev/cpg-api-backend
     Dockerfile: src/$(projectName)/Dockerfile
 ##################################################################################################
 - task: Docker@2
@@ -57,7 +57,7 @@ steps:
   condition: eq(variables['Build.SourceBranch'], 'refs/heads/stage')
   inputs:
     containerRegistry: 'Charisma Docker Registry'
-    repository: cpg-api/stage/cpg-api-backend
+    repository: cpg/stage/cpg-api-backend
     Dockerfile: src/$(projectName)/Dockerfile
 ##################################################################################################
 - task: Docker@2
@@ -65,6 +65,6 @@ steps:
   condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
   inputs:
     containerRegistry: 'Charisma Docker Registry'
-    repository: cpg-api/prod/cpg-api-backend
+    repository: cpg/prod/cpg-api-backend
     Dockerfile: src/$(projectName)/Dockerfile
 ##################################################################################################
