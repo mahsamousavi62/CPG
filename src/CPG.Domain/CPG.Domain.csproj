@@ -18,7 +18,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="AggregateModels\Resource.Designer.cs">
+    <Compile Update="AggregateModels\BankAggregate\Resource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="AggregateModels\BookAggregate\Resource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Resource.resx</DependentUpon>
@@ -26,10 +31,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="AggregateModels\Resource.resx">
+    <EmbeddedResource Update="AggregateModels\BankAggregate\Resource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="AggregateModels\BookAggregate\Resource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="AggregateModels\BankAggregate\Guards\" />
   </ItemGroup>
 
 </Project>

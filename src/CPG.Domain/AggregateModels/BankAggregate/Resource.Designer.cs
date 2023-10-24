@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace CPG.Domain.AggregateModels {
+namespace CPG.Domain.AggregateModels.BankAggregate {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace CPG.Domain.AggregateModels {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CPG.Domain.AggregateModels.Resource", typeof(Resource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CPG.Domain.AggregateModels.BankAggregate.Resource", typeof(Resource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,29 +61,29 @@ namespace CPG.Domain.AggregateModels {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to کتاب با شناسه {0} در انبار موجود می باشد.
+        ///   Looks up a localized string similar to بانک با شناسه {0} فعال می باشد.
         /// </summary>
-        internal static string BookAlreadyExistsInTheStorage {
+        internal static string BankIsAlreadyActive {
             get {
-                return ResourceManager.GetString("BookAlreadyExistsInTheStorage", resourceCulture);
+                return ResourceManager.GetString("BankIsAlreadyActive", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to کتاب امانت گرفته شده است.
+        ///   Looks up a localized string similar to بانک با شناسه {0} غیرفعال می باشد.
         /// </summary>
-        internal static string BookIsAlreadyBorrowed {
+        internal static string BankIsAlreadyNotActive {
             get {
-                return ResourceManager.GetString("BookIsAlreadyBorrowed", resourceCulture);
+                return ResourceManager.GetString("BankIsAlreadyNotActive", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to کتاب با شناسه {0} امانت گرفته نشده.
+        ///   Looks up a localized string similar to بانک با شناسه {0} معلق می باشد.
         /// </summary>
-        internal static string BookNotBorrowed {
+        internal static string BankIsAlreadySuspended {
             get {
-                return ResourceManager.GetString("BookNotBorrowed", resourceCulture);
+                return ResourceManager.GetString("BankIsAlreadySuspended", resourceCulture);
             }
         }
     }
