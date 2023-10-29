@@ -2,6 +2,7 @@
 using CPG.Infrastructure.Authorization;
 using CPG.Infrastructure.ErrorHandling;
 using CPG.Infrastructure.Persistence;
+using CPG.Infrastructure.RabbitMQ;
 using CPG.Infrastructure.Time;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -16,6 +17,11 @@ namespace CPG.Infrastructure
             => services
                 .AddDatabase(configuration)
                 .AddGraphQLQueries()
+                .AddSingleton(provider =>
+                {
+                    var rabbitMqConfig = configuration.GetSection("Infrastructure:RabbitMQ").Get<RabbitMqConfig>();
+                    return new RabbitMqService(rabbitMqConfig.HostName, rabbitMqConfig.Port, rabbitMqConfig.UserName, rabbitMqConfig.Password);
+                })
                 .AddTokenAuthentication(configuration)
                 .AddTransient<ICurrentDateTime, CurrentDateTime>();
 

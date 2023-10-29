@@ -2,6 +2,7 @@ using CPG.Application;
 using CPG.Infrastructure;
 using CPG.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using System.Globalization;
 
@@ -35,6 +36,7 @@ builder.Services.AddCors(
                         .SetIsOriginAllowed((host) => true)
                         .AllowCredentials()));
 builder.Services.AddLocalization();
+
 builder.Services.Configure<RequestLocalizationOptions>(opt =>
 {
     var supportedLanguages = new List<CultureInfo> {
@@ -60,10 +62,14 @@ if (app.Environment.IsDevelopment())
 
 app.UseRouting();
 
+app.UseAuthorization();
+
+#pragma warning disable ASP0014 // Suggest using top level route registrations
 app.UseEndpoints(endpoints =>
 {
-    endpoints.MapControllers();
+    _ = endpoints.MapControllers();
 });
+#pragma warning restore ASP0014 // Suggest using top level route registrations
 
 app.UseInfrastructure(configuration, app.Environment);
 
