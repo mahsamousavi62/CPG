@@ -13,6 +13,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using CPG.Application.UseCases.Common.Queries;
+using CPG.Infrastructure.Persistence.Redis;
 
 namespace CPG.Infrastructure.Persistence
 {
@@ -21,7 +23,8 @@ namespace CPG.Infrastructure.Persistence
         private const string ConnectionStringConfigName = "CPGConnectionString";
 
         public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
-            => services
+        {
+            services
                 .AddDbContext<WriteDbContext>(options =>
                 {
                     options.EnableDetailedErrors();
@@ -33,7 +36,27 @@ namespace CPG.Infrastructure.Persistence
                     options.UseSqlServer(configuration.GetConnectionString(ConnectionStringConfigName));
                 })
                 .AddScoped(typeof(IAggregateRepository<>), typeof(AggregateRepository<>))
-                .AddScoped(typeof(IAggregateReadRepository<>), typeof(AggregateRepository<>));
+                .AddScoped(typeof(IAggregateReadRepository<>), typeof(AggregateRepository<>))
+                .AddScoped(typeof(ICommonServiceRepository<>), typeof(CommonServiceRepository<>))
+                .AddScoped<IRedisCaheService, RedisCacheService>();
+
+
+
+            _ = bool.TryParse(configuration["Redis:Enable"], out var enableRedis);
+
+            if (enableRedis)
+            {
+                var redisConfig = configuration.GetSection("Redis").Get<RedisConfig>();
+                services.AddStackExchangeRedisCache(options => options.ConfigurationOptions = new StackExchange.Redis.ConfigurationOptions
+                {
+                    EndPoints = { $"{redisConfig.Server}:{redisConfig.Port}" },
+                    Password = redisConfig.Password,
+                }
+                                                   );
+            }
+            services.AddDistributedMemoryCache();
+            return services;
+        }
 
         public static IServiceCollection AddGraphQLQueries(this IServiceCollection services)
         {
@@ -41,6 +64,7 @@ namespace CPG.Infrastructure.Persistence
                 .AddGraphQLServer()
                 .AddAuthorization()
                 .AddQueryType<BookReadModelQueries>()
+               .AddQueryType<GetApplicationSettingsQuery>()
                 .AddProjections()
                 .AddFiltering()
                 .AddSorting()

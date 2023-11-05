@@ -9,11 +9,17 @@ namespace CPG.Infrastructure.Persistence.DbContexts
     {
         public IQueryable<BookReadModel> BookReadModels => Set<BookReadModel>().AsNoTracking();
 
+        public IQueryable<ApplicationSettingReadModel> ApplicationSettingReadModels => Set<ApplicationSettingReadModel>().AsNoTracking();
+
         public ReadDbContext(DbContextOptions<ReadDbContext> options) : base(options)
         {
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-            => modelBuilder.ApplyConfiguration(new BookReadModelConfiguration());
+        {
+            modelBuilder
+                .ApplyConfiguration(new BookReadModelConfiguration())
+                .ApplyConfiguration(new ApplicationSettingReadModelConfiguration());
+        }
     }
 }
