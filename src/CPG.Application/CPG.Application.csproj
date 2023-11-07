@@ -43,6 +43,7 @@
 
   <ItemGroup>
     <Folder Include="UseCases\Banks\EventHandlers\" />
+    <Folder Include="UseCases\Common\Commands\" />
   </ItemGroup>
 
 </Project>

@@ -6,8 +6,8 @@ using CPG.Application.UseCases.Books.ViewModels;
 using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-
-namespace CPG.Infrastructure.Persistence.QueryHandlers
+using CPG.Domain.SharedKernel;
+namespace CPG.Infrastructure.Persistence.QueryHandlers.Book
 {
     public class GetBookQueryHandler : IRequestHandler<GetBookQuery, BookViewModel>
     {

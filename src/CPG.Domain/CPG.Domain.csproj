@@ -43,6 +43,8 @@
 
   <ItemGroup>
     <Folder Include="AggregateModels\BankAggregate\Guards\" />
+    <Folder Include="SharedKernel\ApplicationSettings\Exceptions\" />
+    <Folder Include="SharedKernel\ApplicationSettings\Commands\" />
   </ItemGroup>
 
 </Project>

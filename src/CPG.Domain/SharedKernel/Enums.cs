@@ -14,5 +14,10 @@ namespace CPG.Domain.SharedKernel
             Inactive = 2,
             Suspended = 3,
         }
+
+        public enum ApplicationSettingEntityType
+        {
+             IDPCredential= 1,
+        }
     }
 }
