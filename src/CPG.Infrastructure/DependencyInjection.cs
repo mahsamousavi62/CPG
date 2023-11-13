@@ -1,13 +1,24 @@
-﻿using CPG.Domain.SharedKernel;
+﻿using Charisma.MessagingContracts.UsersManagement.User;
+using CPG.Application.UseCases.Common.Queries;
+using CPG.Domain.SharedKernel;
 using CPG.Infrastructure.Authorization;
 using CPG.Infrastructure.ErrorHandling;
+using CPG.Infrastructure.Masstransit.Consumer;
+using CPG.Infrastructure.Masstransit.Consumer.UserRegistered;
 using CPG.Infrastructure.Persistence;
+using CPG.Infrastructure.Persistence.GraphQL.ErrorHandling;
+using CPG.Infrastructure.Persistence.GraphQL.Queries;
+using CPG.Infrastructure.Persistence.GraphQL.Types;
 using CPG.Infrastructure.RabbitMQ;
 using CPG.Infrastructure.Time;
+using MassTransit;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Reflection;
 
 namespace CPG.Infrastructure
 {
@@ -17,13 +28,42 @@ namespace CPG.Infrastructure
             => services
                 .AddDatabase(configuration)
                 .AddGraphQLQueries()
-                .AddSingleton(provider =>
-                {
-                    var rabbitMqConfig = configuration.GetSection("Infrastructure:RabbitMQ").Get<RabbitMqConfig>();
-                    return new RabbitMqService(rabbitMqConfig.HostName, rabbitMqConfig.Port, rabbitMqConfig.UserName, rabbitMqConfig.Password);
-                })
                 .AddTokenAuthentication(configuration)
-                .AddTransient<ICurrentDateTime, CurrentDateTime>();
+                .AddTransient<ICurrentDateTime, CurrentDateTime>()
+                .AddMasstransitInfrastructure(configuration);
+
+
+        public static IServiceCollection AddMasstransitInfrastructure(this IServiceCollection services, IConfiguration configuration)
+        {
+            services
+           .AddMassTransit(x =>
+           {
+               var rabbitMqConfig = configuration.GetSection("Infrastructure:RabbitMQ").Get<RabbitMqConfig>();
+
+               x.SetEndpointNameFormatter(new SnakeCaseEndpointNameFormatter("pay__", false));
+               x.AddConsumer<UserRegisteredConsumer, UserRegisteredConsumerDefinition>();
+               x.AddConsumer<FaultConsumer>();
+
+               x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.Host(rabbitMqConfig.Uri);
+
+                    cfg.Message<Fault>(f =>
+                {
+                    f.SetEntityName("pay__fault");
+                });
+
+                    cfg.Message<Fault<IUserRegistered>>(f =>
+                {
+                    f.SetEntityName("pay__user_registered_fault");
+                });
+
+                    cfg.ConfigureEndpoints(context);
+                });
+           });
+
+            return services;
+        }
 
         public static IApplicationBuilder UseInfrastructure(
             this IApplicationBuilder app,
@@ -35,6 +75,15 @@ namespace CPG.Infrastructure
                 .UseMiddleware<ErrorHandlingMiddleware>()
                 .UseTokenAuthentication()
                 .UseTokenAuthorization()
-                .UseGraphQLQueries(configuration.GetSection("Infrastructure:GraphQL"), env);
+                .UseGraphQLQueries(configuration.GetSection("Infrastructure:GraphQL"), env)
+                .UseEndpoints(endpoints =>
+                {
+                    endpoints.MapHealthChecks("/health/ready", new HealthCheckOptions()
+                    {
+                        Predicate = (check) => check.Tags.Contains("ready"),
+                    });
+
+                    endpoints.MapHealthChecks("/health/live", new HealthCheckOptions());
+                });
     }
 }
