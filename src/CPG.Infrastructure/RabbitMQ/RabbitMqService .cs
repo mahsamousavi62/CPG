@@ -40,20 +40,9 @@ namespace CPG.Infrastructure.RabbitMQ
                 UserName = userName,
                 Password = password
             };
-
-            try
-            {
-                _connection = factory.CreateConnection();
-                _channel = _connection.CreateModel();
-            }
-            catch (BrokerUnreachableException ex)
-            {
-
-                var message = ex.Message;
-            }
-
+            _connection = factory.CreateConnection();
+            _channel = _connection.CreateModel();
         }
-
 
         public void PublishMessage(string exchange, string routingKey, string message)
         {
@@ -64,7 +53,6 @@ namespace CPG.Infrastructure.RabbitMQ
                                  autoDelete: false,
                                  arguments: null);
 
-            
             var body = Encoding.UTF8.GetBytes(message);
 
             _channel.BasicPublish(exchange: string.Empty,
@@ -73,20 +61,8 @@ namespace CPG.Infrastructure.RabbitMQ
                                  body: body);
         }
 
-
-        //public void PublishMessage(string exchange, string routingKey, string message)
-        //{
-        //    var body = Encoding.UTF8.GetBytes(message);
-
-        //    _channel.BasicPublish(exchange: exchange,
-        //                         routingKey: routingKey,
-        //                         basicProperties: null,
-        //                         body: body);
-        //}
-
         public async Task<string> ConsumeMessage(string queue)
         {
-
             string message = string.Empty;
 
             _channel.QueueDeclare(queue: queue,
@@ -95,14 +71,6 @@ namespace CPG.Infrastructure.RabbitMQ
                      autoDelete: false,
                      arguments: null);
 
-
-            //var consumer = new AsyncEventingBasicConsumer(_channel);
-            //consumer.Received += async (model, ea) =>
-            //{
-            //    var body = ea.Body.ToArray();
-            //    message = Encoding.UTF8.GetString(body);
-            //};
-
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += (model, ea) =>
             {
@@ -113,43 +81,6 @@ namespace CPG.Infrastructure.RabbitMQ
             _channel.BasicConsume(queue: queue,
                                   autoAck: true,
                                   consumer: consumer);
-            Thread.Sleep(20000);
-            await Task.CompletedTask;
-            return message;
-        }
-
-
-
-        public async Task<string> ConsumeMessage(string exchange, string queue)
-        {
-            string message = string.Empty;
-
-
-            _channel.ExchangeDeclare(exchange: exchange, type: ExchangeType.Fanout);
-
-
-            _channel.QueueDeclare(queue: queue,
-                     durable: true,
-                     exclusive: false,
-                     autoDelete: false,
-                     arguments: null);
-
-            _channel.QueueBind(queue: queue,
-                  exchange: exchange,
-                  routingKey: string.Empty);
-
-
-            var consumer = new EventingBasicConsumer(_channel);
-            consumer.Received += (model, ea) =>
-            {
-                var body = ea.Body.ToArray();
-                message = Encoding.UTF8.GetString(body);
-            };
-
-            _channel.BasicConsume(queue: queue,
-                                  autoAck: true,
-                                  consumer: consumer);
-            Thread.Sleep(15000);
             await Task.CompletedTask;
             return message;
         }
@@ -161,6 +92,4 @@ namespace CPG.Infrastructure.RabbitMQ
             GC.SuppressFinalize(this);
         }
     }
-
-
 }
