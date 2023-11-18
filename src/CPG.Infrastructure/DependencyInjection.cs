@@ -75,6 +75,7 @@ namespace CPG.Infrastructure
                 .UseMiddleware<ErrorHandlingMiddleware>()
                 .UseTokenAuthentication()
                 .UseTokenAuthorization()
+                .UseAuthenticationMiddleware()
                 .UseGraphQLQueries(configuration.GetSection("Infrastructure:GraphQL"), env)
                 .UseEndpoints(endpoints =>
                 {

@@ -18,7 +18,7 @@ namespace CPG.Domain.SharedKernel.ApplicationSettings
         public string Value { get; set; }
 
 
-        public static ApplicationSettings Update(int id, Enums.ApplicationSettingEntityType entityType, string key, string value)
+        public static ApplicationSettings Update(long id, Enums.ApplicationSettingEntityType entityType, string key, string value)
         {
             var applicationSetting = new ApplicationSettings(id, entityType, key, value);
             return applicationSetting;

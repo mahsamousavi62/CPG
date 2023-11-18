@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
+#nullable disable
 
 namespace CPG.Infrastructure.Persistence.Migrations
 {
@@ -14,6 +15,7 @@ namespace CPG.Infrastructure.Persistence.Migrations
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
+
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
@@ -285,7 +287,6 @@ namespace CPG.Infrastructure.Persistence.Migrations
                 {
                     b.Navigation("ActiveLoans");
                 });
-#pragma warning restore 612, 618
         }
     }
 }

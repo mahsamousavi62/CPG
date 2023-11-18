@@ -24,7 +24,7 @@ namespace CPG.API.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<IReadOnlyCollection<ApplicationSettingViewModel>>> GetAppSettingIDPCredential()
         {
-            return Ok(await Mediator.Send(new GetApplicationSettingsQuery(Enums.ApplicationSettingEntityType.IDPCredential)));
+            return Ok(await Mediator.Send(new GetAuthenticationAppSettingQuery()));
         }
 
 
