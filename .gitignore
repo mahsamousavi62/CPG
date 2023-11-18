@@ -23,3 +23,5 @@ VersionInfo.cs
 #logs
 **/App_Data/logs/*
 **/logs/*
+/src/CPG.Infrastructure.Persistence/Migrations/20231118054324_FillApplicationSetting.cs
+/src/CPG.Infrastructure.Persistence/Migrations/20231118054324_FillApplicationSetting.Designer.cs

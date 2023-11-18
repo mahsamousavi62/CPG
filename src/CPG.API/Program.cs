@@ -2,22 +2,49 @@ using CPG.Application;
 using CPG.Infrastructure;
 using CPG.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Localization;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Globalization;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(opt =>
+{
+    opt.SwaggerDoc("v1", new OpenApiInfo { Title = "MyAPI", Version = "v1" });
+    opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "bearer"
+    });
+
+    opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
+});
 builder.Services.AddControllers();
 builder.Services.AddHealthChecks();
 
 var configuration = builder.Configuration;
-
 builder.Services
-    .AddInfrastructure(configuration)
-    .AddApplication(configuration);
+    .AddApplication(configuration)
+    .AddInfrastructure(configuration);
 
 builder.Host.UseSerilog((context, configuation) =>
     configuation.ReadFrom.Configuration(context.Configuration));
@@ -44,41 +71,37 @@ builder.Services.Configure<RequestLocalizationOptions>(opt =>
                     new CultureInfo("fa")
                 };
 
-    opt.DefaultRequestCulture = new RequestCulture("fa", "fa");    
+    opt.DefaultRequestCulture = new RequestCulture("fa", "fa");
     opt.SupportedCultures = supportedLanguages;
     opt.SupportedUICultures = supportedLanguages;
 });
 
 var app = builder.Build();
 
+
 app.UseCors(DefaultCorsPolicyName);
 
-if (app.Environment.IsDevelopment())
+if (Convert.ToBoolean(configuration["EnableSwagger"]))
 {
     app.UseSwagger();
     app.UseSwaggerUI();
     app.UseDeveloperExceptionPage();
 }
 
+app.UseHttpsRedirection();
 app.UseRouting();
-
-app.UseAuthorization();
-
-#pragma warning disable ASP0014 // Suggest using top level route registrations
-app.UseEndpoints(endpoints =>
-{
-    _ = endpoints.MapControllers();
-});
-#pragma warning restore ASP0014 // Suggest using top level route registrations
 
 app.UseInfrastructure(configuration, app.Environment);
 
 app.UseSerilogRequestLogging();
 
-app.UseHttpsRedirection();
-
 app.UseRequestLocalization();
 
 app.MigrateDatabase();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
 
 app.Run();
