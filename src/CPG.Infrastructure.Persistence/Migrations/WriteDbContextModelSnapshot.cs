@@ -15,7 +15,7 @@ namespace CPG.Infrastructure.Persistence.Migrations
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
-#pragma warning disable 612, 618
+
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
@@ -287,7 +287,6 @@ namespace CPG.Infrastructure.Persistence.Migrations
                 {
                     b.Navigation("ActiveLoans");
                 });
-#pragma warning restore 612, 618
         }
     }
 }
