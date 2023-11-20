@@ -19,5 +19,10 @@ namespace CPG.Domain.SharedKernel
         {
              IDPCredential= 1,
         }
+
+        public enum UserRoleType
+        {
+            Customer=3
+        }
     }
 }
