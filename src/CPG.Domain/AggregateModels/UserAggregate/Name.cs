@@ -1,0 +1,31 @@
+﻿using CPG.Domain.AggregateModels.CPGUserAggregate.Exceptions;
+
+namespace CPG.Domain.AggregateModels.UserAggregate
+{
+    public record Name
+    {
+        public string FirstName { get; }
+        public string LastName { get; }
+
+        public Name()
+        {
+        }
+
+        public Name(string firstName, string lastName)
+        {
+            // TODO: Implement Guard clause
+            if (string.IsNullOrWhiteSpace(firstName))
+                throw new UserCreationException($"Parameter {nameof(firstName)} cannot be empty.");
+
+            if (string.IsNullOrWhiteSpace(lastName))
+                throw new UserCreationException($"Parameter {nameof(lastName)} cannot be empty.");
+
+            FirstName = firstName;
+            LastName = lastName;
+        }
+
+        public static implicit operator string(Name name) => name.ToString();
+
+        public override string ToString() => $"{FirstName} {LastName}";
+    }
+}

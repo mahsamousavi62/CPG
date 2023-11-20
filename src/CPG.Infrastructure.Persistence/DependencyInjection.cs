@@ -15,6 +15,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using CPG.Application.UseCases.Common.Queries;
 using CPG.Infrastructure.Persistence.Redis;
+using CPG.Application.UseCases.Users.Commands;
+
 
 namespace CPG.Infrastructure.Persistence
 {

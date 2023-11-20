@@ -4,6 +4,7 @@ using CPG.Infrastructure.Persistence.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CPG.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(WriteDbContext))]
-    partial class WriteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231119105947_AddUser")]
+    partial class AddUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -133,37 +136,6 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("User", (string)null);
-                });
-
-            modelBuilder.Entity("CPG.Domain.AggregateModels.UserAggregate.UserRole", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("Id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("CreationDate");
-
-                    b.Property<DateTime>("ModificationDate")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("ModificationDate");
-
-                    b.Property<short>("RoleType")
-                        .HasColumnType("smallint");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("UserId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserRole", (string)null);
                 });
 
             modelBuilder.Entity("CPG.Domain.SharedKernel.ApplicationSettings.ApplicationSettings", b =>
@@ -340,15 +312,6 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.Navigation("Email");
                 });
 
-            modelBuilder.Entity("CPG.Domain.AggregateModels.UserAggregate.UserRole", b =>
-                {
-                    b.HasOne("CPG.Domain.AggregateModels.UserAggregate.User", null)
-                        .WithMany("userRoles")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("CPG.Domain.SharedKernel.Loan", b =>
                 {
                     b.HasOne("CPG.Domain.AggregateModels.BookAggregate.Book", null)
@@ -393,11 +356,6 @@ namespace CPG.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("CPG.Domain.AggregateModels.CPGUserAggregate.CPGUser", b =>
                 {
                     b.Navigation("ActiveLoans");
-                });
-
-            modelBuilder.Entity("CPG.Domain.AggregateModels.UserAggregate.User", b =>
-                {
-                    b.Navigation("userRoles");
                 });
 #pragma warning restore 612, 618
         }

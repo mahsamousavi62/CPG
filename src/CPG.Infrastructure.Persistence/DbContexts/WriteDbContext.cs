@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using CPG.Domain.AggregateModels.BookAggregate;
 using CPG.Domain.AggregateModels.CPGUserAggregate;
+using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Domain.SharedKernel.ApplicationSettings;
 using CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations;
 using CPG.Infrastructure.Persistence.Extensions;
@@ -22,13 +23,17 @@ namespace CPG.Infrastructure.Persistence.DbContexts
         public DbSet<Book> Books { get; set; }
         public DbSet<CPGUser> CPGUsers { get; set; }
         public DbSet<ApplicationSettings> ApplicationSettings { get; set; }
-       
+        public DbSet<User> Users { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
             => modelBuilder
                 .ApplyConfiguration(new BookConfiguration())
                 .ApplyConfiguration(new CPGUserConfiguration())
                 .ApplyConfiguration(new LoanConfiguration())
-                .ApplyConfiguration(new ApplicationSettingsConfiguration());
+                .ApplyConfiguration(new ApplicationSettingsConfiguration())
+                .ApplyConfiguration(new UserConfiguration())
+                .ApplyConfiguration(new UserRoleConfiguration());
+            
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
         {

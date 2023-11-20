@@ -1,4 +1,5 @@
 ﻿using Charisma.MessagingContracts.UsersManagement.User;
+using CPG.Application.Shared;
 using CPG.Application.UseCases.Common.Queries;
 using CPG.Domain.SharedKernel;
 using CPG.Infrastructure.Authorization;
@@ -18,6 +19,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Net.Http;
 using System.Reflection;
 
 namespace CPG.Infrastructure
@@ -30,8 +32,9 @@ namespace CPG.Infrastructure
                 .AddGraphQLQueries()
                 .AddTokenAuthentication(configuration)
                 .AddTransient<ICurrentDateTime, CurrentDateTime>()
-                .AddMasstransitInfrastructure(configuration);
-
+                .AddMasstransitInfrastructure(configuration)
+                .AddHttpClient()
+                .AddTransient<IHttpClientFactoryService, HttpClientFactoryService>();
 
         public static IServiceCollection AddMasstransitInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
@@ -75,7 +78,7 @@ namespace CPG.Infrastructure
                 .UseMiddleware<ErrorHandlingMiddleware>()
                 .UseTokenAuthentication()
                 .UseTokenAuthorization()
-                .UseAuthenticationMiddleware()
+                // .UseAuthenticationMiddleware()
                 .UseGraphQLQueries(configuration.GetSection("Infrastructure:GraphQL"), env)
                 .UseEndpoints(endpoints =>
                 {
