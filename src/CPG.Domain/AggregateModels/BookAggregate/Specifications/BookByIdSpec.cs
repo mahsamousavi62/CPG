@@ -2,7 +2,7 @@
 
 namespace CPG.Domain.AggregateModels.BookAggregate.Specifications
 {
-    public sealed class BookByIdSpec : Specification<Book>, ISingleResultSpecification
+    public sealed class BookByIdSpec : Specification<Book>, ISingleResultSpecification<Book>
     {
         public BookByIdSpec(long bookId)
         {

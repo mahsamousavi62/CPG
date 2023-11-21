@@ -26,20 +26,18 @@ namespace CPG.Application.UseCases.Books.Commands.ReturnBook
             _currentUser = currentUser;
         }
 
-        public async Task<Unit> Handle(ReturnBookCommand command, CancellationToken cancellationToken)
+        public async Task Handle(ReturnBookCommand request, CancellationToken cancellationToken)
         {
             var spec = new CPGUserWithActiveLoansSpec(_currentUser.UserId);
             var CPGUser = await _CPGUserRepository.GetBySpecAsync(spec, cancellationToken)
                               ?? throw new CPGUserNotFoundException(_currentUser.UserId);
 
-            _ = await _bookRepository.GetByIdAsync(command.BookId, cancellationToken)
-                ?? throw new BookNotFoundException(command.BookId);
+            _ = await _bookRepository.GetByIdAsync(request.BookId, cancellationToken)
+                ?? throw new BookNotFoundException(request.BookId);
 
-            CPGUser.ReturnBook(command.BookId);
+            CPGUser.ReturnBook(request.BookId);
 
             await _CPGUserRepository.SaveChangesAsync(cancellationToken);
-
-            return Unit.Value;
         }
     }
 }

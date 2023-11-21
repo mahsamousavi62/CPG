@@ -30,17 +30,15 @@ namespace CPG.Application.UseCases.Banks.Commands.DeleteBank
             _currentUser = currentUser;
         }
 
-        public async Task<Unit> Handle(DeleteBankCommand command, CancellationToken cancellationToken)
+        public async Task Handle(DeleteBankCommand request, CancellationToken cancellationToken)
         {
-            var cpgUser = await _CPGUserRepository.GetByIdAsync(_currentUser.UserId, cancellationToken)
+            _ = await _CPGUserRepository.GetByIdAsync(_currentUser.UserId, cancellationToken)
                 ?? throw new CPGUserNotFoundException(_currentUser.UserId);
 
-            var bank = await _bankRepository.GetByIdAsync(command.bankId, cancellationToken)
-                ?? throw new BankNotFoundException(command.bankId);
+            var bank = await _bankRepository.GetByIdAsync(request.bankId, cancellationToken)
+                ?? throw new BankNotFoundException(request.bankId);
 
             await _bankRepository.DeleteAsync(bank, cancellationToken);
-
-            return Unit.Value;
         }
     }
 }

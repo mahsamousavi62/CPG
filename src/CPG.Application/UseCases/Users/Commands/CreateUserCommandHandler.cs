@@ -21,6 +21,7 @@ namespace CPG.Application.UseCases.Users.Commands
         private readonly IAggregateRepository<User> _repository;
         private readonly IMediator _mediator;
         private readonly IHttpClientFactoryService _httpClientFactoryService;
+
         public CreateUserCommandHandler(IMediator mediator, IAggregateRepository<User> repository, IHttpClientFactoryService httpClientFactoryService)
         {
             _repository = repository;
@@ -28,7 +29,7 @@ namespace CPG.Application.UseCases.Users.Commands
             _httpClientFactoryService = httpClientFactoryService;
         }
 
-        public async Task<Unit> Handle(CreateUserCommnad request, CancellationToken cancellationToken)
+        public async Task Handle(CreateUserCommnad request, CancellationToken cancellationToken)
         {
             var authenticationConfig = await _mediator.Send(new GetAuthenticationAppSettingQuery());
 
@@ -71,7 +72,6 @@ namespace CPG.Application.UseCases.Users.Commands
                 var message = eX.Message;
             }
 
-            return Unit.Value;
         }
     }
 }

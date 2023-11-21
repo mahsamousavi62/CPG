@@ -18,25 +18,23 @@ namespace CPG.Application.UseCases.CPGUsers.Commands.RegisterCPGUser
             _repository = repository;
         }
 
-        public async Task<Unit> Handle(RegisterCPGUserCommand command, CancellationToken cancellationToken)
+        public async Task Handle(RegisterCPGUserCommand request, CancellationToken cancellationToken)
         {
-            var spec = new CPGUserByEmailSpec(command.Email);
+            var spec = new CPGUserByEmailSpec(request.Email);
             var existingCPGUser = await _repository.GetBySpecAsync(spec, cancellationToken);
 
             if (existingCPGUser is not null)
-                throw new CPGUserAlreadyExistsException(command.Email);
+                throw new CPGUserAlreadyExistsException(request.Email);
 
-            var hashedPassword = PasswordManager.HashPassword(command.Password); // Should we do it here or is it a domain responsibility to hash password? I guess it's domain's
-            var credentials = new UserCredential(command.Login, hashedPassword);
-            var name = new Name(command.FirstName, command.LastName);
-            var email = new Email(command.Email);
+            var hashedPassword = PasswordManager.HashPassword(request.Password); // Should we do it here or is it a domain responsibility to hash password? I guess it's domain's
+            var credentials = new UserCredential(request.Login, hashedPassword);
+            var name = new Name(request.FirstName, request.LastName);
+            var email = new Email(request.Email);
 
             var cpgUser = CPGUser.Create(credentials, name, email);
 
             await _repository.AddAsync(cpgUser, cancellationToken);
             await _repository.SaveChangesAsync(cancellationToken);
-
-            return Unit.Value;
         }
     }
 }
