@@ -28,26 +28,24 @@ namespace CPG.Application.UseCases.Books.Commands.BorrowBook
             _currentUser = currentUser;
         }
 
-        public async Task<Unit> Handle(BorrowBookCommand command, CancellationToken cancellationToken)
+        public async Task Handle(BorrowBookCommand request, CancellationToken cancellationToken)
         {
             var spec = new CPGUserWithActiveLoansSpec(_currentUser.UserId);
             var CPGUser = await _CPGUserRepository.GetBySpecAsync(spec, cancellationToken) 
                               ?? throw new CPGUserNotFoundException(_currentUser.UserId);
 
             // TODO: Get book from repo by its ISBN, not it directly
-            var book = await _bookRepository.GetByIdAsync(command.BookId, cancellationToken) 
-                       ?? throw new BookNotFoundException(command.BookId);
+            var book = await _bookRepository.GetByIdAsync(request.BookId, cancellationToken) 
+                       ?? throw new BookNotFoundException(request.BookId);
 
             if (!book.InStock)
-                throw new BookNotAvailableException(command.BookId);
+                throw new BookNotAvailableException(request.BookId);
 
-            var dateTimePeriod = DateTimePeriod.Create(DateTime.UtcNow, command.BorrowingEndDate);
+            var dateTimePeriod = DateTimePeriod.Create(DateTime.UtcNow, request.BorrowingEndDate);
 
-            CPGUser.BorrowBook(command.BookId, dateTimePeriod);
+            CPGUser.BorrowBook(request.BookId, dateTimePeriod);
 
             await _CPGUserRepository.SaveChangesAsync(cancellationToken);
-
-            return Unit.Value;
         }
     }
 }

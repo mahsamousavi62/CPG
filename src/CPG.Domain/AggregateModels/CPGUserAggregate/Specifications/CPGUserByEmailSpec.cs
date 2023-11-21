@@ -4,7 +4,7 @@ using CPG.Domain.AggregateModels.CPGUserAggregate;
 
 namespace CPG.Domain.AggregateModels.CPGUserAggregate.Specifications
 {
-    public sealed class CPGUserByEmailSpec : Specification<CPGUser>, ISingleResultSpecification
+    public sealed class CPGUserByEmailSpec : Specification<CPGUser>, ISingleResultSpecification<CPGUser>
     {
         public CPGUserByEmailSpec(string email)
         {

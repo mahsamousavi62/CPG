@@ -10,9 +10,9 @@ namespace CPG.API.Controllers
         [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> RegisterCPGUser(RegisterCPGUserCommand command)
-        {
-            return Ok(await Mediator.Send(command));
-            // TODO: CreatedAtAction(nameof(GetCPGUser), new { id = userId }, new { userId });
+        {   
+            await Mediator.Send(command);
+            return Ok();
         }
     }
 }
