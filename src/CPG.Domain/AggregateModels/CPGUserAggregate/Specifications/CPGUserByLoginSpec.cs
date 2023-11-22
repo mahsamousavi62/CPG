@@ -3,7 +3,7 @@ using CPG.Domain.AggregateModels.CPGUserAggregate;
 
 namespace CPG.Domain.AggregateModels.CPGUserAggregate.Specifications
 {
-    public sealed class CPGUserByLoginSpec : Specification<CPGUser>, ISingleResultSpecification
+    public sealed class CPGUserByLoginSpec : Specification<CPGUser>, ISingleResultSpecification<CPGUser>
     {
         public CPGUserByLoginSpec(string login)
         {
@@ -12,7 +12,7 @@ namespace CPG.Domain.AggregateModels.CPGUserAggregate.Specifications
         }
     }
 
-    public sealed class CPGUserWithActiveLoansSpec : Specification<CPGUser>, ISingleResultSpecification
+    public sealed class CPGUserWithActiveLoansSpec : Specification<CPGUser>, ISingleResultSpecification<CPGUser>
     {
         public CPGUserWithActiveLoansSpec(long id)
         {

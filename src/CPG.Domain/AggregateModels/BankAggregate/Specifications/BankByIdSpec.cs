@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace CPG.Domain.AggregateModels.BankAggregate.Specifications
 {
-    public sealed class BankByIdSpec : Specification<Bank>, ISingleResultSpecification
+    public sealed class BankByIdSpec : Specification<Bank>, ISingleResultSpecification<Bank>
     {
         public BankByIdSpec(int bankId)
         {
