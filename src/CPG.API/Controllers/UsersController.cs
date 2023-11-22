@@ -10,7 +10,8 @@ namespace CPG.API.Controllers
         [HttpPost("CreateUserProfile")]
         public async Task<IActionResult> CreateUserProfile(CreateUserCommnad command)
         {
-            return Ok(await Mediator.Send(command));
+            await Mediator.Send(command);
+            return Ok();
         }
     }
 }

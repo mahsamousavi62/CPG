@@ -11,9 +11,9 @@ namespace CPG.Application
         public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
         {
             var infrastructureAssembly = AppDomain.CurrentDomain.Load("CPG.Infrastructure.Persistence");
-            
+
             return services
-                .AddMediatR(Assembly.GetExecutingAssembly(), infrastructureAssembly);
+                .AddMediatR(cfg => cfg.RegisterServicesFromAssembly(infrastructureAssembly));
         }
     }
 }

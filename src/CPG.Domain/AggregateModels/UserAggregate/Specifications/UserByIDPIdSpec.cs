@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CPG.Domain.AggregateModels.UserAggregate.Specifications
 {
-    public class UserByIDPIdSpec : Specification<User>, ISingleResultSpecification
+    public class UserByIDPIdSpec : Specification<User>, ISingleResultSpecification<User>
     {
         public UserByIDPIdSpec(string iDPId)
         {
