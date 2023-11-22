@@ -1,7 +1,7 @@
-﻿using System.Linq;
-using CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations.ReadModelsConfiguration;
+﻿using CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations.ReadModelsConfiguration;
 using CPG.Infrastructure.Persistence.DbContexts.ReadModels;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace CPG.Infrastructure.Persistence.DbContexts
 {
@@ -11,6 +11,8 @@ namespace CPG.Infrastructure.Persistence.DbContexts
 
         public IQueryable<ApplicationSettingReadModel> ApplicationSettingReadModels => Set<ApplicationSettingReadModel>().AsNoTracking();
 
+        public IQueryable<CompanyReadModel> CompanyReadModels => Set<CompanyReadModel>().AsNoTracking();
+
         public ReadDbContext(DbContextOptions<ReadDbContext> options) : base(options)
         {
         }
@@ -19,7 +21,8 @@ namespace CPG.Infrastructure.Persistence.DbContexts
         {
             modelBuilder
                 .ApplyConfiguration(new BookReadModelConfiguration())
-                .ApplyConfiguration(new ApplicationSettingReadModelConfiguration());
+               .ApplyConfiguration(new ApplicationSettingReadModelConfiguration())
+               .ApplyConfiguration(new CompanyReadModelConfiguration());
         }
     }
 }

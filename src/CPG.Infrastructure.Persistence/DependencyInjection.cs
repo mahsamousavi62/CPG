@@ -16,7 +16,7 @@ using Microsoft.Extensions.Logging;
 using CPG.Application.UseCases.Common.Queries;
 using CPG.Infrastructure.Persistence.Redis;
 using CPG.Application.UseCases.Users.Commands;
-
+using CPG.Application.UseCases.Companies.Queries;
 
 namespace CPG.Infrastructure.Persistence
 {
@@ -66,7 +66,7 @@ namespace CPG.Infrastructure.Persistence
                 .AddGraphQLServer()
                 .AddAuthorization()
                 .AddQueryType<BookReadModelQueries>()
-               .AddQueryType<GetApplicationSettingsQuery>()
+                 .AddQueryType<GetApplicationSettingsQuery>()
                 .AddProjections()
                 .AddFiltering()
                 .AddSorting()

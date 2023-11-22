@@ -49,6 +49,12 @@ namespace CPG.Infrastructure.Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("CreationUserId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
@@ -63,9 +69,102 @@ namespace CPG.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("LastName");
 
+                    b.Property<DateTime?>("ModificationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("ModificationUserId")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
 
                     b.ToTable("CPGUser", (string)null);
+                });
+
+            modelBuilder.Entity("CPG.Domain.AggregateModels.CompanyAggregate.Company", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("CreationUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("EnglishName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar")
+                        .HasColumnName("EnglishName");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Logo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Logo");
+
+                    b.Property<DateTime?>("ModificationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("ModificationUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("NationalCodeMatchingRequied")
+                        .HasColumnType("bit")
+                        .HasColumnName("NationalCodeMatchingRequied");
+
+                    b.Property<string>("PersianName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("PersianName");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Company", (string)null);
+                });
+
+            modelBuilder.Entity("CPG.Domain.AggregateModels.CompanyAggregate.CompanyPaymentMethods", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("CompanyId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("CreationUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<short>("MethodType")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime?>("ModificationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("ModificationUserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("CompanyPaymentMethods", (string)null);
                 });
 
             modelBuilder.Entity("CPG.Domain.AggregateModels.UserAggregate.User", b =>
@@ -185,7 +284,7 @@ namespace CPG.Infrastructure.Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("Entity_Type");
 
-                    b.Property<bool>("IsDeleted")
+                    b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<string>("Key")
@@ -340,6 +439,15 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.Navigation("Email");
                 });
 
+            modelBuilder.Entity("CPG.Domain.AggregateModels.CompanyAggregate.CompanyPaymentMethods", b =>
+                {
+                    b.HasOne("CPG.Domain.AggregateModels.CompanyAggregate.Company", null)
+                        .WithMany("PaymentMethods")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("CPG.Domain.AggregateModels.UserAggregate.UserRole", b =>
                 {
                     b.HasOne("CPG.Domain.AggregateModels.UserAggregate.User", null)
@@ -393,6 +501,11 @@ namespace CPG.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("CPG.Domain.AggregateModels.CPGUserAggregate.CPGUser", b =>
                 {
                     b.Navigation("ActiveLoans");
+                });
+
+            modelBuilder.Entity("CPG.Domain.AggregateModels.CompanyAggregate.Company", b =>
+                {
+                    b.Navigation("PaymentMethods");
                 });
 
             modelBuilder.Entity("CPG.Domain.AggregateModels.UserAggregate.User", b =>

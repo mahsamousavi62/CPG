@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿    using System.Collections.Generic;
 using System.Linq;
 using CPG.Domain.AggregateModels.BookAggregate;
 using CPG.Domain.AggregateModels.CPGUserAggregate.Events;
@@ -8,7 +8,7 @@ using CPG.Domain.SharedKernel;
 
 namespace CPG.Domain.AggregateModels.CPGUserAggregate
 {
-    public class CPGUser : Entity<long>, IAggregateRoot
+    public class CPGUser : AuditableEntity<long>, IAggregateRoot
     {
         private UserCredential _credentials;
         private string _firstName;

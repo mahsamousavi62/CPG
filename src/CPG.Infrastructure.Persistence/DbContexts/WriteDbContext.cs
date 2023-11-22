@@ -32,8 +32,12 @@ namespace CPG.Infrastructure.Persistence.DbContexts
                 .ApplyConfiguration(new LoanConfiguration())
                 .ApplyConfiguration(new ApplicationSettingsConfiguration())
                 .ApplyConfiguration(new UserConfiguration())
-                .ApplyConfiguration(new UserRoleConfiguration());
-            
+                .ApplyConfiguration(new UserRoleConfiguration())
+                .ApplyConfiguration(new CompanyConfiguration())
+               .ApplyConfiguration(new CompanyPaymentMethodsConfiguration())
+            ;
+
+
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
         {

@@ -51,7 +51,7 @@ namespace CPG.Domain.AggregateModels.BankAggregate
 
         public void Delete(int id, long cpgUserId)
         {
-            this.IsDeleted = true;
+         //   this.IsDeleted = true;
 
             SetModificationData(cpgUserId);
 
