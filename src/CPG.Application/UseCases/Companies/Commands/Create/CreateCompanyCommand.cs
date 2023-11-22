@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CPG.Application.UseCases.Companies.Commands.Create
 {
-    public class CreateCompanyCommand:IRequest
+    public class CreateCompanyCommand:IRequest<Unit>
     {
         public CreateCompanyViewModel Model { get; set; }
 

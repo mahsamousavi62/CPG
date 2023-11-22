@@ -4,15 +4,15 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+
 
 namespace CPG.Application.UseCases.Companies.Commands.Create
 {
     public class UploadFileViewModel
     {
 
-        [Required]
-        public IFormFile? File { get; set; }
+       // [Required]
+       // public IFormFile? File { get; set; }
 
         [Required]
         public string? DetailType { get; set; }
