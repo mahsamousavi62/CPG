@@ -8,7 +8,7 @@ namespace CPG.Domain.AggregateModels.BankAggregate.Specifications
         public ActiveBanksSpec()
         {
             Query
-                .Where(bank => !bank.IsDeleted && bank.Status == SharedKernel.Enums.BankStatus.Active)
+                .Where(bank =>  bank.Status == SharedKernel.Enums.BankStatus.Active)
                 .OrderByDescending(bank => bank.Id);
         }
     }

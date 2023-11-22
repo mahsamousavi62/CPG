@@ -12,7 +12,7 @@ namespace CPG.Domain.AggregateModels.BankAggregate.Specifications
         public BanksSpec()
         {
             Query
-                .Where(bank => !bank.IsDeleted)
+                .Where(bank => bank.IsActive)
                 .OrderByDescending(bank => bank.Id);
         }
     }

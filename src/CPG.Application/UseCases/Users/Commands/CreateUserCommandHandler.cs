@@ -37,9 +37,9 @@ namespace CPG.Application.UseCases.Users.Commands
                                                              authenticationConfig.ServerApiKey, authenticationConfig.ServerApiSecret,
             authenticationConfig.ServerScope, authenticationConfig.IdpGetProfileUrl);
 
-            var strModel =  await _httpClientFactoryService.Execute(getIdpUserProfile);
+            var strModel = await _httpClientFactoryService.Execute(getIdpUserProfile);
             var idpUserProfile = JsonConvert.DeserializeObject<IdpUserProfile>(strModel);
-            
+
             //var spec = new UserByIDPIdSpec(idpUserProfile.Result.Id);
             //var existingUser = await _repository.GetBySpecAsync(spec, cancellationToken);
             // var existingUser = await _repository.GetByIdAsync<long>(1, cancellationToken);//TODO:
@@ -48,7 +48,7 @@ namespace CPG.Application.UseCases.Users.Commands
             var name = new Name(idpUserProfile.Result.PrivatePerson.FirstName, idpUserProfile.Result.PrivatePerson.LastName);
             var phoneNumber = new PhoneNumber(idpUserProfile.Result.Mobile.ToString());
             var nationalCode = new NationalCode(idpUserProfile.Result.UniqueIdentifier);
-           
+
             //if (existingUser is null)
             //{
             //    var user = User.Create(idpUserProfile.Result.Id, nationalCode, name, phoneNumber,(short)Enums.UserRoleType.Customer);
@@ -64,7 +64,7 @@ namespace CPG.Application.UseCases.Users.Commands
 
             try
             {
-            //    await _repository.SaveChangesAsync(cancellationToken); TODO:
+                //    await _repository.SaveChangesAsync(cancellationToken); TODO:
             }
             catch (System.Exception eX)
             {

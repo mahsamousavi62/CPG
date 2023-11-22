@@ -5,10 +5,17 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Minio\MinioProvider.cs" />
 	  <Compile Remove="RabbitMQ\Envelope\Envelope.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Include="Minio\MinioProvider.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Minio" Version="5.0.0" />
+		<PackageReference Include="Minio.AspNetCore" Version="5.0.0" />
 		<PackageReference Include="Charisma.MessagingContracts" Version="1.0.0.6184" />
 		<PackageReference Include="Confluent.Kafka" Version="2.2.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
@@ -24,6 +31,10 @@
 		<ProjectReference Include="..\CPG.Domain\CPG.Domain.csproj" />
 		<ProjectReference Include="..\CPG.Infrastructure.Authorization\CPG.Infrastructure.Authorization.csproj" />
 		<ProjectReference Include="..\CPG.Infrastructure.Persistence\CPG.Infrastructure.Persistence.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="File\" />
 	</ItemGroup>
 
 </Project>

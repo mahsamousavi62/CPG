@@ -16,6 +16,6 @@ namespace CPG.Domain.SeedWork
 
         public long? ModificationUserId { get; set; }
 
-        public bool IsDeleted { get; set; }
+        public bool IsActive { get; set; }
     }
 }

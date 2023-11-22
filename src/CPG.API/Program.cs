@@ -43,8 +43,8 @@ builder.Services.AddHealthChecks();
 
 var configuration = builder.Configuration;
 builder.Services
-    .AddApplication(configuration)
-    .AddInfrastructure(configuration);
+    .AddInfrastructure(configuration)
+    .AddApplication(configuration);
 
 builder.Host.UseSerilog((context, configuation) =>
     configuation.ReadFrom.Configuration(context.Configuration));

@@ -21,6 +21,8 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Net.Http;
 using System.Reflection;
+using Minio;
+using Minio.AspNetCore;
 
 namespace CPG.Infrastructure
 {
@@ -34,7 +36,22 @@ namespace CPG.Infrastructure
                 .AddTransient<ICurrentDateTime, CurrentDateTime>()
                 .AddMasstransitInfrastructure(configuration)
                 .AddHttpClient()
+                .AddMinio(configuration)
                 .AddTransient<IHttpClientFactoryService, HttpClientFactoryService>();
+
+        public static IServiceCollection AddMinio(this IServiceCollection services, IConfiguration configuration)
+        {
+            _ = bool.TryParse(configuration["Minio:WithSSL"], out bool withSSL);
+
+            _ = services.AddMinio(options =>
+            {
+                options.Endpoint = configuration["Minio:EndPoint"]!;
+                options.AccessKey = configuration["Minio:AccessKey"]!;
+                options.SecretKey = configuration["Minio:SecretKey"]!;
+                options.ConfigureClient(client => _ = client.WithSSL(withSSL));
+            });
+            return services;
+        }
 
         public static IServiceCollection AddMasstransitInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {

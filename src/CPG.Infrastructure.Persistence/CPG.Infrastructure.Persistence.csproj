@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="QueryHandlers\Company\GetComapnyQueryHandler.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Ardalis.Specification" Version="7.0.0" />
     <PackageReference Include="Ardalis.Specification.EntityFrameworkCore" Version="7.0.0" />
     <PackageReference Include="HotChocolate.Abstractions" Version="13.5.1" />

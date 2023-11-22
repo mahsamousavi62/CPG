@@ -22,26 +22,26 @@ namespace CPG.Infrastructure.Authorization
             {
                 var serviceProvider = services.BuildServiceProvider();
 
-                var mediator = serviceProvider.GetRequiredService<IMediator>();
-                var authenticationConfig = ( mediator.Send(new GetAuthenticationAppSettingQuery())).GetAwaiter().GetResult();
+                //var mediator = serviceProvider.GetRequiredService<IMediator>();
+                //var authenticationConfig = ( mediator.Send(new GetAuthenticationAppSettingQuery())).GetAwaiter().GetResult();
 
-                services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                  .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, configureOption =>
-                  {
+                //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                //  .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, configureOption =>
+                //  {
 
-                      configureOption.Authority = authenticationConfig.Authority;
-                      configureOption.Audience = authenticationConfig.ClientApiKey;
+                //      configureOption.Authority = authenticationConfig.Authority;
+                //      configureOption.Audience = authenticationConfig.ClientApiKey;
 
-                      configureOption.TokenValidationParameters = new TokenValidationParameters
-                      {
-                          ValidIssuer = authenticationConfig.Authority,
-                          ValidAudience = authenticationConfig.ClientApiKey,
-                          ValidateIssuer = authenticationConfig.ValidateIssuer,
-                          ValidateAudience = authenticationConfig.ValidateAudience,
-                          ValidateLifetime = authenticationConfig.ValidateLifetime,
-                          ClockSkew = TimeSpan.FromSeconds(Convert.ToInt32(authenticationConfig.ClockSkew)),
-                      };
-                  });
+                //      configureOption.TokenValidationParameters = new TokenValidationParameters
+                //      {
+                //          ValidIssuer = authenticationConfig.Authority,
+                //          ValidAudience = authenticationConfig.ClientApiKey,
+                //          ValidateIssuer = authenticationConfig.ValidateIssuer,
+                //          ValidateAudience = authenticationConfig.ValidateAudience,
+                //          ValidateLifetime = authenticationConfig.ValidateLifetime,
+                //          ClockSkew = TimeSpan.FromSeconds(Convert.ToInt32(authenticationConfig.ClockSkew)),
+                //      };
+                //  });
 
                 services.AddAuthorization();
                 services.AddHttpContextAccessor();
