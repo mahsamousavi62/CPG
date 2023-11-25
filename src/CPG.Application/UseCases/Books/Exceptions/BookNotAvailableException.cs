@@ -1,16 +1,9 @@
 ﻿using CPG.Application.UseCases.Exceptions;
 
-namespace CPG.Application.UseCases.Books.Exceptions
-{
-    public class BookNotAvailableException : ApplicationException
-    {
-        public long BookId { get; }
-        public override string Code => "book_is_already_borrowed";
-        
+namespace CPG.Application.UseCases.Books.Exceptions;
 
-        public BookNotAvailableException(long bookId) : base($"Book is already borrowed.")
-        {
-            BookId = bookId;
-        }
-    }
+public class BookNotAvailableException(long bookId) : ApplicationException($"Book is already borrowed.")
+{
+    public long BookId { get; } = bookId;
+    public override string Code => "book_is_already_borrowed";
 }

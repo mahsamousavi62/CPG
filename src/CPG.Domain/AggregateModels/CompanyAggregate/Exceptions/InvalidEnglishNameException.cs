@@ -1,18 +1,8 @@
 ﻿using CPG.Domain.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace CPG.Domain.AggregateModels.CompanyAggregate.Exceptions
+namespace CPG.Domain.AggregateModels.CompanyAggregate.Exceptions;
+
+public class InvalidEnglishNameException(string message) : DomainException(message)
 {
-    public class InvalidEnglishNameException : DomainException
-    {
-        public override string Code => "invalid_EnglishName";
-
-        public InvalidEnglishNameException(string message) : base(message)
-        {
-        }
-    }
+    public override string Code => "invalid_EnglishName";
 }

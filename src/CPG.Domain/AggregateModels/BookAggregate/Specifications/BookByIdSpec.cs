@@ -1,14 +1,13 @@
 ﻿using Ardalis.Specification;
 
-namespace CPG.Domain.AggregateModels.BookAggregate.Specifications
+namespace CPG.Domain.AggregateModels.BookAggregate.Specifications;
+
+public sealed class BookByIdSpec : Specification<Book>, ISingleResultSpecification<Book>
 {
-    public sealed class BookByIdSpec : Specification<Book>, ISingleResultSpecification<Book>
+    public BookByIdSpec(long bookId)
     {
-        public BookByIdSpec(long bookId)
-        {
-            Query
-                .Include("_loans")
-                .Where(book => book.Id == bookId);
-        }
+        Query
+            .Include("_loans")
+            .Where(book => book.Id == bookId);
     }
 }

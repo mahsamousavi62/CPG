@@ -6,25 +6,19 @@ using CPG.Domain.AggregateModels.CPGUserAggregate.Events;
 using CPG.Domain.SharedKernel;
 using MediatR;
 
-namespace CPG.Application.UseCases.Books.EventHandlers
+namespace CPG.Application.UseCases.Books.EventHandlers;
+
+public class CPGUserReturnedBookEventHandler(IAggregateRepository<Book> bookRepository) : INotificationHandler<CPGUserReturnedBookEvent>
 {
-    public class CPGUserReturnedBookEventHandler : INotificationHandler<CPGUserReturnedBookEvent>
+    private readonly IAggregateRepository<Book> _bookRepository = bookRepository;
+
+    public async Task Handle(CPGUserReturnedBookEvent @event, CancellationToken cancellationToken)
     {
-        private readonly IAggregateRepository<Book> _bookRepository;
+        var book = await _bookRepository.GetByIdAsync(@event.BookId, cancellationToken)
+                ?? throw new BookNotFoundException(@event.BookId);
 
-        public CPGUserReturnedBookEventHandler(IAggregateRepository<Book> bookRepository)
-        {
-            _bookRepository = bookRepository;
-        }
-        
-        public async Task Handle(CPGUserReturnedBookEvent @event, CancellationToken cancellationToken)
-        {
-            var book = await _bookRepository.GetByIdAsync(@event.BookId, cancellationToken)
-                    ?? throw new BookNotFoundException(@event.BookId);
+        book.SetAsAvailable(@event.CPGUserId);
 
-            book.SetAsAvailable(@event.CPGUserId);
-
-            await _bookRepository.SaveChangesAsync(cancellationToken);
-        }
+        await _bookRepository.SaveChangesAsync(cancellationToken);
     }
 }

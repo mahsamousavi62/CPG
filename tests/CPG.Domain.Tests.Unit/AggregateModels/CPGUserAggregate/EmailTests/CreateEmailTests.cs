@@ -3,40 +3,39 @@ using CPG.Domain.AggregateModels.CPGUserAggregate;
 using CPG.Domain.AggregateModels.CPGUserAggregate.Exceptions;
 using Xunit;
 
-namespace CPG.Domain.Tests.Unit.AggregateModels.CPGUserAggregate.EmailTests
+namespace CPG.Domain.Tests.Unit.AggregateModels.CPGUserAggregate.EmailTests;
+
+public class CreateEmailTests
 {
-    public class CreateEmailTests
+    private static Email Act(string email) => new(email);
+
+    [Theory]
+    [InlineData(" ")]
+    [InlineData("")]
+    [InlineData(null)]
+    public void given_empty_email_should_throws_an_exception(string email)
     {
-        private static Email Act(string email) => new(email);
+        // Act
+        var result = Record.Exception(() => Act(email));
 
-        [Theory]
-        [InlineData(" ")]
-        [InlineData("")]
-        [InlineData(null)]
-        public void given_empty_email_should_throws_an_exception(string email)
-        {
-            // Act
-            var result = Record.Exception(() => Act(email));
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType<InvalidEmailException>();
+    }
 
-            // Assert
-            result.Should().NotBeNull();
-            result.Should().BeOfType<InvalidEmailException>();
-        }
+    [Theory]
+    [InlineData("Email")]
+    [InlineData("Email@")]
+    [InlineData("@Email")]
+    [InlineData("@Email@com")]
+    [InlineData("Email@com@com")]
+    public void given_invalid_email_format_should_throws_an_exception(string email)
+    {
+        // Act
+        var result = Record.Exception(() => Act(email));
 
-        [Theory]
-        [InlineData("Email")]
-        [InlineData("Email@")]
-        [InlineData("@Email")]
-        [InlineData("@Email@com")]
-        [InlineData("Email@com@com")]
-        public void given_invalid_email_format_should_throws_an_exception(string email)
-        {
-            // Act
-            var result = Record.Exception(() => Act(email));
-
-            // Assert
-            result.Should().NotBeNull();
-            result.Should().BeOfType<InvalidEmailException>();
-        }
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType<InvalidEmailException>();
     }
 }

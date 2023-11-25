@@ -8,8 +8,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
+
+namespace CPG.Domain.AggregateModels.CompanyAggregate;
 
 namespace CPG.Domain.AggregateModels.CompanyAggregate
 {
@@ -38,4 +38,5 @@ namespace CPG.Domain.AggregateModels.CompanyAggregate
 
         }
     }
+}
 }

@@ -1,9 +1,6 @@
-﻿namespace CPG.Application.UseCases.Auth.Commands.Login
-{
-    public class LoginCommandResponse
-    {
-        public string Token { get; }
+﻿namespace CPG.Application.UseCases.Auth.Commands.Login;
 
-        public LoginCommandResponse(string token) => Token = token;
-    }
+public class LoginCommandResponse(string token)
+{
+    public string Token { get; } = token;
 }

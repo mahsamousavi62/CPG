@@ -3,22 +3,20 @@ using CPG.Domain.SeedWork;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace CPG.Domain.AggregateModels.CompanyAggregate
+namespace CPG.Domain.AggregateModels.CompanyAggregate;
+
+public class CompanyPaymentMethods : AuditableEntity<long>
 {
-    public class CompanyPaymentMethods : AuditableEntity<long>
+    public CompanyPaymentMethods()
     {
-        public CompanyPaymentMethods()
-        {
-            
-        }
-        public CompanyPaymentMethods(short methodType, long companyId)
-        {
-            MethodType = methodType;
-            CompanyId = companyId;
-        }
+        
+    }
+    public CompanyPaymentMethods(short methodType, long companyId)
+    {
+        MethodType = methodType;
+        CompanyId = companyId;
+    }
 
         public CompanyPaymentMethods(short methodType)
         {

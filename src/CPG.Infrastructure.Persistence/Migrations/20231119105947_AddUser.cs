@@ -2,55 +2,54 @@
 
 #nullable disable
 
-namespace CPG.Infrastructure.Persistence.Migrations
+namespace CPG.Infrastructure.Persistence.Migrations;
+
+/// <inheritdoc />
+public partial class AddUser : Migration
 {
     /// <inheritdoc />
-    public partial class AddUser : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.AlterColumn<string>(
-                name: "PhoneNumber",
-                table: "User",
-                type: "char(11)",
-                nullable: false,
-                defaultValue: "",
-                oldClrType: typeof(string),
-                oldType: "nvarchar(11)",
-                oldMaxLength: 11,
-                oldNullable: true);
+        migrationBuilder.AlterColumn<string>(
+            name: "PhoneNumber",
+            table: "User",
+            type: "char(11)",
+            nullable: false,
+            defaultValue: "",
+            oldClrType: typeof(string),
+            oldType: "nvarchar(11)",
+            oldMaxLength: 11,
+            oldNullable: true);
 
-            migrationBuilder.AlterColumn<string>(
-                name: "NationalCode",
-                table: "User",
-                type: "char(10)",
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(10)",
-                oldMaxLength: 10);
-        }
+        migrationBuilder.AlterColumn<string>(
+            name: "NationalCode",
+            table: "User",
+            type: "char(10)",
+            nullable: false,
+            oldClrType: typeof(string),
+            oldType: "nvarchar(10)",
+            oldMaxLength: 10);
+    }
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.AlterColumn<string>(
-                name: "PhoneNumber",
-                table: "User",
-                type: "nvarchar(11)",
-                maxLength: 11,
-                nullable: true,
-                oldClrType: typeof(string),
-                oldType: "char(11)");
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.AlterColumn<string>(
+            name: "PhoneNumber",
+            table: "User",
+            type: "nvarchar(11)",
+            maxLength: 11,
+            nullable: true,
+            oldClrType: typeof(string),
+            oldType: "char(11)");
 
-            migrationBuilder.AlterColumn<string>(
-                name: "NationalCode",
-                table: "User",
-                type: "nvarchar(10)",
-                maxLength: 10,
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "char(10)");
-        }
+        migrationBuilder.AlterColumn<string>(
+            name: "NationalCode",
+            table: "User",
+            type: "nvarchar(10)",
+            maxLength: 10,
+            nullable: false,
+            oldClrType: typeof(string),
+            oldType: "char(10)");
     }
 }

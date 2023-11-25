@@ -3,53 +3,52 @@ using CPG.Domain.SharedKernel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations
+namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations;
+
+public class BookConfiguration : IEntityTypeConfiguration<Book>
 {
-    public class BookConfiguration : IEntityTypeConfiguration<Book>
+    public void Configure(EntityTypeBuilder<Book> entity)
     {
-        public void Configure(EntityTypeBuilder<Book> entity)
+        entity.ToTable("Book");
+        entity.HasKey(x => x.Id);
+
+        entity.Ignore(x => x.DomainEvents);
+        entity.Ignore(x => x.InStock);
+
+        entity.Property(x => x.Id)
+            .HasColumnName("BookId")
+            // .HasConversion(id => id.Value, id => new BookId(id)) // In case of custom Identity class representation
+            .UseIdentityColumn();
+
+        entity.Property(x => x.InStock)
+            .HasColumnName("InStock")
+            .IsRequired();
+
+        entity.OwnsOne(x => x.BookInformation, x =>
         {
-            entity.ToTable("Book");
-            entity.HasKey(x => x.Id);
-
-            entity.Ignore(x => x.DomainEvents);
-            entity.Ignore(x => x.InStock);
-
-            entity.Property(x => x.Id)
-                .HasColumnName("BookId")
-                // .HasConversion(id => id.Value, id => new BookId(id)) // In case of custom Identity class representation
-                .UseIdentityColumn();
-
-            entity.Property(x => x.InStock)
-                .HasColumnName("InStock")
+            x.Property(b => b.Title)
+                .HasColumnName("Title")
                 .IsRequired();
 
-            entity.OwnsOne(x => x.BookInformation, x =>
+            x.Property(b => b.Author)
+                .HasColumnName("Author")
+                .IsRequired();
+            x.Property(b => b.Subject)
+                .HasColumnName("Subject")
+                .IsRequired();
+
+            x.OwnsOne(b => b.Isbn, b =>
             {
-                x.Property(b => b.Title)
-                    .HasColumnName("Title")
+                b.Property(i => i.Value)
+                    .HasColumnName("Isbn")
                     .IsRequired();
-
-                x.Property(b => b.Author)
-                    .HasColumnName("Author")
-                    .IsRequired();
-                x.Property(b => b.Subject)
-                    .HasColumnName("Subject")
-                    .IsRequired();
-
-                x.OwnsOne(b => b.Isbn, b =>
-                {
-                    b.Property(i => i.Value)
-                        .HasColumnName("Isbn")
-                        .IsRequired();
-                });
             });
-            
-            entity.HasMany<Loan>("_loans")
-                .WithOne()
-                .IsRequired(false)
-                .HasForeignKey("_bookId")
-                .Metadata.PrincipalToDependent.SetPropertyAccessMode(PropertyAccessMode.Field);
-        }
+        });
+        
+        entity.HasMany<Loan>("_loans")
+            .WithOne()
+            .IsRequired(false)
+            .HasForeignKey("_bookId")
+            .Metadata.PrincipalToDependent.SetPropertyAccessMode(PropertyAccessMode.Field);
     }
 }

@@ -1,13 +1,12 @@
 ﻿using Ardalis.Specification;
 
-namespace CPG.Domain.AggregateModels.BookAggregate.Specifications
+namespace CPG.Domain.AggregateModels.BookAggregate.Specifications;
+
+public sealed class AvailableBooksSpec : Specification<Book>
 {
-    public sealed class AvailableBooksSpec : Specification<Book>
+    public AvailableBooksSpec()
     {
-        public AvailableBooksSpec()
-        {
-            Query
-                .Where(book => book.InStock);
-        }
+        Query
+            .Where(book => book.InStock);
     }
 }

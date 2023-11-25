@@ -1,20 +1,19 @@
 ﻿using Ardalis.GuardClauses;
 
-namespace CPG.Domain.SharedKernel
-{
-    public record LoanId
-    {
-        public long Value { get; }
+namespace CPG.Domain.SharedKernel;
 
-        public LoanId(long value)
-        {
-            Value = Guard.Against.NegativeOrZero(value, nameof(LoanId));
-        }
-        
-        public static implicit operator long(LoanId id)
-            => id.Value;
-        
-        public static implicit operator LoanId(long id)
-            => new(id);
+public record LoanId
+{
+    public long Value { get; }
+
+    public LoanId(long value)
+    {
+        Value = Guard.Against.NegativeOrZero(value, nameof(LoanId));
     }
+    
+    public static implicit operator long(LoanId id)
+        => id.Value;
+    
+    public static implicit operator LoanId(long id)
+        => new(id);
 }

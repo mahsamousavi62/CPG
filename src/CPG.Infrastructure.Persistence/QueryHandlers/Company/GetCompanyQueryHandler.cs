@@ -4,23 +4,15 @@ using CPG.Application.UseCases.Companies.ViewModels;
 using CPG.Domain.SharedKernel;
 using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CPG.Application.UseCases.Companies.Queries
-{
-    public class GetCompanyQueryHandler : IRequestHandler<GetCompanyQuery, CompanyViewModel>
-    {
-        private readonly ReadDbContext _context;
+namespace CPG.Application.UseCases.Companies.Queries;
 
-        public GetCompanyQueryHandler(ReadDbContext context)
-        {
-            _context = context;
-        }
+public class GetCompanyQueryHandler(ReadDbContext context) : IRequestHandler<GetCompanyQuery, CompanyViewModel>
+{
+    private readonly ReadDbContext _context = context;
 
         public async Task<CompanyViewModel> Handle(GetCompanyQuery request, CancellationToken cancellationToken)
         {
@@ -43,7 +35,6 @@ namespace CPG.Application.UseCases.Companies.Queries
                                         p => ((Enums.CompanyPaymentMethodType)p.MethodType).ToString())
             };
 
-            return company;
-        }
+        return companyModel;
     }
 }

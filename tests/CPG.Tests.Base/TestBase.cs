@@ -8,8 +8,8 @@ using CPG.Domain.SharedKernel;
 using MediatR;
 using NSubstitute;
 
-namespace CPG.Tests.Base
-{
+namespace CPG.Tests.Base;
+
 	public abstract class TestBase
 	{
 		// Shared
@@ -128,4 +128,3 @@ namespace CPG.Tests.Base
 		protected static IEnumerable<object[]> GetEnumValues<T>() where T : Enum =>
 			TestExtensions.GetEnumValues<T>();
 	}
-}

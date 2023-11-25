@@ -1,19 +1,13 @@
-﻿using Charisma.MessagingContracts.UsersManagement.User;
-using MassTransit;
+﻿using MassTransit;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace CPG.Infrastructure.Masstransit.Consumer;
 
-internal sealed class FaultConsumer : IConsumer<Fault>
+internal sealed class FaultConsumer(ILogger<FaultConsumer> logger) : IConsumer<Fault>
 {
-    private readonly ILogger<FaultConsumer> _logger;
-
-    public FaultConsumer(ILogger<FaultConsumer> logger)
-    {
-        _logger = logger;
-    }
+    private readonly ILogger<FaultConsumer> _logger = logger;
 
     public Task Consume(ConsumeContext<Fault> context)
     {
