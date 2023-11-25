@@ -1,10 +1,11 @@
 ﻿using System.Threading.Tasks;
 
-namespace CPG.Infrastructure.RabbitMQ;
-
-public interface IRabbitMqService
+namespace CPG.Infrastructure.RabbitMQ
 {
-    void PublishMessage(string exchange, string routingKey, string message);
+    public interface IRabbitMqService
+    {
+        void PublishMessage(string exchange, string routingKey, string message);
 
-    Task<string> ConsumeMessage(string queue);
+        Task<string> ConsumeMessage(string queue);
+    }
 }

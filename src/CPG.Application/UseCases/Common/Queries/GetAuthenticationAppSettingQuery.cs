@@ -2,9 +2,10 @@
 using CPG.Infrastructure.Authorization;
 using MediatR;
 
-namespace CPG.Application.UseCases.Common.Queries;
-
-public class GetAuthenticationAppSettingQuery:IRequest<AuthenticationConfigViewModel>
+namespace CPG.Application.UseCases.Common.Queries
 {
-    public Enums.ApplicationSettingEntityType EntityType { get; } = Enums.ApplicationSettingEntityType.IDPCredential;
+    public class GetAuthenticationAppSettingQuery:IRequest<AuthenticationConfigViewModel>
+    {
+        public Enums.ApplicationSettingEntityType EntityType { get; } = Enums.ApplicationSettingEntityType.IDPCredential;
+    }
 }

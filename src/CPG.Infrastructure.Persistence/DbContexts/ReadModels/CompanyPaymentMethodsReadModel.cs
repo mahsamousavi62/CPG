@@ -1,6 +1,4 @@
-﻿using CPG.Domain.SharedKernel;
-
-namespace CPG.Infrastructure.Persistence.DbContexts.ReadModels;
+﻿namespace CPG.Infrastructure.Persistence.DbContexts.ReadModels;
 
 public class CompanyPaymentMethodsReadModel
 {

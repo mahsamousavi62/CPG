@@ -1,14 +1,15 @@
 ﻿using Ardalis.Specification;
 using System.Linq;
 
-namespace CPG.Domain.AggregateModels.BankAggregate.Specifications;
-
-public sealed class BanksSpec : Specification<Bank>
+namespace CPG.Domain.AggregateModels.BankAggregate.Specifications
 {
-    public BanksSpec()
+    public sealed class BanksSpec : Specification<Bank>
     {
-        Query
-            .Where(bank => bank.IsActive)
-            .OrderByDescending(bank => bank.Id);
+        public BanksSpec()
+        {
+            Query
+                .Where(bank => bank.IsActive)
+                .OrderByDescending(bank => bank.Id);
+        }
     }
 }

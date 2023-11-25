@@ -7,25 +7,33 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CPG.Application.UseCases.Banks.Commands.DeleteBank;
-
-public class DeleteBankCommandHandler(
-    IAggregateRepository<CPGUser> CPGUserRepository,
-    IAggregateRepository<Bank> bankRepository,
-    ICurrentUser currentUser) : IRequestHandler<DeleteBankCommand>
+namespace CPG.Application.UseCases.Banks.Commands.DeleteBank
 {
-    private readonly IAggregateRepository<CPGUser> _CPGUserRepository = CPGUserRepository;
-    private readonly IAggregateRepository<Bank> _bankRepository = bankRepository;
-    private readonly ICurrentUser _currentUser = currentUser;
-
-    public async Task Handle(DeleteBankCommand command, CancellationToken cancellationToken)
+    public class DeleteBankCommandHandler : IRequestHandler<DeleteBankCommand>
     {
-        var cpgUser = await _CPGUserRepository.GetByIdAsync(_currentUser.UserId, cancellationToken)
-            ?? throw new CPGUserNotFoundException(_currentUser.UserId);
+        private readonly IAggregateRepository<CPGUser> _CPGUserRepository;
+        private readonly IAggregateRepository<Bank> _bankRepository;
+        private readonly ICurrentUser _currentUser;
 
-        var bank = await _bankRepository.GetByIdAsync(command.bankId, cancellationToken)
-            ?? throw new BankNotFoundException(command.bankId);
+        public DeleteBankCommandHandler(
+            IAggregateRepository<CPGUser> CPGUserRepository,
+            IAggregateRepository<Bank> bankRepository,
+            ICurrentUser currentUser)
+        {
+            _CPGUserRepository = CPGUserRepository;
+            _bankRepository = bankRepository;
+            _currentUser = currentUser;
+        }
 
-        await _bankRepository.DeleteAsync(bank, cancellationToken);
+        public async Task Handle(DeleteBankCommand request, CancellationToken cancellationToken)
+        {
+            _ = await _CPGUserRepository.GetByIdAsync(_currentUser.UserId, cancellationToken)
+                ?? throw new CPGUserNotFoundException(_currentUser.UserId);
+
+            var bank = await _bankRepository.GetByIdAsync(request.bankId, cancellationToken)
+                ?? throw new BankNotFoundException(request.bankId);
+
+            await _bankRepository.DeleteAsync(bank, cancellationToken);
+        }
     }
 }

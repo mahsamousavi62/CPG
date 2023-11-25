@@ -1,5 +1,4 @@
-﻿using CPG.Domain.AggregateModels.CompanyAggregate;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace CPG.Application.UseCases.Companies.ViewModels;
 

@@ -26,6 +26,7 @@ public class BooksController : ApiBaseController
     public async Task<ActionResult<BookViewModel>> GetBookByIsbn(string isbn)
         => Ok(await Mediator.Send(new GetBookByIsbnQuery(isbn)));
 
+    [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> AddBook(AddBookCommand command)
     {

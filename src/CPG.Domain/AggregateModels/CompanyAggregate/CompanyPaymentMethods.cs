@@ -1,5 +1,4 @@
-﻿using CPG.Domain.AggregateModels.CompanyAggregate.Exceptions;
-using CPG.Domain.SeedWork;
+﻿using CPG.Domain.SeedWork;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,6 +1,4 @@
-﻿using CPG.Domain.AggregateModels.CompanyAggregate;
-using CPG.Domain.SeedWork;
-using CPG.Infrastructure.Persistence.DbContexts.ReadModels;
+﻿using CPG.Infrastructure.Persistence.DbContexts.ReadModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

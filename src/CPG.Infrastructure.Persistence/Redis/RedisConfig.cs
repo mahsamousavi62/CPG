@@ -1,11 +1,12 @@
-﻿namespace CPG.Infrastructure.Persistence.Redis;
-
-public class RedisConfig
+﻿namespace CPG.Infrastructure.Persistence.Redis
 {
-    public string Server { get; set; }
+    public class RedisConfig
+    {
+        public string Server { get; set; }
+    
+        public string Port { get; set; }
 
-    public string Port { get; set; }
+        public string Password { get; set; }
 
-    public string Password { get; set; }
-
+    }
 }

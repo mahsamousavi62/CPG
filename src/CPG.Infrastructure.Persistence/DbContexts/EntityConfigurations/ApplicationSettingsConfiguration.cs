@@ -3,33 +3,34 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations;
-
-public class ApplicationSettingsConfiguration : IEntityTypeConfiguration<ApplicationSettings>
+namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations
 {
-    public void Configure(EntityTypeBuilder<ApplicationSettings> entity)
+    public class ApplicationSettingsConfiguration : IEntityTypeConfiguration<ApplicationSettings>
     {
-        entity.ToTable("Application_Settings");
-        entity.HasKey(x => x.Id);
+        public void Configure(EntityTypeBuilder<ApplicationSettings> entity)
+        {
+            entity.ToTable("Application_Settings");
+            entity.HasKey(x => x.Id);
 
-        entity
-           .Property(e => e.Id)
-           .HasColumnName("Id")
-           .UseIdentityColumn();
+            entity
+               .Property(e => e.Id)
+               .HasColumnName("Id")
+               .UseIdentityColumn();
 
-        entity
-           .Property(e => e.EntityType)
-           .HasColumnName("Entity_Type")
-           .IsRequired();
-
-        entity
-               .Property(e => e.Key)
-               .HasColumnName("Key")
+            entity
+               .Property(e => e.EntityType)
+               .HasColumnName("Entity_Type")
                .IsRequired();
 
-        entity
-            .Property(e => e.Value)
-            .HasColumnName("Value")
-            .IsRequired();
+            entity
+                   .Property(e => e.Key)
+                   .HasColumnName("Key")
+                   .IsRequired();
+
+            entity
+                .Property(e => e.Value)
+                .HasColumnName("Value")
+                .IsRequired();
+        }
     }
 }

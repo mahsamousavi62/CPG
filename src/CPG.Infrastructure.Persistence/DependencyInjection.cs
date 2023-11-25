@@ -16,100 +16,101 @@ using Microsoft.Extensions.Logging;
 using CPG.Application.UseCases.Common.Queries;
 using CPG.Infrastructure.Persistence.Redis;
 
-namespace CPG.Infrastructure.Persistence;
-
-public static class DependencyInjection
+namespace CPG.Infrastructure.Persistence
 {
-    private const string ConnectionStringConfigName = "CPGConnectionString";
-
-    public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
+    public static class DependencyInjection
     {
-        services
-            .AddDbContext<WriteDbContext>(options =>
-            {
-                options.EnableDetailedErrors();
-                options.UseSqlServer(configuration.GetConnectionString(ConnectionStringConfigName));
-            })
-            .AddDbContext<ReadDbContext>(options =>
-            {
-                options.EnableDetailedErrors();
-                options.UseSqlServer(configuration.GetConnectionString(ConnectionStringConfigName));
-            })
-            .AddScoped(typeof(IAggregateRepository<>), typeof(AggregateRepository<>))
-            .AddScoped(typeof(IAggregateReadRepository<>), typeof(AggregateRepository<>))
-            .AddScoped(typeof(ICommonServiceRepository<>), typeof(CommonServiceRepository<>))
-            .AddScoped<IRedisCaheService, RedisCacheService>();
+        private const string ConnectionStringConfigName = "CPGConnectionString";
 
-
-
-        _ = bool.TryParse(configuration["Redis:Enable"], out var enableRedis);
-
-        if (enableRedis)
+        public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
         {
-            var redisConfig = configuration.GetSection("Redis").Get<RedisConfig>();
-            services.AddStackExchangeRedisCache(options => options.ConfigurationOptions = new StackExchange.Redis.ConfigurationOptions
-            {
-                EndPoints = { $"{redisConfig.Server}:{redisConfig.Port}" },
-                Password = redisConfig.Password,
-            }
-                                               );
-        }
-        services.AddDistributedMemoryCache();
-        return services;
-    }
-
-    public static IServiceCollection AddGraphQLQueries(this IServiceCollection services)
-    {
-        services
-            .AddGraphQLServer()
-            .AddAuthorization()
-            .AddQueryType<BookReadModelQueries>()
-             .AddQueryType<GetApplicationSettingsQuery>()
-            .AddProjections()
-            .AddFiltering()
-            .AddSorting()
-            .AddType<BookReadModelType>();
-
-        services.AddErrorFilter<GraphQLErrorFilter>();
-
-        return services;
-    }
-
-    public static IApplicationBuilder UseGraphQLQueries(
-        this IApplicationBuilder app,
-        IConfiguration graphQlConfiguration,
-        IWebHostEnvironment env)
-    {
-        var graphQLEndpoint = graphQlConfiguration.GetSection("EndpointUrl").Value;
-
-        return app.UseEndpoints(x => x.MapGraphQL(graphQLEndpoint)
-            .WithOptions(new GraphQLServerOptions
-            {
-                Tool =
+            services
+                .AddDbContext<WriteDbContext>(options =>
                 {
-                    Enable = env.IsDevelopment()
-                }
-            }));
-    }
+                    options.EnableDetailedErrors();
+                    options.UseSqlServer(configuration.GetConnectionString(ConnectionStringConfigName));
+                })
+                .AddDbContext<ReadDbContext>(options =>
+                {
+                    options.EnableDetailedErrors();
+                    options.UseSqlServer(configuration.GetConnectionString(ConnectionStringConfigName));
+                })
+                .AddScoped(typeof(IAggregateRepository<>), typeof(AggregateRepository<>))
+                .AddScoped(typeof(IAggregateReadRepository<>), typeof(AggregateRepository<>))
+                .AddScoped(typeof(ICommonServiceRepository<>), typeof(CommonServiceRepository<>))
+                .AddScoped<IRedisCaheService, RedisCacheService>();
 
-    public static IHost MigrateDatabase(this IHost webHost)
-    {
-        using (var scope = webHost.Services.CreateScope())
-        {
-            var services = scope.ServiceProvider;
-            try
+
+
+            _ = bool.TryParse(configuration["Redis:Enable"], out var enableRedis);
+
+            if (enableRedis)
             {
-                var db = services.GetRequiredService<WriteDbContext>();
-                db.Database.Migrate();
+                var redisConfig = configuration.GetSection("Redis").Get<RedisConfig>();
+                services.AddStackExchangeRedisCache(options => options.ConfigurationOptions = new StackExchange.Redis.ConfigurationOptions
+                {
+                    EndPoints = { $"{redisConfig.Server}:{redisConfig.Port}" },
+                    Password = redisConfig.Password,
+                }
+                                                   );
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                var logger = services.GetRequiredService<ILogger<WriteDbContext>>();
-                logger.LogError(ex, "An error occurred while migrating the database.");
-            }
+            services.AddDistributedMemoryCache();
+            return services;
         }
 
-        return webHost;
+        public static IServiceCollection AddGraphQLQueries(this IServiceCollection services)
+        {
+            services
+                .AddGraphQLServer()
+                .AddAuthorization()
+                .AddQueryType<BookReadModelQueries>()
+                 .AddQueryType<GetApplicationSettingsQuery>()
+                .AddProjections()
+                .AddFiltering()
+                .AddSorting()
+                .AddType<BookReadModelType>();
+
+            services.AddErrorFilter<GraphQLErrorFilter>();
+
+            return services;
+        }
+
+        public static IApplicationBuilder UseGraphQLQueries(
+            this IApplicationBuilder app,
+            IConfiguration graphQlConfiguration,
+            IWebHostEnvironment env)
+        {
+            var graphQLEndpoint = graphQlConfiguration.GetSection("EndpointUrl").Value;
+
+            return app.UseEndpoints(x => x.MapGraphQL(graphQLEndpoint)
+                .WithOptions(new GraphQLServerOptions
+                {
+                    Tool =
+                    {
+                        Enable = env.IsDevelopment()
+                    }
+                }));
+        }
+
+        public static IHost MigrateDatabase(this IHost webHost)
+        {
+            using (var scope = webHost.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                try
+                {
+                    var db = services.GetRequiredService<WriteDbContext>();
+                    db.Database.Migrate();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    var logger = services.GetRequiredService<ILogger<WriteDbContext>>();
+                    logger.LogError(ex, "An error occurred while migrating the database.");
+                }
+            }
+
+            return webHost;
+        }
     }
 }

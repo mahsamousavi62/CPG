@@ -1,21 +1,22 @@
 ﻿using CPG.Domain.AggregateModels.CompanyAggregate.Exceptions;
 using System.Text.RegularExpressions;
 
-namespace CPG.Domain.AggregateModels.CompanyAggregate;
-
-public class EnglishName
+namespace CPG.Domain.AggregateModels.CompanyAggregate
 {
-    public string Value { get; init; }
-
-    public EnglishName(string englishName)
+    public class EnglishName
     {
-        if (string.IsNullOrWhiteSpace(englishName))
-            throw new EmptyEnglishNameException($"Parameter {nameof(englishName)} cannot be empty.");
+        public string Value { get; init; }
 
-        if (!Regex.IsMatch(englishName,"[A-Za-z\\s]+"))
+        public EnglishName(string englishName)
+        {
+            if (string.IsNullOrWhiteSpace(englishName))
+                throw new EmptyEnglishNameException($"Parameter {nameof(englishName)} cannot be empty.");
 
-            throw new InvalidEnglishNameException($"Parameter {nameof(englishName)} is invalid.");
-       
-        Value = englishName;
+            if (!Regex.IsMatch(englishName,"[A-Za-z\\s]+"))
+
+                throw new InvalidEnglishNameException($"Parameter {nameof(englishName)} is invalid.");
+           
+            Value = englishName;
+        }
     }
 }

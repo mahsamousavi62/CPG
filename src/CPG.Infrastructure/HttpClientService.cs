@@ -5,55 +5,56 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace CPG.Infrastructure;
-
-public class HttpClientFactoryService : IHttpClientFactoryService
+namespace CPG.Infrastructure
 {
-    private readonly IHttpClientFactory _httpClientFactory;
-    private readonly JsonSerializerOptions _options;
-
-    public HttpClientFactoryService(IHttpClientFactory httpClientFactory)
+    public class HttpClientFactoryService : IHttpClientFactoryService
     {
-        _httpClientFactory = httpClientFactory;
-        _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-    }
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly JsonSerializerOptions _options;
 
-    public async Task<string> Execute(GetIdpUserProfileModel model)
-    {
-        var accessToken = await GetClientCredentialsToken(model.Authority, model.ClientId, model.ClientSecret, model.Scope);
-        var httpClient = _httpClientFactory.CreateClient();
-        httpClient.SetBearerToken( accessToken);
-        using var response = await httpClient.GetAsync($"{model.IdpGetProfileUrl}{model.IdpId}");
-        response.EnsureSuccessStatusCode();
-        var content = await response.Content.ReadAsStringAsync();
-        return content;
-    }
-    
-    private async Task<string> GetClientCredentialsToken(string authority, string clientId, string clientSecret, string scope)
-    {
-        var httpClient = _httpClientFactory.CreateClient();
-
-        var disco = await httpClient.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest {
-            Address = authority,
-            Policy = { RequireHttps = false } // Todo: RequireHttps = true
-        });
-        if (disco.IsError)
-            return $"Error:{disco.Error}";
-
-        var tokenRequest = new ClientCredentialsTokenRequest
+        public HttpClientFactoryService(IHttpClientFactory httpClientFactory)
         {
-            Address = disco.TokenEndpoint,
-            ClientId = clientId,
-            ClientSecret = clientSecret,
-            Scope = scope,
-        };
+            _httpClientFactory = httpClientFactory;
+            _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        }
 
-        var tokenResponse = await httpClient.RequestClientCredentialsTokenAsync(tokenRequest);
+        public async Task<string> Execute(GetIdpUserProfileModel model)
+        {
+            var accessToken = await GetClientCredentialsToken(model.Authority, model.ClientId, model.ClientSecret, model.Scope);
+            var httpClient = _httpClientFactory.CreateClient();
+            httpClient.SetBearerToken( accessToken);
+            using var response = await httpClient.GetAsync($"{model.IdpGetProfileUrl}{model.IdpId}");
+            response.EnsureSuccessStatusCode();
+            var content = await response.Content.ReadAsStringAsync();
+            return content;
+        }
+        
+        private async Task<string> GetClientCredentialsToken(string authority, string clientId, string clientSecret, string scope)
+        {
+            var httpClient = _httpClientFactory.CreateClient();
 
-        if (tokenResponse.IsError)
-            return $"Error:{tokenResponse.Error} ErrorDescription:{tokenResponse.ErrorDescription}";
+            var disco = await httpClient.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest {
+                Address = authority,
+                Policy = { RequireHttps = false } // Todo: RequireHttps = true
+            });
+            if (disco.IsError)
+                return $"Error:{disco.Error}";
 
-        return tokenResponse.AccessToken;
+            var tokenRequest = new ClientCredentialsTokenRequest
+            {
+                Address = disco.TokenEndpoint,
+                ClientId = clientId,
+                ClientSecret = clientSecret,
+                Scope = scope,
+            };
+
+            var tokenResponse = await httpClient.RequestClientCredentialsTokenAsync(tokenRequest);
+
+            if (tokenResponse.IsError)
+                return $"Error:{tokenResponse.Error} ErrorDescription:{tokenResponse.ErrorDescription}";
+
+            return tokenResponse.AccessToken;
+        }
     }
 }
 

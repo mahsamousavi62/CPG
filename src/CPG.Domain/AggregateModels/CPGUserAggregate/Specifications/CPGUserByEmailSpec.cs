@@ -1,12 +1,13 @@
 ﻿using Ardalis.Specification;
 
-namespace CPG.Domain.AggregateModels.CPGUserAggregate.Specifications;
-
-public sealed class CPGUserByEmailSpec : Specification<CPGUser>, ISingleResultSpecification<CPGUser>
+namespace CPG.Domain.AggregateModels.CPGUserAggregate.Specifications
 {
-    public CPGUserByEmailSpec(string email)
+    public sealed class CPGUserByEmailSpec : Specification<CPGUser>, ISingleResultSpecification<CPGUser>
     {
-        Query
-            .Where(user => user.Email.Value == email);
+        public CPGUserByEmailSpec(string email)
+        {
+            Query
+                .Where(user => user.Email.Value == email);
+        }
     }
 }
