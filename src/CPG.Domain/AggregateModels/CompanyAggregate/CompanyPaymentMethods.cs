@@ -1,5 +1,6 @@
 ﻿using CPG.Domain.AggregateModels.CompanyAggregate.Exceptions;
 using CPG.Domain.SeedWork;
+using CPG.Domain.SharedKernel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,10 +9,7 @@ namespace CPG.Domain.AggregateModels.CompanyAggregate;
 
 public class CompanyPaymentMethods : AuditableEntity<long>
 {
-    public CompanyPaymentMethods()
-    {
-
-    }
+   
 
     public CompanyPaymentMethods(short methodType, long companyId)
     {

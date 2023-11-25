@@ -77,9 +77,9 @@ public class MinioProvider : IMinioProvider
         }
     }
 
-    public async Task<IFile> GetObjectByName(string name)
+    public async Task<FileViewModel> GetObjectByName(string name)
     {
-        var bucketName = "cpg";
+        var bucketName = _configuration["Minio:bucketName"];
 
         try
         {
@@ -108,13 +108,12 @@ public class MinioProvider : IMinioProvider
             var result = new FileStreamResult(downloadStream, objectInfo.ContentType)
             { FileDownloadName = objectInfo.ObjectName };
 
-            FormFileProxy file = new FormFileProxy
+            return new FileViewModel()
             {
                 FileName = result.FileDownloadName,
                 Content = result.FileStream,
                 ContentType = result.ContentType
             };
-            return file;
         }
         catch (MinioException e)
         {
@@ -145,6 +144,4 @@ public class MinioProvider : IMinioProvider
             throw new Exception( $"An error occurred while generating the presigned URL: {e.Message}");
         }
     }
-
-   
 }
