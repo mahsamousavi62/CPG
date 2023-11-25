@@ -25,7 +25,7 @@ namespace CPG.Application.UseCases.Companies.Commands.Create
         {
             PersianName persianName = new(request.Model.PersianName);
             EnglishName englishName = new(request.Model.EnglishName);
-            Logo logo = new(request.Model.UploadFile.FilePath);
+            Logo logo = new("");
 
             var company = Company.Create(persianName, englishName, request.Model.NationalCodeMatchingRequied,
                                         logo, request.Model.MethodTypes);

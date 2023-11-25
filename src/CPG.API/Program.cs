@@ -1,4 +1,5 @@
 using CPG.Application;
+using CPG.Application.Shared;
 using CPG.Infrastructure;
 using CPG.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Localization;
@@ -8,6 +9,7 @@ using System.Globalization;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(opt =>

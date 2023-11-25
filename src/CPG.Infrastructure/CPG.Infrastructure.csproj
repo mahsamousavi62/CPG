@@ -5,12 +5,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="Minio\MinioProvider.cs" />
 	  <Compile Remove="RabbitMQ\Envelope\Envelope.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Include="Minio\MinioProvider.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -35,6 +30,7 @@
 
 	<ItemGroup>
 	  <Folder Include="File\" />
+	  <Folder Include="Minio\" />
 	</ItemGroup>
 
 </Project>

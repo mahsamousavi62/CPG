@@ -23,6 +23,7 @@ using System.Net.Http;
 using System.Reflection;
 using Minio;
 using Minio.AspNetCore;
+using Minio.Credentials;
 
 namespace CPG.Infrastructure
 {
@@ -38,6 +39,7 @@ namespace CPG.Infrastructure
                 .AddHttpClient()
                 .AddMinio(configuration)
                 .AddTransient<IHttpClientFactoryService, HttpClientFactoryService>();
+           // .AddScoped<IServiceProvider, MinioEnvironmentProvider>();
 
         public static IServiceCollection AddMinio(this IServiceCollection services, IConfiguration configuration)
         {

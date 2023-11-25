@@ -40,6 +40,11 @@ namespace CPG.Domain.SharedKernel
             DirectDebit = 2,
             PaymentReceipt = 3
         }
+
+        public enum UploadFileType
+        {
+            Company=1
+        }
     }
 
     public struct ResultData<T>

@@ -1,4 +1,5 @@
-﻿using CPG.Application.UseCases.Companies.ViewModels;
+﻿using CPG.Application.UseCases.Companies.Queries;
+using CPG.Application.UseCases.Companies.ViewModels;
 using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -7,7 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CPG.Application.UseCases.Companies.Queries
+namespace CPG.Infrastructure.Persistence.QueryHandlers.Company
 {
     public class GetAllCompaniesQueryHandler : IRequestHandler<GetAllCompaniesQuery, IReadOnlyCollection<CompanyViewModel>>
     {

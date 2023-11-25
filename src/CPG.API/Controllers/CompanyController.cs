@@ -1,4 +1,5 @@
-﻿using CPG.Application.UseCases.Books.Queries;
+﻿
+using CPG.Application.UseCases.Books.Queries;
 using CPG.Application.UseCases.Books.ViewModels;
 using CPG.Application.UseCases.Common.Queries;
 using CPG.Application.UseCases.Common.ViewModels;
@@ -15,6 +16,13 @@ namespace CPG.API.Controllers
 
     public class CompanyController : ApiBaseController
     {
+
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public CompanyController(IWebHostEnvironment webHostEnvironment)
+        {
+            _webHostEnvironment = webHostEnvironment;
+        }
+
         [HttpGet("GetAll")]
         [AllowAnonymous]
         public async Task<ActionResult<IReadOnlyCollection<ApplicationSettingViewModel>>> GetAll()

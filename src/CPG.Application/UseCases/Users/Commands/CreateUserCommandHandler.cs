@@ -1,6 +1,5 @@
 ﻿using CPG.Application.Shared;
 using CPG.Application.UseCases.Common.Queries;
-using CPG.Application.UseCases.CPGUsers.ViewModel;
 using CPG.Application.UseCases.Users.ViewModel;
 using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Domain.AggregateModels.UserAggregate.Events;
