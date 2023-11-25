@@ -1,16 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
-namespace CPG.Infrastructure.Persistence.DbContexts.Factories
-{
-    public class WriteDbContextFactory : IDesignTimeDbContextFactory<WriteDbContext>
-    {
-        public WriteDbContext CreateDbContext(string[] args)
-        {
-            var optionsBuilder = new DbContextOptionsBuilder<WriteDbContext>();
-            optionsBuilder.UseSqlServer("FOR_MIGRATION_PURPOSES_ONLY");
+namespace CPG.Infrastructure.Persistence.DbContexts.Factories;
 
-            return new WriteDbContext(optionsBuilder.Options, null);
-        }
+public class WriteDbContextFactory : IDesignTimeDbContextFactory<WriteDbContext>
+{
+    public WriteDbContext CreateDbContext(string[] args)
+    {
+        var optionsBuilder = new DbContextOptionsBuilder<WriteDbContext>();
+        optionsBuilder.UseSqlServer("FOR_MIGRATION_PURPOSES_ONLY");
+
+        return new WriteDbContext(optionsBuilder.Options, null);
     }
 }

@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace CPG.Application.Shared.Resource
+namespace CPG.Application.Shared.Resource;
+
+public interface IResourceHelper
 {
-    public interface IResourceHelper
-    {
-        Dictionary<string, string> GetResources();
-    }
+    Dictionary<string, string> GetResources();
 }

@@ -2,9 +2,8 @@
 using CPG.Application.UseCases.Books.ViewModels;
 using MediatR;
 
-namespace CPG.Application.UseCases.Books.Queries
+namespace CPG.Application.UseCases.Books.Queries;
+
+public class GetAvailableBooksQuery : IRequest<IReadOnlyCollection<BookViewModel>>
 {
-    public class GetAvailableBooksQuery : IRequest<IReadOnlyCollection<BookViewModel>>
-    {
-    }
 }

@@ -5,19 +5,14 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CPG.Application.UseCases.Users.EventHandlers
+namespace CPG.Application.UseCases.Users.EventHandlers;
+
+public class UserCreatedEventHandler(IAggregateRepository<User> repository) : INotificationHandler<UserCreatedEvent>
 {
-    public class UserCreatedEventHandler : INotificationHandler<UserCreatedEvent>
+    private readonly IAggregateRepository<User> repository = repository;
+
+    public async Task Handle(UserCreatedEvent notification, CancellationToken cancellationToken)
     {
-        private readonly IAggregateRepository<User> repository;
 
-        public UserCreatedEventHandler(IAggregateRepository<User> repository)
-        {
-            this.repository = repository;
-        }
-        public async Task Handle(UserCreatedEvent notification, CancellationToken cancellationToken)
-        {
-
-        }
     }
 }

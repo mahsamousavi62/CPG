@@ -7,60 +7,46 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using ApplicationException = CPG.Application.UseCases.Exceptions.ApplicationException;
 
-namespace CPG.Infrastructure.ErrorHandling
+namespace CPG.Infrastructure.ErrorHandling;
+
+public class ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandlingMiddleware> logger)
 {
-    public class ErrorHandlingMiddleware
-	{
-        private readonly RequestDelegate _next;
-        private readonly ILogger<ErrorHandlingMiddleware> _logger;
+    private readonly RequestDelegate _next = next;
+    private readonly ILogger<ErrorHandlingMiddleware> _logger = logger;
 
-        public ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandlingMiddleware> logger)
+    public async Task Invoke(HttpContext context)
+    {
+        try
         {
-            _next = next;
-            _logger = logger;
+            await _next(context);
         }
-
-        public async Task Invoke(HttpContext context)
+        catch (Exception ex)
         {
-            try
-            {
-                await _next(context);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error details: {@ex}", ex);
-                await HandleExceptionAsync(context, ex);
-            }
+            _logger.LogError("Error details: {@ex}", ex);
+            await HandleExceptionAsync(context, ex);
         }
+    }
 
-        private static Task HandleExceptionAsync(HttpContext context, Exception ex)
+    private static Task HandleExceptionAsync(HttpContext context, Exception ex)
+    {
+        var response = ex switch
         {
-            var response = ex switch
-            {
-                DomainException exception => new ExceptionResponse(exception.Code, exception.Message, HttpStatusCode.BadRequest),
-                ApplicationException exception => new ExceptionResponse(exception.Code, exception.Message, HttpStatusCode.BadRequest),
-                _ => new ExceptionResponse("unexpected_error", ex.Message, HttpStatusCode.InternalServerError)
-            };
+            DomainException exception => new ExceptionResponse(exception.Code, exception.Message, HttpStatusCode.BadRequest),
+            ApplicationException exception => new ExceptionResponse(exception.Code, exception.Message, HttpStatusCode.BadRequest),
+            _ => new ExceptionResponse("unexpected_error", ex.Message, HttpStatusCode.InternalServerError)
+        };
 
-            var result = JsonConvert.SerializeObject(response);
-            context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)response.HttpStatusCode;
+        var result = JsonConvert.SerializeObject(response);
+        context.Response.ContentType = "application/json";
+        context.Response.StatusCode = (int)response.HttpStatusCode;
 
-            return context.Response.WriteAsync(result);
-        }
+        return context.Response.WriteAsync(result);
+    }
 
-        public class ExceptionResponse
-        {
-            public string Code { get; }
-            public string Message { get; }
-            public HttpStatusCode HttpStatusCode { get; }
-
-            public ExceptionResponse(string code, string message, HttpStatusCode httpStatusCode)
-            {
-                Code = code;
-                Message = message;
-                HttpStatusCode = httpStatusCode;
-            }
-        }
-	}
+    public class ExceptionResponse(string code, string message, HttpStatusCode httpStatusCode)
+    {
+        public string Code { get; } = code;
+        public string Message { get; } = message;
+        public HttpStatusCode HttpStatusCode { get; } = httpStatusCode;
+    }
 }

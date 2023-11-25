@@ -1,19 +1,8 @@
 ﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace CPG.Application.UseCases.Companies.Commands.Create
+namespace CPG.Application.UseCases.Companies.Commands.Create;
+
+public class CreateCompanyCommand(CreateCompanyViewModel model) : IRequest<Unit>
 {
-    public class CreateCompanyCommand:IRequest<Unit>
-    {
-        public CreateCompanyViewModel Model { get; set; }
-
-        public CreateCompanyCommand(CreateCompanyViewModel model)
-        {
-            Model = model;
-        }
-    }
+    public CreateCompanyViewModel Model { get; set; } = model;
 }

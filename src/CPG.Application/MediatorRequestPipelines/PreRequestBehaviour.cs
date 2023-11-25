@@ -3,22 +3,18 @@ using System.Threading.Tasks;
 using MediatR.Pipeline;
 using Microsoft.Extensions.Logging;
 
-namespace CPG.Application.MediatorRequestPipelines
+namespace CPG.Application.MediatorRequestPipelines;
+
+	public class PreRequestLogger<TRequest>(ILogger<TRequest> logger) : IRequestPreProcessor<TRequest>
 {
-	public class PreRequestLogger<TRequest> : IRequestPreProcessor<TRequest>
+    private readonly ILogger<TRequest> _logger = logger;
+
+    public Task Process(TRequest request, CancellationToken cancellationToken = default)
     {
-        private readonly ILogger<TRequest> _logger;
+        var requestName = typeof(TRequest).Name;
 
-        public PreRequestLogger(ILogger<TRequest> logger)
-            => _logger = logger;
+        _logger.LogInformation("Request started: {requestName}", requestName);
 
-        public Task Process(TRequest request, CancellationToken cancellationToken = default)
-        {
-            var requestName = typeof(TRequest).Name;
-
-            _logger.LogInformation("Request started: {requestName}", requestName);
-
-            return Task.CompletedTask;
-        }
+        return Task.CompletedTask;
     }
 }

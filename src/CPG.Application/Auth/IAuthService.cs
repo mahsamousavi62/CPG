@@ -1,7 +1,6 @@
-﻿namespace CPG.Application.Auth
+﻿namespace CPG.Application.Auth;
+
+public interface IAuthService
 {
-    public interface IAuthService
-    {
-        string GenerateSecurityToken(long userId, string email, string name);
-    }
+    string GenerateSecurityToken(long userId, string email, string name);
 }

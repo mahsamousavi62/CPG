@@ -1,24 +1,22 @@
 ﻿using Ardalis.Specification;
-using CPG.Domain.AggregateModels.CPGUserAggregate;
 
-namespace CPG.Domain.AggregateModels.CPGUserAggregate.Specifications
+namespace CPG.Domain.AggregateModels.CPGUserAggregate.Specifications;
+
+public sealed class CPGUserByLoginSpec : Specification<CPGUser>, ISingleResultSpecification<CPGUser>
 {
-    public sealed class CPGUserByLoginSpec : Specification<CPGUser>, ISingleResultSpecification<CPGUser>
+    public CPGUserByLoginSpec(string login)
     {
-        public CPGUserByLoginSpec(string login)
-        {
-            Query
-                .Where(user => user.Credentials.Login == login);
-        }
+        Query
+            .Where(user => user.Credentials.Login == login);
     }
+}
 
-    public sealed class CPGUserWithActiveLoansSpec : Specification<CPGUser>, ISingleResultSpecification<CPGUser>
+public sealed class CPGUserWithActiveLoansSpec : Specification<CPGUser>, ISingleResultSpecification<CPGUser>
+{
+    public CPGUserWithActiveLoansSpec(long id)
     {
-        public CPGUserWithActiveLoansSpec(long id)
-        {
-            Query
-                .Include(user => user.ActiveLoans)
-                .Where(user => user.Id == id);
-        }
+        Query
+            .Include(user => user.ActiveLoans)
+            .Where(user => user.Id == id);
     }
 }

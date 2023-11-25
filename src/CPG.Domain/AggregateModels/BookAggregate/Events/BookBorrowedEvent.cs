@@ -1,19 +1,11 @@
 ﻿using CPG.Domain.SharedKernel;
 using MediatR;
 
-namespace CPG.Domain.AggregateModels.BookAggregate.Events
-{
-    public class BookBorrowedEvent : INotification
-    {
-        public long BookId { get; }
-        public long UserId { get; }
-        public DateTimePeriod DateTimePeriod { get; }
+namespace CPG.Domain.AggregateModels.BookAggregate.Events;
 
-        public BookBorrowedEvent(long bookId, long userId, DateTimePeriod dateTimePeriod)
-        {
-            BookId = bookId;
-            UserId = userId;
-            DateTimePeriod = dateTimePeriod;
-        }
-    }
+public class BookBorrowedEvent(long bookId, long userId, DateTimePeriod dateTimePeriod) : INotification
+{
+    public long BookId { get; } = bookId;
+    public long UserId { get; } = userId;
+    public DateTimePeriod DateTimePeriod { get; } = dateTimePeriod;
 }

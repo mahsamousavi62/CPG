@@ -3,26 +3,21 @@ using CPG.Infrastructure.Persistence.DbContexts.ReadModels;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
-namespace CPG.Infrastructure.Persistence.DbContexts
+namespace CPG.Infrastructure.Persistence.DbContexts;
+
+public class ReadDbContext(DbContextOptions<ReadDbContext> options) : DbContext(options)
 {
-    public class ReadDbContext : DbContext
+    public IQueryable<BookReadModel> BookReadModels => Set<BookReadModel>().AsNoTracking();
+
+    public IQueryable<ApplicationSettingReadModel> ApplicationSettingReadModels => Set<ApplicationSettingReadModel>().AsNoTracking();
+
+    public IQueryable<CompanyReadModel> CompanyReadModels => Set<CompanyReadModel>().AsNoTracking();
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        public IQueryable<BookReadModel> BookReadModels => Set<BookReadModel>().AsNoTracking();
-
-        public IQueryable<ApplicationSettingReadModel> ApplicationSettingReadModels => Set<ApplicationSettingReadModel>().AsNoTracking();
-
-        public IQueryable<CompanyReadModel> CompanyReadModels => Set<CompanyReadModel>().AsNoTracking();
-
-        public ReadDbContext(DbContextOptions<ReadDbContext> options) : base(options)
-        {
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder
-                .ApplyConfiguration(new BookReadModelConfiguration())
-               .ApplyConfiguration(new ApplicationSettingReadModelConfiguration())
-               .ApplyConfiguration(new CompanyReadModelConfiguration());
-        }
+        modelBuilder
+            .ApplyConfiguration(new BookReadModelConfiguration())
+           .ApplyConfiguration(new ApplicationSettingReadModelConfiguration())
+           .ApplyConfiguration(new CompanyReadModelConfiguration());
     }
 }
