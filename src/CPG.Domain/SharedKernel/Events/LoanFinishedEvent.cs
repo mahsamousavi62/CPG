@@ -1,14 +1,8 @@
 ﻿using MediatR;
 
-namespace CPG.Domain.SharedKernel.Events
-{
-    public class LoanFinishedEvent : INotification
-    {
-        public long LoanId { get; }
+namespace CPG.Domain.SharedKernel.Events;
 
-        public LoanFinishedEvent(long loanId)
-        {
-            LoanId = loanId;
-        }
-    }
+public class LoanFinishedEvent(long loanId) : INotification
+{
+    public long LoanId { get; } = loanId;
 }

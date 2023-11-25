@@ -1,43 +1,35 @@
 ﻿using CPG.Application.UseCases.Companies.ViewModels;
 using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CPG.Application.UseCases.Companies.Queries
+namespace CPG.Application.UseCases.Companies.Queries;
+
+public class GetCompanyQueryHandler(ReadDbContext context) : IRequestHandler<GetCompanyQuery, CompanyViewModel>
 {
-    public class GetCompanyQueryHandler : IRequestHandler<GetCompanyQuery, CompanyViewModel>
+    private readonly ReadDbContext _context = context;
+
+    public async Task<CompanyViewModel> Handle(GetCompanyQuery request, CancellationToken cancellationToken)
     {
-        private readonly ReadDbContext _context;
+        var company = await _context.CompanyReadModels
+             .FirstOrDefaultAsync(t => t.Id == request.CompanyId);
 
-        public GetCompanyQueryHandler(ReadDbContext context)
-        {
-            _context = context;
+        if (company == null) {
+            return null;
         }
 
-        public async Task<CompanyViewModel> Handle(GetCompanyQuery request, CancellationToken cancellationToken)
+        var companyModel = new CompanyViewModel
         {
-            var x = await _context.CompanyReadModels
-                 .FirstOrDefaultAsync(t => t.Id == request.CompanyId);
+            Id = company.Id,
+            PersianName = company.PersianName,
+            EnglishName = company.EnglishName,
+            Logo = company.Logo,
+            NationalCodeMatchingRequied = company.NationalCodeMatchingRequied,
+            PaymentMethods = company.PaymentMethods
+        };
 
-            if (x == null) {
-                return null;
-            }
-
-            var company = new CompanyViewModel
-            {
-                PersianName = x.PersianName,
-                EnglishName = x.EnglishName,
-                Logo = x.Logo,
-                NationalCodeMatchingRequied = x.NationalCodeMatchingRequied,
-                PaymentMethods = x.PaymentMethods
-            };
-
-            return company;
-        }
+        return companyModel;
     }
 }

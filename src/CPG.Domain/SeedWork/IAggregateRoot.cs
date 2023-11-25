@@ -1,6 +1,5 @@
-﻿namespace CPG.Domain.SeedWork
+﻿namespace CPG.Domain.SeedWork;
+
+public interface IAggregateRoot
 {
-    public interface IAggregateRoot
-    {
-    }
 }

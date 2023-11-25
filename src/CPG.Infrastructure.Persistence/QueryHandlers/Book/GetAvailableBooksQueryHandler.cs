@@ -7,36 +7,29 @@ using CPG.Application.UseCases.Books.ViewModels;
 using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using CPG.Domain.SharedKernel;
 
 
-namespace CPG.Infrastructure.Persistence.QueryHandlers.Book
+namespace CPG.Infrastructure.Persistence.QueryHandlers.Book;
+
+public class GetAvailableBooksQueryHandler(ReadDbContext context) : IRequestHandler<GetAvailableBooksQuery, IReadOnlyCollection<BookViewModel>>
 {
-    public class GetAvailableBooksQueryHandler : IRequestHandler<GetAvailableBooksQuery, IReadOnlyCollection<BookViewModel>>
+    private readonly ReadDbContext _context = context;
+
+    public async Task<IReadOnlyCollection<BookViewModel>> Handle(GetAvailableBooksQuery query, CancellationToken cancellationToken)
     {
-        private readonly ReadDbContext _context;
+        var books = await _context.BookReadModels
+            .Where(x => x.InStock)
+            .Select(x => new BookViewModel
+            {
+                Id = x.Id,
+                Author = x.Author,
+                Isbn = x.Isbn,
+                Subject = x.Subject,
+                Title = x.Title,
+                InStock = x.InStock
+            })
+            .ToListAsync(cancellationToken: cancellationToken);
 
-        public GetAvailableBooksQueryHandler(ReadDbContext context)
-        {
-            _context = context;
-        }
-
-        public async Task<IReadOnlyCollection<BookViewModel>> Handle(GetAvailableBooksQuery query, CancellationToken cancellationToken)
-        {
-            var books = await _context.BookReadModels
-                .Where(x => x.InStock)
-                .Select(x => new BookViewModel
-                {
-                    Id = x.Id,
-                    Author = x.Author,
-                    Isbn = x.Isbn,
-                    Subject = x.Subject,
-                    Title = x.Title,
-                    InStock = x.InStock
-                })
-                .ToListAsync(cancellationToken: cancellationToken);
-
-            return books;
-        }
+        return books;
     }
 }

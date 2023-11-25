@@ -5,15 +5,14 @@ using HotChocolate.Data;
 using HotChocolate.Types;
 using System.Linq;
 
-namespace CPG.Infrastructure.Persistence.GraphQL.Queries
+namespace CPG.Infrastructure.Persistence.GraphQL.Queries;
+
+public class CompanyReadModelQueries
 {
-    public class CompanyReadModelQueries
-    {
-        [UsePaging(IncludeTotalCount = true, MaxPageSize = 200)]
-        [UseProjection]
-        [UseFiltering]
-        [UseSorting]
-        public IQueryable<CompanyReadModel> GetCompanies([Service] ReadDbContext dbContext)
-            => dbContext.CompanyReadModels.AsQueryable();
-    }
+    [UsePaging(IncludeTotalCount = true, MaxPageSize = 200)]
+    [UseProjection]
+    [UseFiltering]
+    [UseSorting]
+    public IQueryable<CompanyReadModel> GetCompanies([Service] ReadDbContext dbContext)
+        => dbContext.CompanyReadModels.AsQueryable();
 }

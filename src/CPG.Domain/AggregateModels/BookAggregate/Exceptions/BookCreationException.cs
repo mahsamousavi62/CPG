@@ -1,13 +1,8 @@
 ﻿using CPG.Domain.Exceptions;
 
-namespace CPG.Domain.AggregateModels.BookAggregate.Exceptions
-{
-    public class BookCreationException : DomainException
-    {
-        public override string Code => "cannot_create_book";
+namespace CPG.Domain.AggregateModels.BookAggregate.Exceptions;
 
-        public BookCreationException(string message) : base(message)
-        {
-        }
-    }
+public class BookCreationException(string message) : DomainException(message)
+{
+    public override string Code => "cannot_create_book";
 }

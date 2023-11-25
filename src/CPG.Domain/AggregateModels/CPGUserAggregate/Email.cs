@@ -1,36 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Mail;
 using CPG.Domain.AggregateModels.CPGUserAggregate.Exceptions;
-using CPG.Domain.Exceptions;
-using CPG.Domain.SeedWork;
 
-namespace CPG.Domain.AggregateModels.CPGUserAggregate
+namespace CPG.Domain.AggregateModels.CPGUserAggregate;
+
+public record Email
 {
-    public record Email
+    public string Value { get; init; }
+
+    private Email() { }
+
+    public Email(string email)
     {
-        public string Value { get; init; }
-
-        private Email() { }
-
-        public Email(string email)
+        // TODO: Implement Guard clause
+        try
         {
-            // TODO: Implement Guard clause
-            try
-            {
-                var emailAddress = new MailAddress(email);
+            var emailAddress = new MailAddress(email);
 
-                Value = emailAddress.Address;
-            }
-            catch (Exception ex)
-            {
-                throw new InvalidEmailException(email, ex.Message);
-            }
+            Value = emailAddress.Address;
         }
-
-        public static implicit operator string(Email email) => email.Value;
-        public static implicit operator Email(string email) => new(email);
-
-        public override string ToString() => Value;
+        catch (Exception ex)
+        {
+            throw new InvalidEmailException(email, ex.Message);
+        }
     }
+
+    public static implicit operator string(Email email) => email.Value;
+    public static implicit operator Email(string email) => new(email);
+
+    public override string ToString() => Value;
 }

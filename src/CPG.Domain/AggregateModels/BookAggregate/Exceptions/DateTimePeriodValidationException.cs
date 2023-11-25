@@ -1,13 +1,8 @@
 ﻿using CPG.Domain.Exceptions;
 
-namespace CPG.Domain.AggregateModels.BookAggregate.Exceptions
-{
-    public class DateTimePeriodValidationException : DomainException
-    {
-        public override string Code => "Datetime period validation failed.";
+namespace CPG.Domain.AggregateModels.BookAggregate.Exceptions;
 
-        public DateTimePeriodValidationException(string message) : base(message)
-        {
-        }
-    }
+public class DateTimePeriodValidationException(string message) : DomainException(message)
+{
+    public override string Code => "Datetime period validation failed.";
 }

@@ -1,17 +1,8 @@
-﻿using CPG.Domain.AggregateModels.UserAggregate;
-using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MediatR;
 
-namespace CPG.Domain.AggregateModels.UserAggregate.Events
+namespace CPG.Domain.AggregateModels.UserAggregate.Events;
+
+public class UserCreatedEvent(User user) : INotification
 {
-    public class UserCreatedEvent : INotification
-    {
-        public User User { get; }
-
-        public UserCreatedEvent(User user) => User = user;
-    }
+    public User User { get; } = user;
 }

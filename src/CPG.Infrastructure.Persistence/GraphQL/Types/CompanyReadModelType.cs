@@ -1,12 +1,11 @@
 ﻿using HotChocolate.Types;
 using CPG.Infrastructure.Persistence.DbContexts.ReadModels;
 
-namespace CPG.Infrastructure.Persistence.GraphQL.Types
+namespace CPG.Infrastructure.Persistence.GraphQL.Types;
+
+public class CompanyReadModelType : ObjectType<CompanyReadModel>
 {
-    public class CompanyReadModelType : ObjectType<CompanyReadModel>
+    protected override void Configure(IObjectTypeDescriptor<CompanyReadModel> descriptor)
     {
-        protected override void Configure(IObjectTypeDescriptor<CompanyReadModel> descriptor)
-        {
-        }
     }
 }

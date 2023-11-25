@@ -2,15 +2,15 @@
 
 #nullable disable
 
-namespace CPG.Infrastructure.Persistence.Migrations
+namespace CPG.Infrastructure.Persistence.Migrations;
+
+/// <inheritdoc />
+public partial class SeedAppSetting : Migration
 {
     /// <inheritdoc />
-    public partial class SeedAppSetting : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.Sql(@" insert into [dbo].[application_settings]([entity_type],[key],[value]) values(1,'api_key','pay__daryaftyar_api')
+        migrationBuilder.Sql(@" insert into [dbo].[application_settings]([entity_type],[key],[value]) values(1,'api_key','pay__daryaftyar_api')
                                     go
                                     insert into [dbo].[application_settings]([entity_type],[key],[value]) values(1,'api_secret','4lpuezpvrold')
                                     go
@@ -19,12 +19,11 @@ namespace CPG.Infrastructure.Persistence.Migrations
                                     insert into [dbo].[application_settings]([entity_type],[key],[value]) values(1,'client_secret','')
                                     go
 ");
-        }
+    }
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
 
-        }
     }
 }

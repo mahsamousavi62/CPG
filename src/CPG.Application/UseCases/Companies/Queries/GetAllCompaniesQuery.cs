@@ -4,6 +4,6 @@ using System.Collections.Generic;
 
 namespace CPG.Application.UseCases.Companies.Queries;
 
-public class GetAllCompaniesQuery : IRequest<IReadOnlyList<CompanyViewModel>>
+public class GetAllCompaniesQuery : IRequest<IReadOnlyCollection<CompanyViewModel>>
 {
 }

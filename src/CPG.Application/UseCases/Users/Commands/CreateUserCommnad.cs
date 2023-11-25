@@ -1,12 +1,5 @@
 ﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace CPG.Application.UseCases.Users.Commands
-{
-    public record CreateUserCommnad(string IDPId) : IRequest;
+namespace CPG.Application.UseCases.Users.Commands;
 
-}
+public record CreateUserCommnad(string IDPId) : IRequest;
