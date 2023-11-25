@@ -28,13 +28,18 @@ public class Enums
         NotValid
     }
 
-    public enum CompanyPaymentMethod
-    {
-        InternetPaymentGateway = 1,
-        DirectDebit = 2,
-        PaymentReceipt = 3
+        public enum CompanyPaymentMethodType
+        {
+            InternetPaymentGateway = 1,
+            DirectDebit = 2,
+            PaymentReceipt = 3
+        }
+
+        public enum UploadFileType
+        {
+            Company=1
+        }
     }
-}
 
 public struct ResultData<T>(Enums.OperationResult operationResult)
 {

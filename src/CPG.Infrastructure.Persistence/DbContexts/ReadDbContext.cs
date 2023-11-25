@@ -1,4 +1,5 @@
-﻿using CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations.ReadModelsConfiguration;
+﻿using CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations;
+using CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations.ReadModelsConfiguration;
 using CPG.Infrastructure.Persistence.DbContexts.ReadModels;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -17,7 +18,8 @@ public class ReadDbContext(DbContextOptions<ReadDbContext> options) : DbContext(
     {
         modelBuilder
             .ApplyConfiguration(new BookReadModelConfiguration())
-           .ApplyConfiguration(new ApplicationSettingReadModelConfiguration())
-           .ApplyConfiguration(new CompanyReadModelConfiguration());
+            .ApplyConfiguration(new ApplicationSettingReadModelConfiguration())
+            .ApplyConfiguration(new CompanyReadModelConfiguration())
+            .ApplyConfiguration(new CompanyPaymentMethodsReadModelConfiguration());
     }
 }

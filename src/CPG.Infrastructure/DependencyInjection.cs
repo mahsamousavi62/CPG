@@ -30,7 +30,8 @@ public static class DependencyInjection
             .AddMasstransitInfrastructure(configuration)
             .AddHttpClient()
             .AddMinio(configuration)
-            .AddTransient<IHttpClientFactoryService, HttpClientFactoryService>();
+            .AddTransient<IHttpClientFactoryService, HttpClientFactoryService>()
+            .AddTransient<IMinioClient, MinioClient>();
 
     public static IServiceCollection AddMinio(this IServiceCollection services, IConfiguration configuration)
     {

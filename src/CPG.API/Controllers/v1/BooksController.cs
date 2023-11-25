@@ -13,8 +13,8 @@ public class BooksController : ApiBaseController
 {
     [AllowAnonymous]
     [HttpGet("{id:long}")]
-    public async Task<ActionResult<BookViewModel>> GetBook(long id) 
-        => Ok(await Mediator.Send(new GetBookQuery(id)));
+    public async Task<ActionResult<BookViewModel>> GetBook(long id)
+    => Ok(await Mediator.Send(new GetBookQuery(id)));
 
     [AllowAnonymous]
     [HttpGet("available")]

@@ -27,7 +27,6 @@ public class CommonController : ApiBaseController
         return Ok(await Mediator.Send(new GetAuthenticationAppSettingQuery()));
     }
 
-
     [HttpGet("GetAppSetting/{entityType:int}")]
     [AllowAnonymous]
     public async Task<ActionResult<IReadOnlyCollection<ApplicationSettingViewModel>>> GetAppSetting(int entityType)
@@ -35,5 +34,4 @@ public class CommonController : ApiBaseController
         var entityTypeEnum = (Enums.ApplicationSettingEntityType)entityType;
         return Ok(await Mediator.Send(new GetApplicationSettingsQuery(entityTypeEnum)));
     }
-
 }

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CPG.API.Controllers;
 
-
 public class UsersController : ApiBaseController
 {
     [HttpPost("CreateUserProfile")]

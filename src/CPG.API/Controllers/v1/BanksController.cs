@@ -37,5 +37,4 @@ public class BanksController : ApiBaseController
 
         return Accepted();
     }
-
 }

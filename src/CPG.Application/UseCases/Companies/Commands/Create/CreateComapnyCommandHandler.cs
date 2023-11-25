@@ -8,16 +8,16 @@ namespace CPG.Application.UseCases.Companies.Commands.Create;
 
 public class CreateComapnyCommandHandler(IAggregateRepository<Company> repository) : IRequestHandler<CreateCompanyCommand, Unit>
 {
-
     private readonly IAggregateRepository<Company> _repository = repository;
 
     public async Task<Unit> Handle(CreateCompanyCommand request, CancellationToken cancellationToken)
     {
         PersianName persianName = new(request.Model.PersianName);
         EnglishName englishName = new(request.Model.EnglishName);
-        Logo logo = new(request.Model.UploadFile.FilePath);
+        Logo logo = new(request.Model.File);
 
-        var company = Company.Create(persianName, englishName, request.Model.NationalCodeMatchingRequied,
+        var company = Company.Create(persianName, englishName,
+                                    request.Model.NationalCodeMatchingRequied,
                                     logo, request.Model.MethodTypes);
         //await _repository.AddAsync(company);
         //await _repository.SaveChangesAsync();
