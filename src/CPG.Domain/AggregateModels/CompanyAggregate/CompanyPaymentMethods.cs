@@ -12,37 +12,7 @@ public class CompanyPaymentMethods : AuditableEntity<long>
     {
 
     }
-    public CompanyPaymentMethods(short methodType, long companyId)
-    {
-        MethodType = methodType;
-        CompanyId = companyId;
-    }
-            MethodType = methodType;
-            CompanyId = companyId;
-        }
 
-    public CompanyPaymentMethods(short methodType)
-    {
-        MethodType = methodType;
-    }
-
-    public short MethodType { get; set; }
-    public long CompanyId { get; set; }
-    public Company Company { get; set; }
-    public static List<CompanyPaymentMethods> Create(short[] methodTypes)
-    {
-        if (methodTypes is null || !methodTypes.Any() || methodTypes.Any(m => m == 0))
-            throw new InvalidPaymentMethodType($"Parameter {nameof(methodTypes)} cannot be empty.");
-
-        var companyPaymentMethods = methodTypes.Select(i => new CompanyPaymentMethods(i)).ToList();
-        return companyPaymentMethods;
-    }
-            return companyPaymentMethods;
-        }
-=========
-        
->>>>>>>>> Temporary merge branch 2
-    }
     public CompanyPaymentMethods(short methodType, long companyId)
     {
         MethodType = methodType;
