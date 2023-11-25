@@ -4,16 +4,15 @@ using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CPG.Infrastructure.Persistence.QueryHandlers.Company
+namespace CPG.Infrastructure.Persistence.QueryHandlers.Company;
+
+public class GetCompanyPaymentMethodQueryHandler : IRequestHandler<GetCompanyPaymentMethodsQuery, Dictionary<int, string>>
 {
-    public class GetCompanyPaymentMethodQueryHandler : IRequestHandler<GetCompanyPaymentMethodsQuery, Dictionary<int, string>>
-    {
-        public async Task<Dictionary<int, string>> Handle(GetCompanyPaymentMethodsQuery request, CancellationToken cancellationToken)
-        => Enum.GetValues(typeof(Enums.CompanyPaymentMethodType)).Cast<Enums.CompanyPaymentMethodType>().ToDictionary(x => (int)x, x => x.ToString());
-        
-    }
+    public async Task<Dictionary<int, string>> Handle(GetCompanyPaymentMethodsQuery request, CancellationToken cancellationToken)
+    => Enum.GetValues(typeof(Enums.CompanyPaymentMethodType))
+        .Cast<Enums.CompanyPaymentMethodType>()
+        .ToDictionary(x => (int)x, x => x.ToString());
 }

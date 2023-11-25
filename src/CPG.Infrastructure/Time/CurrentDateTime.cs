@@ -1,10 +1,9 @@
 ﻿using System;
 using CPG.Domain.SharedKernel;
 
-namespace CPG.Infrastructure.Time
+namespace CPG.Infrastructure.Time;
+
+public class CurrentDateTime : ICurrentDateTime
 {
-    public class CurrentDateTime : ICurrentDateTime
-    {
-        public DateTime UtcNow => DateTime.UtcNow;
-    }
+    public DateTime UtcNow => DateTime.UtcNow;
 }

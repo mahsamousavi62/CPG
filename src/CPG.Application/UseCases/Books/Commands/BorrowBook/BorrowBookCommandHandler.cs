@@ -10,42 +10,34 @@ using CPG.Domain.SharedKernel;
 using MediatR;
 using BookNotFoundException = CPG.Application.UseCases.Books.Exceptions.BookNotFoundException;
 
-namespace CPG.Application.UseCases.Books.Commands.BorrowBook
+namespace CPG.Application.UseCases.Books.Commands.BorrowBook;
+
+public class BorrowBookCommandHandler(
+    IAggregateRepository<CPGUser> CPGUserRepository,
+    IAggregateRepository<Book> bookRepository,
+    ICurrentUser currentUser) : IRequestHandler<BorrowBookCommand>
 {
-    public class BorrowBookCommandHandler : IRequestHandler<BorrowBookCommand>
+    private readonly IAggregateRepository<CPGUser> _CPGUserRepository = CPGUserRepository;
+    private readonly IAggregateRepository<Book> _bookRepository = bookRepository;
+    private readonly ICurrentUser _currentUser = currentUser;
+
+    public async Task Handle(BorrowBookCommand command, CancellationToken cancellationToken)
     {
-        private readonly IAggregateRepository<CPGUser> _CPGUserRepository;
-        private readonly IAggregateRepository<Book> _bookRepository;
-        private readonly ICurrentUser _currentUser;
+        var spec = new CPGUserWithActiveLoansSpec(_currentUser.UserId);
+        var CPGUser = await _CPGUserRepository.GetBySpecAsync(spec, cancellationToken)
+                          ?? throw new CPGUserNotFoundException(_currentUser.UserId);
 
-        public BorrowBookCommandHandler(
-            IAggregateRepository<CPGUser> CPGUserRepository,
-            IAggregateRepository<Book> bookRepository,
-            ICurrentUser currentUser)
-        {
-            _CPGUserRepository = CPGUserRepository;
-            _bookRepository = bookRepository;
-            _currentUser = currentUser;
-        }
+        // TODO: Get book from repo by its ISBN, not it directly
+        var book = await _bookRepository.GetByIdAsync(command.BookId, cancellationToken) 
+                   ?? throw new BookNotFoundException(command.BookId);
 
-        public async Task Handle(BorrowBookCommand request, CancellationToken cancellationToken)
-        {
-            var spec = new CPGUserWithActiveLoansSpec(_currentUser.UserId);
-            var CPGUser = await _CPGUserRepository.GetBySpecAsync(spec, cancellationToken) 
-                              ?? throw new CPGUserNotFoundException(_currentUser.UserId);
+        if (!book.InStock)
+            throw new BookNotAvailableException(command.BookId);
 
-            // TODO: Get book from repo by its ISBN, not it directly
-            var book = await _bookRepository.GetByIdAsync(request.BookId, cancellationToken) 
-                       ?? throw new BookNotFoundException(request.BookId);
+        var dateTimePeriod = DateTimePeriod.Create(DateTime.UtcNow, command.BorrowingEndDate);
 
-            if (!book.InStock)
-                throw new BookNotAvailableException(request.BookId);
+        CPGUser.BorrowBook(command.BookId, dateTimePeriod);
 
-            var dateTimePeriod = DateTimePeriod.Create(DateTime.UtcNow, request.BorrowingEndDate);
-
-            CPGUser.BorrowBook(request.BookId, dateTimePeriod);
-
-            await _CPGUserRepository.SaveChangesAsync(cancellationToken);
-        }
+        await _CPGUserRepository.SaveChangesAsync(cancellationToken);
     }
 }

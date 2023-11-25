@@ -1,17 +1,10 @@
 ﻿using System;
 using MediatR;
 
-namespace CPG.Domain.AggregateModels.BookAggregate.Events
-{
-    public class BookReturnedEvent : INotification
-    {
-        public long BookId { get; }
-        public DateTime DateOccured { get; }
+namespace CPG.Domain.AggregateModels.BookAggregate.Events;
 
-        public BookReturnedEvent(long bookId, DateTime dateOccured)
-        {
-            BookId = bookId;
-            DateOccured = dateOccured;
-        }
-    }
+public class BookReturnedEvent(long bookId, DateTime dateOccured) : INotification
+{
+    public long BookId { get; } = bookId;
+    public DateTime DateOccured { get; } = dateOccured;
 }

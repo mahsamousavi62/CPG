@@ -7,256 +7,255 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace CPG.Infrastructure.Persistence.Migrations
+namespace CPG.Infrastructure.Persistence.Migrations;
+
+[DbContext(typeof(WriteDbContext))]
+[Migration("20220208152821_init_database")]
+partial class init_database
 {
-    [DbContext(typeof(WriteDbContext))]
-    [Migration("20220208152821_init_database")]
-    partial class init_database
+    protected override void BuildTargetModel(ModelBuilder modelBuilder)
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
-        {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.12")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+        modelBuilder
+            .HasAnnotation("Relational:MaxIdentifierLength", 128)
+            .HasAnnotation("ProductVersion", "5.0.12")
+            .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("CPG.Domain.AggregateModels.BookAggregate.Book", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("BookId")
-                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
-                        .HasAnnotation("SqlServer:IdentitySeed", 1)
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+        modelBuilder.Entity("CPG.Domain.AggregateModels.BookAggregate.Book", b =>
+            {
+                b.Property<long>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("bigint")
+                    .HasColumnName("BookId")
+                    .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                    .HasAnnotation("SqlServer:IdentitySeed", 1)
+                    .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<bool>("InStock")
-                        .HasColumnType("bit")
-                        .HasColumnName("InStock");
+                b.Property<bool>("InStock")
+                    .HasColumnType("bit")
+                    .HasColumnName("InStock");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("Book");
-                });
+                b.ToTable("Book");
+            });
 
-            modelBuilder.Entity("CPG.Domain.AggregateModels.CPGUserAggregate.CPGUser", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("CPGUserId")
-                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
-                        .HasAnnotation("SqlServer:IdentitySeed", 1)
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+        modelBuilder.Entity("CPG.Domain.AggregateModels.CPGUserAggregate.CPGUser", b =>
+            {
+                b.Property<long>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("bigint")
+                    .HasColumnName("CPGUserId")
+                    .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                    .HasAnnotation("SqlServer:IdentitySeed", 1)
+                    .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("FirstName");
+                b.Property<string>("FirstName")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)")
+                    .HasColumnName("FirstName");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit")
-                        .HasColumnName("IsActive");
+                b.Property<bool>("IsActive")
+                    .HasColumnType("bit")
+                    .HasColumnName("IsActive");
 
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("LastName");
+                b.Property<string>("LastName")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)")
+                    .HasColumnName("LastName");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("CPGUser");
-                });
+                b.ToTable("CPGUser");
+            });
 
-            modelBuilder.Entity("CPG.Domain.SharedKernel.Loan", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("LoanId")
-                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
-                        .HasAnnotation("SqlServer:IdentitySeed", 1)
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+        modelBuilder.Entity("CPG.Domain.SharedKernel.Loan", b =>
+            {
+                b.Property<long>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("bigint")
+                    .HasColumnName("LoanId")
+                    .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                    .HasAnnotation("SqlServer:IdentitySeed", 1)
+                    .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit")
-                        .HasColumnName("IsActive");
+                b.Property<bool>("IsActive")
+                    .HasColumnType("bit")
+                    .HasColumnName("IsActive");
 
-                    b.Property<long>("_bookId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("BookId");
+                b.Property<long>("_bookId")
+                    .HasColumnType("bigint")
+                    .HasColumnName("BookId");
 
-                    b.Property<long>("_userId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("UserId");
+                b.Property<long>("_userId")
+                    .HasColumnType("bigint")
+                    .HasColumnName("UserId");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("_bookId");
+                b.HasIndex("_bookId");
 
-                    b.HasIndex("_userId");
+                b.HasIndex("_userId");
 
-                    b.ToTable("Loan");
-                });
+                b.ToTable("Loan");
+            });
 
-            modelBuilder.Entity("CPG.Domain.AggregateModels.BookAggregate.Book", b =>
-                {
-                    b.OwnsOne("CPG.Domain.AggregateModels.BookAggregate.BookInformation", "BookInformation", b1 =>
-                        {
-                            b1.Property<long>("BookId")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("bigint")
-                                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+        modelBuilder.Entity("CPG.Domain.AggregateModels.BookAggregate.Book", b =>
+            {
+                b.OwnsOne("CPG.Domain.AggregateModels.BookAggregate.BookInformation", "BookInformation", b1 =>
+                    {
+                        b1.Property<long>("BookId")
+                            .ValueGeneratedOnAdd()
+                            .HasColumnType("bigint")
+                            .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                            b1.Property<string>("Author")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("Author");
+                        b1.Property<string>("Author")
+                            .IsRequired()
+                            .HasColumnType("nvarchar(max)")
+                            .HasColumnName("Author");
 
-                            b1.Property<string>("Subject")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("Subject");
+                        b1.Property<string>("Subject")
+                            .IsRequired()
+                            .HasColumnType("nvarchar(max)")
+                            .HasColumnName("Subject");
 
-                            b1.Property<string>("Title")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("Title");
+                        b1.Property<string>("Title")
+                            .IsRequired()
+                            .HasColumnType("nvarchar(max)")
+                            .HasColumnName("Title");
 
-                            b1.HasKey("BookId");
+                        b1.HasKey("BookId");
 
-                            b1.ToTable("Book");
+                        b1.ToTable("Book");
 
-                            b1.WithOwner()
-                                .HasForeignKey("BookId");
+                        b1.WithOwner()
+                            .HasForeignKey("BookId");
 
-                            b1.OwnsOne("CPG.Domain.AggregateModels.BookAggregate.Isbn", "Isbn", b2 =>
-                                {
-                                    b2.Property<long>("BookInformationBookId")
-                                        .ValueGeneratedOnAdd()
-                                        .HasColumnType("bigint")
-                                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        b1.OwnsOne("CPG.Domain.AggregateModels.BookAggregate.Isbn", "Isbn", b2 =>
+                            {
+                                b2.Property<long>("BookInformationBookId")
+                                    .ValueGeneratedOnAdd()
+                                    .HasColumnType("bigint")
+                                    .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                                    b2.Property<string>("Value")
-                                        .IsRequired()
-                                        .HasColumnType("nvarchar(max)")
-                                        .HasColumnName("Isbn");
+                                b2.Property<string>("Value")
+                                    .IsRequired()
+                                    .HasColumnType("nvarchar(max)")
+                                    .HasColumnName("Isbn");
 
-                                    b2.HasKey("BookInformationBookId");
+                                b2.HasKey("BookInformationBookId");
 
-                                    b2.ToTable("Book");
+                                b2.ToTable("Book");
 
-                                    b2.WithOwner()
-                                        .HasForeignKey("BookInformationBookId");
-                                });
+                                b2.WithOwner()
+                                    .HasForeignKey("BookInformationBookId");
+                            });
 
-                            b1.Navigation("Isbn");
-                        });
+                        b1.Navigation("Isbn");
+                    });
 
-                    b.Navigation("BookInformation");
-                });
+                b.Navigation("BookInformation");
+            });
 
-            modelBuilder.Entity("CPG.Domain.AggregateModels.CPGUserAggregate.CPGUser", b =>
-                {
-                    b.OwnsOne("CPG.Domain.AggregateModels.CPGUserAggregate.Email", "Email", b1 =>
-                        {
-                            b1.Property<long>("CPGUserId")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("bigint")
-                                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+        modelBuilder.Entity("CPG.Domain.AggregateModels.CPGUserAggregate.CPGUser", b =>
+            {
+                b.OwnsOne("CPG.Domain.AggregateModels.CPGUserAggregate.Email", "Email", b1 =>
+                    {
+                        b1.Property<long>("CPGUserId")
+                            .ValueGeneratedOnAdd()
+                            .HasColumnType("bigint")
+                            .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                            b1.Property<string>("Value")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("Email");
+                        b1.Property<string>("Value")
+                            .IsRequired()
+                            .HasColumnType("nvarchar(max)")
+                            .HasColumnName("Email");
 
-                            b1.HasKey("CPGUserId");
+                        b1.HasKey("CPGUserId");
 
-                            b1.ToTable("CPGUser");
+                        b1.ToTable("CPGUser");
 
-                            b1.WithOwner()
-                                .HasForeignKey("CPGUserId");
-                        });
+                        b1.WithOwner()
+                            .HasForeignKey("CPGUserId");
+                    });
 
-                    b.OwnsOne("CPG.Domain.AggregateModels.CPGUserAggregate.UserCredential", "Credentials", b1 =>
-                        {
-                            b1.Property<long>("CPGUserId")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("bigint")
-                                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                b.OwnsOne("CPG.Domain.AggregateModels.CPGUserAggregate.UserCredential", "Credentials", b1 =>
+                    {
+                        b1.Property<long>("CPGUserId")
+                            .ValueGeneratedOnAdd()
+                            .HasColumnType("bigint")
+                            .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                            b1.Property<string>("Login")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("Login");
+                        b1.Property<string>("Login")
+                            .IsRequired()
+                            .HasColumnType("nvarchar(max)")
+                            .HasColumnName("Login");
 
-                            b1.Property<string>("Password")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("Password");
+                        b1.Property<string>("Password")
+                            .IsRequired()
+                            .HasColumnType("nvarchar(max)")
+                            .HasColumnName("Password");
 
-                            b1.HasKey("CPGUserId");
+                        b1.HasKey("CPGUserId");
 
-                            b1.ToTable("CPGUser");
+                        b1.ToTable("CPGUser");
 
-                            b1.WithOwner()
-                                .HasForeignKey("CPGUserId");
-                        });
+                        b1.WithOwner()
+                            .HasForeignKey("CPGUserId");
+                    });
 
-                    b.Navigation("Credentials");
+                b.Navigation("Credentials");
 
-                    b.Navigation("Email");
-                });
+                b.Navigation("Email");
+            });
 
-            modelBuilder.Entity("CPG.Domain.SharedKernel.Loan", b =>
-                {
-                    b.HasOne("CPG.Domain.AggregateModels.BookAggregate.Book", null)
-                        .WithMany("_loans")
-                        .HasForeignKey("_bookId");
+        modelBuilder.Entity("CPG.Domain.SharedKernel.Loan", b =>
+            {
+                b.HasOne("CPG.Domain.AggregateModels.BookAggregate.Book", null)
+                    .WithMany("_loans")
+                    .HasForeignKey("_bookId");
 
-                    b.HasOne("CPG.Domain.AggregateModels.CPGUserAggregate.CPGUser", null)
-                        .WithMany("ActiveLoans")
-                        .HasForeignKey("_userId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                b.HasOne("CPG.Domain.AggregateModels.CPGUserAggregate.CPGUser", null)
+                    .WithMany("ActiveLoans")
+                    .HasForeignKey("_userId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.OwnsOne("CPG.Domain.SharedKernel.DateTimePeriod", "BorrowPeriod", b1 =>
-                        {
-                            b1.Property<long>("LoanId")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("bigint")
-                                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                b.OwnsOne("CPG.Domain.SharedKernel.DateTimePeriod", "BorrowPeriod", b1 =>
+                    {
+                        b1.Property<long>("LoanId")
+                            .ValueGeneratedOnAdd()
+                            .HasColumnType("bigint")
+                            .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                            b1.Property<DateTime>("EndDate")
-                                .HasColumnType("datetime2")
-                                .HasColumnName("EndDate");
+                        b1.Property<DateTime>("EndDate")
+                            .HasColumnType("datetime2")
+                            .HasColumnName("EndDate");
 
-                            b1.Property<DateTime>("StartDate")
-                                .HasColumnType("datetime2")
-                                .HasColumnName("StartDate");
+                        b1.Property<DateTime>("StartDate")
+                            .HasColumnType("datetime2")
+                            .HasColumnName("StartDate");
 
-                            b1.HasKey("LoanId");
+                        b1.HasKey("LoanId");
 
-                            b1.ToTable("Loan");
+                        b1.ToTable("Loan");
 
-                            b1.WithOwner()
-                                .HasForeignKey("LoanId");
-                        });
+                        b1.WithOwner()
+                            .HasForeignKey("LoanId");
+                    });
 
-                    b.Navigation("BorrowPeriod");
-                });
+                b.Navigation("BorrowPeriod");
+            });
 
-            modelBuilder.Entity("CPG.Domain.AggregateModels.BookAggregate.Book", b =>
-                {
-                    b.Navigation("_loans");
-                });
+        modelBuilder.Entity("CPG.Domain.AggregateModels.BookAggregate.Book", b =>
+            {
+                b.Navigation("_loans");
+            });
 
-            modelBuilder.Entity("CPG.Domain.AggregateModels.CPGUserAggregate.CPGUser", b =>
-                {
-                    b.Navigation("ActiveLoans");
-                });
+        modelBuilder.Entity("CPG.Domain.AggregateModels.CPGUserAggregate.CPGUser", b =>
+            {
+                b.Navigation("ActiveLoans");
+            });
 #pragma warning restore 612, 618
-        }
     }
 }

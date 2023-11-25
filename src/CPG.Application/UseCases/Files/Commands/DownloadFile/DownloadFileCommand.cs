@@ -6,15 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CPG.Application.UseCases.Files.Commands.DownloadFile
-{
-    public class DownloadFileCommand : IRequest<IFile>
-    {
-        public string FileName { get; set; }
+namespace CPG.Application.UseCases.Files.Commands.DownloadFile;
 
-        public DownloadFileCommand(string fileName)
-        {
-            FileName = fileName;
-        }
+public class DownloadFileCommand : IRequest<IFile>
+{
+    public string FileName { get; set; }
+
+    public DownloadFileCommand(string fileName)
+    {
+        FileName = fileName;
     }
 }

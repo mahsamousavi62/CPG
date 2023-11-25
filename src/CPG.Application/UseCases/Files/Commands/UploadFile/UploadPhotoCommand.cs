@@ -2,15 +2,14 @@
 using MediatR;
 
 
-namespace CPG.Application.UseCases.Files.Commands.UploadFile
-{
-    public class UploadPhotoCommand:IRequest<string>
-    {
-        public IFile File { get; set; }
+namespace CPG.Application.UseCases.Files.Commands.UploadFile;
 
-        public UploadPhotoCommand(IFile file)
-        {
-            File = file;
-        }
+public class UploadPhotoCommand:IRequest<string>
+{
+    public IFile File { get; set; }
+
+    public UploadPhotoCommand(IFile file)
+    {
+        File = file;
     }
 }

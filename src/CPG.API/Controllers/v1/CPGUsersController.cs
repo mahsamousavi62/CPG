@@ -1,18 +1,16 @@
-﻿using System.Threading.Tasks;
-using CPG.Application.UseCases.CPGUsers.Commands.RegisterCPGUser;
+﻿using CPG.Application.UseCases.CPGUsers.Commands.RegisterCPGUser;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CPG.API.Controllers.v1
+namespace CPG.API.Controllers;
+
+public class CPGUsersController : ApiBaseController
 {
-    public class CPGUsersController : ApiBaseController
+    [AllowAnonymous]
+    [HttpPost]
+    public async Task<IActionResult> RegisterCPGUser(RegisterCPGUserCommand command)
     {
-        [AllowAnonymous]
-        [HttpPost]
-        public async Task<IActionResult> RegisterCPGUser(RegisterCPGUserCommand command)
-        {
-            await Mediator.Send(command);
-            return Ok();
-        }
+        await Mediator.Send(command);
+        return Ok();
     }
 }

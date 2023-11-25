@@ -9,58 +9,57 @@ using CPG.Domain.SharedKernel;
 using CPG.Domain.Tests.Unit.Helpers;
 using Xunit;
 
-namespace CPG.Domain.Tests.Unit.AggregateModels.CPGUserAggregate.CPGUserTests
+namespace CPG.Domain.Tests.Unit.AggregateModels.CPGUserAggregate.CPGUserTests;
+
+public class BorrowBookTests : AggregateTestHelper
 {
-    public class BorrowBookTests : AggregateTestHelper
+    private readonly CPGUser _CPGUser;
+    private readonly Book _book;
+    private readonly DateTimePeriod _dateTimePeriod;
+
+    public BorrowBookTests()
     {
-        private readonly CPGUser _CPGUser;
-        private readonly Book _book;
-        private readonly DateTimePeriod _dateTimePeriod;
+        _CPGUser = GetValidCPGUserAggregate();
+        _book = GetValidBookAggregate();
+        _dateTimePeriod = GetValidDateTimePeriod();
+    }
 
-        public BorrowBookTests()
+    private void Act()
+        => _CPGUser.BorrowBook(_book.Id, _dateTimePeriod);
+
+    [Fact]
+    public void when_CPG_user_borrows_available_book_should_has_new_loan_registered()
+    {
+        // Act
+        Act();
+
+        // Assert
+        _CPGUser.ActiveLoans.Count.Should().Be(1);
+        _CPGUser.ActiveLoans.First().IsActive.Should().BeTrue();
+        
+        _CPGUser.DomainEvents.Count.Should().Be(1);
+        var @event = _CPGUser.DomainEvents.First();
+        @event.Should().BeOfType<CPGUserBorrowedBookEvent>();
+        (@event as CPGUserBorrowedBookEvent)?.BookId.Should().Be(_book.Id);
+        (@event as CPGUserBorrowedBookEvent)?.CPGUserId.Should().Be(_CPGUser.Id);
+    }
+
+    [Fact]
+    public void when_CPG_user_has_already_exceeded_maximum_value_of_borrowed_books_should_throws_an_exception()
+    {
+        // Arrange
+        _CPGUser._activeLoans.AddRange(new List<Loan>
         {
-            _CPGUser = GetValidCPGUserAggregate();
-            _book = GetValidBookAggregate();
-            _dateTimePeriod = GetValidDateTimePeriod();
-        }
+            GetSampleLoanEntity(),
+            GetSampleLoanEntity(),
+            GetSampleLoanEntity()
+        });
 
-        private void Act()
-            => _CPGUser.BorrowBook(_book.Id, _dateTimePeriod);
+        // Act
+        var result = Record.Exception(Act);
 
-        [Fact]
-        public void when_CPG_user_borrows_available_book_should_has_new_loan_registered()
-        {
-            // Act
-            Act();
-
-            // Assert
-            _CPGUser.ActiveLoans.Count.Should().Be(1);
-            _CPGUser.ActiveLoans.First().IsActive.Should().BeTrue();
-            
-            _CPGUser.DomainEvents.Count.Should().Be(1);
-            var @event = _CPGUser.DomainEvents.First();
-            @event.Should().BeOfType<CPGUserBorrowedBookEvent>();
-            (@event as CPGUserBorrowedBookEvent)?.BookId.Should().Be(_book.Id);
-            (@event as CPGUserBorrowedBookEvent)?.CPGUserId.Should().Be(_CPGUser.Id);
-        }
-
-        [Fact]
-        public void when_CPG_user_has_already_exceeded_maximum_value_of_borrowed_books_should_throws_an_exception()
-        {
-            // Arrange
-            _CPGUser._activeLoans.AddRange(new List<Loan>
-            {
-                GetSampleLoanEntity(),
-                GetSampleLoanEntity(),
-                GetSampleLoanEntity()
-            });
-
-            // Act
-            var result = Record.Exception(Act);
-
-            // Assert
-            result.Should().NotBeNull();
-            result.Should().BeOfType<CPGUserMaximumBooksBorrowedExceededException>();
-        }
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType<CPGUserMaximumBooksBorrowedExceededException>();
     }
 }

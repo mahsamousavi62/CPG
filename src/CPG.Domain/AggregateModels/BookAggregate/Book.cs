@@ -1,62 +1,59 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using CPG.Domain.AggregateModels.BookAggregate.Events;
 using CPG.Domain.AggregateModels.BookAggregate.Exceptions;
-using CPG.Domain.AggregateModels.CPGUserAggregate;
 using CPG.Domain.SeedWork;
 using CPG.Domain.SharedKernel;
 
-namespace CPG.Domain.AggregateModels.BookAggregate
+namespace CPG.Domain.AggregateModels.BookAggregate;
+
+public class Book : Entity<long>, IAggregateRoot
 {
-    public class Book : Entity<long>, IAggregateRoot
+    internal BookInformation _bookInformation;
+    internal List<Loan> _loans;
+    internal bool _inStock;
+
+    public BookInformation BookInformation => _bookInformation;
+    public bool InStock => _inStock;
+
+    internal Book()
     {
-        internal BookInformation _bookInformation;
-        internal List<Loan> _loans;
-        internal bool _inStock;
+        _loans = new List<Loan>();
+    }
 
-        public BookInformation BookInformation => _bookInformation;
-        public bool InStock => _inStock;
+    private Book(BookInformation bookInformation) : this()
+    {
+        _bookInformation = bookInformation;
+        _inStock = true;
+    }
 
-        internal Book()
-        {
-            _loans = new List<Loan>();
-        }
-
-        private Book(BookInformation bookInformation) : this()
-        {
-            _bookInformation = bookInformation;
-            _inStock = true;
-        }
-
-        public static Book Register(string title, string author, string subject, string isbn, long userId)
-        {
-            var bookInformation = new BookInformation(title, author, subject, isbn);
-            var book = new Book(bookInformation);
-            
-            book.AddDomainEvent(new NewBookRegisteredEvent(book.Id, DateTime.UtcNow));
-
-            return book;
-        }
+    public static Book Register(string title, string author, string subject, string isbn, long userId)
+    {
+        var bookInformation = new BookInformation(title, author, subject, isbn);
+        var book = new Book(bookInformation);
         
-        public void SetAsNotAvailable(long CPGUserId, DateTimePeriod borrowPeriod)
-        {
-            if (!InStock)
-                throw new BookIsNotInStockException();
-            
-            _inStock = false;
+        book.AddDomainEvent(new NewBookRegisteredEvent(book.Id, DateTime.UtcNow));
 
-            AddDomainEvent(new BookBorrowedEvent(Id, CPGUserId, borrowPeriod));
-        }
+        return book;
+    }
+    
+    public void SetAsNotAvailable(long CPGUserId, DateTimePeriod borrowPeriod)
+    {
+        if (!InStock)
+            throw new BookIsNotInStockException();
+        
+        _inStock = false;
 
-        public void SetAsAvailable(long CPGUserId)
-        {
-            if (InStock)
-                throw new BookIsInStockException(Id);
+        AddDomainEvent(new BookBorrowedEvent(Id, CPGUserId, borrowPeriod));
+    }
 
-            _inStock = true;
+    public void SetAsAvailable(long CPGUserId)
+    {
+        if (InStock)
+            throw new BookIsInStockException(Id);
 
-            AddDomainEvent(new BookReturnedEvent(Id, DateTime.UtcNow));
-        }
+        _inStock = true;
+
+        AddDomainEvent(new BookReturnedEvent(Id, DateTime.UtcNow));
     }
 }

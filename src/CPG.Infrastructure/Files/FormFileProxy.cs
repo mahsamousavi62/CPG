@@ -6,46 +6,45 @@ using System.Threading;
 using System.Threading.Tasks;
 
 
-namespace CPG.Infrastructure.File
+namespace CPG.Infrastructure.File;
+
+public class FormFileProxy : IFile
 {
-    public class FormFileProxy : IFile
+    public FormFileProxy()
     {
-        public FormFileProxy()
+        
+    }
+    private readonly IFormFile _formFile;
+    public string ContentType
+    {
+        get
         {
-            
+            return _formFile.ContentType;
         }
-        private readonly IFormFile _formFile;
-        public string ContentType
-        {
-            get
-            {
-                return _formFile.ContentType;
-            }
-            set { }
-        }
+        set { }
+    }
 
-        public long Length => _formFile.Length;
+    public long Length => _formFile.Length;
 
-        public string FileName { get => _formFile.FileName; set { } }
+    public string FileName { get => _formFile.FileName; set { } }
 
-        public Stream Content { get ; set ; }=new MemoryStream();
+    public Stream Content { get ; set ; }=new MemoryStream();
 
-        public FormFileProxy(IFormFile formFile)
-        {
-            Guard.Against.Null(formFile, nameof(formFile));
-            _formFile = formFile;
-        }
+    public FormFileProxy(IFormFile formFile)
+    {
+        Guard.Against.Null(formFile, nameof(formFile));
+        _formFile = formFile;
+    }
 
-        public Task CopyToAsync(Stream target)
-        {
-            return _formFile.CopyToAsync(target);
-        }
+    public Task CopyToAsync(Stream target)
+    {
+        return _formFile.CopyToAsync(target);
+    }
 
-        public async Task<byte[]> GetData()
-        {
-            using var stream = new MemoryStream();
-            await CopyToAsync(stream);
-            return stream.ToArray();
-        }
+    public async Task<byte[]> GetData()
+    {
+        using var stream = new MemoryStream();
+        await CopyToAsync(stream);
+        return stream.ToArray();
     }
 }

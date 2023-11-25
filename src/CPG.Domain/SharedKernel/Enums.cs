@@ -1,38 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace CPG.Domain.SharedKernel;
 
-namespace CPG.Domain.SharedKernel
+public class Enums
 {
-    public class Enums
+    public enum BankStatus
     {
-        public enum BankStatus
-        {
-            Active = 1,
-            Inactive = 2,
-            Suspended = 3,
-        }
+        Active = 1,
+        Inactive = 2,
+        Suspended = 3,
+    }
 
-        public enum ApplicationSettingEntityType
-        {
-            IDPCredential = 1,
-        }
+    public enum ApplicationSettingEntityType
+    {
+        IDPCredential = 1,
+    }
 
-        public enum UserRoleType
-        {
-            Customer = 3
-        }
+    public enum UserRoleType
+    {
+        Customer = 3
+    }
 
-        public enum OperationResult : byte
-        {
-            NotFound,
-            Succeeded,
-            Failed,
-            Duplicate,
-            NotValid
-        }
+    public enum OperationResult : byte
+    {
+        NotFound,
+        Succeeded,
+        Failed,
+        Duplicate,
+        NotValid
+    }
 
         public enum CompanyPaymentMethodType
         {
@@ -47,21 +41,11 @@ namespace CPG.Domain.SharedKernel
         }
     }
 
-    public struct ResultData<T>
-    {
-        public T? Data { get; set; }
+public struct ResultData<T>(Enums.OperationResult operationResult)
+{
+    public T? Data { get; set; } = default(T);
 
-        public Enums.OperationResult OperationResult { get; set; }
+    public Enums.OperationResult OperationResult { get; set; } = operationResult;
 
-        public string? Error { get; set; }
-
-        public ResultData(Enums.OperationResult operationResult)
-        {
-            Data = default(T);
-            Error = null;
-            OperationResult = operationResult;
-        }
-
-
-    }
+    public string? Error { get; set; } = null;
 }

@@ -6,15 +6,12 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CPG.Domain.SharedKernel.Minio
+namespace CPG.Domain.SharedKernel.Minio;
+
+public interface IMinioProvider
 {
-    public interface IMinioProvider
-    {
-        Task<string> PutObject(IFile file);
-        Task<IFile> GetObjectByName(string objectName);
+    Task<string> PutObject(IFile file);
+    Task<IFile> GetObjectByName(string objectName);
 
-        Task<string> PresignedGetObject(string objectName);   
-    }
-
-
+    Task<string> PresignedGetObject(string objectName);   
 }

@@ -1,7 +1,6 @@
-﻿namespace CPG.Domain.SharedKernel
+﻿namespace CPG.Domain.SharedKernel;
+
+public interface ICurrentUser
 {
-    public interface ICurrentUser
-    {
-        long UserId { get; }
-    }
+    long UserId { get; }
 }

@@ -7,34 +7,28 @@ using CPG.Domain.AggregateModels.CPGUserAggregate.Specifications;
 using CPG.Domain.SharedKernel;
 using MediatR;
 
-namespace CPG.Application.UseCases.CPGUsers.Commands.RegisterCPGUser
+namespace CPG.Application.UseCases.CPGUsers.Commands.RegisterCPGUser;
+
+public class RegisterCPGUserCommandHandler(IAggregateRepository<CPGUser> repository) : IRequestHandler<RegisterCPGUserCommand>
 {
-    public class RegisterCPGUserCommandHandler : IRequestHandler<RegisterCPGUserCommand>
+    private readonly IAggregateRepository<CPGUser> _repository = repository;
+
+    public async Task Handle(RegisterCPGUserCommand command, CancellationToken cancellationToken)
     {
-        private readonly IAggregateRepository<CPGUser> _repository;
+        var spec = new CPGUserByEmailSpec(command.Email);
+        var existingCPGUser = await _repository.GetBySpecAsync(spec, cancellationToken);
 
-        public RegisterCPGUserCommandHandler(IAggregateRepository<CPGUser> repository)
-        {
-            _repository = repository;
-        }
+        if (existingCPGUser is not null)
+            throw new CPGUserAlreadyExistsException(command.Email);
 
-        public async Task Handle(RegisterCPGUserCommand request, CancellationToken cancellationToken)
-        {
-            var spec = new CPGUserByEmailSpec(request.Email);
-            var existingCPGUser = await _repository.GetBySpecAsync(spec, cancellationToken);
+        var hashedPassword = PasswordManager.HashPassword(command.Password); // Should we do it here or is it a domain responsibility to hash password? I guess it's domain's
+        var credentials = new UserCredential(command.Login, hashedPassword);
+        var name = new Name(command.FirstName, command.LastName);
+        var email = new Email(command.Email);
 
-            if (existingCPGUser is not null)
-                throw new CPGUserAlreadyExistsException(request.Email);
+        var cpgUser = CPGUser.Create(credentials, name, email);
 
-            var hashedPassword = PasswordManager.HashPassword(request.Password); // Should we do it here or is it a domain responsibility to hash password? I guess it's domain's
-            var credentials = new UserCredential(request.Login, hashedPassword);
-            var name = new Name(request.FirstName, request.LastName);
-            var email = new Email(request.Email);
-
-            var cpgUser = CPGUser.Create(credentials, name, email);
-
-            await _repository.AddAsync(cpgUser, cancellationToken);
-            await _repository.SaveChangesAsync(cancellationToken);
-        }
+        await _repository.AddAsync(cpgUser, cancellationToken);
+        await _repository.SaveChangesAsync(cancellationToken);
     }
 }

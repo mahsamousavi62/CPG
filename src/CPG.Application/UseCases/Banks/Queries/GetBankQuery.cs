@@ -1,18 +1,9 @@
 ﻿using CPG.Application.UseCases.Banks.ViewModels;
-using CPG.Application.UseCases.Books.ViewModels;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace CPG.Application.UseCases.Banks.Queries
+namespace CPG.Application.UseCases.Banks.Queries;
+
+public class GetBankQuery(int bankId) : IRequest<BankViewModel>
 {
-    public class GetBankQuery : IRequest<BankViewModel>
-    {
-        public int BankId { get; }
-
-        public GetBankQuery(int bankId) => BankId = bankId;
-    }
+    public int BankId { get; } = bankId;
 }

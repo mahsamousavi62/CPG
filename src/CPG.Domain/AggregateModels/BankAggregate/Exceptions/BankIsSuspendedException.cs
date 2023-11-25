@@ -1,18 +1,9 @@
 ﻿using CPG.Domain.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace CPG.Domain.AggregateModels.BankAggregate.Exceptions
+namespace CPG.Domain.AggregateModels.BankAggregate.Exceptions;
+
+internal class BankIsSuspendedException(long bookId) : DomainException(string.Format(Resource.BankIsAlreadySuspended, bookId))
 {
-    internal class BankIsSuspendedException : DomainException
-    {
-        public override string Code => "bank_is_already_suspended";
-        public long BookId { get; }
-
-        public BankIsSuspendedException(long bookId) : base(string.Format(Resource.BankIsAlreadySuspended, bookId))
-           => BookId = bookId;
-    }
+    public override string Code => "bank_is_already_suspended";
+    public long BookId { get; } = bookId;
 }
