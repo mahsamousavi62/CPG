@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CPG.Application.UseCases.Files.Commands.DownloadFile;
 
-public class DownloadFileCommandHandler : IRequestHandler<DownloadFileCommand, IFile>
+public class DownloadFileCommandHandler : IRequestHandler<DownloadFileCommand, FileViewModel>
 {
     private readonly IMinioProvider _minioProvider;
 
@@ -18,7 +18,7 @@ public class DownloadFileCommandHandler : IRequestHandler<DownloadFileCommand, I
     {
         _minioProvider = minioProvider;
     }
-    public async Task<IFile> Handle(DownloadFileCommand request, CancellationToken cancellationToken)
+    public async Task<FileViewModel> Handle(DownloadFileCommand request, CancellationToken cancellationToken)
     {
         var result = await _minioProvider.GetObjectByName(request.FileName);
     

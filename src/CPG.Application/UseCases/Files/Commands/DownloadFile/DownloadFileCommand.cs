@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CPG.Application.UseCases.Files.Commands.DownloadFile;
 
-public class DownloadFileCommand : IRequest<IFile>
+public class DownloadFileCommand : IRequest<FileViewModel>
 {
     public string FileName { get; set; }
 
