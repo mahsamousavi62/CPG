@@ -6,15 +6,20 @@ using Newtonsoft.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CPG.Application.UseCases.Users.EventHandlers;
-
-public class GetIdpUserProfileEventHandler(IHttpClientFactoryService httpClientFactoryService) : INotificationHandler<GetIdpUserProfileEvent>
+namespace CPG.Application.UseCases.Users.EventHandlers
 {
-    private readonly IHttpClientFactoryService _httpClientFactoryService = httpClientFactoryService;
-
-    public async Task Handle(GetIdpUserProfileEvent getIdpUserProfileEvent, CancellationToken cancellationToken)
+    public class GetIdpUserProfileEventHandler : INotificationHandler<GetIdpUserProfileEvent>
     {
-        var strModel = await _httpClientFactoryService.Execute(getIdpUserProfileEvent.IdpUserProfileModel);
-        var idpUserProfile = JsonConvert.DeserializeObject<IdpUserProfile>(strModel);
+        private readonly IHttpClientFactoryService _httpClientFactoryService;
+
+        public GetIdpUserProfileEventHandler(IHttpClientFactoryService httpClientFactoryService)
+        {
+             _httpClientFactoryService = httpClientFactoryService;
+        }
+        public async Task Handle(GetIdpUserProfileEvent getIdpUserProfileEvent, CancellationToken cancellationToken)
+        {
+            var strModel = await _httpClientFactoryService.Execute(getIdpUserProfileEvent.IdpUserProfileModel);
+            var idpUserProfile = JsonConvert.DeserializeObject<IdpUserProfile>(strModel);
+        }
     }
 }

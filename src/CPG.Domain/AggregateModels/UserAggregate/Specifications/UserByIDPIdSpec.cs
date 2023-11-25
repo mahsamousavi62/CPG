@@ -1,12 +1,13 @@
 ﻿using Ardalis.Specification;
 using System.Linq;
 
-namespace CPG.Domain.AggregateModels.UserAggregate.Specifications;
-
-public class UserByIDPIdSpec : Specification<User>, ISingleResultSpecification<User>
+namespace CPG.Domain.AggregateModels.UserAggregate.Specifications
 {
-    public UserByIDPIdSpec(string iDPId)
+    public class UserByIDPIdSpec : Specification<User>, ISingleResultSpecification<User>
     {
-        Query.Where(user => user.IDPId == iDPId);
+        public UserByIDPIdSpec(string iDPId)
+        {
+            Query.Where(user => user.IDPId == iDPId);
+        }
     }
 }

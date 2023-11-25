@@ -2,27 +2,28 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations;
-
-public class UserRoleConfiguration : IEntityTypeConfiguration<UserRole>
+namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations
 {
-    public void Configure(EntityTypeBuilder<UserRole> entity)
+    public class UserRoleConfiguration : IEntityTypeConfiguration<UserRole>
     {
-        entity.ToTable("UserRole");
-        entity.HasKey(x => x.Id);
+        public void Configure(EntityTypeBuilder<UserRole> entity)
+        {
+            entity.ToTable("UserRole");
+            entity.HasKey(x => x.Id);
 
-        entity.Property(x => x.Id)
-         .HasColumnName("Id")
-        .UseIdentityColumn();
+            entity.Property(x => x.Id)
+             .HasColumnName("Id")
+            .UseIdentityColumn();
 
-        entity.Property(x => x.UserId)
-            .HasColumnName("UserId");
-        
-        
-        entity.Property(x => x.CreationDate)
-          .HasColumnName("CreationDate");
+            entity.Property(x => x.UserId)
+                .HasColumnName("UserId");
+            
+            
+            entity.Property(x => x.CreationDate)
+              .HasColumnName("CreationDate");
 
-        entity.Property(x => x.ModificationDate)
-      .HasColumnName("ModificationDate");
+            entity.Property(x => x.ModificationDate)
+          .HasColumnName("ModificationDate");
+        }
     }
 }

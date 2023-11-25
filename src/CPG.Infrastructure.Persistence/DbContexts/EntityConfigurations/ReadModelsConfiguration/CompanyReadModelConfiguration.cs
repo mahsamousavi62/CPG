@@ -1,9 +1,6 @@
-﻿using CPG.Domain.AggregateModels.BookAggregate;
-using CPG.Domain.AggregateModels.CompanyAggregate;
-using CPG.Infrastructure.Persistence.DbContexts.ReadModels;
+﻿using CPG.Infrastructure.Persistence.DbContexts.ReadModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.Reflection.Emit;
 
 namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations.ReadModelsConfiguration
 {

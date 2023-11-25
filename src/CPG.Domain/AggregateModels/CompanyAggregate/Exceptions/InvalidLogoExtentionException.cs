@@ -1,8 +1,12 @@
 ﻿using CPG.Domain.Exceptions;
 
-namespace CPG.Domain.AggregateModels.CompanyAggregate.Exceptions;
-
-internal class InvalidLogoExtentionException(string message) : DomainException(message)
+namespace CPG.Domain.AggregateModels.CompanyAggregate.Exceptions
 {
-    public override string Code => "invalid_logo_extention";
+    internal class InvalidLogoExtentionException : DomainException
+    {
+        public override string Code => "invalid_logo_extention";
+        public InvalidLogoExtentionException(string message) : base(message)
+        {
+        }
+    }
 }

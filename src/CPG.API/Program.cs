@@ -1,5 +1,4 @@
 using CPG.Application;
-using CPG.Application.Shared;
 using CPG.Infrastructure;
 using CPG.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Localization;
@@ -36,7 +35,7 @@ builder.Services.AddSwaggerGen(opt =>
                     Id="Bearer"
                 }
             },
-            new string[]{}
+            Array.Empty<string>()
         }
     });
 });
@@ -68,10 +67,11 @@ builder.Services.AddLocalization();
 
 builder.Services.Configure<RequestLocalizationOptions>(opt =>
 {
-    var supportedLanguages = new List<CultureInfo> {
-                    new CultureInfo("en"),
-                    new CultureInfo("fa")
-                };
+    var supportedLanguages = new List<CultureInfo>
+    {
+        new("en"),
+        new("fa")
+    };
 
     opt.DefaultRequestCulture = new RequestCulture("fa", "fa");
     opt.SupportedCultures = supportedLanguages;
@@ -79,7 +79,6 @@ builder.Services.Configure<RequestLocalizationOptions>(opt =>
 });
 
 var app = builder.Build();
-
 
 app.UseCors(DefaultCorsPolicyName);
 

@@ -1,8 +1,13 @@
 ﻿using MediatR;
 
-namespace CPG.Domain.AggregateModels.UserAggregate.Events;
-
-public class UserRoleAddedEvent(short roleType) : INotification
+namespace CPG.Domain.AggregateModels.UserAggregate.Events
 {
-    public int RoleType { get; set; } = roleType;
+    public class UserRoleAddedEvent:INotification
+    {
+        public int RoleType { get; set; }
+        public UserRoleAddedEvent(short roleType)
+        {
+            RoleType = roleType;
+        }
+    }
 }

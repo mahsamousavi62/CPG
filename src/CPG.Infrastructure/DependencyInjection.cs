@@ -1,10 +1,12 @@
 ﻿using Charisma.MessagingContracts.UsersManagement.User;
 using CPG.Application.Shared;
 using CPG.Domain.SharedKernel;
+using CPG.Domain.SharedKernel.Minio;
 using CPG.Infrastructure.Authorization;
 using CPG.Infrastructure.ErrorHandling;
 using CPG.Infrastructure.Masstransit.Consumer;
 using CPG.Infrastructure.Masstransit.Consumer.UserRegistered;
+using CPG.Infrastructure.Minio;
 using CPG.Infrastructure.Persistence;
 using CPG.Infrastructure.RabbitMQ;
 using CPG.Infrastructure.Time;
@@ -28,10 +30,11 @@ public static class DependencyInjection
             .AddTokenAuthentication(configuration)
             .AddTransient<ICurrentDateTime, CurrentDateTime>()
             .AddMasstransitInfrastructure(configuration)
-            .AddHttpClient()
+            .AddScoped<IMinioClient, MinioClient>()
+            .AddScoped<IMinioProvider, MinioProvider>()
             .AddMinio(configuration)
-            .AddTransient<IHttpClientFactoryService, HttpClientFactoryService>()
-            .AddTransient<IMinioClient, MinioClient>();
+            .AddHttpClient()
+            .AddTransient<IHttpClientFactoryService, HttpClientFactoryService>();
 
     public static IServiceCollection AddMinio(this IServiceCollection services, IConfiguration configuration)
     {

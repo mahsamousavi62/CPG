@@ -2,17 +2,18 @@
 using CPG.Tests.Base;
 using Xunit;
 
-namespace CPG.Domain.Tests.Unit.Shared;
-
-public class ResourceTests : TestBase
+namespace CPG.Domain.Tests.Unit.Shared
 {
-    protected readonly IResourceHelper _resourceHelper = new ResourceHelper();
-
-    [Fact]
-    private void resource_loaded_successfully()
+    public class ResourceTests : TestBase
     {
-        var resources = _resourceHelper.GetResources();
+        protected readonly IResourceHelper _resourceHelper = new ResourceHelper();
 
-        Assert.NotNull(resources);
-    }            
+        [Fact]
+        private void resource_loaded_successfully()
+        {
+            var resources = _resourceHelper.GetResources();
+
+            Assert.NotNull(resources);
+        }            
+    }
 }

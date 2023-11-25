@@ -7,27 +7,33 @@ using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace CPG.Infrastructure.Persistence.QueryHandlers.Book;
-
-public class GetBookByIsbnQueryHandler(ReadDbContext context) : IRequestHandler<GetBookByIsbnQuery, BookViewModel>
+namespace CPG.Infrastructure.Persistence.QueryHandlers.Book
 {
-    private readonly ReadDbContext _context = context;
-
-    public async Task<BookViewModel> Handle(GetBookByIsbnQuery query, CancellationToken cancellationToken)
+    public class GetBookByIsbnQueryHandler : IRequestHandler<GetBookByIsbnQuery, BookViewModel>
     {
-        var book = await _context.BookReadModels
-            .Where(x => x.Isbn == query.Isbn)
-            .Select(x => new BookViewModel
-            {
-                Id = x.Id,
-                Author = x.Author,
-                Isbn = x.Isbn,
-                Subject = x.Subject,
-                Title = x.Title,
-                InStock = x.InStock
-            })
-            .SingleOrDefaultAsync(cancellationToken: cancellationToken);
+        private readonly ReadDbContext _context;
 
-        return book;
+        public GetBookByIsbnQueryHandler(ReadDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<BookViewModel> Handle(GetBookByIsbnQuery query, CancellationToken cancellationToken)
+        {
+            var book = await _context.BookReadModels
+                .Where(x => x.Isbn == query.Isbn)
+                .Select(x => new BookViewModel
+                {
+                    Id = x.Id,
+                    Author = x.Author,
+                    Isbn = x.Isbn,
+                    Subject = x.Subject,
+                    Title = x.Title,
+                    InStock = x.InStock
+                })
+                .SingleOrDefaultAsync(cancellationToken: cancellationToken);
+
+            return book;
+        }
     }
 }
