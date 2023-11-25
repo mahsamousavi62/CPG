@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CPG.API.Controllers
+namespace CPG.API.Controllers.v1
 {
-    
+
     public class UsersController : ApiBaseController
     {
         [HttpPost("CreateUserProfile")]

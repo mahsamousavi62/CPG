@@ -34,7 +34,7 @@ namespace CPG.Domain.SharedKernel
             NotValid
         }
 
-        public enum CompanyPaymentMethod
+        public enum CompanyPaymentMethodType
         {
             InternetPaymentGateway = 1,
             DirectDebit = 2,

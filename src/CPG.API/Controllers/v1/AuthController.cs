@@ -3,7 +3,7 @@ using CPG.Application.UseCases.Auth.Commands.Login;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CPG.API.Controllers
+namespace CPG.API.Controllers.v1
 {
     public class AuthController : ApiBaseController
     {

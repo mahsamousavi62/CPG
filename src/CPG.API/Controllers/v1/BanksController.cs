@@ -5,7 +5,7 @@ using CPG.Application.UseCases.Banks.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CPG.API.Controllers
+namespace CPG.API.Controllers.v1
 {
     [Authorize]
     public class BanksController : ApiBaseController

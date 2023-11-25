@@ -1,28 +1,26 @@
-﻿using CPG.Domain.AggregateModels.CompanyAggregate;
-using CPG.Domain.SeedWork;
+﻿using CPG.Domain.AggregateModels.BookAggregate;
+using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Infrastructure.Persistence.DbContexts.ReadModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection.Emit;
 
 namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations.ReadModelsConfiguration
 {
     public class CompanyReadModelConfiguration : IEntityTypeConfiguration<CompanyReadModel>
     {
-        public void Configure(EntityTypeBuilder<CompanyReadModel> entity)
+        public void Configure(EntityTypeBuilder<CompanyReadModel> readModel)
         {
-            entity.ToTable("Company");
-            entity.HasKey(x => x.Id);
-            entity.Property(x => x.Id).HasColumnName("Id").UseIdentityColumn();
-            entity.Property(x => x.PersianName).HasColumnName("PersianName").IsRequired();
-            entity.Property(x => x.EnglishName).HasColumnName("EnglishName").IsRequired();
-            entity.Property(x => x.Logo).HasColumnName("Logo").IsRequired();
+            readModel.ToTable("Company");
+            readModel.HasKey(x => x.Id);
+            readModel.Property(x => x.Id).HasColumnName("Id");
+            readModel.Property(x => x.PersianName).HasColumnName("PersianName");
+            readModel.Property(x => x.EnglishName).HasColumnName("EnglishName");
+            readModel.Property(x => x.Logo).HasColumnName("Logo");
 
-            entity.HasMany<CompanyPaymentMethods>();
+            readModel.HasMany(a => a.PaymentMethods)
+            .WithOne(b => b.Company)
+            .HasForeignKey(b => b.CompanyId);
         }
     }
 }

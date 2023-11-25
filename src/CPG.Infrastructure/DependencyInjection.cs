@@ -38,8 +38,8 @@ namespace CPG.Infrastructure
                 .AddMasstransitInfrastructure(configuration)
                 .AddHttpClient()
                 .AddMinio(configuration)
-                .AddTransient<IHttpClientFactoryService, HttpClientFactoryService>();
-           // .AddScoped<IServiceProvider, MinioEnvironmentProvider>();
+                .AddTransient<IHttpClientFactoryService, HttpClientFactoryService>()
+                .AddTransient<IMinioClient, MinioClient>();
 
         public static IServiceCollection AddMinio(this IServiceCollection services, IConfiguration configuration)
         {

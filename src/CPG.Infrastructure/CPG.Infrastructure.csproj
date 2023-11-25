@@ -28,9 +28,4 @@
 		<ProjectReference Include="..\CPG.Infrastructure.Persistence\CPG.Infrastructure.Persistence.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="File\" />
-	  <Folder Include="Minio\" />
-	</ItemGroup>
-
 </Project>

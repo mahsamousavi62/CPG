@@ -59,5 +59,14 @@ namespace CPG.Domain.AggregateModels.CompanyAggregate {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to خطا در ایجاد رکورد جدید.
+        /// </summary>
+        internal static string cannot_create_company {
+            get {
+                return ResourceManager.GetString("cannot_create_company", resourceCulture);
+            }
+        }
     }
 }

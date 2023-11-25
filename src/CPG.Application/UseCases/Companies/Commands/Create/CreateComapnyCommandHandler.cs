@@ -25,9 +25,10 @@ namespace CPG.Application.UseCases.Companies.Commands.Create
         {
             PersianName persianName = new(request.Model.PersianName);
             EnglishName englishName = new(request.Model.EnglishName);
-            Logo logo = new("");
+            Logo logo = new(request.Model.File);
 
-            var company = Company.Create(persianName, englishName, request.Model.NationalCodeMatchingRequied,
+            var company = Company.Create(persianName, englishName,
+                                        request.Model.NationalCodeMatchingRequied,
                                         logo, request.Model.MethodTypes);
             //await _repository.AddAsync(company);
             //await _repository.SaveChangesAsync();

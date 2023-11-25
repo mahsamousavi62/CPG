@@ -5,7 +5,7 @@ using CPG.Domain.SharedKernel;
 using HotChocolate.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CPG.API.Controllers
+namespace CPG.API.Controllers.v1
 {
     [ApiController]
     [Route("api/[controller]")]

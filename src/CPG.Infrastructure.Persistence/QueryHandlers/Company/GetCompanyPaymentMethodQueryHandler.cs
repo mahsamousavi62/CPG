@@ -13,10 +13,7 @@ namespace CPG.Infrastructure.Persistence.QueryHandlers.Company
     public class GetCompanyPaymentMethodQueryHandler : IRequestHandler<GetCompanyPaymentMethodsQuery, Dictionary<int, string>>
     {
         public async Task<Dictionary<int, string>> Handle(GetCompanyPaymentMethodsQuery request, CancellationToken cancellationToken)
-        {
-
-            await Task.CompletedTask;
-            return Enum.GetValues(typeof(Enums.CompanyPaymentMethod)).Cast<Enums.CompanyPaymentMethod>().ToDictionary(x => (int)x, x => x.ToString());
-        }
+        => Enum.GetValues(typeof(Enums.CompanyPaymentMethodType)).Cast<Enums.CompanyPaymentMethodType>().ToDictionary(x => (int)x, x => x.ToString());
+        
     }
 }

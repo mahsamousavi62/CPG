@@ -48,7 +48,7 @@ namespace CPG.Infrastructure.Persistence.QueryHandlers.ApplicationSetting
                 item.SetValue(cacheData, Convert.ChangeType(appSettings[item.Name], Type.GetTypeCode(item.PropertyType)));
             }
 
-            _cacheService.SetData<AuthenticationConfigViewModel>(CacheKey, cacheData);
+            _cacheService.SetData(CacheKey, cacheData);
 
             return cacheData;
         }

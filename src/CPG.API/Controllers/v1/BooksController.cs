@@ -8,14 +8,14 @@ using CPG.Application.UseCases.Books.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CPG.API.Controllers
+namespace CPG.API.Controllers.v1
 {
     [Authorize]
     public class BooksController : ApiBaseController
     {
         [AllowAnonymous]
         [HttpGet("{id:long}")]
-        public async Task<ActionResult<BookViewModel>> GetBook(long id) 
+        public async Task<ActionResult<BookViewModel>> GetBook(long id)
             => Ok(await Mediator.Send(new GetBookQuery(id)));
 
         [AllowAnonymous]

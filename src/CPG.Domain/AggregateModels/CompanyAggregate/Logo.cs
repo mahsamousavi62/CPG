@@ -1,8 +1,11 @@
-﻿using CPG.Domain.AggregateModels.CompanyAggregate.Exceptions;
+﻿using Ardalis.GuardClauses;
+using CPG.Application.UseCases.Users.ViewModel;
+using CPG.Domain.AggregateModels.CompanyAggregate.Exceptions;
+using CPG.Domain.SharedKernel.File;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Reflection.Metadata;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -12,30 +15,27 @@ namespace CPG.Domain.AggregateModels.CompanyAggregate
 {
     public class Logo
     {
-
-        public Logo()
-        {
-            
-        }
         public string Value { get; init; }
 
-        public Logo(string logo)
+        public Logo(IFile file)
         {
-            if (string.IsNullOrWhiteSpace(logo))
-                throw new EmptyLogoException($"Parameter {nameof(logo)} cannot be empty.");
+            int maxFileSize = 2 * 1024 * 1024;
 
-            if (!Regex.IsMatch(logo, @"^(?:[a-zA-Z]\:|\\\\[\w\.]+\\[\w.$]+)\\(?:[\w]+\\)*\w([\w.])+$"))
-                throw new InvalidPathLogoException($"Parameter {nameof(logo)} has a  invalid path.");
+            Guard.Against.Null(file, nameof(file));
 
-            //valid lenght of logo
-            string maxlenght = "2*1024*1024";
+            if (file.FileName.IndexOfAny(Path.GetInvalidFileNameChars()) > -1)
+                throw new InvalidLogoException(nameof(file));
 
+            Guard.Against.NegativeOrZero(file.Length, nameof(file));
 
-            //valid extention:"jpg"، "jpeg"، "png"،"tiff" و "svg" 
-            if (!Regex.IsMatch(logo, "^.*\\.(jpg|JPG|gif|jpeg|png|tiff|svg)$"))
-                throw new InvalidLogoExtentionException($"Parameter {nameof(logo)} has a  invalid extention.");
+            if (!Regex.IsMatch(Path.GetExtension(file.FileName), "^.*\\.(jpg|JPG|gif|jpeg|png|tiff|svg)$"))
+                throw new InvalidLogoExtentionException($"Parameter {nameof(file)} has a  invalid extention.");
 
-            Value = logo;
+            if (file.Length > maxFileSize)
+                throw new MaximalFileSizeException("MaximalFileSize");
+
+            Value = file.FileName;
+
         }
     }
 }
