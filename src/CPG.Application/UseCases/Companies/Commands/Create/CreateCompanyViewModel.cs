@@ -1,9 +1,7 @@
 ﻿using CPG.Domain.SharedKernel.File;
 using System.Collections.Generic;
 
-namespace CPG.Application.UseCases.Companies.Commands.Create;
-
-public class CreateCompanyViewModel
+namespace CPG.Application.UseCases.Companies.Commands.Create
 {
     public CreateCompanyViewModel(string persianName, string englishName, bool nationalCodeMatchingRequied, IFile file, short[] methodTypes, List<long> users)
     {

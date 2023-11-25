@@ -17,6 +17,9 @@ public class CompanyPaymentMethods : AuditableEntity<long>
         MethodType = methodType;
         CompanyId = companyId;
     }
+            MethodType = methodType;
+            CompanyId = companyId;
+        }
 
     public CompanyPaymentMethods(short methodType)
     {
@@ -31,10 +34,37 @@ public class CompanyPaymentMethods : AuditableEntity<long>
         if (methodTypes is null || !methodTypes.Any() || methodTypes.Any(m => m == 0))
             throw new InvalidPaymentMethodType($"Parameter {nameof(methodTypes)} cannot be empty.");
 
+        var companyPaymentMethods = methodTypes.Select(i => new CompanyPaymentMethods(i)).ToList();
+        return companyPaymentMethods;
+    }
+            return companyPaymentMethods;
+        }
+=========
+        
+>>>>>>>>> Temporary merge branch 2
+    }
+    public CompanyPaymentMethods(short methodType, long companyId)
+    {
+        MethodType = methodType;
+        CompanyId = companyId;
+    }
+
+    public CompanyPaymentMethods(short methodType)
+    {
+        MethodType = methodType;
+    }
+    public static List<CompanyPaymentMethods> Create(short[] methodTypes)
+    {
+        if (methodTypes is null || !methodTypes.Any())
+            throw new ArgumentNullException(nameof(methodTypes));
+
         if (methodTypes.Select(x => x).Distinct().Count() != methodTypes.Length)
-            throw new DuplicatePaymentMethodTypeException($"Parameter {nameof(methodTypes)} has a duplicate record.");
+            throw new ArgumentException("detail is duplicated");
 
         var companyPaymentMethods = methodTypes.Select(i => new CompanyPaymentMethods(i)).ToList();
         return companyPaymentMethods;
     }
+
+    public short MethodType { get; set; }
+    public long CompanyId { get; set; }
 }
