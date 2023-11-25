@@ -4,38 +4,45 @@ using System;
 using System.Text;
 using System.Text.Json;
 
-namespace CPG.Infrastructure.Persistence.Redis;
-
-public class RedisCacheService(IDistributedCache cache, IConfiguration configuration) : IRedisCaheService
+namespace CPG.Infrastructure.Persistence.Redis
 {
-    private readonly IDistributedCache _cache = cache;
-    private readonly IConfiguration configuration = configuration;
-
-    public T GetData<T>(string key)
+    public class RedisCacheService: IRedisCaheService
     {
-        var jsonData = _cache.GetString(key);
-        if (jsonData == null)
-            return default(T);
-        return JsonSerializer.Deserialize<T>(jsonData);
-    }
+        private readonly IDistributedCache _cache;
+        private readonly IConfiguration configuration;
 
-
-    public void SetData<T>(string key, T data)
-    {
-       
-        var cacheDuration = TimeSpan.FromSeconds(int.Parse(configuration["Redis:CacheDurationSeconds"]));
-        var options = new DistributedCacheEntryOptions
+        public RedisCacheService(IDistributedCache cache,IConfiguration configuration)
         {
-            AbsoluteExpirationRelativeToNow = cacheDuration
-        };
-        var jsonData = JsonSerializer.Serialize(data);
-        _cache.SetString(key, jsonData, options);
+            _cache = cache;
+            this.configuration = configuration;
+        }
 
-       
+        public T GetData<T>(string key)
+        {
+            var jsonData = _cache.GetString(key);
+            if (jsonData == null)
+                return default(T);
+            return JsonSerializer.Deserialize<T>(jsonData);
+        }
+
+
+        public void SetData<T>(string key, T data)
+        {
+           
+            var cacheDuration = TimeSpan.FromSeconds(int.Parse(configuration["Redis:CacheDurationSeconds"]));
+            var options = new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = cacheDuration
+            };
+            var jsonData = JsonSerializer.Serialize(data);
+            _cache.SetString(key, jsonData, options);
+
+           
+        }
+        public void RemoveKey(string key)
+        {
+            _cache.Remove(key);
+        }
+      
     }
-    public void RemoveKey(string key)
-    {
-        _cache.Remove(key);
-    }
-  
 }

@@ -2,42 +2,43 @@
 using System.Collections.Generic;
 using System.Resources;
 
-namespace CPG.Application.Shared.Resource;
-
-public class ResourceHelper : IResourceHelper
+namespace CPG.Application.Shared.Resource
 {
-    private readonly ResourceManager resourceManager;
-    private const string resourceFullyQualifiedName = "CPG.Application.Shared.Resource.GlobalResource";
-
-
-    public ResourceHelper()
+    public class ResourceHelper : IResourceHelper
     {
-        resourceManager = new ResourceManager(resourceFullyQualifiedName, typeof(GlobalResource).Assembly);
-    }
+        private readonly ResourceManager resourceManager;
+        private const string resourceFullyQualifiedName = "CPG.Application.Shared.Resource.GlobalResource";
 
-    public Dictionary<string, string> GetResources()
-    {
-        var resourceDictionary = new Dictionary<string, string>();
 
-        System.Globalization.CultureInfo.CurrentCulture = System.Globalization.CultureInfo.GetCultureInfoByIetfLanguageTag("fa");
-
-        string[] resourceNames = typeof(GlobalResource).Assembly.GetManifestResourceNames();
-
-        var resourceSet = resourceManager.GetResourceSet(System.Globalization.CultureInfo.CurrentCulture, true, true);
-
-        if (resourceSet == null)
+        public ResourceHelper()
         {
-            return null;
+            resourceManager = new ResourceManager(resourceFullyQualifiedName, typeof(GlobalResource).Assembly);
         }
 
-        foreach (DictionaryEntry resource in resourceSet)
+        public Dictionary<string, string> GetResources()
         {
-            var key = resource.Key.ToString();
-            var value = resource.Value?.ToString();
+            var resourceDictionary = new Dictionary<string, string>();
 
-            resourceDictionary[key ?? string.Empty] = value ?? string.Empty;
+            System.Globalization.CultureInfo.CurrentCulture = System.Globalization.CultureInfo.GetCultureInfoByIetfLanguageTag("fa");
+
+            string[] resourceNames = typeof(GlobalResource).Assembly.GetManifestResourceNames();
+
+            var resourceSet = resourceManager.GetResourceSet(System.Globalization.CultureInfo.CurrentCulture, true, true);
+
+            if (resourceSet == null)
+            {
+                return null;
+            }
+
+            foreach (DictionaryEntry resource in resourceSet)
+            {
+                var key = resource.Key.ToString();
+                var value = resource.Value?.ToString();
+
+                resourceDictionary[key ?? string.Empty] = value ?? string.Empty;
+            }
+
+            return resourceDictionary;
         }
-
-        return resourceDictionary;
     }
 }

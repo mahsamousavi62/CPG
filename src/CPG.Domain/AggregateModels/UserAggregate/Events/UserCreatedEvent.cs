@@ -1,8 +1,11 @@
 ﻿using MediatR;
 
-namespace CPG.Domain.AggregateModels.UserAggregate.Events;
-
-public class UserCreatedEvent(User user) : INotification
+namespace CPG.Domain.AggregateModels.UserAggregate.Events
 {
-    public User User { get; } = user;
+    public class UserCreatedEvent : INotification
+    {
+        public User User { get; }
+
+        public UserCreatedEvent(User user) => User = user;
+    }
 }

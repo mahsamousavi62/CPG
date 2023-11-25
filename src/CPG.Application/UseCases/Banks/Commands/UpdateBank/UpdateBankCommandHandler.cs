@@ -1,5 +1,6 @@
-﻿namespace CPG.Application.UseCases.Banks.Commands.UpdateBank;
-
-internal class UpdateBankCommandHandler
+﻿namespace CPG.Application.UseCases.Banks.Commands.UpdateBank
 {
+    internal class UpdateBankCommandHandler
+    {
+    }
 }

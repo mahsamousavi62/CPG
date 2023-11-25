@@ -2,8 +2,9 @@
 using MediatR;
 using System.Collections.Generic;
 
-namespace CPG.Application.UseCases.Banks.Queries;
-
-public class GetActiveBanksQuery : IRequest<IReadOnlyCollection<BankViewModel>>
+namespace CPG.Application.UseCases.Banks.Queries
 {
+    public class GetActiveBanksQuery : IRequest<IReadOnlyCollection<BankViewModel>>
+    {
+    }
 }

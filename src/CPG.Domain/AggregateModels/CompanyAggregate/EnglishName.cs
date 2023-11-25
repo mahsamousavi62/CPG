@@ -15,10 +15,10 @@ public class EnglishName
         _repository = repository;
     }
 
-    public EnglishName(string englishName)
-    {
-        if (string.IsNullOrWhiteSpace(englishName))
-            throw new EmptyEnglishNameException($"Parameter {nameof(englishName)} cannot be empty.");
+        public EnglishName(string englishName)
+        {
+            if (string.IsNullOrWhiteSpace(englishName))
+                throw new EmptyEnglishNameException($"Parameter {nameof(englishName)} cannot be empty.");
 
         if (!Regex.IsMatch(englishName, "[A-Za-z\\s]+"))
 

@@ -1,16 +1,11 @@
 ﻿using CPG.API.Model;
-using CPG.Application.UseCases.Books.Queries;
-using CPG.Application.UseCases.Books.ViewModels;
-using CPG.Application.UseCases.Common.Queries;
 using CPG.Application.UseCases.Common.ViewModels;
-using CPG.Application.UseCases.Companies.Commands.Create;
+using CPG.Application.UseCases.Companies.Commands.CreateCompany;
 using CPG.Application.UseCases.Companies.Queries;
 using CPG.Application.UseCases.Companies.ViewModels;
 using CPG.Application.UseCases.Files.Commands.DownloadFile;
 using CPG.Application.UseCases.Files.Commands.UploadFile;
-using CPG.Domain.SharedKernel;
 using CPG.Infrastructure.File;
-using CPG.Infrastructure.Persistence.GraphQL.Queries;
 using HotChocolate.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -41,8 +36,7 @@ public class CompanyController : ApiBaseController
     public async Task<IActionResult> GetCompanyPaymentMethodsType()
         => Ok(await Mediator.Send(new GetCompanyPaymentMethodsQuery()));
 
-
-    [HttpPost("CreateCompany")]
+    [HttpPost]
     public async Task<IActionResult> CreateCompany([FromForm] CreateCompanyModel model, IFormFile file)
     {
         CreateCompanyViewModel createCompanyViewModel = new(
@@ -58,7 +52,7 @@ public class CompanyController : ApiBaseController
 
     [HttpPost("Upload")]
     public async Task<IActionResult> Upload(IFormFile file)
-          => Ok(await Mediator.Send(new UploadPhotoCommand(new FormFileProxy(file))));
+          => Ok(await Mediator.Send(new UploadFileCommand(new FormFileProxy(file))));
 
 
     [HttpPost("Download")]

@@ -5,66 +5,67 @@ using CPG.Domain.AggregateModels.CPGUserAggregate.Exceptions;
 using CPG.Domain.SeedWork;
 using CPG.Domain.SharedKernel;
 
-namespace CPG.Domain.AggregateModels.CPGUserAggregate;
-
-public class CPGUser : AuditableEntity<long>, IAggregateRoot
+namespace CPG.Domain.AggregateModels.CPGUserAggregate
 {
-    private UserCredential _credentials;
-    private string _firstName;
-    private string _lastName;
-    private Email _email;
-    private bool _isActive;
-    internal List<Loan> _activeLoans;
-
-    public UserCredential Credentials => _credentials;
-    public string FirstName => _firstName;
-    public string LastName => _lastName;
-    public Email Email => _email;
-    public bool IsActive => _isActive;
-    public IReadOnlyCollection<Loan> ActiveLoans => _activeLoans.Where(x => x.IsActive).ToList();
-
-    internal CPGUser()
+    public class CPGUser : AuditableEntity<long>, IAggregateRoot
     {
-        _activeLoans = new List<Loan>();
-    }
+        private UserCredential _credentials;
+        private string _firstName;
+        private string _lastName;
+        private Email _email;
+        private bool _isActive;
+        internal List<Loan> _activeLoans;
 
-    private CPGUser(UserCredential credentials, Name name, Email email)
-    {
-        _credentials = credentials;
-        _firstName = name.FirstName;
-        _lastName = name.LastName;
-        _email = email;
-        _isActive = true;
-    }
+        public UserCredential Credentials => _credentials;
+        public string FirstName => _firstName;
+        public string LastName => _lastName;
+        public Email Email => _email;
+        public bool IsActive => _isActive;
+        public IReadOnlyCollection<Loan> ActiveLoans => _activeLoans.Where(x => x.IsActive).ToList();
 
-    public static CPGUser Create(UserCredential credentials, Name name, Email email)
-    {
-        var user = new CPGUser(credentials, name, email);
+        internal CPGUser()
+        {
+            _activeLoans = new List<Loan>();
+        }
 
-        user.AddDomainEvent(new CPGUserCreatedEvent(user));
+        private CPGUser(UserCredential credentials, Name name, Email email)
+        {
+            _credentials = credentials;
+            _firstName = name.FirstName;
+            _lastName = name.LastName;
+            _email = email;
+            _isActive = true;
+        }
 
-        return user;
-    }
+        public static CPGUser Create(UserCredential credentials, Name name, Email email)
+        {
+            var user = new CPGUser(credentials, name, email);
 
-    public void BorrowBook(long bookId, DateTimePeriod borrowPeriod)
-    {
-        if (ActiveLoans.Count == 3)
-            throw new CPGUserMaximumBooksBorrowedExceededException();
+            user.AddDomainEvent(new CPGUserCreatedEvent(user));
 
-        _activeLoans.Add(Loan.Create(bookId, Id, borrowPeriod));
+            return user;
+        }
 
-        AddDomainEvent(new CPGUserBorrowedBookEvent(Id, bookId, borrowPeriod));
-    }
+        public void BorrowBook(long bookId, DateTimePeriod borrowPeriod)
+        {
+            if (ActiveLoans.Count == 3)
+                throw new CPGUserMaximumBooksBorrowedExceededException();
 
-    public void ReturnBook(long bookId)
-    {
-        var bookLoanEntry = ActiveLoans.FirstOrDefault(x => x.BookId == bookId);
+            _activeLoans.Add(Loan.Create(bookId, Id, borrowPeriod));
 
-        if (bookLoanEntry is null)
-            throw new CPGUserDoesNotHaveBookBorrowed(bookId);
+            AddDomainEvent(new CPGUserBorrowedBookEvent(Id, bookId, borrowPeriod));
+        }
 
-        bookLoanEntry.Finish();
+        public void ReturnBook(long bookId)
+        {
+            var bookLoanEntry = ActiveLoans.FirstOrDefault(x => x.BookId == bookId);
 
-        AddDomainEvent(new CPGUserReturnedBookEvent(Id, bookId));
+            if (bookLoanEntry is null)
+                throw new CPGUserDoesNotHaveBookBorrowed(bookId);
+
+            bookLoanEntry.Finish();
+
+            AddDomainEvent(new CPGUserReturnedBookEvent(Id, bookId));
+        }
     }
 }

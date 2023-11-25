@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.AccessControl;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Confluent.Kafka;
 using CPG.Domain.SharedKernel.File;
 using CPG.Domain.SharedKernel.Minio;
 using CPG.Infrastructure.File;

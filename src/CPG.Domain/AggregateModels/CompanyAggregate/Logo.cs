@@ -1,12 +1,7 @@
 ﻿using Ardalis.GuardClauses;
-using CPG.Application.UseCases.Users.ViewModel;
 using CPG.Domain.AggregateModels.CompanyAggregate.Exceptions;
 using CPG.Domain.SharedKernel.File;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace CPG.Domain.AggregateModels.CompanyAggregate;

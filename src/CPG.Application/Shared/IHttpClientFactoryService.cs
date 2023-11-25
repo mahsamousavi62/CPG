@@ -1,9 +1,10 @@
 ﻿using CPG.Domain.AggregateModels.UserAggregate.UserViewModel;
 using System.Threading.Tasks;
 
-namespace CPG.Application.Shared;
-
-public interface IHttpClientFactoryService
+namespace CPG.Application.Shared
 {
-    Task<string> Execute(GetIdpUserProfileModel model);
+    public interface IHttpClientFactoryService
+    {
+        Task<string> Execute(GetIdpUserProfileModel model);
+    }
 }

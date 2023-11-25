@@ -1,33 +1,19 @@
-﻿using CPG.Domain.AggregateModels.BookAggregate.Events;
-using CPG.Domain.AggregateModels.CompanyAggregate.Events;
+﻿using CPG.Domain.AggregateModels.CompanyAggregate.Events;
 using CPG.Domain.SeedWork;
 using System;
 using System.Collections.Generic;
 
 namespace CPG.Domain.AggregateModels.CompanyAggregate;
 
-public class Company : AuditableEntity<long>, IAggregateRoot
+public class Company(PersianName persianName, EnglishName englishName, bool nationalCodeMatchingRequied, Logo logo) : AuditableEntity<long>, IAggregateRoot
 {
-    public Company()
-    {
+    private readonly string _persianName = persianName.Value;
 
-    }
-    public Company(PersianName persianName, EnglishName englishName, bool nationalCodeMatchingRequied, Logo logo)
-    {
-        _persianName = persianName.Value;
-        _englishName = englishName.Value;
-        _nationalCodeMatchingRequied = nationalCodeMatchingRequied;
-        _logo = logo.Value;
-        PaymentMethods = new List<CompanyPaymentMethods>();
-    }
+    private readonly string _englishName = englishName.Value;
 
-    private string _persianName;
+    private readonly string _logo = logo.Value;
 
-    private string _englishName;
-
-    private string _logo;
-
-    private bool _nationalCodeMatchingRequied;
+    private readonly bool _nationalCodeMatchingRequied = nationalCodeMatchingRequied;
 
     public string PersianName => _persianName;
 
@@ -37,7 +23,7 @@ public class Company : AuditableEntity<long>, IAggregateRoot
 
     public bool NationalCodeMatchingRequied => _nationalCodeMatchingRequied;
 
-    public List<CompanyPaymentMethods> PaymentMethods { get; set; }
+    public List<CompanyPaymentMethods> PaymentMethods { get; set; } = [];
 
     public static Company Create(PersianName persianName, EnglishName englishName,
         bool nationalCodeMatchingRequied, Logo logo, short[] details)
