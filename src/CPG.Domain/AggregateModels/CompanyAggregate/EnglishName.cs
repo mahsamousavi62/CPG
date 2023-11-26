@@ -24,7 +24,7 @@ public class EnglishName
 
             throw new InvalidEnglishNameException($"Parameter {nameof(englishName)} is invalid.");
 
-        Task.Run(() => CheckUniqueName(englishName)).Wait();
+       // Task.Run(() => CheckUniqueName(englishName)).Wait();
 
         Value = englishName;
     }

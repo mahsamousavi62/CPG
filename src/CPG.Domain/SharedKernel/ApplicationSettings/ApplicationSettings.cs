@@ -5,6 +5,10 @@ namespace CPG.Domain.SharedKernel.ApplicationSettings;
 
 public class ApplicationSettings : AuditableEntity<long>, IAggregateRoot
 {
+    public ApplicationSettings()
+    {
+        
+    }
     public ApplicationSettings(long id, Enums.ApplicationSettingEntityType entityType, string key, string value)
     {
         Key = Guard.Against.NullOrWhiteSpace(key, nameof(key));

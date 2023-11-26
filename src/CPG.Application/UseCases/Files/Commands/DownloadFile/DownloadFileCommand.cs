@@ -1,14 +1,15 @@
 ﻿using CPG.Domain.SharedKernel.File;
 using MediatR;
+using System.IO.Enumeration;
 
 namespace CPG.Application.UseCases.Files.Commands.DownloadFile;
 
-public class DownloadFileCommand : IRequest<FileViewModel>
+public class DownloadFileCommand : IRequest<string>
 {
-    public string FileName { get; set; }
+    public string FileUrl { get; set; }
 
-    public DownloadFileCommand(string fileName)
+    public DownloadFileCommand(string fileUrl)
     {
-        FileName = fileName;
+        FileUrl = fileUrl;
     }
 }

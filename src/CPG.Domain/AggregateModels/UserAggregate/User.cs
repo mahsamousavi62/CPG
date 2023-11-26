@@ -3,6 +3,7 @@ using System;
 using CPG.Domain.AggregateModels.UserAggregate.Events;
 using System.Collections.Generic;
 using CPG.Domain.AggregateModels.UserAggregate.UserViewModel;
+using CPG.Domain.AggregateModels.CompanyAggregate;
 
 namespace CPG.Domain.AggregateModels.UserAggregate
 {
@@ -45,10 +46,10 @@ namespace CPG.Domain.AggregateModels.UserAggregate
         private short _kYCStatus;
         private bool _isActive;
         private bool _isLegal;
-
+       
         public string IDPId => _iDPId;
         public string NationalCode => _nationalCode;
-        public int? CompanyId => _companyId;
+        public long? CompanyId { get; set; }
         public string FirstName => _firstName;
         public string LastName => _lastName;
         public string PhoneNumber => _phoneNumber;
@@ -59,6 +60,7 @@ namespace CPG.Domain.AggregateModels.UserAggregate
         public DateTime CreatationDateTime { get; set; }
         public DateTime ModificationDate { get; set; }
         public List<UserRole> userRoles { get; set; } = new List<UserRole>();
+        public Company Company { get; set; }
         #endregion
 
         public static User Create(string iDPId, NationalCode nationalCode, Name name, PhoneNumber phoneNumber, short userRoleType)
@@ -80,5 +82,11 @@ namespace CPG.Domain.AggregateModels.UserAggregate
         {
             AddDomainEvent(new GetIdpUserProfileEvent(model));
         }
+
+        public static void UpdateUserCompany(List<User> users, long id)
+        {
+            users.ForEach(user => { user.CompanyId = id; });
+        }
+
     }
 }

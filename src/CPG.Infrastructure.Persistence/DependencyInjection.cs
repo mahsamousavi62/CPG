@@ -28,7 +28,7 @@ namespace CPG.Infrastructure.Persistence
                 .AddDbContext<WriteDbContext>(options =>
                 {
                     options.EnableDetailedErrors();
-                    options.UseSqlServer(configuration.GetConnectionString(ConnectionStringConfigName));
+                     options.UseSqlServer(configuration.GetConnectionString(ConnectionStringConfigName));
                 })
                 .AddDbContext<ReadDbContext>(options =>
                 {

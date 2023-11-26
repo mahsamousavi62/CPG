@@ -11,7 +11,7 @@ public class UploadFileCommandHandler(IMinioProvider minioProvider) : IRequestHa
 
     public async Task<string> Handle(UploadFileCommand request, CancellationToken cancellationToken)
     {
-        var result=await _minioProvider.PutObject(request.File);
+        var result=await _minioProvider.PutObject(request.UploadFromEntityType, request.File);
         return result;
     }
 }

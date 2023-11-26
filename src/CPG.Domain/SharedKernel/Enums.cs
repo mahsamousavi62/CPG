@@ -12,6 +12,7 @@ public class Enums
     public enum ApplicationSettingEntityType
     {
         IDPCredential = 1,
+        Minio = 3,
     }
 
     public enum UserRoleType
@@ -28,16 +29,17 @@ public class Enums
         NotValid
     }
 
-        public enum CompanyPaymentMethodType
+        public enum CompanyPaymentMethodType:short
         {
             InternetPaymentGateway = 1,
             DirectDebit = 2,
             PaymentReceipt = 3
         }
 
-        public enum UploadFileType
+        public enum UploadFromEntityType
         {
-            Company=1
+            Company=1,
+            Bank=2
         }
     }
 

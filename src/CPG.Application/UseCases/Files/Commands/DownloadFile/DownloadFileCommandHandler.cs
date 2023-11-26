@@ -1,4 +1,5 @@
-﻿using CPG.Domain.SharedKernel.File;
+﻿using Ardalis.GuardClauses;
+using CPG.Domain.SharedKernel.File;
 using CPG.Domain.SharedKernel.Minio;
 using MediatR;
 using System.Threading;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CPG.Application.UseCases.Files.Commands.DownloadFile;
 
-public class DownloadFileCommandHandler : IRequestHandler<DownloadFileCommand, FileViewModel>
+public class DownloadFileCommandHandler : IRequestHandler<DownloadFileCommand, string>
 {
     private readonly IMinioProvider _minioProvider;
 
@@ -14,12 +15,9 @@ public class DownloadFileCommandHandler : IRequestHandler<DownloadFileCommand, F
     {
         _minioProvider = minioProvider;
     }
-    public async Task<FileViewModel> Handle(DownloadFileCommand request, CancellationToken cancellationToken)
+    public async Task<string> Handle(DownloadFileCommand request, CancellationToken cancellationToken)
     {
-        var result = await _minioProvider.GetObjectByName(request.FileName);
-    
-    var result2=await _minioProvider.PresignedGetObject(request.FileName);
-        return result;
-
+        Guard.Against.Null(request.FileUrl, nameof(request.FileUrl));
+        return await _minioProvider.PresignedGetObject(request.FileUrl);
     }
 }

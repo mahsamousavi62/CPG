@@ -29,7 +29,7 @@ public class PersianName
          if (!Regex.IsMatch(persianName, "^[\\u0600-\\u06FF\\s]+$"))
             throw new InvalidPersianNameException(persianName);
 
-        Task.Run(() => CheckUniqueName(persianName)).Wait();
+        //Task.Run(() => CheckUniqueName(persianName)).Wait();
 
         Value = persianName;
     }

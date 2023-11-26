@@ -1,35 +1,45 @@
 ﻿using CPG.Domain.AggregateModels.CompanyAggregate.Events;
+using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Domain.SeedWork;
 using System;
 using System.Collections.Generic;
 
 namespace CPG.Domain.AggregateModels.CompanyAggregate;
 
-public class Company(PersianName persianName, EnglishName englishName, bool nationalCodeMatchingRequied, Logo logo) : AuditableEntity<long>, IAggregateRoot
+public class Company : AuditableEntity<long>, IAggregateRoot
 {
-    private readonly string _persianName = persianName.Value;
+    public Company()
+    {
 
-    private readonly string _englishName = englishName.Value;
+    }
+    public Company(PersianName persianName, EnglishName englishName, bool nationalCodeMatchingRequied, Logo logo)
+    {
+        _persianName = persianName.Value;
+        _englishName = englishName.Value;
+        _nationalCodeMatchingRequied = nationalCodeMatchingRequied;
+        _logo = logo.Value;
+        PaymentMethods = new List<CompanyPaymentMethods>();
+    }
 
-    private readonly string _logo = logo.Value;
-
-    private readonly bool _nationalCodeMatchingRequied = nationalCodeMatchingRequied;
-
+    private string _persianName;
+    private string _englishName;
+    private string _logo;
+    private bool _nationalCodeMatchingRequied;
     public string PersianName => _persianName;
-
     public string EnglishName => _englishName;
-
     public string Logo => _logo;
-
     public bool NationalCodeMatchingRequied => _nationalCodeMatchingRequied;
 
     public List<CompanyPaymentMethods> PaymentMethods { get; set; } = [];
+    public List<User> users { get; set; }
 
     public static Company Create(PersianName persianName, EnglishName englishName,
         bool nationalCodeMatchingRequied, Logo logo, short[] details)
     {
         var comapny = new Company(persianName, englishName, nationalCodeMatchingRequied, logo);
+        
         var companyPaymentMethods = CompanyPaymentMethods.Create(details);
+        
         comapny.PaymentMethods.AddRange(companyPaymentMethods);
 
         comapny.AddDomainEvent(new NewCompanyCreatedEvent(comapny.Id, DateTime.UtcNow));
