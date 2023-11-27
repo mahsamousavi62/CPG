@@ -2,7 +2,8 @@
 using System.Threading.Tasks;
 using CPG.Domain.AggregateModels.BankAggregate;
 using CPG.Domain.AggregateModels.BookAggregate;
-using CPG.Domain.AggregateModels.CPGUserAggregate;
+using CPG.Domain.AggregateModels.CompanyAggregate;
+using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Domain.SharedKernel.ApplicationSettings;
 using CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations;
@@ -16,22 +17,19 @@ public class WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator 
 {
     private readonly IMediator _mediator = mediator;
 
-    public DbSet<Book> Books { get; set; }
-    public DbSet<CPGUser> CPGUsers { get; set; }
-    public DbSet<ApplicationSettings> ApplicationSettings { get; set; }
     public DbSet<User> Users { get; set; }
+    public DbSet<ApplicationSettings> ApplicationSettings { get; set; }
     public DbSet<Bank> Banks { get; set; }
+    public DbSet<Company> Companies { get; set; }
+    public DbSet<CompanyPaymentMethod> CompanyPaymentMethods { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
         => modelBuilder
-            .ApplyConfiguration(new BookConfiguration())
-            .ApplyConfiguration(new CPGUserConfiguration())
-            .ApplyConfiguration(new LoanConfiguration())
             .ApplyConfiguration(new ApplicationSettingsConfiguration())
             .ApplyConfiguration(new UserConfiguration())
             .ApplyConfiguration(new UserRoleConfiguration())
             .ApplyConfiguration(new CompanyConfiguration())
-            .ApplyConfiguration(new CompanyPaymentMethodsConfiguration())
+            .ApplyConfiguration(new CompanyPaymentMethodConfiguration())
             .ApplyConfiguration(new BankConfiguration())
         ;
 

@@ -19,37 +19,37 @@ public class Bank : AuditableEntity<int>, IAggregateRoot
     {
     }
 
-    public void Update(IbanPrefix ibanPrefix, long cpgUserId)
+    public void Update(IbanPrefix ibanPrefix, long userId)
     {
         _ibanPrefix = ibanPrefix;
-        SetModificationData(cpgUserId);
+        SetModificationData(userId);
     }
 
-    public void SetModificationData(long cpgUserId)
+    public void SetModificationData(long userId)
     {
         ModificationDate = DateTime.Now;
-        ModificationUserId = cpgUserId;            
+        ModificationUserId = userId;            
     }
 
-    public void SetAsActive(long cpgUserId)
+    public void SetAsActive(long userId)
     {
         if (IsActive == true)
             throw new BankIsActiveException(Id);
 
         IsActive = true;
-        SetModificationData(cpgUserId);
+        SetModificationData(userId);
 
-        AddDomainEvent(new ChangeBankStatusEvent(Id, IsActive, cpgUserId, DateTime.Now));
+        AddDomainEvent(new ChangeBankStatusEvent(Id, IsActive, userId, DateTime.Now));
     }
 
-    public void SetAsInactive(long cpgUserId)
+    public void SetAsInactive(long userId)
     {
         if (IsActive == false)
             throw new BankIsNotActiveException(Id);
 
         IsActive = false;
-        SetModificationData(cpgUserId);
+        SetModificationData(userId);
 
-        AddDomainEvent(new ChangeBankStatusEvent(Id, IsActive, cpgUserId, DateTime.Now));
+        AddDomainEvent(new ChangeBankStatusEvent(Id, IsActive, userId, DateTime.Now));
     }
 }

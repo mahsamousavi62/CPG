@@ -1,6 +1,6 @@
 ﻿using CPG.Domain.Exceptions;
 
-namespace CPG.Domain.AggregateModels.CPGUserAggregate.Exceptions;
+namespace CPG.Domain.AggregateModels.UserAggregate.Exceptions;
 
 public class UserCreationException(string message) : DomainException(message)
 {

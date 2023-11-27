@@ -10,6 +10,7 @@ public interface IFile
     long Length { get; }
     Task CopyToAsync(Stream target);
     Task<byte[]> GetData();
+    Task ReadFile();
     public Stream Content { get; set; }
     public string Extension => Path.GetExtension(this.FileName);
 

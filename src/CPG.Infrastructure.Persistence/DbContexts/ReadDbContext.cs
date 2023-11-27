@@ -8,8 +8,6 @@ namespace CPG.Infrastructure.Persistence.DbContexts;
 
 public class ReadDbContext(DbContextOptions<ReadDbContext> options) : DbContext(options)
 {
-    public IQueryable<BookReadModel> BookReadModels => Set<BookReadModel>().AsNoTracking();
-
     public IQueryable<ApplicationSettingReadModel> ApplicationSettingReadModels => Set<ApplicationSettingReadModel>().AsNoTracking();
 
     public IQueryable<CompanyReadModel> CompanyReadModels => Set<CompanyReadModel>().AsNoTracking();
@@ -19,7 +17,6 @@ public class ReadDbContext(DbContextOptions<ReadDbContext> options) : DbContext(
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
-            .ApplyConfiguration(new BookReadModelConfiguration())
             .ApplyConfiguration(new ApplicationSettingReadModelConfiguration())
             .ApplyConfiguration(new CompanyReadModelConfiguration())
             .ApplyConfiguration(new CompanyPaymentMethodsReadModelConfiguration())

@@ -1,13 +1,10 @@
 ﻿using CPG.Domain.Exceptions;
 
-namespace CPG.Domain.AggregateModels.CompanyAggregate.Exceptions
-{
-    public class InvalidEnglishNameException : DomainException
-    {
-        public override string Code => "invalid_EnglishName";
+namespace CPG.Domain.AggregateModels.CompanyAggregate.Exceptions;
 
-        public InvalidEnglishNameException(string message) : base(message)
-        {
-        }
-    }
+public class InvalidEnglishNameException(string message) : DomainException(string.Format(Resource.Invalid_EnglishName, message))
+{
+    public override string Code => "invalid_EnglishName";
+
+    public override string Message => message;
 }

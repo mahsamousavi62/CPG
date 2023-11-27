@@ -1,4 +1,4 @@
-﻿using CPG.Domain.AggregateModels.CPGUserAggregate.Exceptions;
+﻿using CPG.Domain.AggregateModels.UserAggregate.Exceptions;
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;

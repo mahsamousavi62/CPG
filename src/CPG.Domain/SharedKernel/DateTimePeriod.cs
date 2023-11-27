@@ -1,5 +1,5 @@
-﻿ using System;
-using CPG.Domain.AggregateModels.BookAggregate.Exceptions;
+﻿using CPG.Domain.SharedKernel.Exceptions;
+using System;
 
 namespace CPG.Domain.SharedKernel;
 

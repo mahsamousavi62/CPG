@@ -1,9 +1,14 @@
 ﻿using CPG.Application.Shared.Resource;
 using CPG.Application.UseCases.Common.Queries;
 using CPG.Application.UseCases.Common.ViewModels;
+using CPG.Application.UseCases.Files.Commands.DownloadFile;
+using CPG.Application.UseCases.Files.Commands.UploadFile;
 using CPG.Domain.SharedKernel;
+using CPG.Infrastructure.File;
+using Elasticsearch.Net.Specification.MachineLearningApi;
 using HotChocolate.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace CPG.API.Controllers;
 
@@ -28,6 +33,7 @@ public class CommonController : ApiBaseController
     }
 
     [HttpGet("GetAppSetting/{entityType:int}")]
+    [ProducesResponseType(typeof(IReadOnlyCollection<ApplicationSettingViewModel>), (int)HttpStatusCode.OK)]
     [AllowAnonymous]
     public async Task<ActionResult<IReadOnlyCollection<ApplicationSettingViewModel>>> GetAppSetting(int entityType)
     {

@@ -37,7 +37,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .IsRequired();
 
         entity.Property(x => x.IsActive)
-            .HasColumnName("IsActive");
+              .HasColumnName("IsActive");
 
         entity.Property(x => x.IsLegal)
           .HasColumnName("IsLegal");
@@ -57,7 +57,8 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         entity.Property(x => x.ModificationDate)
       .HasColumnName("ModificationDate");
 
-        entity.HasMany(x => x.userRoles);
+        entity.HasMany(x => x.UserRoles);
+
 
     }
 }

@@ -20,4 +20,10 @@
     <ProjectReference Include="..\CPG.Tests.Base\CPG.Tests.Base.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="AggregateModels\" />
+    <Folder Include="Guards\" />
+    <Folder Include="Helpers\" />
+  </ItemGroup>
+
 </Project>
