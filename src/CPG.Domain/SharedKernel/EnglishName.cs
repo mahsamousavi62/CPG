@@ -1,10 +1,10 @@
-﻿using CPG.Domain.AggregateModels.CompanyAggregate.Exceptions;
+﻿using CPG.Domain.AggregateModels.CompanyAggregate;
+using CPG.Domain.AggregateModels.CompanyAggregate.Exceptions;
 using CPG.Domain.AggregateModels.CompanyAggregate.Specifications;
-using CPG.Domain.SharedKernel;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace CPG.Domain.AggregateModels.CompanyAggregate;
+namespace CPG.Domain.SharedKernel;
 
 public class EnglishName
 {
@@ -15,16 +15,16 @@ public class EnglishName
         _repository = repository;
     }
 
-        public EnglishName(string englishName)
-        {
-            if (string.IsNullOrWhiteSpace(englishName))
-                throw new EmptyEnglishNameException($"Parameter {nameof(englishName)} cannot be empty.");
+    public EnglishName(string englishName)
+    {
+        if (string.IsNullOrWhiteSpace(englishName))
+            throw new EmptyEnglishNameException($"Parameter {nameof(englishName)} cannot be empty.");
 
         if (!Regex.IsMatch(englishName, "[A-Za-z\\s]+"))
 
             throw new InvalidEnglishNameException($"Parameter {nameof(englishName)} is invalid.");
 
-       // Task.Run(() => CheckUniqueName(englishName)).Wait();
+        // Task.Run(() => CheckUniqueName(englishName)).Wait();
 
         Value = englishName;
     }

@@ -46,6 +46,9 @@
   <ItemGroup>
     <Folder Include="AggregateModels\BankAggregate\Guards\" />
     <Folder Include="AggregateModels\CompanyAggregate\Guards\" />
+    <Folder Include="AggregateModels\ProviderAggregate\Events\" />
+    <Folder Include="AggregateModels\ProviderAggregate\Exceptions\" />
+    <Folder Include="AggregateModels\ProviderAggregate\Specifications\" />
     <Folder Include="AggregateModels\UserAggregate\Idp\" />
     <Folder Include="SharedKernel\ApplicationSettings\Exceptions\" />
     <Folder Include="SharedKernel\ApplicationSettings\Commands\" />

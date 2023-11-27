@@ -29,19 +29,24 @@ public class Enums
         NotValid
     }
 
-        public enum CompanyPaymentMethodType:short
-        {
-            InternetPaymentGateway = 1,
-            DirectDebit = 2,
-            PaymentReceipt = 3
-        }
-
-        public enum UploadFromEntityType
-        {
-            Company=1,
-            Bank=2
-        }
+    public enum CompanyPaymentMethodType : short
+    {
+        InternetPaymentGateway = 1,
+        DirectDebit = 2,
+        PaymentReceipt = 3
     }
+
+    public enum UploadFromEntityType
+    {
+        Company = 1,
+        Bank = 2
+    }
+
+    public enum ProviderType : byte
+    {
+        Vandar = 1,
+    }
+}
 
 public struct ResultData<T>(Enums.OperationResult operationResult)
 {
