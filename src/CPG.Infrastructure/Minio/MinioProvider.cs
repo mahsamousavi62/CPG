@@ -4,34 +4,44 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using CPG.Application.UseCases.Common.Queries;
+using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.File;
 using CPG.Domain.SharedKernel.Minio;
+using CPG.Infrastructure.Authorization;
 using CPG.Infrastructure.File;
+using MassTransit.Mediator;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using Microsoft.Extensions.Configuration;
 using Minio;
+using Minio.DataModel.Args;
 using Minio.Exceptions;
+using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Infrastructure.Minio;
 public class MinioProvider : IMinioProvider
 {
     private IMinioClient _client;
-    private IConfiguration _configuration;
+    private MediatR.IMediator _mediator;
+    private readonly IConfiguration _configuration;
 
-    public MinioProvider(IMinioClient client, IConfiguration configuration)
+    public MinioProvider(MediatR.IMediator mediator, IConfiguration configuration)
     {
-        _client = client;
+        _mediator = mediator;
         _configuration = configuration;
     }
 
-    private IMinioClient GetClient()
+    private async Task<IMinioClient> GetClient()
     {
         if (_client != null)
             return _client;
-        //await InitConfig();
+
+        AuthenticationConfigViewModel config = await _mediator.Send(new GetAuthenticationAppSettingQuery());
         var client = new MinioClient()
-        .WithEndpoint("192.168.1.100:9000")
-        .WithCredentials("a0Eq9YFgC7MqrTZz8ijh", "EXMniwER0KhjC8ShNUBOGyWjitbna9jwpPQx0Hds")
+        .WithEndpoint(config.Minio_EndPoint)
+        .WithCredentials(config.Minio_AccessKey,config.Minio_SecretKey)
             .WithSSL(false);
 
         _client = client.Build();
@@ -40,18 +50,18 @@ public class MinioProvider : IMinioProvider
 
     public async Task<List<string>> GetBucketNamesAsync(CancellationToken cancellationToken = default)
     {
-        //var client = GetClient();
+       _client =await GetClient();
         var result = await _client.ListBucketsAsync(cancellationToken);
         return result.Buckets.Select(t => t.Name).ToList();
     }
 
-    public async Task<string> PutObject(IFile file)
+    public async Task<string> PutObject( string uploadFromEntityType, IFile file)
     {
-        //var client = GetClient();
-        var bucketName = _configuration["Minio:bucketName"];
-        var objectName = $"Company/{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid()}_{file.FileName}";
+        _client = await GetClient();
+        var bucketName = _configuration["Infrastructure:Minio:bucketName"];
+        var objectName = $"{uploadFromEntityType}/{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid()}_{file.FileName}";
 
-        await file.CopyToAsync(file.Content);
+        await file.ReadFile();
 
         file.Content.Seek(0, System.IO.SeekOrigin.Begin);
 
@@ -74,13 +84,13 @@ public class MinioProvider : IMinioProvider
         }
     }
 
-    public async Task<IFile> GetObjectByName(string name)
+    public async Task<FileViewModel> GetObjectByName(string name)
     {
-        var bucketName = "cpg";
+        var bucketName = _configuration["Infrastructure:Minio:bucketName"];
 
         try
         {
-            //var client = GetClient();
+            _client =await GetClient();
 
             var getStateArgs = new StatObjectArgs().WithBucket(bucketName).WithObject(name);
 
@@ -100,18 +110,27 @@ public class MinioProvider : IMinioProvider
                 downloadStream.Seek(0, SeekOrigin.Begin);
             });
             // Stream the object content directly to the response
-            _ = await _client.GetObjectAsync(gArgs).ConfigureAwait(true);
-
-            var result = new FileStreamResult(downloadStream, objectInfo.ContentType)
-            { FileDownloadName = objectInfo.ObjectName };
-
-            FormFileProxy file = new FormFileProxy
+            try
             {
-                FileName = result.FileDownloadName,
-                Content = result.FileStream,
-                ContentType = result.ContentType
+
+            _ = await _client.GetObjectAsync(gArgs).ConfigureAwait(true);
+            }
+            catch (Exception)
+            {
+
+                throw new Exception("Not found FileName");
+            }
+            
+           // var result = new FileStreamResult(downloadStream, objectInfo.ContentType)
+           // { FileDownloadName = objectInfo.ObjectName };
+
+            return new FileViewModel()
+            {
+                FileName = objectInfo.ObjectName,
+                Content = downloadStream,
+               byteArray = downloadStream.ToArray(),
+            ContentType = objectInfo.ContentType
             };
-            return file;
         }
         catch (MinioException e)
         {
@@ -121,16 +140,16 @@ public class MinioProvider : IMinioProvider
 
     public async Task<string> PresignedGetObject(string objectName)
     {
-        var bucketName = "cpg";
+        var bucketName = _configuration["Infrastructure:Minio:bucketName"];
 
         try
         {
-            var client = GetClient();
+            var client =await GetClient();
             // Generate a presigned URL for the object
             var presignedUrl = await client.PresignedGetObjectAsync(
                 new PresignedGetObjectArgs() .WithBucket(bucketName).
-                WithObject(objectName).
-                WithExpiry(15)
+                WithObject(objectName)
+                .WithExpiry(604800)
                 );
 
             // Redirect the client to the presigned URL
@@ -142,6 +161,4 @@ public class MinioProvider : IMinioProvider
             throw new Exception( $"An error occurred while generating the presigned URL: {e.Message}");
         }
     }
-
-   
 }

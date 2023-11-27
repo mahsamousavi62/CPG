@@ -14,6 +14,11 @@
         public bool ValidateAudience { get; set; }
         public bool ValidateLifetime { get; set; }
         public string IdpGetProfileUrl { get; set; }
+        public string ExpireTime { get; set; }
+        public string Minio_AccessKey { get; set; }
+        public string Minio_SecretKey { get; set; }
+        public string Minio_WithSSL { get; set; }
+        public string Minio_EndPoint { get; set; }
 
     }
 }

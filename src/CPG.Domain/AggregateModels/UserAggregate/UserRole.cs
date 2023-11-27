@@ -11,9 +11,13 @@ namespace CPG.Domain.AggregateModels.UserAggregate
         }
 
         public long Id { get; set; }
+
         public long UserId { get; set; }
+
         public short RoleType { get; set; }
+
         public DateTime CreationDate { get; set; }
+
         public DateTime ModificationDate { get; set; }
 
     }

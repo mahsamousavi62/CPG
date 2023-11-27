@@ -1,4 +1,4 @@
-﻿using CPG.Domain.AggregateModels.CPGUserAggregate.Exceptions;
+﻿using CPG.Domain.AggregateModels.UserAggregate.Exceptions;
 
 namespace CPG.Domain.AggregateModels.UserAggregate;
 

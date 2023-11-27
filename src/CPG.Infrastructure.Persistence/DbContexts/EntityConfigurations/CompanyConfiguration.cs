@@ -1,6 +1,8 @@
 ﻿using CPG.Domain.AggregateModels.CompanyAggregate;
+using CPG.Domain.AggregateModels.UserAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Reflection.Emit;
 
 namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations
 {
@@ -18,7 +20,16 @@ namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations
             entity.Property(x => x.EnglishName).HasColumnName("EnglishName").HasMaxLength(256).HasColumnType("varchar").IsRequired();
             entity.Property(x => x.Logo).HasColumnName("Logo").HasColumnType("nvarchar(max)").IsRequired();
 
-           // entity.HasMany<CompanyPaymentMethods>();
+            entity
+         .HasMany(c => c.PaymentMethods)
+         .WithOne(p => p.Company)
+         .HasForeignKey(p => p.CompanyId);
+
+            entity
+           .HasMany(c => c.users)
+           .WithOne(p => p.Company)
+           .HasForeignKey(p => p.CompanyId);
+
         }
     }
 }

@@ -10,7 +10,7 @@ namespace CPG.Infrastructure.Authorization
     {
         public static IServiceCollection AddTokenAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
-            {
+             {
                 var serviceProvider = services.BuildServiceProvider();
 
                 //var mediator = serviceProvider.GetRequiredService<IMediator>();

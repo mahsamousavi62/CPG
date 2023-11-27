@@ -10,4 +10,5 @@ public class CompanyReadModel
     public bool NationalCodeMatchingRequied { get; set; }
     public string Logo { get; set; }
     public ICollection<CompanyPaymentMethodsReadModel> PaymentMethods { get; set; }
+    public bool IsActive { get; set; }
 }

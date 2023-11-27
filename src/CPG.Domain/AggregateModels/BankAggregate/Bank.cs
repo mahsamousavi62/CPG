@@ -25,13 +25,13 @@ public class Bank : AuditableEntity<int>, IAggregateRoot
         SetModificationData(cpgUserId);
     }
 
-    public void SetModificationData(long cpgUserId)
+    public void SetModificationData(long UserId)
     {
         ModificationDate = DateTime.Now;
-        ModificationUserId = cpgUserId;            
+        ModificationUserId = UserId;            
     }
 
-    public void SetAsActive(long cpgUserId)
+    public void SetAsActive(long UserId)
     {
         if (IsActive == true)
             throw new BankIsActiveException(Id);
@@ -42,7 +42,7 @@ public class Bank : AuditableEntity<int>, IAggregateRoot
         AddDomainEvent(new ChangeBankStatusEvent(Id, IsActive, cpgUserId, DateTime.Now));
     }
 
-    public void SetAsInactive(long cpgUserId)
+    public void SetAsInactive(long UserId)
     {
         if (IsActive == false)
             throw new BankIsNotActiveException(Id);
