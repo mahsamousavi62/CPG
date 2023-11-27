@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace CPG.API.Model;
 
@@ -18,4 +19,7 @@ public class CreateCompanyModel
 
     [Required]
     public required List<long> Users { get; set; }
+
+    [Required]
+    public required IFormFile File { get; set; }
 }

@@ -35,11 +35,19 @@ public class FormFileProxy : IFile
         _formFile = formFile;
     }
 
+    public async Task ReadFile()
+    {
+        using (var fileStream = _formFile.OpenReadStream())
+        {
+         await   fileStream.CopyToAsync(Content);
+        }
+    }
     public Task CopyToAsync(Stream target)
     {
+        
         return _formFile.CopyToAsync(target);
     }
-
+    
     public async Task<byte[]> GetData()
     {
         using var stream = new MemoryStream();

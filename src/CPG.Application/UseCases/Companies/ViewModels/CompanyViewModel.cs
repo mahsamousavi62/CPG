@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using CPG.Domain.SharedKernel.File;
+using System.Collections.Generic;
 
 namespace CPG.Application.UseCases.Companies.ViewModels;
 

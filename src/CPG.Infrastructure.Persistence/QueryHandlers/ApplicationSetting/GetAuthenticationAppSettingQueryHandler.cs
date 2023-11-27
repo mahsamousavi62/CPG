@@ -30,8 +30,8 @@ public class GetAuthenticationAppSettingQueryHandler(ReadDbContext context, IRed
             return cacheData;
 
         var appSettings = await _context.ApplicationSettingReadModels
-            .Where(x => x.EntityType == entityType)
             .ToDictionaryAsync(t => t.Key, t => t.Value);
+            
 
         cacheData = new AuthenticationConfigViewModel();
         var type = cacheData.GetType();

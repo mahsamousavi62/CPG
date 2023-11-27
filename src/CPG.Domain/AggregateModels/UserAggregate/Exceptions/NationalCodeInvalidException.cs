@@ -1,6 +1,6 @@
 ﻿using CPG.Domain.Exceptions;
 
-namespace CPG.Domain.AggregateModels.CPGUserAggregate.Exceptions;
+namespace CPG.Domain.AggregateModels.UserAggregate.Exceptions;
 
 public class NationalCodeInvalidException(string nationalCode) : DomainException($"ISBN nationalCode is wrong. Passed nationalCode  is: {nationalCode}.")
 {

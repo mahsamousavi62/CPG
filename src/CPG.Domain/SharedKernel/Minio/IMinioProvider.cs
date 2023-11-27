@@ -5,9 +5,7 @@ namespace CPG.Domain.SharedKernel.Minio;
 
 public interface IMinioProvider
 {
-    Task<string> PutObject(IFile file);
-
-    Task<IFile> GetObjectByName(string objectName);
-
+    Task<string> PutObject(string uploadFromEntityType, IFile file);
+    Task<FileViewModel> GetObjectByName(string objectName);
     Task<string> PresignedGetObject(string objectName);   
 }

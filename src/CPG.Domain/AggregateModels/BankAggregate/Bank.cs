@@ -26,70 +26,70 @@ public class Bank : AuditableEntity<int>, IAggregateRoot
 
     public static Bank Create(string name, string swiftCode, BankStatus status, byte[] logo,
                               int providerId, string providerData, decimal directDebitAmountLimit,
-                              decimal directDebitDailyTransactionLimit, long cpgUserId)
+                              decimal directDebitDailyTransactionLimit, long UserId)
     {
         var bankInformation = new BankInformation(name, swiftCode, status, logo, providerId,
                                                   providerData, directDebitAmountLimit,
                                                   directDebitDailyTransactionLimit);
         var bank = new Bank(bankInformation);
         bank.CreationDate = DateTime.Now;
-        bank.CreationUserId = cpgUserId;
+        bank.CreationUserId = UserId;
 
         return bank;
     }
 
     public static void Update(int id, string name, string swiftCode, BankStatus status, byte[] logo,
                               int providerId, string providerData, decimal directDebitAmountLimit,
-                              decimal directDebitDailyTransactionLimit, long cpgUserId)
+                              decimal directDebitDailyTransactionLimit, long UserId)
     {
         
     }
 
-    public void Delete(int id, long cpgUserId)
+    public void Delete(int id, long UserId)
     {
      //   this.IsDeleted = true;
 
-        SetModificationData(cpgUserId);
+        SetModificationData(UserId);
 
-        AddDomainEvent(new DeleteBankEvent(Id, cpgUserId, DateTime.Now));
+        AddDomainEvent(new DeleteBankEvent(Id, UserId, DateTime.Now));
     }
 
-    public void SetModificationData(long cpgUserId)
+    public void SetModificationData(long UserId)
     {
         ModificationDate = DateTime.Now;
-        ModificationUserId = cpgUserId;            
+        ModificationUserId = UserId;            
     }
 
-    public void SetAsActive(long cpgUserId)
+    public void SetAsActive(long UserId)
     {
         if (Status == BankStatus.Active)
             throw new BankIsActiveException(Id);
 
         _status = BankStatus.Active;
-        SetModificationData(cpgUserId);
+        SetModificationData(UserId);
 
-        AddDomainEvent(new ChangeBankStatusEvent(Id, BankStatus.Active, cpgUserId, DateTime.Now));
+        AddDomainEvent(new ChangeBankStatusEvent(Id, BankStatus.Active, UserId, DateTime.Now));
     }
 
-    public void SetAsInactive(long cpgUserId)
+    public void SetAsInactive(long UserId)
     {
         if (Status == BankStatus.Inactive)
             throw new BankIsNotActiveException(Id);
 
         _status = BankStatus.Inactive;
-        SetModificationData(cpgUserId);
+        SetModificationData(UserId);
 
-        AddDomainEvent(new ChangeBankStatusEvent(Id, BankStatus.Inactive, cpgUserId, DateTime.Now));
+        AddDomainEvent(new ChangeBankStatusEvent(Id, BankStatus.Inactive, UserId, DateTime.Now));
     }
 
-    public void SetAsSuspended(long cpgUserId)
+    public void SetAsSuspended(long UserId)
     {
         if (Status == BankStatus.Suspended)
             throw new BankIsSuspendedException(Id);
 
         _status = BankStatus.Suspended;
-        SetModificationData(cpgUserId);
+        SetModificationData(UserId);
 
-        AddDomainEvent(new ChangeBankStatusEvent(Id, BankStatus.Suspended, cpgUserId, DateTime.Now));
+        AddDomainEvent(new ChangeBankStatusEvent(Id, BankStatus.Suspended, UserId, DateTime.Now));
     }
 }

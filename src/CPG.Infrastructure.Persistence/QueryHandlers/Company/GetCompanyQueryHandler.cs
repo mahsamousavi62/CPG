@@ -2,7 +2,9 @@
 using CPG.Application.UseCases.Companies.Exceptions;
 using CPG.Application.UseCases.Companies.ViewModels;
 using CPG.Domain.SharedKernel;
+using CPG.Domain.SharedKernel.Minio;
 using CPG.Infrastructure.Persistence.DbContexts;
+using HotChocolate.Language;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -11,11 +13,12 @@ using System.Threading.Tasks;
 
 namespace CPG.Application.UseCases.Companies.Queries;
 
-public class GetCompanyQueryHandler(ReadDbContext context) : IRequestHandler<GetCompanyQuery, CompanyViewModel>
+public class GetCompanyQueryHandler(ReadDbContext context,IMinioProvider minioProvider) : IRequestHandler<GetCompanyQuery, CompanyViewModel>
 {
     private readonly ReadDbContext _context = context;
+    private readonly IMinioProvider _minioProvider=minioProvider;
 
-        public async Task<CompanyViewModel> Handle(GetCompanyQuery request, CancellationToken cancellationToken)
+    public async Task<CompanyViewModel> Handle(GetCompanyQuery request, CancellationToken cancellationToken)
         {
             Guard.Against.NegativeOrZero(request.CompanyId, nameof(request.CompanyId));
 
@@ -30,7 +33,7 @@ public class GetCompanyQueryHandler(ReadDbContext context) : IRequestHandler<Get
                 Id = company.Id,
                 PersianName = company.PersianName,
                 EnglishName = company.EnglishName,
-                Logo = company.Logo,
+                Logo = await _minioProvider.PresignedGetObject(company.Logo),
                 NationalCodeMatchingRequied = company.NationalCodeMatchingRequied,
                 PaymentMethods = company.PaymentMethods.ToDictionary(p => p.MethodType,
                                         p => ((Enums.CompanyPaymentMethodType)p.MethodType).ToString())
