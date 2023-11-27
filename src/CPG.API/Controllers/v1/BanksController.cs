@@ -1,5 +1,5 @@
-﻿using CPG.Application.UseCases.Banks.Commands.CreateBank;
-using CPG.Application.UseCases.Banks.Commands.DeleteBank;
+﻿using CPG.Application.UseCases.Banks.Commands.ActivateBank;
+using CPG.Application.UseCases.Banks.Commands.UpdateBank;
 using CPG.Application.UseCases.Banks.Queries;
 using CPG.Application.UseCases.Banks.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CPG.API.Controllers;
 
-[Authorize]
+//[Authorize]
 public class BanksController : ApiBaseController
 {
     [HttpGet("{id:int}")]
@@ -22,18 +22,18 @@ public class BanksController : ApiBaseController
     public async Task<ActionResult<IReadOnlyCollection<BankViewModel>>> GetActiveBanks()
         => Ok(await Mediator.Send(new GetActiveBanksQuery()));
 
-    [HttpPost]
-    public async Task<IActionResult> CreateBank(CreateBankCommand command)
+    [HttpPost("update/{bankId:int}/{ibanPrefix}")]
+    public async Task<IActionResult> UpdateBank(UpdateBankCommand command)
     {
-        var bankId = await Mediator.Send(command);
+        await Mediator.Send(command);
 
-        return CreatedAtAction(nameof(GetBank), new { id = bankId }, new { bankId });
+        return Accepted();
     }
 
-    [HttpPost("{bookId}/delete")]
-    public async Task<IActionResult> DeleteBank(int bankId)
+    [HttpPost("activate/{bankId:int}/{isActive:bool}")]
+    public async Task<IActionResult> ActivateBank(int bankId, bool isActive)
     {
-        await Mediator.Send(new DeleteBankCommand(bankId));
+        await Mediator.Send(new ActivateBankCommand(bankId, isActive));
 
         return Accepted();
     }

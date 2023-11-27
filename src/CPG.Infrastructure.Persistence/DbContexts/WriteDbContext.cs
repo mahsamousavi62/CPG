@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using CPG.Domain.AggregateModels.BankAggregate;
 using CPG.Domain.AggregateModels.BookAggregate;
 using CPG.Domain.AggregateModels.CPGUserAggregate;
 using CPG.Domain.AggregateModels.UserAggregate;
@@ -19,6 +20,7 @@ public class WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator 
     public DbSet<CPGUser> CPGUsers { get; set; }
     public DbSet<ApplicationSettings> ApplicationSettings { get; set; }
     public DbSet<User> Users { get; set; }
+    public DbSet<Bank> Banks { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
         => modelBuilder
@@ -29,10 +31,9 @@ public class WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator 
             .ApplyConfiguration(new UserConfiguration())
             .ApplyConfiguration(new UserRoleConfiguration())
             .ApplyConfiguration(new CompanyConfiguration())
-           .ApplyConfiguration(new CompanyPaymentMethodsConfiguration())
+            .ApplyConfiguration(new CompanyPaymentMethodsConfiguration())
+            .ApplyConfiguration(new BankConfiguration())
         ;
-
-
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
     {

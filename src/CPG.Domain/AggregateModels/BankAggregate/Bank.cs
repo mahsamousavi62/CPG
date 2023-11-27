@@ -2,56 +2,27 @@
 using CPG.Domain.AggregateModels.BankAggregate.Exceptions;
 using CPG.Domain.SeedWork;
 using System;
-using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Domain.AggregateModels.BankAggregate;
 
 public class Bank : AuditableEntity<int>, IAggregateRoot
 {
-    internal BankInformation _bankInformation { get; set; }
-    internal BankStatus _status;
+    internal string _name;
+    internal string _logoAddress;
+    internal IbanPrefix _ibanPrefix;
 
-    public BankInformation BankInformation => _bankInformation;
-    public BankStatus Status => _status;
+    public string Name => _name;
+    public string LogoAddress => _logoAddress;
+    public IbanPrefix IbanPrefix => _ibanPrefix;
 
     public Bank()
     {
     }
 
-    private Bank(BankInformation bankInformation) : this()
+    public void Update(IbanPrefix ibanPrefix, long cpgUserId)
     {
-        _bankInformation = bankInformation;
-        _status = bankInformation.Status;
-    }
-
-    public static Bank Create(string name, string swiftCode, BankStatus status, byte[] logo,
-                              int providerId, string providerData, decimal directDebitAmountLimit,
-                              decimal directDebitDailyTransactionLimit, long cpgUserId)
-    {
-        var bankInformation = new BankInformation(name, swiftCode, status, logo, providerId,
-                                                  providerData, directDebitAmountLimit,
-                                                  directDebitDailyTransactionLimit);
-        var bank = new Bank(bankInformation);
-        bank.CreationDate = DateTime.Now;
-        bank.CreationUserId = cpgUserId;
-
-        return bank;
-    }
-
-    public static void Update(int id, string name, string swiftCode, BankStatus status, byte[] logo,
-                              int providerId, string providerData, decimal directDebitAmountLimit,
-                              decimal directDebitDailyTransactionLimit, long cpgUserId)
-    {
-        
-    }
-
-    public void Delete(int id, long cpgUserId)
-    {
-     //   this.IsDeleted = true;
-
+        _ibanPrefix = ibanPrefix;
         SetModificationData(cpgUserId);
-
-        AddDomainEvent(new DeleteBankEvent(Id, cpgUserId, DateTime.Now));
     }
 
     public void SetModificationData(long cpgUserId)
@@ -62,34 +33,23 @@ public class Bank : AuditableEntity<int>, IAggregateRoot
 
     public void SetAsActive(long cpgUserId)
     {
-        if (Status == BankStatus.Active)
+        if (IsActive == true)
             throw new BankIsActiveException(Id);
 
-        _status = BankStatus.Active;
+        IsActive = true;
         SetModificationData(cpgUserId);
 
-        AddDomainEvent(new ChangeBankStatusEvent(Id, BankStatus.Active, cpgUserId, DateTime.Now));
+        AddDomainEvent(new ChangeBankStatusEvent(Id, IsActive, cpgUserId, DateTime.Now));
     }
 
     public void SetAsInactive(long cpgUserId)
     {
-        if (Status == BankStatus.Inactive)
+        if (IsActive == false)
             throw new BankIsNotActiveException(Id);
 
-        _status = BankStatus.Inactive;
+        IsActive = false;
         SetModificationData(cpgUserId);
 
-        AddDomainEvent(new ChangeBankStatusEvent(Id, BankStatus.Inactive, cpgUserId, DateTime.Now));
-    }
-
-    public void SetAsSuspended(long cpgUserId)
-    {
-        if (Status == BankStatus.Suspended)
-            throw new BankIsSuspendedException(Id);
-
-        _status = BankStatus.Suspended;
-        SetModificationData(cpgUserId);
-
-        AddDomainEvent(new ChangeBankStatusEvent(Id, BankStatus.Suspended, cpgUserId, DateTime.Now));
+        AddDomainEvent(new ChangeBankStatusEvent(Id, IsActive, cpgUserId, DateTime.Now));
     }
 }
