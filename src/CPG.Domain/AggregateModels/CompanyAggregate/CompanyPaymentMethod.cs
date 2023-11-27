@@ -1,6 +1,4 @@
-﻿using CPG.Domain.AggregateModels.CompanyAggregate.Exceptions;
-using CPG.Domain.AggregateModels.UserAggregate;
-using CPG.Domain.SeedWork;
+﻿using CPG.Domain.SeedWork;
 using CPG.Domain.SharedKernel;
 using System;
 using System.Collections.Generic;
@@ -8,21 +6,21 @@ using System.Linq;
 
 namespace CPG.Domain.AggregateModels.CompanyAggregate;
 
-public class CompanyPaymentMethods : AuditableEntity<long>
+public class CompanyPaymentMethod : AuditableEntity<long>
 {
-   
 
-    public CompanyPaymentMethods(short methodType, long companyId)
+
+    public CompanyPaymentMethod(short methodType, long companyId)
     {
         MethodType = methodType;
         CompanyId = companyId;
     }
 
-    public CompanyPaymentMethods(short methodType)
+    public CompanyPaymentMethod(short methodType)
     {
         MethodType = methodType;
     }
-    public static List<CompanyPaymentMethods> Create(short[] methodTypes)
+    public static List<CompanyPaymentMethod> Create(short[] methodTypes)
     {
         if (methodTypes is null || !methodTypes.Any())
             throw new ArgumentNullException(nameof(methodTypes));
@@ -33,7 +31,7 @@ public class CompanyPaymentMethods : AuditableEntity<long>
         if (!methodTypes.All(methodType => Enum.IsDefined(typeof(Enums.CompanyPaymentMethodType), methodType)))
             throw new Exception("invalid_CompanyPaymentMethodType");
 
-       var companyPaymentMethods = methodTypes.Select(i => new CompanyPaymentMethods(i)).ToList();
+        var companyPaymentMethods = methodTypes.Select(i => new CompanyPaymentMethod(i)).ToList();
         return companyPaymentMethods;
     }
 

@@ -28,7 +28,7 @@ namespace CPG.Infrastructure.Persistence
                 .AddDbContext<WriteDbContext>(options =>
                 {
                     options.EnableDetailedErrors();
-                     options.UseSqlServer(configuration.GetConnectionString(ConnectionStringConfigName));
+                    options.UseSqlServer(configuration.GetConnectionString(ConnectionStringConfigName));
                 })
                 .AddDbContext<ReadDbContext>(options =>
                 {
@@ -63,12 +63,12 @@ namespace CPG.Infrastructure.Persistence
             services
                 .AddGraphQLServer()
                 .AddAuthorization()
-                .AddQueryType<BookReadModelQueries>()
-                 .AddQueryType<GetApplicationSettingsQuery>()
+                .AddQueryType<GetApplicationSettingsQuery>()
+                .AddQueryType<CompanyReadModelQueries>()
                 .AddProjections()
                 .AddFiltering()
                 .AddSorting()
-                .AddType<BookReadModelType>();
+                .AddType<CompanyReadModelType>();
 
             services.AddErrorFilter<GraphQLErrorFilter>();
 

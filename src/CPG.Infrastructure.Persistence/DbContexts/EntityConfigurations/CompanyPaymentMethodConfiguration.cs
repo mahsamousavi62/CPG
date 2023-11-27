@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations
 {
-    public class CompanyPaymentMethodsConfiguration : IEntityTypeConfiguration<CompanyPaymentMethods>
+    public class CompanyPaymentMethodConfiguration : IEntityTypeConfiguration<CompanyPaymentMethod>
     {
-        public void Configure(EntityTypeBuilder<CompanyPaymentMethods> entity)
+        public void Configure(EntityTypeBuilder<CompanyPaymentMethod> entity)
         {
             entity.ToTable("CompanyPaymentMethods");
             entity.HasKey(x => x.Id);

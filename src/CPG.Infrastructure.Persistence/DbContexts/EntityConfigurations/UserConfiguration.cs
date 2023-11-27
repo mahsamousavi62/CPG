@@ -57,7 +57,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         entity.Property(x => x.ModificationDate)
       .HasColumnName("ModificationDate");
 
-        entity.HasMany(x => x.userRoles);
+        entity.HasMany(x => x.UserRoles);
 
 
     }

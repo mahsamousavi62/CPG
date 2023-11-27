@@ -11,62 +11,63 @@ namespace CPG.Domain.AggregateModels.UserAggregate
     {
         public User(string iDPId, string nationalCode, string firstName, string lastName, string phoneNumber)
         {
-            _iDPId = iDPId;
-            _nationalCode = nationalCode;
-            _firstName = firstName;
-            _lastName = lastName;
-            _phoneNumber = phoneNumber;
-            _isActive = true;
-            _kYCStatus = 1;
+            IDPId = iDPId;
+            NationalCode = nationalCode;
+            FirstName = firstName;
+            LastName = lastName;
+            PhoneNumber = phoneNumber;
+            IsLegal = true;
+            KYCStatus = 1;
             LastUpdateFromIDP = DateTime.Now;
             CreatationDateTime = DateTime.Now;
-            ModificationDate = DateTime.Now;
         }
 
         public User(string firstName, string lastName, string phoneNumber)
         {
-            _firstName = firstName;
-            _lastName = lastName;
-            _phoneNumber = phoneNumber;
-            _kYCStatus = 1;
+            FirstName = firstName;
+            LastName = lastName;
+            PhoneNumber = phoneNumber;
+            KYCStatus = 1;
             LastUpdateFromIDP = DateTime.Now;
             CreatationDateTime = DateTime.Now;
-            ModificationDate = DateTime.Now;
-
         }
 
         #region [ Fields And Properties ]
 
-        private string _iDPId;
-        private string _nationalCode;
-        private int? _companyId;
-        private string _firstName;
-        private string _lastName;
-        private string _phoneNumber;
-        private short _kYCStatus;
-        private bool _isActive;
-        private bool _isLegal;
-       
-        public string IDPId => _iDPId;
-        public string NationalCode => _nationalCode;
+        public string IDPId { get; }
+
+        public string NationalCode { get; }
+
         public long? CompanyId { get; set; }
-        public string FirstName => _firstName;
-        public string LastName => _lastName;
-        public string PhoneNumber => _phoneNumber;
+
+        public string FirstName { get; }
+
+        public string LastName { get; }
+
+        public string PhoneNumber { get; }
+
         public DateTime LastUpdateFromIDP { get; set; }
-        public short KYCStatus => _kYCStatus;
-        public bool IsLegal => _isActive;
-        public bool IsActive => _isLegal;
+
+        public short KYCStatus { get; }
+
+        public bool IsLegal { get; }
+
+        public bool IsActive { get; }
+
         public DateTime CreatationDateTime { get; set; }
+
         public DateTime ModificationDate { get; set; }
-        public List<UserRole> userRoles { get; set; } = new List<UserRole>();
+
+        public List<UserRole> UserRoles { get; set; } = [];
+
         public Company Company { get; set; }
+
         #endregion
 
         public static User Create(string iDPId, NationalCode nationalCode, Name name, PhoneNumber phoneNumber, short userRoleType)
         {
             var user = new User(iDPId, nationalCode.Value, name.FirstName, name.LastName, phoneNumber.Value);
-            user.userRoles.Add(new UserRole(userRoleType));
+            user.UserRoles.Add(new UserRole(userRoleType));
            
             return user;
         }

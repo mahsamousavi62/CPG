@@ -1,6 +1,6 @@
 ﻿using CPG.Domain.Exceptions;
 
-namespace CPG.Domain.AggregateModels.BookAggregate.Exceptions;
+namespace CPG.Domain.SharedKernel.Exceptions;
 
 public class DateTimePeriodValidationException(string message) : DomainException(message)
 {

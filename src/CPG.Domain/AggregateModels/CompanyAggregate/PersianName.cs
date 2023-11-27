@@ -1,7 +1,7 @@
 ﻿using Ardalis.GuardClauses;
 using CPG.Domain.AggregateModels.CompanyAggregate.Exceptions;
 using CPG.Domain.AggregateModels.CompanyAggregate.Specifications;
-using CPG.Domain.AggregateModels.CPGUserAggregate.Exceptions;
+using CPG.Domain.AggregateModels.UserAggregate.Exceptions;
 using CPG.Domain.SharedKernel;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;

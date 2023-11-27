@@ -18,7 +18,7 @@ public class Company : AuditableEntity<long>, IAggregateRoot
         _englishName = englishName.Value;
         _nationalCodeMatchingRequied = nationalCodeMatchingRequied;
         _logo = logo.Value;
-        PaymentMethods = new List<CompanyPaymentMethods>();
+        PaymentMethods = new List<CompanyPaymentMethod>();
     }
 
     private string _persianName;
@@ -30,7 +30,7 @@ public class Company : AuditableEntity<long>, IAggregateRoot
     public string Logo => _logo;
     public bool NationalCodeMatchingRequied => _nationalCodeMatchingRequied;
 
-    public List<CompanyPaymentMethods> PaymentMethods { get; set; } = [];
+    public List<CompanyPaymentMethod> PaymentMethods { get; set; } = [];
     public List<User> users { get; set; }
 
     public static Company Create(PersianName persianName, EnglishName englishName,
@@ -38,7 +38,7 @@ public class Company : AuditableEntity<long>, IAggregateRoot
     {
         var comapny = new Company(persianName, englishName, nationalCodeMatchingRequied, logo);
         
-        var companyPaymentMethods = CompanyPaymentMethods.Create(details);
+        var companyPaymentMethods = CompanyPaymentMethod.Create(details);
         
         comapny.PaymentMethods.AddRange(companyPaymentMethods);
 
