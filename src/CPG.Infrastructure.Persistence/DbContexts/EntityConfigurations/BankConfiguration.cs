@@ -1,0 +1,28 @@
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore;
+using CPG.Domain.AggregateModels.BankAggregate;
+
+namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations
+{
+    public class BankConfiguration : IEntityTypeConfiguration<Bank>
+    {
+        public void Configure(EntityTypeBuilder<Bank> entity)
+        {
+            entity.ToTable("Bank");
+            entity.HasKey(x => x.Id);
+
+            entity.Ignore(x => x.DomainEvents);
+            entity.Property(x => x.Id).HasColumnName("Id").UseIdentityColumn();
+            entity.Property(x => x.Name).HasColumnName("Name").HasMaxLength(256).HasColumnType("nvarchar").IsRequired();            
+            entity.Property(x => x.LogoAddress).HasColumnName("LogoAddress").HasMaxLength(256).HasColumnType("varchar").IsRequired();
+            entity.OwnsOne(x => x.IbanPrefix, x =>
+            {
+                x.Property(e => e.Value)
+                    .HasColumnName("IbanPrefix")
+                    .HasMaxLength(6)
+                    .HasColumnType("varchar")
+                    .IsRequired();
+            });
+        }
+    }
+}

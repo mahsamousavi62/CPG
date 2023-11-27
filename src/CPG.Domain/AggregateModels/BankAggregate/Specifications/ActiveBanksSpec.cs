@@ -8,7 +8,7 @@ public sealed class ActiveBanksSpec : Specification<Bank>
     public ActiveBanksSpec()
     {
         Query
-            .Where(bank =>  bank.Status == SharedKernel.Enums.BankStatus.Active)
+            .Where(bank =>  bank.IsActive == true)
             .OrderByDescending(bank => bank.Id);
     }
 }

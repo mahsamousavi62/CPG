@@ -22,6 +22,47 @@ namespace CPG.Infrastructure.Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("CPG.Domain.AggregateModels.BankAggregate.Bank", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("CreationUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LogoAddress")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar")
+                        .HasColumnName("LogoAddress");
+
+                    b.Property<DateTime?>("ModificationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("ModificationUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Bank", (string)null);
+                });
+
             modelBuilder.Entity("CPG.Domain.AggregateModels.CompanyAggregate.Company", b =>
                 {
                     b.Property<long>("Id")
@@ -250,6 +291,30 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Application_Settings", (string)null);
+                });
+
+            modelBuilder.Entity("CPG.Domain.AggregateModels.BankAggregate.Bank", b =>
+                {
+                    b.OwnsOne("CPG.Domain.AggregateModels.BankAggregate.IbanPrefix", "IbanPrefix", b1 =>
+                        {
+                            b1.Property<int>("BankId")
+                                .HasColumnType("int");
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasMaxLength(6)
+                                .HasColumnType("varchar")
+                                .HasColumnName("IbanPrefix");
+
+                            b1.HasKey("BankId");
+
+                            b1.ToTable("Bank");
+
+                            b1.WithOwner()
+                                .HasForeignKey("BankId");
+                        });
+
+                    b.Navigation("IbanPrefix");
                 });
 
             modelBuilder.Entity("CPG.Domain.AggregateModels.CompanyAggregate.CompanyPaymentMethod", b =>

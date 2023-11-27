@@ -1,12 +1,9 @@
 ﻿using CPG.Application.UseCases.Banks.ViewModels;
 using MediatR;
 
-namespace CPG.Application.UseCases.Banks.Queries
-{
-    public class GetBankQuery : IRequest<BankViewModel>
-    {
-        public int BankId { get; }
+namespace CPG.Application.UseCases.Banks.Queries;
 
-        public GetBankQuery(int bankId) => BankId = bankId;
-    }
+public class GetBankQuery(int bankId) : IRequest<BankViewModel>
+{
+    public int BankId { get; } = bankId;
 }
