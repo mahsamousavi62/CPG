@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using CPG.Domain.AggregateModels.BankAggregate;
 using CPG.Domain.AggregateModels.BookAggregate;
 using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Domain.AggregateModels.UserAggregate;
@@ -18,6 +19,7 @@ public class WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator 
 
     public DbSet<User> Users { get; set; }
     public DbSet<ApplicationSettings> ApplicationSettings { get; set; }
+    public DbSet<Bank> Banks { get; set; }
     public DbSet<Company> Companies { get; set; }
     public DbSet<CompanyPaymentMethod> CompanyPaymentMethods { get; set; }
 
@@ -28,6 +30,7 @@ public class WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator 
             .ApplyConfiguration(new UserRoleConfiguration())
             .ApplyConfiguration(new CompanyConfiguration())
             .ApplyConfiguration(new CompanyPaymentMethodConfiguration())
+            .ApplyConfiguration(new BankConfiguration())
         ;
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())

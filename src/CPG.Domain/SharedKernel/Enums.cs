@@ -2,13 +2,6 @@
 
 public class Enums
 {
-    public enum BankStatus
-    {
-        Active = 1,
-        Inactive = 2,
-        Suspended = 3,
-    }
-
     public enum ApplicationSettingEntityType
     {
         IDPCredential = 1,

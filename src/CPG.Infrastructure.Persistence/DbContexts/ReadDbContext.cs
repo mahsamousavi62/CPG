@@ -12,11 +12,14 @@ public class ReadDbContext(DbContextOptions<ReadDbContext> options) : DbContext(
 
     public IQueryable<CompanyReadModel> CompanyReadModels => Set<CompanyReadModel>().AsNoTracking();
 
+    public IQueryable<BankReadModel> BankReadModels => Set<BankReadModel>().AsNoTracking();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
             .ApplyConfiguration(new ApplicationSettingReadModelConfiguration())
             .ApplyConfiguration(new CompanyReadModelConfiguration())
-            .ApplyConfiguration(new CompanyPaymentMethodsReadModelConfiguration());
+            .ApplyConfiguration(new CompanyPaymentMethodsReadModelConfiguration())
+            .ApplyConfiguration(new BankReadModelConfiguration());
     }
 }
