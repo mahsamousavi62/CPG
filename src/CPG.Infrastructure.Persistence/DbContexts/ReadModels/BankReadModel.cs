@@ -10,5 +10,5 @@ public class BankReadModel
     public bool IsActive { get; set; }
     public string LogoAddress { get; set; }
     public DateTime CreationDate { get; set; }
-    public DateTime ModificationDate { get; set; }
+    public DateTime? ModificationDate { get; set; }
 }

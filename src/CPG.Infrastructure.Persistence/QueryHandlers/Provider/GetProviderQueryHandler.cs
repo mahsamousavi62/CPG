@@ -5,6 +5,8 @@ using CPG.Application.UseCases.Banks.ViewModels;
 using CPG.Application.UseCases.Providers.Exceptions;
 using CPG.Application.UseCases.Providers.Queries;
 using CPG.Application.UseCases.Providers.ViewModels;
+using CPG.Domain.AggregateModels.CompanyAggregate;
+using CPG.Domain.SharedKernel.Minio;
 using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -17,9 +19,10 @@ using System.Threading.Tasks;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Provider;
 
-public class GetProviderQueryHandler(ReadDbContext context) : IRequestHandler<GetProviderQuery, ProviderViewModel>
+public class GetProviderQueryHandler(ReadDbContext context, IMinioProvider minioProvider) : IRequestHandler<GetProviderQuery, ProviderViewModel>
 {
     private readonly ReadDbContext _context = context;
+    private readonly IMinioProvider _minioProvider = minioProvider;
 
     public async Task<ProviderViewModel> Handle(GetProviderQuery request, CancellationToken cancellationToken)
     {
@@ -35,7 +38,7 @@ public class GetProviderQueryHandler(ReadDbContext context) : IRequestHandler<Ge
             Id = provider.Id,
             PersianName = provider.PersianName,
             EnglishName = provider.EnglishName,
-            Logo = provider.Logo,
+            Logo = await _minioProvider.PresignedGetObject(provider.Logo),
             ProviderData = provider.ProviderData,
             ProviderType = provider.ProviderType,
         };

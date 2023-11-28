@@ -13,5 +13,5 @@ public class ProviderReadModel
     public string ProviderData { get; set; }    
     public bool IsActive { get; set; }
     public DateTime CreationDate { get; set; }
-    public DateTime ModificationDate { get; set; }
+    public DateTime? ModificationDate { get; set; }
 }

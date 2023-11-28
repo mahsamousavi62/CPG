@@ -117,13 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="DuplicateEnglishName" xml:space="preserve">
-    <value>Provider with EnglishName '{0}' has already been created</value>
+  <data name="ProviderIsAlreadyActive" xml:space="preserve">
+    <value>سرویس دهنده با شناسه {0} فعال می باشد</value>
   </data>
-  <data name="DuplicatePersianName" xml:space="preserve">
-    <value>Provider with PersianName '{0}' has already been created</value>
-  </data>
-  <data name="Test" xml:space="preserve">
-    <value>test</value>
+  <data name="ProviderIsAlreadyNotActive" xml:space="preserve">
+    <value>سرویس دهنده با شناسه {0} غیرفعال می باشد</value>
   </data>
 </root>

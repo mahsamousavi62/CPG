@@ -20,12 +20,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="AggregateModels\BankAggregate\Resource.Designer.cs">
+    <Compile Update="AggregateModels\CompanyAggregate\Resource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
-    <Compile Update="AggregateModels\CompanyAggregate\Resource.Designer.cs">
+    <Compile Update="AggregateModels\ProviderAggregate\Resource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Resource.resx</DependentUpon>
@@ -33,11 +33,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="AggregateModels\BankAggregate\Resource.resx">
+    <EmbeddedResource Update="AggregateModels\CompanyAggregate\Resource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="AggregateModels\CompanyAggregate\Resource.resx">
+    <EmbeddedResource Update="AggregateModels\ProviderAggregate\Resource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
@@ -45,9 +45,7 @@
 
   <ItemGroup>
     <Folder Include="AggregateModels\CompanyAggregate\Guards\" />
-    <Folder Include="AggregateModels\ProviderAggregate\Events\" />
-    <Folder Include="AggregateModels\ProviderAggregate\Exceptions\" />
-    <Folder Include="AggregateModels\ProviderAggregate\Specifications\" />
+    <Folder Include="AggregateModels\ProviderAggregate\Guards\" />
     <Folder Include="AggregateModels\UserAggregate\Idp\" />
     <Folder Include="SharedKernel\ApplicationSettings\Exceptions\" />
     <Folder Include="SharedKernel\ApplicationSettings\Commands\" />

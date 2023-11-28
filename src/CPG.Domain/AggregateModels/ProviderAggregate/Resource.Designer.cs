@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace CPG.Domain.AggregateModels.BankAggregate {
+namespace CPG.Domain.AggregateModels.ProviderAggregate {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace CPG.Domain.AggregateModels.BankAggregate {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CPG.Domain.AggregateModels.BankAggregate.Resource", typeof(Resource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CPG.Domain.AggregateModels.ProviderAggregate.Resource", typeof(Resource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,29 +61,20 @@ namespace CPG.Domain.AggregateModels.BankAggregate {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to بانک با شناسه {0} فعال می باشد.
+        ///   Looks up a localized string similar to سرویس دهنده با شناسه {0} فعال می باشد.
         /// </summary>
-        internal static string BankIsAlreadyActive {
+        internal static string ProviderIsAlreadyActive {
             get {
-                return ResourceManager.GetString("BankIsAlreadyActive", resourceCulture);
+                return ResourceManager.GetString("ProviderIsAlreadyActive", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to بانک با شناسه {0} غیرفعال می باشد.
+        ///   Looks up a localized string similar to سرویس دهنده با شناسه {0} غیرفعال می باشد.
         /// </summary>
-        internal static string BankIsAlreadyNotActive {
+        internal static string ProviderIsAlreadyNotActive {
             get {
-                return ResourceManager.GetString("BankIsAlreadyNotActive", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to شناسه شبا {0} نامعتبر می باشد.
-        /// </summary>
-        internal static string InvalidIbanPrefix {
-            get {
-                return ResourceManager.GetString("InvalidIbanPrefix", resourceCulture);
+                return ResourceManager.GetString("ProviderIsAlreadyNotActive", resourceCulture);
             }
         }
     }

@@ -3,7 +3,7 @@ using MediatR;
 
 namespace CPG.Application.UseCases.Providers.Queries;
 
-public class GetProviderQuery(int providerId) : IRequest<ProviderViewModel>
+public class GetProviderQuery(long providerId) : IRequest<ProviderViewModel>
 {
-    public int ProviderId { get; } = providerId;
+    public long ProviderId { get; } = providerId;
 }

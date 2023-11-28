@@ -32,7 +32,8 @@ public class Enums
     public enum UploadFromEntityType
     {
         Company = 1,
-        Bank = 2
+        Bank = 2,
+        Provider = 3,
     }
 
     public enum ProviderType : byte

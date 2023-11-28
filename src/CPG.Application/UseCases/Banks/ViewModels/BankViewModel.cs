@@ -16,5 +16,5 @@ public class BankViewModel
 
     public DateTime CreationDate { get; set; }
 
-    public DateTime ModificationDate { get; set; }
+    public DateTime? ModificationDate { get; set; }
 }
