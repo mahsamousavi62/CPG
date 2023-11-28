@@ -12,9 +12,25 @@ namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations
             entity.HasKey(x => x.Id);
 
             entity.Ignore(x => x.DomainEvents);
-            entity.Property(x => x.Id).HasColumnName("Id").UseIdentityColumn();
-            entity.Property(x => x.Name).HasColumnName("Name").HasMaxLength(256).HasColumnType("nvarchar").IsRequired();            
-            entity.Property(x => x.LogoAddress).HasColumnName("LogoAddress").HasMaxLength(256).HasColumnType("varchar").IsRequired();
+
+            entity.Property(x => x.Id)
+                .HasColumnName("Id")
+                .UseIdentityColumn();
+
+            entity.Property(x => x.Name)
+                .HasColumnName("Name")
+                .HasMaxLength(256)
+                .HasColumnType("nvarchar")
+                .IsUnicode(true)
+                .UseCollation("Persian_100_CI_AI")
+                .IsRequired();
+
+            entity.Property(x => x.LogoAddress)
+                .HasColumnName("LogoAddress")
+                .HasMaxLength(256)
+                .HasColumnType("varchar")
+                .IsRequired();
+
             entity.OwnsOne(x => x.IbanPrefix, x =>
             {
                 x.Property(e => e.Value)
