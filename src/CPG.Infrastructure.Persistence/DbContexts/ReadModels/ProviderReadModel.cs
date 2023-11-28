@@ -1,4 +1,5 @@
-﻿using static CPG.Domain.SharedKernel.Enums;
+﻿using System;
+using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Infrastructure.Persistence.DbContexts.ReadModels;
 
@@ -11,4 +12,6 @@ public class ProviderReadModel
     public string Logo { get; set; }
     public string ProviderData { get; set; }    
     public bool IsActive { get; set; }
+    public DateTime CreationDate { get; set; }
+    public DateTime ModificationDate { get; set; }
 }

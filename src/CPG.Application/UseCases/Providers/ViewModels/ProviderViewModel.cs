@@ -1,4 +1,5 @@
-﻿using static CPG.Domain.SharedKernel.Enums;
+﻿using System;
+using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Application.UseCases.Providers.ViewModels;
 
@@ -10,4 +11,6 @@ public class ProviderViewModel
     public string Logo { get; set; }
     public string ProviderData { get; set; }
     public ProviderType ProviderType { get; set; }
+    public DateTime CreationDate { get; set; }
+    public DateTime ModificationDate { get; set; }
 }

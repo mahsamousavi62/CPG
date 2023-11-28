@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace CPG.Application.UseCases.Providers.Queries
 {
-    public class GetActiveProviderQuery : IRequest<IReadOnlyCollection<ProviderViewModel>>
+    public class GetActiveProvidersQuery : IRequest<IReadOnlyCollection<ProviderViewModel>>
     {
     }
 }
