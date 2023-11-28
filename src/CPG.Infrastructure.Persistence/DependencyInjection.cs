@@ -40,8 +40,6 @@ namespace CPG.Infrastructure.Persistence
                 .AddScoped(typeof(ICommonServiceRepository<>), typeof(CommonServiceRepository<>))
                 .AddScoped<IRedisCaheService, RedisCacheService>();
 
-
-
             _ = bool.TryParse(configuration["Redis:Enable"], out var enableRedis);
 
             if (enableRedis)
@@ -51,8 +49,7 @@ namespace CPG.Infrastructure.Persistence
                 {
                     EndPoints = { $"{redisConfig.Server}:{redisConfig.Port}" },
                     Password = redisConfig.Password,
-                }
-                                                   );
+                });
             }
             services.AddDistributedMemoryCache();
             return services;
