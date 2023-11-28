@@ -30,6 +30,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
+    <Compile Update="AggregateModels\CompanyDepositAggregate\Resource.Designer.cs">
+      <DependentUpon>Resource.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -41,10 +46,17 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="AggregateModels\CompanyDepositAggregate\Resource.resx">
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="AggregateModels\CompanyAggregate\Guards\" />
+    <Folder Include="AggregateModels\CompanyDepositAggregate\Exceptions\" />
+    <Folder Include="AggregateModels\CompanyDepositAggregate\Guards\" />
+    <Folder Include="AggregateModels\CompanyDepositAggregate\Specifications\" />
     <Folder Include="AggregateModels\UserAggregate\Idp\" />
     <Folder Include="SharedKernel\ApplicationSettings\Exceptions\" />
     <Folder Include="SharedKernel\ApplicationSettings\Commands\" />

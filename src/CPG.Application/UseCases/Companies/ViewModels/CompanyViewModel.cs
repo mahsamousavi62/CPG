@@ -1,4 +1,5 @@
 ﻿using CPG.Domain.SharedKernel.File;
+using System;
 using System.Collections.Generic;
 
 namespace CPG.Application.UseCases.Companies.ViewModels;
@@ -11,4 +12,8 @@ public class CompanyViewModel
     public bool NationalCodeMatchingRequied { get; set; }
     public string Logo { get; set; }
     public Dictionary<short, string> PaymentMethods { get; set; }
+    public bool IsActive { get; set; }
+    public DateTime CreationDate {get; set; }
+    public DateTime? ModificationDate {get; set; }
+
 }
