@@ -1,15 +1,13 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using CPG.Domain.AggregateModels.BankAggregate;
-using CPG.Domain.AggregateModels.BookAggregate;
+﻿using CPG.Domain.AggregateModels.BankAggregate;
 using CPG.Domain.AggregateModels.CompanyAggregate;
-using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Domain.SharedKernel.ApplicationSettings;
 using CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations;
 using CPG.Infrastructure.Persistence.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace CPG.Infrastructure.Persistence.DbContexts;
 
