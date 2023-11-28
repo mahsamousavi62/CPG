@@ -117,7 +117,58 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ApplicationSettings" xml:space="preserve">
+    <value>ApplicationSettings</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="Apps" xml:space="preserve">
+    <value>Apps</value>
+  </data>
+  <data name="Banks" xml:space="preserve">
+    <value>Banks</value>
+  </data>
+  <data name="Companies" xml:space="preserve">
+    <value>Companies</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Create</value>
+  </data>
+  <data name="DirectDebit" xml:space="preserve">
+    <value>DirectDebit</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="Filter" xml:space="preserve">
+    <value>Filter</value>
+  </data>
+  <data name="InternetPaymentGateway" xml:space="preserve">
+    <value>InternetPaymentGateway</value>
+  </data>
+  <data name="PaymentReceipt" xml:space="preserve">
+    <value>PaymentReceipt</value>
+  </data>
+  <data name="Providers" xml:space="preserve">
+    <value>Providers</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="SetActive" xml:space="preserve">
+    <value>SetActive</value>
+  </data>
+  <data name="SetDeActive" xml:space="preserve">
+    <value>SetDeActive</value>
+  </data>
   <data name="Test" xml:space="preserve">
     <value>test</value>
+  </data>
+  <data name="TitleMainMenu" xml:space="preserve">
+    <value>TitleMainMenu</value>
+  </data>
+  <data name="Users" xml:space="preserve">
+    <value>Users</value>
   </data>
 </root>

@@ -117,8 +117,32 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ApplicationSettings" xml:space="preserve">
+    <value>تنظیمات برنامه</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>اعمال</value>
+  </data>
+  <data name="Apps" xml:space="preserve">
+    <value>برنامه‌ها</value>
+  </data>
+  <data name="Banks" xml:space="preserve">
+    <value>بانک‌ها</value>
+  </data>
+  <data name="Companies" xml:space="preserve">
+    <value>شرکت‌ها</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>ایجاد</value>
+  </data>
   <data name="DirectDebit" xml:space="preserve">
     <value>برداشت مستقیم</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>ویرایش</value>
+  </data>
+  <data name="Filter" xml:space="preserve">
+    <value>فیلتر</value>
   </data>
   <data name="InternetPaymentGateway" xml:space="preserve">
     <value>درگاه پرداخت اینترنتی</value>
@@ -126,7 +150,25 @@
   <data name="PaymentReceipt" xml:space="preserve">
     <value>فیش واریزی</value>
   </data>
+  <data name="Providers" xml:space="preserve">
+    <value>سرویس‌دهنده‌ها</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>جستجو</value>
+  </data>
+  <data name="SetActive" xml:space="preserve">
+    <value>فعال کردن</value>
+  </data>
+  <data name="SetDeActive" xml:space="preserve">
+    <value>غیرفعال کردن</value>
+  </data>
   <data name="Test" xml:space="preserve">
     <value>تست</value>
+  </data>
+  <data name="TitleMainMenu" xml:space="preserve">
+    <value>تنظیمات پایه روش های برداشت/پرداخت کاریزما</value>
+  </data>
+  <data name="Users" xml:space="preserve">
+    <value>کاربان</value>
   </data>
 </root>
