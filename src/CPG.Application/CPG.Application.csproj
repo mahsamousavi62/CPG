@@ -47,7 +47,6 @@
     <Folder Include="UseCases\Banks\EventHandlers\" />
     <Folder Include="UseCases\Common\Commands\" />
     <Folder Include="UseCases\Providers\Commands\CreateProvider\" />
-    <Folder Include="UseCases\Providers\Commands\ActivateProvider\" />
     <Folder Include="UseCases\Providers\Commands\UpdateProvider\" />
     <Folder Include="UseCases\Providers\EventHandlers\" />
   </ItemGroup>
