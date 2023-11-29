@@ -1,4 +1,4 @@
-﻿using CPG.Application.UseCases.CompanyDeposits;
+﻿using System;
 using System.Collections.Generic;
 
 namespace CPG.Infrastructure.Persistence.DbContexts.ReadModels;
