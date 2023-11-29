@@ -211,6 +211,61 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.ToTable("CompanyPaymentMethods", (string)null);
                 });
 
+            modelBuilder.Entity("CPG.Domain.AggregateModels.ProviderAggregate.Provider", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("CreationUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("EnglishName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar")
+                        .HasColumnName("EnglishName");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Logo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Logo");
+
+                    b.Property<DateTime?>("ModificationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("ModificationUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("PersianName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("PersianName");
+
+                    b.Property<string>("ProviderData")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("ProviderData");
+
+                    b.Property<byte>("ProviderType")
+                        .HasColumnType("tinyint")
+                        .HasColumnName("ProviderType");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Provider", (string)null);
+                });
+
             modelBuilder.Entity("CPG.Domain.AggregateModels.UserAggregate.User", b =>
                 {
                     b.Property<long>("Id")

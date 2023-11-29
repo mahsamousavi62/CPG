@@ -23,6 +23,8 @@ public class GetAllBanksQueryHandler(ReadDbContext context) : IRequestHandler<Ge
             IbanPrefix = x.IbanPrefix,
             LogoAddress = x.LogoAddress,            
             IsActive = x.IsActive,
+            CreationDate = x.CreationDate,
+            ModificationDate = x.ModificationDate,
         }).ToListAsync(cancellationToken: cancellationToken);
 
         return banks;
