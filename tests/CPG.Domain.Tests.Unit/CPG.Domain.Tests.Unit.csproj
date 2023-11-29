@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="AggregateModels\" />
+    <Folder Include="AggregateModels\BankAggregate\BankTests\" />
     <Folder Include="Guards\" />
     <Folder Include="Helpers\" />
   </ItemGroup>

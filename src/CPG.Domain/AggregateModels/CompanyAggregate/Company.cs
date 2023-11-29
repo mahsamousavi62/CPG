@@ -1,6 +1,7 @@
 ﻿using CPG.Domain.AggregateModels.CompanyAggregate.Events;
 using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Domain.SeedWork;
+using CPG.Domain.SharedKernel;
 using System;
 using System.Collections.Generic;
 

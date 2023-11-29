@@ -138,6 +138,12 @@
   <data name="DirectDebit" xml:space="preserve">
     <value>برداشت مستقیم</value>
   </data>
+  <data name="DuplicateEnglishName" xml:space="preserve">
+    <value>سرویس دهنده با نام لاتین '{0}' قبلا ثبت شده است</value>
+  </data>
+  <data name="DuplicatePersianName" xml:space="preserve">
+    <value>سرویس دهنده با نام فارسی '{0}' قبلا ثبت شده است</value>
+  </data>
   <data name="Edit" xml:space="preserve">
     <value>ویرایش</value>
   </data>

@@ -1,4 +1,6 @@
-﻿namespace CPG.Application.UseCases.Banks.ViewModels;
+﻿using System;
+
+namespace CPG.Application.UseCases.Banks.ViewModels;
 
 public class BankViewModel
 {
@@ -10,5 +12,9 @@ public class BankViewModel
 
     public string IbanPrefix { get; set; }
 
-    public string LogoAddress { get; set; }        
+    public string LogoAddress { get; set; }
+
+    public DateTime CreationDate { get; set; }
+
+    public DateTime? ModificationDate { get; set; }
 }

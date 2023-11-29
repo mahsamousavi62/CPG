@@ -79,15 +79,6 @@ namespace CPG.Domain.AggregateModels.BankAggregate {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to بانک با شناسه {0} معلق می باشد.
-        /// </summary>
-        internal static string BankIsAlreadySuspended {
-            get {
-                return ResourceManager.GetString("BankIsAlreadySuspended", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to شناسه شبا {0} نامعتبر می باشد.
         /// </summary>
         internal static string InvalidIbanPrefix {

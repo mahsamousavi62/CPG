@@ -162,6 +162,12 @@
   <data name="SetDeActive" xml:space="preserve">
     <value>SetDeActive</value>
   </data>
+  <data name="DuplicateEnglishName" xml:space="preserve">
+    <value>Provider with EnglishName '{0}' has already been created</value>
+  </data>
+  <data name="DuplicatePersianName" xml:space="preserve">
+    <value>Provider with PersianName '{0}' has already been created</value>
+  </data>
   <data name="Test" xml:space="preserve">
     <value>test</value>
   </data>

@@ -17,7 +17,7 @@ public class UpdateBankCommandHandler(IAggregateRepository<Bank> bankRepository,
         var bank = await _bankRepository.GetByIdAsync(command.BankId, cancellationToken)
                    ?? throw new BankNotFoundException(command.BankId);
 
-        bank.Update(command.IbanPrefix, _currentUser.UserId);
+        bank.Update(command.IbanPrefix);
 
         await _bankRepository.SaveChangesAsync(cancellationToken);
     }
