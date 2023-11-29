@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using FluentAssertions;
 
 namespace CPG.Tests.Base;
@@ -31,5 +32,23 @@ public static class TestExtensions
         Guid.TryParse(text, out _)
             .Should()
             .BeTrue();
+    }
+
+    public static string GenerateCustomizedPersianText(int length)
+    {
+        var persianCharacters = new List<string> { "ا", "ب", "پ", "ت", "ث", "ج", "چ", "ح",
+                                                       "خ", "د", "ذ", "ر", "ز", "ژ", "س", "ش",
+                                                       "ص", "ض", "ط", "ظ", "ع", "غ", "ف", "ق",
+                                                       "ک", "گ", "ل", "م", "ن", "و", "ه", "ی"};
+        var rnd = new Random();
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 0; i < length; i++)
+        {
+            int x = rnd.Next(persianCharacters.Count);
+            result.Append(persianCharacters[x]);
+        }
+
+        return result.ToString();
     }
 }
