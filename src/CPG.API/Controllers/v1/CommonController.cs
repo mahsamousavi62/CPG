@@ -25,12 +25,12 @@ public class CommonController : ApiBaseController
         return Ok(resourceHelper.GetResources());
     }
 
-    [HttpGet("GetAppSettingIDPCredential")]
-    [AllowAnonymous]
-    public async Task<ActionResult<IReadOnlyCollection<ApplicationSettingViewModel>>> GetAppSettingIDPCredential()
-    {
-        return Ok(await Mediator.Send(new GetAuthenticationAppSettingQuery()));
-    }
+    //[HttpGet("GetAppSettingIDPCredential")]
+    //[AllowAnonymous]
+    //public async Task<ActionResult<IReadOnlyCollection<ApplicationSettingViewModel>>> GetAppSettingIDPCredential()
+    //{
+    //    return Ok(await Mediator.Send(new GetAuthenticationAppSettingQuery()));
+    //}
 
     [HttpGet("GetAppSetting/{entityType:int}")]
     [ProducesResponseType(typeof(IReadOnlyCollection<ApplicationSettingViewModel>), (int)HttpStatusCode.OK)]

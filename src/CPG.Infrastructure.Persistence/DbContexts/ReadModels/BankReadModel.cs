@@ -1,4 +1,7 @@
-﻿namespace CPG.Infrastructure.Persistence.DbContexts.ReadModels;
+﻿using CPG.Application.UseCases.CompanyDeposits;
+using System.Collections.Generic;
+
+namespace CPG.Infrastructure.Persistence.DbContexts.ReadModels;
 
 public class BankReadModel
 {
@@ -7,4 +10,6 @@ public class BankReadModel
     public string IbanPrefix { get; set; }
     public bool IsActive { get; set; }
     public string LogoAddress { get; set; }
+    public ICollection<CompanyDepositReadModel> CompanyDeposits { get; set; }
+
 }

@@ -20,6 +20,11 @@ namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations.ReadMod
             readModel.HasMany(a => a.PaymentMethods)
             .WithOne(b => b.Company)
             .HasForeignKey(b => b.CompanyId);
+
+            readModel
+        .HasMany(c => c.CompanyDeposits)
+        .WithOne(p => p.Company)
+        .HasForeignKey(p => p.CompanyId);
         }
     }
 }

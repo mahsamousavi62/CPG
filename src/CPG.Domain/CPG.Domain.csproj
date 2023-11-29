@@ -54,7 +54,6 @@
 
   <ItemGroup>
     <Folder Include="AggregateModels\CompanyAggregate\Guards\" />
-    <Folder Include="AggregateModels\CompanyDepositAggregate\Exceptions\" />
     <Folder Include="AggregateModels\CompanyDepositAggregate\Guards\" />
     <Folder Include="AggregateModels\CompanyDepositAggregate\Specifications\" />
     <Folder Include="AggregateModels\UserAggregate\Idp\" />

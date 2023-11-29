@@ -63,45 +63,27 @@ namespace CPG.Domain.AggregateModels.CompanyDepositAggregate {
         /// <summary>
         ///   Looks up a localized string similar to خطا در ایجاد رکورد جدید.
         /// </summary>
-        internal static string cannot_create_company {
+        internal static string cannot_create_companyDeposit {
             get {
-                return ResourceManager.GetString("cannot_create_company", resourceCulture);
+                return ResourceManager.GetString("cannot_create_companyDeposit", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to نام انگلیسی تکراری است.
+        ///   Looks up a localized string similar to شماره شبا معتبر نمی باشد.
         /// </summary>
-        internal static string Duplicate_EnglishName {
+        internal static string InvalidIban {
             get {
-                return ResourceManager.GetString("Duplicate_EnglishName", resourceCulture);
+                return ResourceManager.GetString("InvalidIban", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to نام فارسی تکراری است.
+        ///   Looks up a localized string similar to فرمت شماره شبا معتبر نمی باشد.
         /// </summary>
-        internal static string Duplicate_PersianName {
+        internal static string InvalidIbanFormat {
             get {
-                return ResourceManager.GetString("Duplicate_PersianName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to نام انگلیسی مجاز نمی باشد.
-        /// </summary>
-        internal static string Invalid_EnglishName {
-            get {
-                return ResourceManager.GetString("Invalid_EnglishName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to نام فارسی مجاز نمی باشد.
-        /// </summary>
-        internal static string Invalid_PersianName {
-            get {
-                return ResourceManager.GetString("Invalid_PersianName", resourceCulture);
+                return ResourceManager.GetString("InvalidIbanFormat", resourceCulture);
             }
         }
     }

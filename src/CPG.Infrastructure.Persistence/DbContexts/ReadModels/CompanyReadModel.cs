@@ -10,8 +10,9 @@ public class CompanyReadModel
     public string EnglishName { get; set; }
     public bool NationalCodeMatchingRequied { get; set; }
     public string Logo { get; set; }
-    public ICollection<CompanyPaymentMethodsReadModel> PaymentMethods { get; set; }
     public bool IsActive { get; set; }
     public DateTime CreationDate { get; set; }
     public DateTime? ModificationDate { get; set; }
+    public ICollection<CompanyPaymentMethodsReadModel> PaymentMethods { get; set; }
+    public ICollection<CompanyDepositReadModel> CompanyDeposits { get; set; }
 }
