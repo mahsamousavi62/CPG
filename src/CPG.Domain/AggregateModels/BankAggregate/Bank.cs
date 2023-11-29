@@ -1,7 +1,9 @@
-﻿using CPG.Domain.AggregateModels.BankAggregate.Events;
+﻿using CPG.Application.UseCases.CompanyDeposits;
+using CPG.Domain.AggregateModels.BankAggregate.Events;
 using CPG.Domain.AggregateModels.BankAggregate.Exceptions;
 using CPG.Domain.SeedWork;
 using System;
+using System.Collections.Generic;
 
 namespace CPG.Domain.AggregateModels.BankAggregate;
 
@@ -14,6 +16,7 @@ public class Bank : AuditableEntity<int>, IAggregateRoot
     public string Name => _name;
     public string LogoAddress => _logoAddress;
     public IbanPrefix IbanPrefix => _ibanPrefix;
+    public List<CompanyDeposit> CompanyDeposits { get; set; }
 
     public Bank()
     {

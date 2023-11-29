@@ -26,17 +26,20 @@ public class GetAllCompanyQueryHandler : IRequestHandler<GetAllCompanyQuery, IRe
     public async Task<IReadOnlyCollection<CompanyViewModel>> Handle(GetAllCompanyQuery request, CancellationToken cancellationToken)
     {
         var companies = await _context.CompanyReadModels
-            .Include(m => m.PaymentMethods).Where(c=>c.IsActive)
+            .Include(m => m.PaymentMethods)
             .ToListAsync(cancellationToken: cancellationToken);
 
-        var companyViewModels = await Task.WhenAll(companies.Select(async x => new CompanyViewModel
+        var companyViewModels = await Task.WhenAll(companies.Select(async company => new CompanyViewModel
         {
-            Id = x.Id,
-            PersianName = x.PersianName,
-            EnglishName = x.EnglishName,
-            Logo = await _minioProvider.PresignedGetObject(x.Logo),
-            NationalCodeMatchingRequied = x.NationalCodeMatchingRequied,
-            PaymentMethods = x.PaymentMethods
+            Id = company.Id,
+            PersianName = company.PersianName,
+            EnglishName = company.EnglishName,
+            Logo = await _minioProvider.PresignedGetObject(company.Logo),
+            NationalCodeMatchingRequied = company.NationalCodeMatchingRequied,
+            CreationDate = company.CreationDate,
+            ModificationDate = company.ModificationDate,
+            IsActive = company.IsActive,
+            PaymentMethods = company.PaymentMethods
           .ToDictionary(p => p.MethodType, p => ((Enums.CompanyPaymentMethodType)p.MethodType).ToString())
         })).ConfigureAwait(false);
         return companyViewModels;

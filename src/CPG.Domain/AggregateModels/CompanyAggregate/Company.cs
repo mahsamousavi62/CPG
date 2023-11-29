@@ -1,4 +1,5 @@
-﻿using CPG.Domain.AggregateModels.CompanyAggregate.Events;
+﻿using CPG.Application.UseCases.CompanyDeposits;
+using CPG.Domain.AggregateModels.CompanyAggregate.Events;
 using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Domain.SeedWork;
 using CPG.Domain.SharedKernel;
@@ -30,9 +31,9 @@ public class Company : AuditableEntity<long>, IAggregateRoot
     public string EnglishName => _englishName;
     public string Logo => _logo;
     public bool NationalCodeMatchingRequied => _nationalCodeMatchingRequied;
-
+    public List<CompanyDeposit> CompanyDeposits { get; set; }
     public List<CompanyPaymentMethod> PaymentMethods { get; set; } = [];
-    public List<User> users { get; set; }
+    public List<User> Users { get; set; }
 
     public static Company Create(PersianName persianName, EnglishName englishName,
         bool nationalCodeMatchingRequied, Logo logo, short[] details)

@@ -1,27 +1,9 @@
 ﻿@CPG.API_HostAddress = https://localhost:7050
 
-GET {{CPG.API_HostAddress}}/api/company/GetAll
+GET {{CPG.API_HostAddress}}/api/companydeposit/GetAccountNumber?iban="IR310570031480014526214101"
 
 ###
 
-POST {{CPG.API_HostAddress}}/api/company
-Content-Type: application/json
-
-{
-  "persianName": "تست",
-  "englishName": "string",
-  "nationalCodeMatchingRequied": true,
-  "uploadFile": {
-    "file": "C:\\Users\\m.mousavi\\Pictures\\download.jfif",
-    "detailType": "string",
-    "chunkNumber": 0,
-    "totalChunks": 0,
-    "chunkSize": 0,
-    "filePath": "string"
-  },
-  "methodTypes": [
-    0
-  ]
-}
+GET {{CPG.API_HostAddress}}/api/banks/all
 
 ###

@@ -4,7 +4,12 @@ public class Enums
 {
     public enum ApplicationSettingEntityType
     {
+        /// <summary>IDPCredential/// </summary>
         IDPCredential = 1,
+
+        /// <summary>
+        /// Minio
+        /// </summary>
         Minio = 3,
     }
 
