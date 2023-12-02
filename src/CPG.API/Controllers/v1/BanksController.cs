@@ -2,8 +2,12 @@
 using CPG.Application.UseCases.Banks.Commands.UpdateBank;
 using CPG.Application.UseCases.Banks.Queries;
 using CPG.Application.UseCases.Banks.ViewModels;
+using CPG.Application.UseCases.Companies.Queries;
+using CPG.Application.UseCases.Companies.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
+using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.API.Controllers;
 
@@ -21,6 +25,11 @@ public class BanksController : ApiBaseController
     [HttpGet("active")]
     public async Task<ActionResult<IReadOnlyCollection<BankViewModel>>> GetActiveBanks()
         => Ok(await Mediator.Send(new GetActiveBanksQuery()));
+
+    [HttpGet("bankProviders/{providerType}")]
+    [ProducesResponseType(typeof(BankProviderViewModel), (int)HttpStatusCode.OK)]
+    public async Task<ActionResult<BankProviderViewModel>> GetBankProvider(ProviderType providerType)
+        => Ok(await Mediator.Send(new GetBankProvidersQuery(providerType)));
 
     [HttpPost("update/{bankId:int}/{ibanPrefix}")]
     public async Task<IActionResult> UpdateBank(UpdateBankCommand command)

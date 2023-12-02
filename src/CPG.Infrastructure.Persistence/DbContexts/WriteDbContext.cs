@@ -8,11 +8,8 @@ using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Domain.SharedKernel.ApplicationSettings;
 using CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations;
 using CPG.Infrastructure.Persistence.Extensions;
-using HotChocolate.Execution.Configuration;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace CPG.Infrastructure.Persistence.DbContexts;
 
@@ -26,8 +23,8 @@ public class WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator 
     public DbSet<Company> Companies { get; set; }
     public DbSet<CompanyPaymentMethod> CompanyPaymentMethods { get; set; }
     public DbSet<Provider> Providers { get; set; }
-
     public DbSet<CompanyDeposit> CompanyDeposits { get; set; }
+    public DbSet<BankProvider> BankProviders { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
         => modelBuilder
             .ApplyConfiguration(new ApplicationSettingsConfiguration())
@@ -38,8 +35,7 @@ public class WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator 
             .ApplyConfiguration(new BankConfiguration())
             .ApplyConfiguration(new ProviderConfiguration())
             .ApplyConfiguration(new CompanyDepositConfiguration())
-
-        ;
+            .ApplyConfiguration(new BankProviderConfiguration());
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
     {

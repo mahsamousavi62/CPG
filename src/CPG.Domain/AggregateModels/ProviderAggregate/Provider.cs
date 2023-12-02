@@ -1,8 +1,10 @@
-﻿using CPG.Domain.AggregateModels.ProviderAggregate.Events;
+﻿using CPG.Domain.AggregateModels.BankAggregate;
+using CPG.Domain.AggregateModels.ProviderAggregate.Events;
 using CPG.Domain.AggregateModels.ProviderAggregate.Exceptions;
 using CPG.Domain.SeedWork;
 using CPG.Domain.SharedKernel;
 using System;
+using System.Collections.Generic;
 using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Domain.AggregateModels.ProviderAggregate;

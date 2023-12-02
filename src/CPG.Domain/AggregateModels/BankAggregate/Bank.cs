@@ -17,6 +17,7 @@ public class Bank : AuditableEntity<int>, IAggregateRoot
     public string LogoAddress => _logoAddress;
     public IbanPrefix IbanPrefix => _ibanPrefix;
     public List<CompanyDeposit> CompanyDeposits { get; set; }
+    public List<BankProvider> BankProviders { get; set; }
 
     public Bank()
     {
