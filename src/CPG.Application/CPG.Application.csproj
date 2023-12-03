@@ -44,6 +44,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="UseCases\Application\Commands\" />
+    <Folder Include="UseCases\Application\EventHandlers\" />
     <Folder Include="UseCases\Banks\EventHandlers\" />
     <Folder Include="UseCases\Common\Commands\" />
     <Folder Include="UseCases\Providers\Commands\UpdateProvider\" />

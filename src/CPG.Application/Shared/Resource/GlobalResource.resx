@@ -177,4 +177,13 @@
   <data name="Users" xml:space="preserve">
     <value>Users</value>
   </data>
+  <data name="ApplicationNotFound" xml:space="preserve">
+    <value>Application with ID {0} has not been found.</value>
+  </data>
+  <data name="BankNotFound" xml:space="preserve">
+    <value>Bank with ID {0} has not been found.</value>
+  </data>
+  <data name="ProviderNotFound" xml:space="preserve">
+    <value>Provider with ID {0} has not been found.</value>
+  </data>
 </root>

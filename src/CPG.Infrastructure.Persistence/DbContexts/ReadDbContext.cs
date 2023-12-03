@@ -13,9 +13,14 @@ public class ReadDbContext(DbContextOptions<ReadDbContext> options) : DbContext(
     public IQueryable<CompanyReadModel> CompanyReadModels => Set<CompanyReadModel>().AsNoTracking();
 
     public IQueryable<BankReadModel> BankReadModels => Set<BankReadModel>().AsNoTracking();
+
     public IQueryable<CompanyDepositReadModel> CompanyDepositReadModels => Set<CompanyDepositReadModel>().AsNoTracking();
 
     public IQueryable<ProviderReadModel> ProviderReadModels => Set<ProviderReadModel>().AsNoTracking();
+
+    public IQueryable<ApplicationReadModel> ApplicationReadModels => Set<ApplicationReadModel>().AsNoTracking();
+
+    public IQueryable<ApplicationIdentifierReadModel> ApplicationIdentifierReadModels => Set<ApplicationIdentifierReadModel>().AsNoTracking();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -25,9 +30,9 @@ public class ReadDbContext(DbContextOptions<ReadDbContext> options) : DbContext(
             .ApplyConfiguration(new CompanyPaymentMethodsReadModelConfiguration())
             .ApplyConfiguration(new BankReadModelConfiguration())
             .ApplyConfiguration(new CompanyDepositReadModelConfiguration())
-
-            
-         
-            .ApplyConfiguration(new ProviderReadModelConfiguration());
+            .ApplyConfiguration(new ProviderReadModelConfiguration())
+            .ApplyConfiguration(new ApplicationReadModelConfiguration())
+            .ApplyConfiguration(new ApplicationIdentifierReadModelConfiguration())
+            ;
     }
 }

@@ -63,7 +63,6 @@
 
   <ItemGroup>
     <Folder Include="AggregateModels\ApplicationAggregate\Guards\" />
-    <Folder Include="AggregateModels\ApplicationAggregate\Specifications\" />
     <Folder Include="AggregateModels\CompanyAggregate\Guards\" />
     <Folder Include="AggregateModels\ProviderAggregate\Guards\" />
     <Folder Include="AggregateModels\CompanyDepositAggregate\Guards\" />

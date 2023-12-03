@@ -18,7 +18,7 @@ public class Application : AuditableEntity<long>, IAggregateRoot
         _persianName = persianName.Value;
         _englishName = englishName.Value;
         _logo = logo.Value;
-        _responseApiUrl = responseApiUrl;
+        _responseApiUrl = ResponseApiUrl;
         ApplicationIdentifiers = new List<ApplicationIdentifier>();
     }
 
@@ -29,7 +29,7 @@ public class Application : AuditableEntity<long>, IAggregateRoot
     public string PersianName => _persianName;
     public string EnglishName => _englishName;
     public string Logo => _logo;
-    public string responseApiUrl => _responseApiUrl;
+    public string ResponseApiUrl => _responseApiUrl;
     public List<ApplicationIdentifier> ApplicationIdentifiers { get; set; } = [];
 
     public static Application Create(PersianName persianName, EnglishName englishName, Logo logo, string[] details)
