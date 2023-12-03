@@ -8,11 +8,9 @@ using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Domain.SharedKernel.ApplicationSettings;
 using CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations;
 using CPG.Infrastructure.Persistence.Extensions;
-using HotChocolate.Execution.Configuration;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System.Threading;
-using System.Threading.Tasks;
+using CPG.Domain.AggregateModels.ApplicationAggregate;
 
 namespace CPG.Infrastructure.Persistence.DbContexts;
 
@@ -26,8 +24,10 @@ public class WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator 
     public DbSet<Company> Companies { get; set; }
     public DbSet<CompanyPaymentMethod> CompanyPaymentMethods { get; set; }
     public DbSet<Provider> Providers { get; set; }
-
     public DbSet<CompanyDeposit> CompanyDeposits { get; set; }
+    public DbSet<Domain.AggregateModels.ApplicationAggregate.Application> Applications { get; set; }
+    public DbSet<ApplicationIdentifier> ApplicationIdentifiers { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
         => modelBuilder
             .ApplyConfiguration(new ApplicationSettingsConfiguration())
@@ -40,6 +40,8 @@ public class WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator 
             .ApplyConfiguration(new CompanyDepositConfiguration())
         //.ApplyConfiguration(new CompanyIPGConfiguration())
         //.ApplyConfiguration(new CompanyIPGDepositConfiguration())
+            .ApplyConfiguration(new ApplicationConfiguration())
+            .ApplyConfiguration(new ApplicationIdentifierConfiguration())
         ;
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())

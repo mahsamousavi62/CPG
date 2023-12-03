@@ -61,6 +61,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Application with ID {0} has not been found..
+        /// </summary>
+        public static string ApplicationNotFound {
+            get {
+                return ResourceManager.GetString("ApplicationNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ApplicationSettings.
         /// </summary>
         public static string ApplicationSettings {
@@ -84,6 +93,15 @@ namespace CPG.Application.Shared.Resource {
         public static string Apps {
             get {
                 return ResourceManager.GetString("Apps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bank with ID {0} has not been found..
+        /// </summary>
+        public static string BankNotFound {
+            get {
+                return ResourceManager.GetString("BankNotFound", resourceCulture);
             }
         }
         
@@ -201,6 +219,15 @@ namespace CPG.Application.Shared.Resource {
         public static string PaymentReceipt {
             get {
                 return ResourceManager.GetString("PaymentReceipt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Provider with ID {0} has not been found..
+        /// </summary>
+        public static string ProviderNotFound {
+            get {
+                return ResourceManager.GetString("ProviderNotFound", resourceCulture);
             }
         }
         

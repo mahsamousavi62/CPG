@@ -1,14 +1,6 @@
-﻿using CPG.Application.UseCases.Companies.Commands.CreateCompany;
-using CPG.Domain.AggregateModels.CompanyAggregate;
-using CPG.Domain.AggregateModels.UserAggregate.Specifications;
-using CPG.Domain.AggregateModels.UserAggregate;
-using CPG.Domain.SharedKernel.Minio;
+﻿using CPG.Domain.SharedKernel.Minio;
 using CPG.Domain.SharedKernel;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CPG.Domain.AggregateModels.ProviderAggregate;
