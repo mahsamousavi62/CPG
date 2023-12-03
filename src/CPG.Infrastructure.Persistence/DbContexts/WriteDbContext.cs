@@ -38,7 +38,8 @@ public class WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator 
             .ApplyConfiguration(new BankConfiguration())
             .ApplyConfiguration(new ProviderConfiguration())
             .ApplyConfiguration(new CompanyDepositConfiguration())
-
+        //.ApplyConfiguration(new CompanyIPGConfiguration())
+        //.ApplyConfiguration(new CompanyIPGDepositConfiguration())
         ;
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())

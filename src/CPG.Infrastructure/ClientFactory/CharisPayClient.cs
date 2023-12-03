@@ -1,9 +1,12 @@
 ﻿using Azure.Core;
 using CPG.Application.UseCases.CharisPayServices.Queries;
+using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.ClientFactory;
+using HotChocolate.Execution.Processing;
 using IdentityModel.Client;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Net.Http;
 using System.Text;
@@ -23,8 +26,9 @@ namespace Api.Juros.Infrastructure.External
             this.configuration = configuration;
         }
 
-        public async Task<AccountNumberViewModel> GetAccountNumber(string iban)
+        public async Task< ResultData<AccountNumberViewModel>> GetAccountNumber(string iban)
         {
+            ResultData<AccountNumberViewModel> resultData = new();
             var client = _factory.CreateClient("charisPayClient");
             client.SetBearerToken(configuration["Infrastructure:CharisPay:Token"]);
             client.DefaultRequestHeaders.Add("correlation-id", Guid.NewGuid().ToString());
@@ -33,9 +37,20 @@ namespace Api.Juros.Infrastructure.External
             var result = await client.PostAsync(configuration["Infrastructure:CharisPay:InqueryIbanUrl"], content);
 
             var resultContent = await result.Content.ReadAsStringAsync();
+            try
+            {
             var response = JsonConvert.DeserializeObject<inqueryIbanViewModel>(resultContent);
+                resultData.Data= new AccountNumberViewModel(response.result[0].depositNumber, response.result[0].bankName);
+                resultData.OperationResult = Enums.OperationResult.Succeeded;
+            }
+            catch (Exception)
+            {
+                dynamic d = JObject.Parse(resultContent);
 
-            return new AccountNumberViewModel(response.result[0].depositNumber);
+                resultData.Error= d.result;
+                resultData.OperationResult = Enums.OperationResult.Failed;
+            }
+            return resultData;
         }
     }
 

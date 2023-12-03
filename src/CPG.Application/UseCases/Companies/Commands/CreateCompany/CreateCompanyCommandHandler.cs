@@ -1,5 +1,8 @@
-﻿using CPG.Application.UseCases.Files.Commands.UploadFile;
+﻿using CPG.Application.Shared.Exception;
+using CPG.Application.UseCases.Companies.Exceptions;
+using CPG.Application.UseCases.Files.Commands.UploadFile;
 using CPG.Domain.AggregateModels.CompanyAggregate;
+using CPG.Domain.AggregateModels.CompanyAggregate.Specifications;
 using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Domain.AggregateModels.UserAggregate.Specifications;
 using CPG.Domain.SharedKernel;
@@ -23,11 +26,15 @@ public class CreateCompanyCommandHandler(IAggregateRepository<Company> companyRe
     {
         PersianName persianName = new(request.Model.PersianName);
         EnglishName englishName = new(request.Model.EnglishName);
-        Logo logo = new(request.Model.File,Enums.UploadFromEntityType.Company.ToString(), _minioProvider);
+        await CheckUniqueName(request.Model.PersianName, request.Model.EnglishName);
 
+        Logo logo = new(request.Model.File,Enums.UploadFromEntityType.Company.ToString(), _minioProvider);
        
         var spec = new UserByUserIdsSpec(request.Model.Users);
         var users = await userRepository.ListAsync(spec, cancellationToken);
+        
+        if (users.Count==0) 
+            throw new UsersNotFoundException();
 
         var company = Company.Create(persianName, englishName,
                                     request.Model.NationalCodeMatchingRequied,
@@ -41,5 +48,16 @@ public class CreateCompanyCommandHandler(IAggregateRepository<Company> companyRe
         await _userRepository.SaveChangesAsync(cancellationToken);
        
             return company.Id;
+    }
+
+    private async Task CheckUniqueName(string persianName,string englishName)
+    {
+        Company samePersianName = await _companyRepository.GetBySpecAsync(new CompanyByPersianName(persianName));
+
+        if (samePersianName != null) throw new DuplicatePersianNameException(persianName);
+
+        Company sameEnglishName = await _companyRepository.GetBySpecAsync(new CompanyByEnglishName(englishName));
+
+        if (sameEnglishName != null) throw new DuplicateEnglishNameException(englishName);
     }
 }
