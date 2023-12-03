@@ -31,7 +31,7 @@ public class ReadDbContext(DbContextOptions<ReadDbContext> options) : DbContext(
             .ApplyConfiguration(new CompanyPaymentMethodsReadModelConfiguration())
             .ApplyConfiguration(new BankReadModelConfiguration())
             .ApplyConfiguration(new CompanyDepositReadModelConfiguration())
-            .ApplyConfiguration(new UserReadModelConfiguration());
+            .ApplyConfiguration(new UserReadModelConfiguration())
             .ApplyConfiguration(new ProviderReadModelConfiguration())
             .ApplyConfiguration(new ApplicationReadModelConfiguration())
             .ApplyConfiguration(new ApplicationIdentifierReadModelConfiguration())

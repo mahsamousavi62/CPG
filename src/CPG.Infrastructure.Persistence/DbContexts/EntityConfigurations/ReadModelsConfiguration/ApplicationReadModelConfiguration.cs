@@ -14,7 +14,7 @@ public class ApplicationReadModelConfiguration : IEntityTypeConfiguration<Applic
         readModel.Property(x => x.PersianName).HasColumnName("PersianName");
         readModel.Property(x => x.EnglishName).HasColumnName("EnglishName");
         readModel.Property(x => x.Logo).HasColumnName("Logo");
-        readModel.Property(x => x.ResponseApiUrl).HasColumnName("ProviderType");        
+        readModel.Property(x => x.ResponseApiUrl).HasColumnName("ResponseApiUrl");        
         readModel.Property(x => x.IsActive).HasColumnName("IsActive");
         readModel.Property(x => x.CreationDate).HasColumnName("CreationDate");
         readModel.Property(x => x.ModificationDate).HasColumnName("ModificationDate");

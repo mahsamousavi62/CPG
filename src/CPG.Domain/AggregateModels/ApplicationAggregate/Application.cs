@@ -13,12 +13,12 @@ public class Application : AuditableEntity<long>, IAggregateRoot
     {
 
     }
-    public Application(PersianName persianName, EnglishName englishName, Logo logo)
+    public Application(PersianName persianName, EnglishName englishName, Logo logo, string responseApiUrl)
     {
         _persianName = persianName.Value;
         _englishName = englishName.Value;
         _logo = logo.Value;
-        _responseApiUrl = ResponseApiUrl;
+        _responseApiUrl = responseApiUrl;
         ApplicationIdentifiers = new List<ApplicationIdentifier>();
     }
 
@@ -32,9 +32,9 @@ public class Application : AuditableEntity<long>, IAggregateRoot
     public string ResponseApiUrl => _responseApiUrl;
     public List<ApplicationIdentifier> ApplicationIdentifiers { get; set; } = [];
 
-    public static Application Create(PersianName persianName, EnglishName englishName, Logo logo, string[] details)
+    public static Application Create(PersianName persianName, EnglishName englishName, string responseApiUrl, Logo logo, string[] details)
     {
-        var application = new Application(persianName, englishName, logo);
+        var application = new Application(persianName, englishName, logo, responseApiUrl);
         var applicationIdentifiers = ApplicationIdentifier.Create(details);
         application.ApplicationIdentifiers.AddRange(applicationIdentifiers);
 
