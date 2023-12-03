@@ -6,27 +6,22 @@ using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Company;
 
-public class GetAllCompanyQueryHandler : IRequestHandler<GetAllCompanyQuery, IReadOnlyCollection<CompanyViewModel>>
+public class GetAllCompanyQueryHandler(ReadDbContext context, IMinioProvider minioProvider) : IRequestHandler<GetAllCompanyQuery, IReadOnlyCollection<CompanyViewModel>>
 {
-    private readonly ReadDbContext _context;
-    private readonly IMinioProvider _minioProvider;
-    public GetAllCompanyQueryHandler(ReadDbContext context, IMinioProvider minioProvider)
-    {
-        _context = context;
-        _minioProvider = minioProvider;
-    }
+    private readonly ReadDbContext _context = context;
+    private readonly IMinioProvider _minioProvider = minioProvider;
 
     public async Task<IReadOnlyCollection<CompanyViewModel>> Handle(GetAllCompanyQuery request, CancellationToken cancellationToken)
     {
         var companies = await _context.CompanyReadModels
-            .Include(m => m.PaymentMethods).Where(c=>c.IsActive)
+            .Include(m => m.PaymentMethods)
+            .Where(c => c.IsActive)
             .ToListAsync(cancellationToken: cancellationToken);
 
         var companyViewModels = await Task.WhenAll(companies.Select(async x => new CompanyViewModel
@@ -39,6 +34,7 @@ public class GetAllCompanyQueryHandler : IRequestHandler<GetAllCompanyQuery, IRe
             PaymentMethods = x.PaymentMethods
           .ToDictionary(p => p.MethodType, p => ((Enums.CompanyPaymentMethodType)p.MethodType).ToString())
         })).ConfigureAwait(false);
+
         return companyViewModels;
     }
 

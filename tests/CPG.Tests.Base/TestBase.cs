@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using AutoFixture;
-using CPG.Domain.AggregateModels.CompanyAggregate;
+using CPG.Domain.AggregateModels.BookAggregate;
 using CPG.Domain.SharedKernel;
+using CPG.Domain.SharedKernel.Interfaces;
 using MediatR;
 using NSubstitute;
 
 namespace CPG.Tests.Base;
 
-	public abstract class TestBase
+public abstract class TestBase
 	{
 		// Shared
 		protected readonly IFixture _fixture = new Fixture();
@@ -21,7 +22,7 @@ namespace CPG.Tests.Base;
 		// Domain
 
 		// Application
-		protected readonly IAggregateReadRepository<Company> CompanyAggregateReadRepository = Substitute.For<IAggregateReadRepository<Company>>();
+		protected readonly IAggregateReadRepository<Book> BookAggregateReadRepository = Substitute.For<IAggregateReadRepository<Book>>();
 		protected readonly IMediator Mediator = Substitute.For<IMediator>();
 
 		protected long ExpectedUserId;

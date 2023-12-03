@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using CPG.Domain.AggregateModels.BankAggregate;
 using CPG.Application.UseCases.Banks.Exceptions;
+using CPG.Domain.SharedKernel.Interfaces;
 
 namespace CPG.Application.UseCases.Banks.Commands.UpdateBank;
 
