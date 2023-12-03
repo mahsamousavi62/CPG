@@ -8,12 +8,7 @@ namespace CPG.Domain.SharedKernel;
 
 public class EnglishName
 {
-    private readonly IAggregateRepository<Company> _repository;
     public string Value { get; init; }
-    public EnglishName(IAggregateRepository<Company> repository)
-    {
-        _repository = repository;
-    }
 
     public EnglishName(string englishName)
     {
@@ -24,15 +19,7 @@ public class EnglishName
 
             throw new InvalidEnglishNameException($"Parameter {nameof(englishName)} is invalid.");
 
-        // Task.Run(() => CheckUniqueName(englishName)).Wait();
-
         Value = englishName;
     }
 
-    private async Task CheckUniqueName(string name)
-    {
-        Company company = await _repository.GetBySpecAsync(new CompanyByPersianName(name));
-
-        if (company != null) throw new DuplicatePersianNameException(name);
-    }
 }

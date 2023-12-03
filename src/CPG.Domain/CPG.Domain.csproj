@@ -30,6 +30,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
+    <Compile Update="AggregateModels\CompanyIPGAggregate\Resource.Designer.cs">
+      <DependentUpon>Resource.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Update="AggregateModels\ProviderAggregate\Resource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -51,6 +56,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="AggregateModels\CompanyIPGAggregate\Resource.resx">
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="AggregateModels\ProviderAggregate\Resource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource.Designer.cs</LastGenOutput>
@@ -64,9 +73,11 @@
   <ItemGroup>
     <Folder Include="AggregateModels\ApplicationAggregate\Guards\" />
     <Folder Include="AggregateModels\CompanyAggregate\Guards\" />
+    <Folder Include="AggregateModels\CompanyIPGAggregate\Events\" />
+    <Folder Include="AggregateModels\CompanyIPGAggregate\Exceptions\" />
+    <Folder Include="AggregateModels\CompanyIPGAggregate\Specifications\" />
     <Folder Include="AggregateModels\ProviderAggregate\Guards\" />
     <Folder Include="AggregateModels\CompanyDepositAggregate\Guards\" />
-    <Folder Include="AggregateModels\CompanyDepositAggregate\Specifications\" />
     <Folder Include="AggregateModels\UserAggregate\Idp\" />
     <Folder Include="SharedKernel\ApplicationSettings\Exceptions\" />
     <Folder Include="SharedKernel\ApplicationSettings\Commands\" />

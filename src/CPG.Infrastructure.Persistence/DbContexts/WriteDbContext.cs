@@ -38,6 +38,8 @@ public class WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator 
             .ApplyConfiguration(new BankConfiguration())
             .ApplyConfiguration(new ProviderConfiguration())
             .ApplyConfiguration(new CompanyDepositConfiguration())
+        //.ApplyConfiguration(new CompanyIPGConfiguration())
+        //.ApplyConfiguration(new CompanyIPGDepositConfiguration())
             .ApplyConfiguration(new ApplicationConfiguration())
             .ApplyConfiguration(new ApplicationIdentifierConfiguration())
         ;

@@ -79,11 +79,56 @@ namespace CPG.Domain.AggregateModels.CompanyAggregate {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to روش پرداخت تکراری است.
+        /// </summary>
+        internal static string Duplicate_PaymentMethodType {
+            get {
+                return ResourceManager.GetString("Duplicate_PaymentMethodType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to نام فارسی تکراری است.
         /// </summary>
         internal static string Duplicate_PersianName {
             get {
                 return ResourceManager.GetString("Duplicate_PersianName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to نام انگلیسی را وارد کنید.
+        /// </summary>
+        internal static string Empty_EnglishName {
+            get {
+                return ResourceManager.GetString("Empty_EnglishName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to لوگو را وارد کنید.
+        /// </summary>
+        internal static string Empty_Logo {
+            get {
+                return ResourceManager.GetString("Empty_Logo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to روش پرداخت را  وارد کنید.
+        /// </summary>
+        internal static string Empty_PaymentMethodType {
+            get {
+                return ResourceManager.GetString("Empty_PaymentMethodType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to نام فارسی را وارد کنید.
+        /// </summary>
+        internal static string Empty_PersianName {
+            get {
+                return ResourceManager.GetString("Empty_PersianName", resourceCulture);
             }
         }
         
@@ -97,11 +142,65 @@ namespace CPG.Domain.AggregateModels.CompanyAggregate {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to لوگو مجاز نمی باشد.
+        /// </summary>
+        internal static string Invalid_logo {
+            get {
+                return ResourceManager.GetString("Invalid_logo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to پسوند فایل مجاز نمی باشد.
+        /// </summary>
+        internal static string invalid_logo_extention {
+            get {
+                return ResourceManager.GetString("invalid_logo_extention", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to فرمت لوگو مجاز نمی باشد.
+        /// </summary>
+        internal static string Invalid_Logo_Format {
+            get {
+                return ResourceManager.GetString("Invalid_Logo_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to مسیر لوگو مجاز نمی باشد.
+        /// </summary>
+        internal static string Invalid_Logo_path {
+            get {
+                return ResourceManager.GetString("Invalid_Logo_path", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to روش پرداخت نادرست است.
+        /// </summary>
+        internal static string Invalid_PaymentMethodType {
+            get {
+                return ResourceManager.GetString("Invalid_PaymentMethodType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to نام فارسی مجاز نمی باشد.
         /// </summary>
         internal static string Invalid_PersianName {
             get {
                 return ResourceManager.GetString("Invalid_PersianName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to سایز لوگو مجاز نمی باشد.
+        /// </summary>
+        internal static string MaximalFileSize {
+            get {
+                return ResourceManager.GetString("MaximalFileSize", resourceCulture);
             }
         }
     }

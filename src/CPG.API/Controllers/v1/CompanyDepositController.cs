@@ -2,13 +2,14 @@
 using CPG.Application.UseCases.CompanyDeposits.Commands.CreateCompanyDeposit;
 using CPG.Application.UseCases.CompanyDeposits.Queries;
 using CPG.Application.UseCases.CompanyDeposits.ViewModels;
+using CPG.Domain.SharedKernel;
+using HotChocolate.Execution.Processing;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace CPG.API.Controllers.v1
 {
-    [Route("api/[controller]")]
-    [ApiController]
+
     public class CompanyDepositController : ApiBaseController
     {
         [HttpGet("GetAll")]
@@ -17,7 +18,9 @@ namespace CPG.API.Controllers.v1
      => Ok(await Mediator.Send(new GetAllCompanyDepositQuery()));
 
         [HttpPost("GetAccountNumber")]
-        public async Task<ActionResult<AccountNumberViewModel>> GetAccoutnNumber([FromBody] IbanViewModel model)
+        [ProducesResponseType(typeof(ResultData<AccountNumberViewModel>), (int)HttpStatusCode.OK)]
+
+        public async Task<ActionResult<ResultData<AccountNumberViewModel>>> GetAccoutnNumber([FromBody] IbanViewModel model)
         {
             var result = await Mediator.Send(new GetAccountNumberQuery(model.Iban));
             return Ok(result);
