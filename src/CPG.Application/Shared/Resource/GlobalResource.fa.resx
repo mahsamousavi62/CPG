@@ -132,6 +132,12 @@
   <data name="Companies" xml:space="preserve">
     <value>شرکت‌ها</value>
   </data>
+  <data name="CompanyDepositNotFound" xml:space="preserve">
+    <value>حساب شرکت یافت نشد</value>
+  </data>
+  <data name="CompanyNotFound" xml:space="preserve">
+    <value>شرکت یافت نشد</value>
+  </data>
   <data name="Create" xml:space="preserve">
     <value>ایجاد</value>
   </data>
@@ -139,10 +145,13 @@
     <value>برداشت مستقیم</value>
   </data>
   <data name="DuplicateEnglishName" xml:space="preserve">
-    <value>سرویس دهنده با نام لاتین '{0}' قبلا ثبت شده است</value>
+    <value> نام لاتین '{0}' قبلا ثبت شده است</value>
+  </data>
+  <data name="DuplicateIban" xml:space="preserve">
+    <value>شبا {0}تکراری است</value>
   </data>
   <data name="DuplicatePersianName" xml:space="preserve">
-    <value>سرویس دهنده با نام فارسی '{0}' قبلا ثبت شده است</value>
+    <value>نام فارسی '{0}' قبلا ثبت شده است</value>
   </data>
   <data name="Edit" xml:space="preserve">
     <value>ویرایش</value>
@@ -176,5 +185,8 @@
   </data>
   <data name="Users" xml:space="preserve">
     <value>کاربان</value>
+  </data>
+  <data name="UsersNotFound" xml:space="preserve">
+    <value>لیست کاربران نامعتبر می باشد</value>
   </data>
 </root>

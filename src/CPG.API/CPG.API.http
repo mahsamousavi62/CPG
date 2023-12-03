@@ -1,9 +1,14 @@
 ﻿@CPG.API_HostAddress = https://localhost:7050
 
-GET {{CPG.API_HostAddress}}/api/companydeposit/GetAccountNumber?iban="IR310570031480014526214101"
+POST {{CPG.API_HostAddress}}/api/companydeposit
+Content-Type: application/json
+
+{
+  //CreateCompanyDepositViewModel
+}
 
 ###
 
-GET {{CPG.API_HostAddress}}/api/banks/all
+GET {{CPG.API_HostAddress}}/api/company/GetAll
 
 ###

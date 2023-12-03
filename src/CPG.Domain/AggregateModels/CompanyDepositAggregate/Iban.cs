@@ -21,7 +21,7 @@ public record Iban
         Guard.Against.NullOrWhiteSpace(iban, nameof(iban));
 
         if (iban.Length != 26)
-            throw new System.Exception();
+            throw new IbanInvalidFormatException(iban);
 
         if (!iban[..2].ToCharArray().All(t => char.IsLetter(t)) || iban[..2] != "IR")
             throw new IbanInvalidFormatException(iban);

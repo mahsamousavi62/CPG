@@ -19,31 +19,34 @@ namespace CPG.Infrastructure.Persistence.QueryHandlers.CompanyDeposit
     public class GetAllCompanyDepositQueryHandler : IRequestHandler<GetAllCompanyDepositQuery, IReadOnlyCollection<CompanyDepositViewModel>>
     {
         private readonly ReadDbContext _context;
+        private readonly IMinioProvider _minioProvider;
 
-        public GetAllCompanyDepositQueryHandler(ReadDbContext context)
+        public GetAllCompanyDepositQueryHandler(ReadDbContext context, IMinioProvider minioProvider)
         {
             _context = context;
+            _minioProvider = minioProvider;
         }
 
         public async Task<IReadOnlyCollection<CompanyDepositViewModel>> Handle(GetAllCompanyDepositQuery request, CancellationToken cancellationToken)
         {
             var companyDeposits = await _context.CompanyDepositReadModels.Include(c => c.Bank).Include(c => c.Company).ToListAsync(cancellationToken);
 
-            var companyViewModels = companyDeposits.Select(company => new CompanyDepositViewModel
+            var companyViewModels = await Task.WhenAll( 
+                companyDeposits.Select(async company => new CompanyDepositViewModel
             {
                 Id = company.Id,
                 Name = company.Name,
                 AccountNumber = company.AccountNumber,
                 Iban = company.Iban,
-                BankId=company.BankId,
-                BankLogo = company.Bank.LogoAddress,
+                BankId=company.BankId,  
+                BankLogo = await _minioProvider.PresignedGetObject(company.Bank.LogoAddress),
                 BankName = company.Bank.Name,
                 CompanyId = company.CompanyId,
                 CompanyName = company.Company.PersianName,
                 CreationDate = company.CreationDate,
                 IsActive = company.IsActive,
                 ModificationDate = company.ModificationDate,
-            });
+            })).ConfigureAwait(false);
             return companyViewModels.ToList();
         }
     }

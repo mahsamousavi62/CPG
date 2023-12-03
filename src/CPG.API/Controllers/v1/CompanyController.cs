@@ -24,7 +24,7 @@ public class CompanyController : ApiBaseController
 
     [HttpGet("GetCompanyPaymentMethodsType")]
     [EnumDataType(typeof(Enums.CompanyPaymentMethodType))]
-       public async Task<IActionResult> GetCompanyPaymentMethodsType(Enums.CompanyPaymentMethodType e)
+       public async Task<IActionResult> GetCompanyPaymentMethodsType(Enums.CompanyPaymentMethodType type)
         => Ok(await Mediator.Send(new GetCompanyPaymentMethodsQuery()));
 
     [HttpPost]

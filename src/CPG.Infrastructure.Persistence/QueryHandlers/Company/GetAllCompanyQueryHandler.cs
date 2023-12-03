@@ -12,7 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Company;
-
+    
 public class GetAllCompanyQueryHandler : IRequestHandler<GetAllCompanyQuery, IReadOnlyCollection<CompanyViewModel>>
 {
     private readonly ReadDbContext _context;
