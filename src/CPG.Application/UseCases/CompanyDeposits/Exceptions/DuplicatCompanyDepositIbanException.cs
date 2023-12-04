@@ -10,9 +10,4 @@ namespace CPG.Application.UseCases.CompanyDeposits.Exceptions
         public override string Code => "duplicate_CompanyDeposit_iban";
         public string Iban { get; } = iban;
     }
-
-
-  
-
-
 }
