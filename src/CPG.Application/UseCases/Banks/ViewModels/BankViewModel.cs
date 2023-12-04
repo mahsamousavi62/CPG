@@ -12,7 +12,7 @@ public class BankViewModel
 
     public string IbanPrefix { get; set; }
 
-    public string LogoAddress { get; set; }
+    public string Logo { get; set; }
 
     public DateTime CreationDate { get; set; }
 

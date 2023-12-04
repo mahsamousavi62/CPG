@@ -22,8 +22,10 @@ public class CompanyPaymentMethod : AuditableEntity<long>
     }
     public static List<CompanyPaymentMethod> Create(short[] methodTypes)
     {
-        if (methodTypes is null || !methodTypes.Any())
+        if (methodTypes is null || methodTypes.Length == 0)
+        {
             throw new ArgumentNullException(nameof(methodTypes));
+        }
 
         if (methodTypes.Select(x => x).Distinct().Count() != methodTypes.Length)
             throw new DuplicatePaymentMethodTypeException(nameof(methodTypes));

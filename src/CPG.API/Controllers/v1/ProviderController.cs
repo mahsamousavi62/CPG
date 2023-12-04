@@ -1,5 +1,4 @@
-﻿using CPG.API.Model;
-using CPG.Application.UseCases.Providers.Commands.ActivateProvider;
+﻿using CPG.Application.UseCases.Providers.Commands.ActivateProvider;
 using CPG.Application.UseCases.Providers.Commands.CreateProvider;
 using CPG.Application.UseCases.Providers.Queries;
 using CPG.Application.UseCases.Providers.ViewModels;
@@ -23,10 +22,10 @@ public class ProviderController : ApiBaseController
         => Ok(await Mediator.Send(new GetActiveProvidersQuery()));
 
     [HttpPost]
-    public async Task<IActionResult> CreateProvider([FromForm] CreateProviderModel model)
+    public async Task<IActionResult> CreateProvider([FromBody] CreateProviderModel model)
     {
         CreateProviderViewModel createProviderViewModel = new(model.PersianName, model.EnglishName,
-                                                             model.ProviderType,model.ProviderData,
+                                                             model.ProviderType, model.ProviderData,
                                                              new FormFileProxy(model.File));
 
         var providerId = await Mediator.Send(new CreateProviderCommand(createProviderViewModel));
