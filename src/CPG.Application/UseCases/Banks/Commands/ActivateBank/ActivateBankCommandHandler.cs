@@ -19,9 +19,9 @@ public class ActivateBankCommandHandler(IAggregateRepository<Bank> bankRepositor
                    ?? throw new BankNotFoundException(command.BankId);
 
         if (command.IsActive)
-            bank.SetAsActive(_currentUser.UserId);
+            bank.SetAsActive();
         else 
-            bank.SetAsInactive(_currentUser.UserId);
+            bank.SetAsInactive();
 
         await _bankRepository.SaveChangesAsync(cancellationToken);
     }

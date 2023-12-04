@@ -1,10 +1,13 @@
+using CPG.API.Helper;
 using CPG.Application;
+using CPG.Domain.SharedKernel;
 using CPG.Infrastructure;
 using CPG.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Globalization;
+using Unchase.Swashbuckle.AspNetCore.Extensions.Extensions;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,7 +16,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(opt =>
 {
+
     opt.SwaggerDoc("v1", new OpenApiInfo { Title = "MyAPI", Version = "v1" });
+
     opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
@@ -23,6 +28,8 @@ builder.Services.AddSwaggerGen(opt =>
         BearerFormat = "JWT",
         Scheme = "bearer"
     });
+    opt.AddEnumsWithValuesFixFilters();
+    opt.SchemaFilter<EnumerationToEnumSchemaFilter>();
 
     opt.AddSecurityRequirement(new OpenApiSecurityRequirement
     {

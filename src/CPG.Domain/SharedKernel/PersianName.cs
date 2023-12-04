@@ -1,0 +1,23 @@
+﻿using Ardalis.GuardClauses;
+using CPG.Domain.AggregateModels.CompanyAggregate.Exceptions;
+using CPG.Domain.AggregateModels.UserAggregate.Exceptions;
+using System.Text.RegularExpressions;
+
+namespace CPG.Domain.SharedKernel;
+
+public class PersianName
+{
+    public string Value { get; init; }
+    public PersianName(string persianName)
+    {
+        Guard.Against.NullOrEmpty(persianName);
+
+        if (string.IsNullOrWhiteSpace(persianName))
+            throw new UserCreationException($"Parameter {nameof(persianName)} cannot be empty.");
+
+        if (!Regex.IsMatch(persianName, "^[\\u0600-\\u06FF\\s]+$"))
+            throw new InvalidPersianNameException(persianName);
+
+        Value = persianName;
+    }
+}

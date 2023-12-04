@@ -2,12 +2,9 @@
 
 namespace CPG.Domain.AggregateModels.CompanyAggregate.Exceptions
 {
-    public class EmptyLogoException:DomainException
+    public class EmptyLogoException(string name) :
+        DomainException(string.Format(Resource.Empty_Logo, name))
     {
         public override string Code => "empty_logo";
-        public EmptyLogoException(string message) : base(message)
-        {
-        }
-
     }
 }

@@ -1,4 +1,5 @@
-﻿using CPG.Domain.SeedWork;
+﻿using CPG.Domain.AggregateModels.CompanyAggregate.Exceptions;
+using CPG.Domain.SeedWork;
 using CPG.Domain.SharedKernel;
 using System;
 using System.Collections.Generic;
@@ -8,8 +9,6 @@ namespace CPG.Domain.AggregateModels.CompanyAggregate;
 
 public class CompanyPaymentMethod : AuditableEntity<long>
 {
-
-
     public CompanyPaymentMethod(short methodType, long companyId)
     {
         MethodType = methodType;
@@ -26,10 +25,10 @@ public class CompanyPaymentMethod : AuditableEntity<long>
             throw new ArgumentNullException(nameof(methodTypes));
 
         if (methodTypes.Select(x => x).Distinct().Count() != methodTypes.Length)
-            throw new ArgumentException("detail is duplicated");
+            throw new DuplicatePaymentMethodTypeException(nameof(methodTypes));
 
         if (!methodTypes.All(methodType => Enum.IsDefined(typeof(Enums.CompanyPaymentMethodType), methodType)))
-            throw new Exception("invalid_CompanyPaymentMethodType");
+            throw new InvalidPaymentMethodType(nameof(methodTypes));
 
         var companyPaymentMethods = methodTypes.Select(i => new CompanyPaymentMethod(i)).ToList();
         return companyPaymentMethods;
