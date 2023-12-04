@@ -34,8 +34,8 @@ public class CompanyController : ApiBaseController
              model.PersianName, model.EnglishName, model.NationalCodeMatchingRequied,
              new FormFileProxy(model.File), model.MethodTypes, model.Users);
 
-        var companyId = await Mediator.Send(new CreateCompanyCommand(createCompanyViewModel));
+        var result = await Mediator.Send(new CreateCompanyCommand(createCompanyViewModel));
 
-        return CreatedAtAction(nameof(CreateCompany), new { id = companyId }, new { companyId });
+        return CreatedAtAction(nameof(CreateCompany), new { id = result.Data }, new { result.Data });
     }
 }
