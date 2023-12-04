@@ -243,4 +243,16 @@
   <data name="UploadCompanyLogo" xml:space="preserve">
     <value>UploadCompanyLogo</value>
   </data>
+  <data name="CreateApplication" xml:space="preserve">
+    <value>CreateApplication</value>
+  </data>
+  <data name="IdpClientIds" xml:space="preserve">
+    <value>IdpClientIds</value>
+  </data>
+  <data name="ResponseApiUrl" xml:space="preserve">
+    <value>ResponseApiUrl</value>
+  </data>
+  <data name="UploadApplicationLogo" xml:space="preserve">
+    <value>UploadApplicationLogo</value>
+  </data>
 </root>

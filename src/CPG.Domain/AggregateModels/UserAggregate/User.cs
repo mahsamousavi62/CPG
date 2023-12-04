@@ -87,9 +87,11 @@ namespace CPG.Domain.AggregateModels.UserAggregate
 
         public static void UpdateUserCompany(List<User> users, long companyId) => users.ForEach(user => { user.CompanyId = companyId; });
 
-        public static Task<string> GetUserName(long userId)
+        public static  async Task<string> GetUserName(long userId)
         {
-            throw new NotImplementedException();
+            await Task.CompletedTask;
+            return  string.Empty;
+          //  throw new NotImplementedException();
         }
     }
 }

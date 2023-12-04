@@ -178,6 +178,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CreateApplication.
+        /// </summary>
+        public static string CreateApplication {
+            get {
+                return ResourceManager.GetString("CreateApplication", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CreateCompany.
         /// </summary>
         public static string CreateCompany {
@@ -277,6 +286,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to IdpClientIds.
+        /// </summary>
+        public static string IdpClientIds {
+            get {
+                return ResourceManager.GetString("IdpClientIds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to InternetPaymentGateway.
         /// </summary>
         public static string InternetPaymentGateway {
@@ -349,6 +367,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ResponseApiUrl.
+        /// </summary>
+        public static string ResponseApiUrl {
+            get {
+                return ResourceManager.GetString("ResponseApiUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Search.
         /// </summary>
         public static string Search {
@@ -408,6 +435,15 @@ namespace CPG.Application.Shared.Resource {
         public static string True {
             get {
                 return ResourceManager.GetString("True", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UploadApplicationLogo.
+        /// </summary>
+        public static string UploadApplicationLogo {
+            get {
+                return ResourceManager.GetString("UploadApplicationLogo", resourceCulture);
             }
         }
         
