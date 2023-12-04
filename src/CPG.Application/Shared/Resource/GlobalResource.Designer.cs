@@ -61,6 +61,24 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Active.
+        /// </summary>
+        public static string Active {
+            get {
+                return ResourceManager.GetString("Active", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Active/DeActive.
+        /// </summary>
+        public static string Active_DeActive {
+            get {
+                return ResourceManager.GetString("Active/DeActive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Application with ID {0} has not been found..
         /// </summary>
         public static string ApplicationNotFound {
@@ -115,6 +133,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string Cancel {
+            get {
+                return ResourceManager.GetString("Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Companies.
         /// </summary>
         public static string Companies {
@@ -147,6 +174,24 @@ namespace CPG.Application.Shared.Resource {
         public static string Create {
             get {
                 return ResourceManager.GetString("Create", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CreateCompany.
+        /// </summary>
+        public static string CreateCompany {
+            get {
+                return ResourceManager.GetString("CreateCompany", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DeActive.
+        /// </summary>
+        public static string DeActive {
+            get {
+                return ResourceManager.GetString("DeActive", resourceCulture);
             }
         }
         
@@ -196,11 +241,38 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to EnglishName.
+        /// </summary>
+        public static string EnglishName {
+            get {
+                return ResourceManager.GetString("EnglishName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to False.
+        /// </summary>
+        public static string False {
+            get {
+                return ResourceManager.GetString("False", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Filter.
         /// </summary>
         public static string Filter {
             get {
                 return ResourceManager.GetString("Filter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to IbanPrefix.
+        /// </summary>
+        public static string IbanPrefix {
+            get {
+                return ResourceManager.GetString("IbanPrefix", resourceCulture);
             }
         }
         
@@ -214,11 +286,47 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to MethodTypes.
+        /// </summary>
+        public static string MethodTypes {
+            get {
+                return ResourceManager.GetString("MethodTypes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NationalCodeMatchingRequied.
+        /// </summary>
+        public static string NationalCodeMatchingRequied {
+            get {
+                return ResourceManager.GetString("NationalCodeMatchingRequied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NationalCodeMatchingRequiedWithCardNumber.
+        /// </summary>
+        public static string NationalCodeMatchingRequiedWithCardNumber {
+            get {
+                return ResourceManager.GetString("NationalCodeMatchingRequiedWithCardNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to PaymentReceipt.
         /// </summary>
         public static string PaymentReceipt {
             get {
                 return ResourceManager.GetString("PaymentReceipt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PersianName.
+        /// </summary>
+        public static string PersianName {
+            get {
+                return ResourceManager.GetString("PersianName", resourceCulture);
             }
         }
         
@@ -268,6 +376,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Submit.
+        /// </summary>
+        public static string Submit {
+            get {
+                return ResourceManager.GetString("Submit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to test.
         /// </summary>
         public static string Test {
@@ -282,6 +399,24 @@ namespace CPG.Application.Shared.Resource {
         public static string TitleMainMenu {
             get {
                 return ResourceManager.GetString("TitleMainMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to True.
+        /// </summary>
+        public static string True {
+            get {
+                return ResourceManager.GetString("True", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UploadCompanyLogo.
+        /// </summary>
+        public static string UploadCompanyLogo {
+            get {
+                return ResourceManager.GetString("UploadCompanyLogo", resourceCulture);
             }
         }
         
