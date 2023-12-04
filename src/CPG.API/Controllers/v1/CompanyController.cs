@@ -27,7 +27,7 @@ public class CompanyController : ApiBaseController
         => Ok(await Mediator.Send(new GetCompanyPaymentMethodsQuery()));
 
     [HttpPost]
-    public async Task<IActionResult> CreateCompany([FromBody] CreateCompanyModel model)
+    public async Task<IActionResult> CreateCompany([FromForm] CreateCompanyModel model)
     {
         CreateCompanyViewModel createCompanyViewModel = new(
              model.PersianName, model.EnglishName, model.NationalCodeMatchingRequied,

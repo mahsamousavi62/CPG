@@ -22,7 +22,7 @@ public class ProviderController : ApiBaseController
         => Ok(await Mediator.Send(new GetActiveProvidersQuery()));
 
     [HttpPost]
-    public async Task<IActionResult> CreateProvider([FromBody] CreateProviderModel model)
+    public async Task<IActionResult> CreateProvider([FromForm] CreateProviderModel model)
     {
         CreateProviderViewModel createProviderViewModel = new(model.PersianName, model.EnglishName,
                                                              model.ProviderType, model.ProviderData,
