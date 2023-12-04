@@ -11,6 +11,7 @@ using Unchase.Swashbuckle.AspNetCore.Extensions.Extensions;
 
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
 
 
 builder.Services.AddEndpointsApiExplorer();
@@ -49,10 +50,9 @@ builder.Services.AddSwaggerGen(opt =>
 builder.Services.AddControllers();
 builder.Services.AddHealthChecks();
 
-var configuration = builder.Configuration;
 builder.Services
-    .AddInfrastructure(configuration)
-    .AddApplication(configuration);
+    .AddApplication(configuration)
+    .AddInfrastructure(configuration);
 
 builder.Host.UseSerilog((context, configuation) =>
     configuation.ReadFrom.Configuration(context.Configuration));

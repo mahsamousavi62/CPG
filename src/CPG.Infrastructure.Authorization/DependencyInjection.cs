@@ -1,8 +1,13 @@
 ﻿using CPG.Application.Auth;
+using CPG.Application.UseCases.Common.Queries;
 using CPG.Domain.SharedKernel.Interfaces;
+using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using System;
 
 namespace CPG.Infrastructure.Authorization
 {
@@ -11,28 +16,28 @@ namespace CPG.Infrastructure.Authorization
         public static IServiceCollection AddTokenAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
             {
-                // var serviceProvider = services.BuildServiceProvider();
+                var serviceProvider = services.BuildServiceProvider();
 
-                //var mediator = serviceProvider.GetRequiredService<IMediator>();
-                //var authenticationConfig = ( mediator.Send(new GetAuthenticationAppSettingQuery())).GetAwaiter().GetResult();
+                var mediator = serviceProvider.GetRequiredService<IMediator>();
+                var authenticationConfig = (mediator.Send(new GetAuthenticationAppSettingQuery())).GetAwaiter().GetResult();
 
-                //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                //  .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, configureOption =>
-                //  {
+                services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                  .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, configureOption =>
+                  {
 
-                //      configureOption.Authority = authenticationConfig.Authority;
-                //      configureOption.Audience = authenticationConfig.ClientApiKey;
+                      configureOption.Authority = authenticationConfig.Authority;
+                      configureOption.Audience = authenticationConfig.ClientApiKey;
 
-                //      configureOption.TokenValidationParameters = new TokenValidationParameters
-                //      {
-                //          ValidIssuer = authenticationConfig.Authority,
-                //          ValidAudience = authenticationConfig.ClientApiKey,
-                //          ValidateIssuer = authenticationConfig.ValidateIssuer,
-                //          ValidateAudience = authenticationConfig.ValidateAudience,
-                //          ValidateLifetime = authenticationConfig.ValidateLifetime,
-                //          ClockSkew = TimeSpan.FromSeconds(Convert.ToInt32(authenticationConfig.ClockSkew)),
-                //      };
-                //  });
+                      configureOption.TokenValidationParameters = new TokenValidationParameters
+                      {
+                          ValidIssuer = authenticationConfig.Authority,
+                          ValidAudience = authenticationConfig.ClientApiKey,
+                          ValidateIssuer = authenticationConfig.ValidateIssuer,
+                          ValidateAudience = authenticationConfig.ValidateAudience,
+                          ValidateLifetime = authenticationConfig.ValidateLifetime,
+                          ClockSkew = TimeSpan.FromSeconds(Convert.ToInt32(authenticationConfig.ClockSkew)),
+                      };
+                  });
 
                 services.AddAuthorization();
                 services.AddHttpContextAccessor();

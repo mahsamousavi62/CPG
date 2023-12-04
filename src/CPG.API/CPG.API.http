@@ -1,14 +1,5 @@
 ﻿@CPG.API_HostAddress = https://localhost:7050
 
-POST {{CPG.API_HostAddress}}/api/companydeposit
-Content-Type: application/json
-
-{
-  //CreateCompanyDepositViewModel
-}
-
-###
-
-GET {{CPG.API_HostAddress}}/api/company/GetAll
+GET {{CPG.API_HostAddress}}/api/paymentrequest
 
 ###
