@@ -89,7 +89,7 @@ namespace CPG.Domain.AggregateModels.UserAggregate
 
         public static Task<string> GetUserName(long userId)
         {
-            throw new NotImplementedException();
+            return Task.FromResult("CPG Test");
         }
     }
 }
