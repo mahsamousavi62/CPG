@@ -1,19 +1,12 @@
 ﻿using Ardalis.Specification;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace CPG.Domain.AggregateModels.BankAggregate.Specifications
+namespace CPG.Domain.AggregateModels.BankAggregate.Specifications;
+
+public sealed class BanksSpec : Specification<Bank>
 {
-    public sealed class BanksSpec : Specification<Bank>
+    public BanksSpec()
     {
-        public BanksSpec()
-        {
-            Query
-                .Where(bank => !bank.IsDeleted)
-                .OrderByDescending(bank => bank.Id);
-        }
+        Query.OrderByDescending(bank => bank.Id);
     }
 }

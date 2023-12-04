@@ -1,14 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Ardalis.GuardClauses" Version="3.3.0" />
-    <PackageReference Include="Ardalis.Specification" Version="5.2.0" />
-    <PackageReference Include="MediatR" Version="9.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="7.0.11" />
+    <PackageReference Include="Ardalis.GuardClauses" Version="4.2.0" />
+    <PackageReference Include="Ardalis.Specification" Version="7.0.0" />
+    <PackageReference Include="IdentityModel" Version="6.2.0" />
+    <PackageReference Include="MediatR" Version="12.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="8.0.0" />
+	  <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,31 +20,67 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="AggregateModels\BankAggregate\Resource.Designer.cs">
+    <Compile Update="AggregateModels\ApplicationAggregate\Resource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
-    <Compile Update="AggregateModels\BookAggregate\Resource.Designer.cs">
+    <Compile Update="AggregateModels\CompanyAggregate\Resource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
+    <Compile Update="AggregateModels\CompanyIPGAggregate\Resource.Designer.cs">
+      <DependentUpon>Resource.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="AggregateModels\ProviderAggregate\Resource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="AggregateModels\CompanyDepositAggregate\Resource.Designer.cs">
+      <DependentUpon>Resource.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="AggregateModels\BankAggregate\Resource.resx">
+    <EmbeddedResource Update="AggregateModels\ApplicationAggregate\Resource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="AggregateModels\BookAggregate\Resource.resx">
+    <EmbeddedResource Update="AggregateModels\CompanyAggregate\Resource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="AggregateModels\CompanyIPGAggregate\Resource.resx">
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="AggregateModels\ProviderAggregate\Resource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="AggregateModels\CompanyDepositAggregate\Resource.resx">
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="AggregateModels\BankAggregate\Guards\" />
+    <Folder Include="AggregateModels\ApplicationAggregate\Guards\" />
+    <Folder Include="AggregateModels\CompanyAggregate\Guards\" />
+    <Folder Include="AggregateModels\CompanyIPGAggregate\Events\" />
+    <Folder Include="AggregateModels\CompanyIPGAggregate\Exceptions\" />
+    <Folder Include="AggregateModels\CompanyIPGAggregate\Specifications\" />
+    <Folder Include="AggregateModels\ProviderAggregate\Guards\" />
+    <Folder Include="AggregateModels\CompanyDepositAggregate\Guards\" />
+    <Folder Include="AggregateModels\UserAggregate\Idp\" />
+    <Folder Include="SharedKernel\ApplicationSettings\Exceptions\" />
+    <Folder Include="SharedKernel\ApplicationSettings\Commands\" />
   </ItemGroup>
 
 </Project>

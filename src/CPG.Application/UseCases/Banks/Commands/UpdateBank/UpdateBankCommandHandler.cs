@@ -1,12 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using CPG.Domain.SharedKernel;
+using MediatR;
 using System.Threading.Tasks;
+using System.Threading;
+using CPG.Domain.AggregateModels.BankAggregate;
+using CPG.Application.UseCases.Banks.Exceptions;
+using CPG.Domain.SharedKernel.Interfaces;
 
-namespace CPG.Application.UseCases.Banks.Commands.UpdateBank
+namespace CPG.Application.UseCases.Banks.Commands.UpdateBank;
+
+public class UpdateBankCommandHandler(IAggregateRepository<Bank> bankRepository, ICurrentUser currentUser) : IRequestHandler<UpdateBankCommand>
 {
-    internal class UpdateBankCommandHandler
+    private readonly IAggregateRepository<Bank> _bankRepository = bankRepository;
+    private readonly ICurrentUser _currentUser = currentUser;
+
+    public async Task Handle(UpdateBankCommand command, CancellationToken cancellationToken)
     {
+        var bank = await _bankRepository.GetByIdAsync(command.BankId, cancellationToken)
+                   ?? throw new BankNotFoundException(command.BankId);
+
+        bank.Update(command.IbanPrefix);
+
+        await _bankRepository.SaveChangesAsync(cancellationToken);
     }
 }

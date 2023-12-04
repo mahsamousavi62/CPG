@@ -13,6 +13,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using CPG.Application.UseCases.Common.Queries;
+using CPG.Infrastructure.Persistence.Redis;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using CPG.Domain.AggregateModels.CompanyAggregate;
+using CPG.Infrastructure.Persistence.Interceptors;
 
 namespace CPG.Infrastructure.Persistence
 {
@@ -21,9 +26,15 @@ namespace CPG.Infrastructure.Persistence
         private const string ConnectionStringConfigName = "CPGConnectionString";
 
         public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
-            => services
-                .AddDbContext<WriteDbContext>(options =>
+        {
+            services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
+            services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
+
+            services
+                .AddDbContext<WriteDbContext>((sp, options) =>
                 {
+                    options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
+
                     options.EnableDetailedErrors();
                     options.UseSqlServer(configuration.GetConnectionString(ConnectionStringConfigName));
                 })
@@ -33,18 +44,36 @@ namespace CPG.Infrastructure.Persistence
                     options.UseSqlServer(configuration.GetConnectionString(ConnectionStringConfigName));
                 })
                 .AddScoped(typeof(IAggregateRepository<>), typeof(AggregateRepository<>))
-                .AddScoped(typeof(IAggregateReadRepository<>), typeof(AggregateRepository<>));
+                .AddScoped(typeof(IAggregateReadRepository<>), typeof(AggregateRepository<>))
+                .AddScoped(typeof(ICommonServiceRepository<>), typeof(CommonServiceRepository<>))
+                .AddScoped<IRedisCaheService, RedisCacheService>();
+
+            _ = bool.TryParse(configuration["Redis:Enable"], out var enableRedis);
+
+            if (enableRedis)
+            {
+                var redisConfig = configuration.GetSection("Redis").Get<RedisConfig>();
+                services.AddStackExchangeRedisCache(options => options.ConfigurationOptions = new StackExchange.Redis.ConfigurationOptions
+                {
+                    EndPoints = { $"{redisConfig.Server}:{redisConfig.Port}" },
+                    Password = redisConfig.Password,
+                });
+            }
+            services.AddDistributedMemoryCache();
+            return services;
+        }
 
         public static IServiceCollection AddGraphQLQueries(this IServiceCollection services)
         {
             services
                 .AddGraphQLServer()
                 .AddAuthorization()
-                .AddQueryType<BookReadModelQueries>()
+                .AddQueryType<GetApplicationSettingsQuery>()
+                .AddQueryType<CompanyReadModelQueries>()
                 .AddProjections()
                 .AddFiltering()
                 .AddSorting()
-                .AddType<BookReadModelType>();
+                .AddType<CompanyReadModelType>();
 
             services.AddErrorFilter<GraphQLErrorFilter>();
 

@@ -1,16 +1,18 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR" Version="9.0.0" />
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
+    <PackageReference Include="IdentityModel" Version="6.2.0" />
+    <PackageReference Include="MediatR" Version="12.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0" />
+	
   </ItemGroup>
 
   <ItemGroup>
@@ -42,7 +44,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="UseCases\Application\EventHandlers\" />
     <Folder Include="UseCases\Banks\EventHandlers\" />
+    <Folder Include="UseCases\Common\Commands\" />
+    <Folder Include="UseCases\CompanyIPG\Commands\CreateCompanyIPG\" />
+    <Folder Include="UseCases\CompanyIPG\EventHandler\" />
+    <Folder Include="UseCases\CompanyIPG\Exceptions\" />
+    <Folder Include="UseCases\CompanyIPG\Queries\" />
+    <Folder Include="UseCases\Providers\Commands\UpdateProvider\" />
+    <Folder Include="UseCases\Providers\EventHandlers\" />
   </ItemGroup>
 
 </Project>

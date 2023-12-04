@@ -1,14 +1,13 @@
 ﻿using Ardalis.Specification;
 using System.Linq;
 
-namespace CPG.Domain.AggregateModels.BankAggregate.Specifications
+namespace CPG.Domain.AggregateModels.BankAggregate.Specifications;
+
+public sealed class BankByIdSpec : Specification<Bank>, ISingleResultSpecification<Bank>
 {
-    public sealed class BankByIdSpec : Specification<Bank>, ISingleResultSpecification
+    public BankByIdSpec(int bankId)
     {
-        public BankByIdSpec(int bankId)
-        {
-            Query
-                .Where(bank => bank.Id == bankId);
-        }
+        Query
+            .Where(bank => bank.Id == bankId);
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Resources;
-using CPG.Domain;
 
 namespace CPG.Application.Shared.Resource
 {

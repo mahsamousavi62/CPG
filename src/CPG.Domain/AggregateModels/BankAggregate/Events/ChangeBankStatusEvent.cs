@@ -1,25 +1,13 @@
 ﻿using MediatR;
 using System;
-using static CPG.Domain.SharedKernel.Enums;
 
-namespace CPG.Domain.AggregateModels.BankAggregate.Events
+namespace CPG.Domain.AggregateModels.BankAggregate.Events;
+
+public class ChangeBankStatusEvent(int bankId, bool isActive, DateTime dateTime) : INotification
 {
-    public class ChangeBankStatusEvent : INotification
-    {
-        public int BankId { get; }
-        
-        public long UserId { get; set; }
+    public int BankId { get; } = bankId;
 
-        public DateTime ModificationDateTime { get; set; }
+    public DateTime ModificationDateTime { get; set; } = dateTime;
 
-        public BankStatus Status { get; set; }
-
-        public ChangeBankStatusEvent(int bankId, BankStatus status, long userId, DateTime dateTime)
-        {
-            BankId = bankId;
-            Status = status;
-            UserId = userId;
-            ModificationDateTime = dateTime;            
-        }
-    }
+    public bool IsActive { get; set; } = isActive;
 }

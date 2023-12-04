@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
+#nullable disable
+
 namespace CPG.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(WriteDbContext))]
@@ -15,244 +17,593 @@ namespace CPG.Infrastructure.Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.12")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "8.0.0")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            modelBuilder.Entity("CPG.Domain.AggregateModels.BookAggregate.Book", b =>
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("CPG.Application.UseCases.CompanyDeposits.CompanyDeposit", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasColumnName("BookId")
-                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
-                        .HasAnnotation("SqlServer:IdentitySeed", 1)
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnName("Id");
 
-                    b.Property<bool>("InStock")
-                        .HasColumnType("bit")
-                        .HasColumnName("InStock");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("AccountNumber")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar")
+                        .HasColumnName("AccountNumber");
+
+                    b.Property<int>("BankId")
+                        .HasColumnType("int")
+                        .HasColumnName("BankId");
+
+                    b.Property<long>("CompanyId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("CompanyId");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("CreationUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Iban")
+                        .IsRequired()
+                        .HasMaxLength(26)
+                        .HasColumnType("varchar")
+                        .HasColumnName("Iban");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModificationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("ModificationUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("Name");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Book");
+                    b.HasIndex("BankId");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("CompanyDeposit", (string)null);
                 });
 
-            modelBuilder.Entity("CPG.Domain.AggregateModels.CPGUserAggregate.CPGUser", b =>
+            modelBuilder.Entity("CPG.Domain.AggregateModels.ApplicationAggregate.Application", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasColumnName("CPGUserId")
-                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
-                        .HasAnnotation("SqlServer:IdentitySeed", 1)
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("CreationUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("EnglishName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar")
+                        .HasColumnName("EnglishName");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Logo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Logo");
+
+                    b.Property<DateTime?>("ModificationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("ModificationUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("PersianName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("PersianName");
+
+                    b.Property<string>("ResponseApiUrl")
+                        .IsRequired()
+                        .HasMaxLength(2048)
+                        .HasColumnType("varchar")
+                        .HasColumnName("ResponseApiUrl");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Application", (string)null);
+                });
+
+            modelBuilder.Entity("CPG.Domain.AggregateModels.ApplicationAggregate.ApplicationIdentifier", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("ApplicationId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("CreationUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("IdpClientId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModificationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("ModificationUserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationId");
+
+                    b.ToTable("ApplicationIdentifier", (string)null);
+                });
+
+            modelBuilder.Entity("CPG.Domain.AggregateModels.BankAggregate.Bank", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("CreationUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LogoAddress")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar")
+                        .HasColumnName("LogoAddress");
+
+                    b.Property<DateTime?>("ModificationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("ModificationUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("Name")
+                        .UseCollation("Persian_100_CI_AI");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Bank", (string)null);
+                });
+
+            modelBuilder.Entity("CPG.Domain.AggregateModels.CompanyAggregate.Company", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("CreationUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("EnglishName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar")
+                        .HasColumnName("EnglishName");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Logo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Logo");
+
+                    b.Property<DateTime?>("ModificationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("ModificationUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("NationalCodeMatchingRequied")
+                        .HasColumnType("bit")
+                        .HasColumnName("NationalCodeMatchingRequied");
+
+                    b.Property<string>("PersianName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("PersianName");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Company", (string)null);
+                });
+
+            modelBuilder.Entity("CPG.Domain.AggregateModels.CompanyAggregate.CompanyPaymentMethod", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("CompanyId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("CreationUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<short>("MethodType")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime?>("ModificationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("ModificationUserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("CompanyPaymentMethods", (string)null);
+                });
+
+            modelBuilder.Entity("CPG.Domain.AggregateModels.ProviderAggregate.Provider", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("CreationUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("EnglishName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar")
+                        .HasColumnName("EnglishName");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Logo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Logo");
+
+                    b.Property<DateTime?>("ModificationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("ModificationUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("PersianName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("PersianName");
+
+                    b.Property<string>("ProviderData")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("ProviderData");
+
+                    b.Property<byte>("ProviderType")
+                        .HasColumnType("tinyint")
+                        .HasColumnName("ProviderType");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Provider", (string)null);
+                });
+
+            modelBuilder.Entity("CPG.Domain.AggregateModels.UserAggregate.User", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long?>("CompanyId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("CompanyId");
+
+                    b.Property<DateTime>("CreatationDateTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreatationDateTime");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("FirstName");
 
+                    b.Property<string>("IDPId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("IDPId");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit")
                         .HasColumnName("IsActive");
+
+                    b.Property<bool>("IsLegal")
+                        .HasColumnType("bit")
+                        .HasColumnName("IsLegal");
+
+                    b.Property<short>("KYCStatus")
+                        .HasColumnType("smallint")
+                        .HasColumnName("KYCStatus");
 
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("LastName");
 
+                    b.Property<DateTime>("LastUpdateFromIDP")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("LastUpdateFromIDP");
+
+                    b.Property<DateTime>("ModificationDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("ModificationDate");
+
+                    b.Property<string>("NationalCode")
+                        .IsRequired()
+                        .HasColumnType("char(10)")
+                        .HasColumnName("NationalCode");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("char(11)")
+                        .HasColumnName("PhoneNumber");
+
                     b.HasKey("Id");
 
-                    b.ToTable("CPGUser");
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("User", (string)null);
                 });
 
-            modelBuilder.Entity("CPG.Domain.SharedKernel.Loan", b =>
+            modelBuilder.Entity("CPG.Domain.AggregateModels.UserAggregate.UserRole", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasColumnName("LoanId")
-                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
-                        .HasAnnotation("SqlServer:IdentitySeed", 1)
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnName("Id");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit")
-                        .HasColumnName("IsActive");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<long>("_bookId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("BookId");
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreationDate");
 
-                    b.Property<long>("_userId")
+                    b.Property<DateTime>("ModificationDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("ModificationDate");
+
+                    b.Property<short>("RoleType")
+                        .HasColumnType("smallint");
+
+                    b.Property<long>("UserId")
                         .HasColumnType("bigint")
                         .HasColumnName("UserId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("_bookId");
+                    b.HasIndex("UserId");
 
-                    b.HasIndex("_userId");
-
-                    b.ToTable("Loan");
+                    b.ToTable("UserRole", (string)null);
                 });
 
-            modelBuilder.Entity("CPG.Domain.AggregateModels.BookAggregate.Book", b =>
+            modelBuilder.Entity("CPG.Domain.SharedKernel.ApplicationSettings.ApplicationSettings", b =>
                 {
-                    b.OwnsOne("CPG.Domain.AggregateModels.BookAggregate.BookInformation", "BookInformation", b1 =>
-                        {
-                            b1.Property<long>("BookId")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("bigint")
-                                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("Id");
 
-                            b1.Property<string>("Author")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("Author");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                            b1.Property<string>("Subject")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("Subject");
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
 
-                            b1.Property<string>("Title")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("Title");
+                    b.Property<long>("CreationUserId")
+                        .HasColumnType("bigint");
 
-                            b1.HasKey("BookId");
+                    b.Property<int>("EntityType")
+                        .HasColumnType("int")
+                        .HasColumnName("Entity_Type");
 
-                            b1.ToTable("Book");
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
-                            b1.WithOwner()
-                                .HasForeignKey("BookId");
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Key");
 
-                            b1.OwnsOne("CPG.Domain.AggregateModels.BookAggregate.Isbn", "Isbn", b2 =>
-                                {
-                                    b2.Property<long>("BookInformationBookId")
-                                        .ValueGeneratedOnAdd()
-                                        .HasColumnType("bigint")
-                                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<DateTime?>("ModificationDate")
+                        .HasColumnType("datetime2");
 
-                                    b2.Property<string>("Value")
-                                        .IsRequired()
-                                        .HasColumnType("nvarchar(max)")
-                                        .HasColumnName("Isbn");
+                    b.Property<long?>("ModificationUserId")
+                        .HasColumnType("bigint");
 
-                                    b2.HasKey("BookInformationBookId");
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Value");
 
-                                    b2.ToTable("Book");
+                    b.HasKey("Id");
 
-                                    b2.WithOwner()
-                                        .HasForeignKey("BookInformationBookId");
-                                });
-
-                            b1.Navigation("Isbn");
-                        });
-
-                    b.Navigation("BookInformation");
+                    b.ToTable("Application_Settings", (string)null);
                 });
 
-            modelBuilder.Entity("CPG.Domain.AggregateModels.CPGUserAggregate.CPGUser", b =>
+            modelBuilder.Entity("CPG.Application.UseCases.CompanyDeposits.CompanyDeposit", b =>
                 {
-                    b.OwnsOne("CPG.Domain.AggregateModels.CPGUserAggregate.Email", "Email", b1 =>
-                        {
-                            b1.Property<long>("CPGUserId")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("bigint")
-                                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                            b1.Property<string>("Value")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("Email");
-
-                            b1.HasKey("CPGUserId");
-
-                            b1.ToTable("CPGUser");
-
-                            b1.WithOwner()
-                                .HasForeignKey("CPGUserId");
-                        });
-
-                    b.OwnsOne("CPG.Domain.AggregateModels.CPGUserAggregate.UserCredential", "Credentials", b1 =>
-                        {
-                            b1.Property<long>("CPGUserId")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("bigint")
-                                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                            b1.Property<string>("Login")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("Login");
-
-                            b1.Property<string>("Password")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("Password");
-
-                            b1.HasKey("CPGUserId");
-
-                            b1.ToTable("CPGUser");
-
-                            b1.WithOwner()
-                                .HasForeignKey("CPGUserId");
-                        });
-
-                    b.Navigation("Credentials");
-
-                    b.Navigation("Email");
-                });
-
-            modelBuilder.Entity("CPG.Domain.SharedKernel.Loan", b =>
-                {
-                    b.HasOne("CPG.Domain.AggregateModels.BookAggregate.Book", null)
-                        .WithMany("_loans")
-                        .HasForeignKey("_bookId");
-
-                    b.HasOne("CPG.Domain.AggregateModels.CPGUserAggregate.CPGUser", null)
-                        .WithMany("ActiveLoans")
-                        .HasForeignKey("_userId")
+                    b.HasOne("CPG.Domain.AggregateModels.BankAggregate.Bank", "Bank")
+                        .WithMany("CompanyDeposits")
+                        .HasForeignKey("BankId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("CPG.Domain.SharedKernel.DateTimePeriod", "BorrowPeriod", b1 =>
+                    b.HasOne("CPG.Domain.AggregateModels.CompanyAggregate.Company", "Company")
+                        .WithMany("CompanyDeposits")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Bank");
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("CPG.Domain.AggregateModels.ApplicationAggregate.ApplicationIdentifier", b =>
+                {
+                    b.HasOne("CPG.Domain.AggregateModels.ApplicationAggregate.Application", "Application")
+                        .WithMany("ApplicationIdentifiers")
+                        .HasForeignKey("ApplicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Application");
+                });
+
+            modelBuilder.Entity("CPG.Domain.AggregateModels.BankAggregate.Bank", b =>
+                {
+                    b.OwnsOne("CPG.Domain.AggregateModels.BankAggregate.IbanPrefix", "IbanPrefix", b1 =>
                         {
-                            b1.Property<long>("LoanId")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("bigint")
-                                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                            b1.Property<int>("BankId")
+                                .HasColumnType("int");
 
-                            b1.Property<DateTime>("EndDate")
-                                .HasColumnType("datetime2")
-                                .HasColumnName("EndDate");
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasMaxLength(6)
+                                .HasColumnType("varchar")
+                                .HasColumnName("IbanPrefix");
 
-                            b1.Property<DateTime>("StartDate")
-                                .HasColumnType("datetime2")
-                                .HasColumnName("StartDate");
+                            b1.HasKey("BankId");
 
-                            b1.HasKey("LoanId");
-
-                            b1.ToTable("Loan");
+                            b1.ToTable("Bank");
 
                             b1.WithOwner()
-                                .HasForeignKey("LoanId");
+                                .HasForeignKey("BankId");
                         });
 
-                    b.Navigation("BorrowPeriod");
+                    b.Navigation("IbanPrefix");
                 });
 
-            modelBuilder.Entity("CPG.Domain.AggregateModels.BookAggregate.Book", b =>
+            modelBuilder.Entity("CPG.Domain.AggregateModels.CompanyAggregate.CompanyPaymentMethod", b =>
                 {
-                    b.Navigation("_loans");
+                    b.HasOne("CPG.Domain.AggregateModels.CompanyAggregate.Company", "Company")
+                        .WithMany("PaymentMethods")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
                 });
 
-            modelBuilder.Entity("CPG.Domain.AggregateModels.CPGUserAggregate.CPGUser", b =>
+            modelBuilder.Entity("CPG.Domain.AggregateModels.UserAggregate.User", b =>
                 {
-                    b.Navigation("ActiveLoans");
+                    b.HasOne("CPG.Domain.AggregateModels.CompanyAggregate.Company", "Company")
+                        .WithMany("Users")
+                        .HasForeignKey("CompanyId");
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("CPG.Domain.AggregateModels.UserAggregate.UserRole", b =>
+                {
+                    b.HasOne("CPG.Domain.AggregateModels.UserAggregate.User", null)
+                        .WithMany("UserRoles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("CPG.Domain.AggregateModels.ApplicationAggregate.Application", b =>
+                {
+                    b.Navigation("ApplicationIdentifiers");
+                });
+
+            modelBuilder.Entity("CPG.Domain.AggregateModels.BankAggregate.Bank", b =>
+                {
+                    b.Navigation("CompanyDeposits");
+                });
+
+            modelBuilder.Entity("CPG.Domain.AggregateModels.CompanyAggregate.Company", b =>
+                {
+                    b.Navigation("CompanyDeposits");
+
+                    b.Navigation("PaymentMethods");
+
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("CPG.Domain.AggregateModels.UserAggregate.User", b =>
+                {
+                    b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618
         }

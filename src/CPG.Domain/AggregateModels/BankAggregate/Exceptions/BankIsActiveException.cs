@@ -1,18 +1,12 @@
 ﻿using CPG.Domain.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace CPG.Domain.AggregateModels.BankAggregate.Exceptions
+namespace CPG.Domain.AggregateModels.BankAggregate.Exceptions;
+
+public class BankIsActiveException : DomainException
 {
-    internal class BankIsActiveException : DomainException
-    {
-        public override string Code => "bank_is_already_active";
-        public long BookId { get; }
+    public override string Code => "bank_is_already_active";
+    public int BankId { get; }
 
-        public BankIsActiveException(long bookId) : base(string.Format(Resource.BankIsAlreadyActive, bookId))
-           => BookId = bookId;
-    }
+    public BankIsActiveException(int bankId) : base(string.Format(Resource.BankIsAlreadyActive, bankId))
+       => BankId = bankId;
 }

@@ -1,47 +1,24 @@
-﻿using System;
-using CPG.Domain.AggregateModels.BookAggregate;
-using CPG.Domain.AggregateModels.CPGUserAggregate;
+﻿using CPG.Domain.AggregateModels.BankAggregate;
+using CPG.Domain.AggregateModels.ProviderAggregate;
+using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Domain.SharedKernel;
 using CPG.Tests.Base;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Xunit;
+using static CPG.Domain.SharedKernel.Enums;
 
-namespace CPG.Domain.Tests.Unit.Helpers
+namespace CPG.Domain.Tests.Unit.Helpers;
+
+public class AggregateTestHelper : TestBase
 {
-    public class AggregateTestHelper : TestBase
-    {
-        protected CPGUser GetValidCPGUserAggregate() => PrepareCPGUserAggregate();
-        protected Book GetValidBookAggregate() => PrepareBookAggregate();
-        protected static DateTimePeriod GetValidDateTimePeriod() => PrepareValidDateTimePeriod();
-        protected Loan GetSampleLoanEntity() => PrepareSampleLoanEntity();
+    //protected CPGUser GetValidCPGUserAggregate() => PrepareCPGUserAggregate();
+    //protected Book GetValidBookAggregate() => PrepareBookAggregate();
 
-
-        protected string GetBookTitle => CreateString();
-        protected string GetBookAuthor => CreateString();
-        protected string GetBookSubject => CreateString();
-        protected static Isbn GetIsbn => new("9783161484100");
-        
-
-        private CPGUser PrepareCPGUserAggregate()
-        {
-            return new CPGUser
-            {
-                Id = CreateLong()
-            };
-        }
-
-        private Book PrepareBookAggregate()
-        {
-            return new Book
-            {
-                Id = CreateLong(),
-                _bookInformation = new BookInformation(GetBookTitle, GetBookAuthor, GetBookSubject, GetIsbn.Value),
-                _inStock = true
-            };
-        }
-        
-        private static DateTimePeriod PrepareValidDateTimePeriod() 
-            => DateTimePeriod.Create(DateTime.UtcNow, DateTime.UtcNow.AddDays(7));
-
-        private Loan PrepareSampleLoanEntity()
-            => Loan.Create(CreateLong(), CreateLong(), PrepareValidDateTimePeriod());
-    }
+    protected string GetProviderPersianName => CreatePersianString(6);
+    protected string GetProviderEnglishName => CreateString();
+    protected string GetProviderData => CreateString();
 }

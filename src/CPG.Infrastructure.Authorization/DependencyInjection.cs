@@ -1,50 +1,55 @@
-﻿using System.Text;
-using CPG.Application.Auth;
-using CPG.Domain.SharedKernel;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using CPG.Application.Auth;
+using CPG.Domain.SharedKernel.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 
 namespace CPG.Infrastructure.Authorization
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddTokenAuthentication(this IServiceCollection services, IConfiguration config)
+        public static IServiceCollection AddTokenAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
-            var secret = config.GetSection("JwtConfig").GetSection("Secret").Value;
+            {
+                // var serviceProvider = services.BuildServiceProvider();
 
-            var key = Encoding.ASCII.GetBytes(secret);
-            services.AddAuthentication(x =>
-                {
-                    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                })
-                .AddJwtBearer(x =>
-                {
-                    x.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        IssuerSigningKey = new SymmetricSecurityKey(key),
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidIssuer = "localhost",
-                        ValidAudience = "localhost"
-                    };
-                });
+                //var mediator = serviceProvider.GetRequiredService<IMediator>();
+                //var authenticationConfig = ( mediator.Send(new GetAuthenticationAppSettingQuery())).GetAwaiter().GetResult();
 
-            services.AddHttpContextAccessor();
+                //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                //  .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, configureOption =>
+                //  {
 
-            services.AddTransient<IAuthService, JwtService>();
-            services.AddTransient<ICurrentUser, CurrentUser>();
+                //      configureOption.Authority = authenticationConfig.Authority;
+                //      configureOption.Audience = authenticationConfig.ClientApiKey;
 
-            return services;
+                //      configureOption.TokenValidationParameters = new TokenValidationParameters
+                //      {
+                //          ValidIssuer = authenticationConfig.Authority,
+                //          ValidAudience = authenticationConfig.ClientApiKey,
+                //          ValidateIssuer = authenticationConfig.ValidateIssuer,
+                //          ValidateAudience = authenticationConfig.ValidateAudience,
+                //          ValidateLifetime = authenticationConfig.ValidateLifetime,
+                //          ClockSkew = TimeSpan.FromSeconds(Convert.ToInt32(authenticationConfig.ClockSkew)),
+                //      };
+                //  });
+
+                services.AddAuthorization();
+                services.AddHttpContextAccessor();
+                services.AddTransient<IAuthService, JwtService>();
+                services.AddTransient<ICurrentUser, CurrentUser>();
+
+                return services;
+            }
         }
-
         public static IApplicationBuilder UseTokenAuthentication(this IApplicationBuilder app)
             => app.UseAuthentication();
 
         public static IApplicationBuilder UseTokenAuthorization(this IApplicationBuilder app)
             => app.UseAuthorization();
+
+        public static IApplicationBuilder UseAuthenticationMiddleware(this IApplicationBuilder app)
+           => app.UseMiddleware<AuthenticationMiddleware>();
     }
+
 }

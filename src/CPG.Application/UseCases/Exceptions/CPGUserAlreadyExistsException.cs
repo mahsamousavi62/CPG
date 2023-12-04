@@ -1,11 +1,7 @@
-﻿namespace CPG.Application.UseCases.Exceptions
-{
-    public class CPGUserAlreadyExistsException : ApplicationException
-    {
-        public override string Code => "CPG_user_already_exists";
-        public string Email { get; }
+﻿namespace CPG.Application.UseCases.Exceptions;
 
-        public CPGUserAlreadyExistsException(string email) : base($"CPG user already exists with email {email}.") 
-            => Email = email;
-    }
+public class UserAlreadyExistsException(string email) : ApplicationException($"CPG user already exists with email {email}.")
+{
+    public override string Code => "CPG_user_already_exists";
+    public string Email { get; } = email;
 }

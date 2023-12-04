@@ -1,39 +1,55 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using CPG.Domain.AggregateModels.BookAggregate;
-using CPG.Domain.AggregateModels.CPGUserAggregate;
+using CPG.Application.UseCases.CompanyDeposits;
+using CPG.Domain.AggregateModels.BankAggregate;
+using CPG.Domain.AggregateModels.CompanyAggregate;
+using CPG.Domain.AggregateModels.ProviderAggregate;
+using CPG.Domain.AggregateModels.UserAggregate;
+using CPG.Domain.SharedKernel.ApplicationSettings;
 using CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations;
 using CPG.Infrastructure.Persistence.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using CPG.Domain.AggregateModels.ApplicationAggregate;
 
-namespace CPG.Infrastructure.Persistence.DbContexts
+namespace CPG.Infrastructure.Persistence.DbContexts;
+
+public class WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator mediator) : DbContext(options)
 {
-    public class WriteDbContext : DbContext
+    private readonly IMediator _mediator = mediator;
+
+    public DbSet<User> Users { get; set; }
+    public DbSet<ApplicationSettings> ApplicationSettings { get; set; }
+    public DbSet<Bank> Banks { get; set; }
+    public DbSet<Company> Companies { get; set; }
+    public DbSet<CompanyPaymentMethod> CompanyPaymentMethods { get; set; }
+    public DbSet<Provider> Providers { get; set; }
+    public DbSet<CompanyDeposit> CompanyDeposits { get; set; }
+    public DbSet<Domain.AggregateModels.ApplicationAggregate.Application> Applications { get; set; }
+    public DbSet<ApplicationIdentifier> ApplicationIdentifiers { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+        => modelBuilder
+            .ApplyConfiguration(new ApplicationSettingsConfiguration())
+            .ApplyConfiguration(new UserConfiguration())
+            .ApplyConfiguration(new UserRoleConfiguration())
+            .ApplyConfiguration(new CompanyConfiguration())
+            .ApplyConfiguration(new CompanyPaymentMethodConfiguration())
+            .ApplyConfiguration(new BankConfiguration())
+            .ApplyConfiguration(new ProviderConfiguration())
+            .ApplyConfiguration(new CompanyDepositConfiguration())
+        //.ApplyConfiguration(new CompanyIPGConfiguration())
+        //.ApplyConfiguration(new CompanyIPGDepositConfiguration())
+            .ApplyConfiguration(new ApplicationConfiguration())
+            .ApplyConfiguration(new ApplicationIdentifierConfiguration())
+        ;
+
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
     {
-        private readonly IMediator _mediator;
+        var result = await base.SaveChangesAsync(cancellationToken);
 
-        public WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator mediator) : base(options)
-        {
-            _mediator = mediator;
-        }
+        await _mediator.DispatchDomainEventsAsync(this);
 
-        public DbSet<Book> Books { get; set; }
-        public DbSet<CPGUser> CPGUsers { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-            => modelBuilder
-                .ApplyConfiguration(new BookConfiguration())
-                .ApplyConfiguration(new CPGUserConfiguration())
-                .ApplyConfiguration(new LoanConfiguration());
-
-        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
-        {
-            var result = await base.SaveChangesAsync(cancellationToken);
-            
-            await _mediator.DispatchDomainEventsAsync(this);
-
-            return result;
-        }
+        return result;
     }
 }

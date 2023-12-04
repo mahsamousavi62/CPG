@@ -123,7 +123,7 @@
   <data name="BankIsAlreadyNotActive" xml:space="preserve">
     <value>بانک با شناسه {0} غیرفعال می باشد</value>
   </data>
-  <data name="BankIsAlreadySuspended" xml:space="preserve">
-    <value>بانک با شناسه {0} معلق می باشد</value>
+  <data name="InvalidIbanPrefix" xml:space="preserve">
+    <value>شناسه شبا {0} نامعتبر می باشد</value>
   </data>
 </root>
