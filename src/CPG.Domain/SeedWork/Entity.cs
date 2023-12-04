@@ -59,7 +59,9 @@ public abstract class Entity<T> : Entity
 
 public abstract class Entity
 {
-    private List<INotification> _domainEvents;
+    public bool IsActive { get; set; }
+
+    private List<INotification> _domainEvents = [];
     public IReadOnlyCollection<INotification> DomainEvents => _domainEvents?.AsReadOnly();
 
     public void AddDomainEvent(INotification eventItem)
