@@ -13,6 +13,7 @@ public class CompanyPaymentMethod : AuditableEntity<long>
     {
         MethodType = methodType;
         CompanyId = companyId;
+        IsActive = true;
     }
 
     public CompanyPaymentMethod(short methodType)
