@@ -4,6 +4,7 @@ using CPG.Domain.AggregateModels.UserAggregate.Events;
 using System.Collections.Generic;
 using CPG.Domain.AggregateModels.UserAggregate.UserViewModel;
 using CPG.Domain.AggregateModels.CompanyAggregate;
+using System.Threading.Tasks;
 
 namespace CPG.Domain.AggregateModels.UserAggregate
 {
@@ -84,10 +85,11 @@ namespace CPG.Domain.AggregateModels.UserAggregate
             AddDomainEvent(new GetIdpUserProfileEvent(model));
         }
 
-        public static void UpdateUserCompany(List<User> users, long id)
-        {
-            users.ForEach(user => { user.CompanyId = id; });
-        }
+        public static void UpdateUserCompany(List<User> users, long companyId) => users.ForEach(user => { user.CompanyId = companyId; });
 
+        public static Task<string> GetUserName(long userId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

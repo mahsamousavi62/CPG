@@ -1,5 +1,4 @@
-﻿using CPG.API.Model;
-using CPG.Application.UseCases.Companies.Commands.CreateCompany;
+﻿using CPG.Application.UseCases.Companies.Commands.CreateCompany;
 using CPG.Application.UseCases.Companies.Queries;
 using CPG.Application.UseCases.Companies.ViewModels;
 using CPG.Domain.SharedKernel;
@@ -24,7 +23,7 @@ public class CompanyController : ApiBaseController
 
     [HttpGet("GetCompanyPaymentMethodsType")]
     [EnumDataType(typeof(Enums.CompanyPaymentMethodType))]
-       public async Task<IActionResult> GetCompanyPaymentMethodsType(Enums.CompanyPaymentMethodType type)
+    public async Task<IActionResult> GetCompanyPaymentMethodsType(Enums.CompanyPaymentMethodType type)
         => Ok(await Mediator.Send(new GetCompanyPaymentMethodsQuery()));
 
     [HttpPost]
@@ -34,8 +33,8 @@ public class CompanyController : ApiBaseController
              model.PersianName, model.EnglishName, model.NationalCodeMatchingRequied,
              new FormFileProxy(model.File), model.MethodTypes, model.Users);
 
-        var companyId = await Mediator.Send(new CreateCompanyCommand(createCompanyViewModel));
+        var result = await Mediator.Send(new CreateCompanyCommand(createCompanyViewModel));
 
-        return CreatedAtAction(nameof(CreateCompany), new { id = companyId }, new { companyId });
+        return CreatedAtAction(nameof(CreateCompany), new { id = result.Data }, new { result.Data });
     }
 }

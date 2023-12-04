@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace CPG.API.Model;
+namespace CPG.Application.UseCases.Companies.ViewModels;
 
 public class CreateCompanyModel
 {

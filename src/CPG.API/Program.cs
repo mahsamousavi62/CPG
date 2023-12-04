@@ -49,6 +49,8 @@ builder.Services.AddSwaggerGen(opt =>
 });
 builder.Services.AddControllers();
 builder.Services.AddHealthChecks();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 builder.Services
     .AddApplication(configuration)
@@ -102,6 +104,7 @@ app.UseRouting();
 app.UseInfrastructure(configuration, app.Environment);
 
 app.UseSerilogRequestLogging();
+app.UseExceptionHandler();
 
 app.UseRequestLocalization();
 

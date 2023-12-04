@@ -10,7 +10,7 @@ public class CurrentUser(IHttpContextAccessor httpContextAccessor) : ICurrentUse
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
-    public long UserId => GetUserId();
+    public long UserId => 1;// GetUserId();
 
     private long GetUserId()
     {
