@@ -25,7 +25,7 @@ public class ApplicationController : ApiBaseController
         => Ok(await Mediator.Send(new GetActiveApplicationsQuery()));
 
     [HttpPost]
-    public async Task<IActionResult> CreateApplication([FromBody] CreateApplicationModel model)
+    public async Task<IActionResult> CreateApplication([FromForm] CreateApplicationModel model)
     {
         CreateApplicationViewModel createApplicationViewModel = new(model.PersianName, model.EnglishName, model.ResponseApiUrl, model.IdpClientIds, new FormFileProxy(model.File));
 
