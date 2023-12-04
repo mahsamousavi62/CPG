@@ -37,9 +37,8 @@ public static class DependencyInjection
             .AddTokenAuthentication(configuration)
             .AddTransient<ICurrentDateTime, CurrentDateTime>()
             .AddMasstransitInfrastructure(configuration)
-            .AddScoped<IMinioClient, MinioClient>()
             .AddScoped<IMinioProvider, MinioProvider>()
-            //.AddMinio(configuration)
+            .AddMinio(configuration)
             .AddHttpClient()
             .AddTransient<IHttpClientFactoryService, HttpClientFactoryService>()
             .AddScoped<ICharisPayClient, CharisPayClient>()
@@ -47,20 +46,11 @@ public static class DependencyInjection
 
     public static IServiceCollection AddMinio(this IServiceCollection services, IConfiguration configuration)
     {
-        //_ = bool.TryParse(configuration["Infrastructure:Minio:WithSSL"], out bool withSSL);
-
-        //_ = services.AddMinio(options =>
-        //{
-        //    options.Endpoint = configuration["Infrastructure:Minio:EndPoint"]!;
-        //    options.AccessKey = configuration["Infrastructure:Minio:AccessKey"]!;
-        //    options.SecretKey = configuration["Infrastructure:Minio:SecretKey"]!;
-        //    options.ConfigureClient(client => _ = client.WithSSL(withSSL));
-        //});
-
-        //services.AddMinio(configureClient => configureClient
-        //  .WithEndpoint("minio.charisma.tech:9000")
-        //  .WithCredentials("cpg", "3Fh3S9i153Qsgd45f6")
-        //  .WithSSL(false));
+           services.AddMinio(configureClient => configureClient
+          .WithEndpoint(configuration["Infrastructure:Minio:EndPoint"])
+          .WithCredentials(configuration["Infrastructure:Minio:AccessKey"],
+           configuration["Infrastructure:Minio:SecretKey"])
+          .WithSSL(false));
 
         return services;
     }
