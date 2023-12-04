@@ -1,6 +1,5 @@
-﻿using CPG.Application.Shared.Exception;
+﻿using CPG.Application.Shared.Exceptions;
 using CPG.Application.UseCases.Companies.Exceptions;
-using CPG.Application.UseCases.Files.Commands.UploadFile;
 using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Domain.AggregateModels.CompanyAggregate.Specifications;
 using CPG.Domain.AggregateModels.UserAggregate;
@@ -8,19 +7,17 @@ using CPG.Domain.AggregateModels.UserAggregate.Specifications;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Minio;
 using MediatR;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace CPG.Application.UseCases.Companies.Commands.CreateCompany;
 
-public class CreateCompanyCommandHandler(IAggregateRepository<Company> companyRepository,IAggregateRepository<User> userRepository,
-                                         IMinioProvider minioProvider): IRequestHandler<CreateCompanyCommand, long>
+public class CreateCompanyCommandHandler(IAggregateRepository<Company> companyRepository, IAggregateRepository<User> userRepository,
+                                         IMinioProvider minioProvider) : IRequestHandler<CreateCompanyCommand, long>
 {
     private readonly IAggregateRepository<Company> _companyRepository = companyRepository;
     private readonly IAggregateRepository<User> _userRepository = userRepository;
-    private readonly IMinioProvider _minioProvider=minioProvider;
+    private readonly IMinioProvider _minioProvider = minioProvider;
 
     public async Task<long> Handle(CreateCompanyCommand request, CancellationToken cancellationToken)
     {
@@ -28,12 +25,12 @@ public class CreateCompanyCommandHandler(IAggregateRepository<Company> companyRe
         EnglishName englishName = new(request.Model.EnglishName);
         await CheckUniqueName(request.Model.PersianName, request.Model.EnglishName);
 
-        Logo logo = new(request.Model.File,Enums.UploadFromEntityType.Company.ToString(), _minioProvider);
-       
+        Logo logo = new(request.Model.File, Enums.UploadFromEntityType.Company.ToString(), _minioProvider);
+
         var spec = new UserByUserIdsSpec(request.Model.Users);
         var users = await userRepository.ListAsync(spec, cancellationToken);
-        
-        if (users.Count==0) 
+
+        if (users.Count == 0)
             throw new UsersNotFoundException();
 
         var company = Company.Create(persianName, englishName,
@@ -44,13 +41,13 @@ public class CreateCompanyCommandHandler(IAggregateRepository<Company> companyRe
         await _companyRepository.SaveChangesAsync(cancellationToken);
 
         User.UpdateUserCompany(users, company.Id);
-        await _userRepository.UpdateRangeAsync(users,cancellationToken);
+        await _userRepository.UpdateRangeAsync(users, cancellationToken);
         await _userRepository.SaveChangesAsync(cancellationToken);
-       
-            return company.Id;
+
+        return company.Id;
     }
 
-    private async Task CheckUniqueName(string persianName,string englishName)
+    private async Task CheckUniqueName(string persianName, string englishName)
     {
         Company samePersianName = await _companyRepository.GetBySpecAsync(new CompanyByPersianName(persianName));
 

@@ -2,7 +2,7 @@
 using CPG.Domain.SharedKernel;
 using ApplicationException = CPG.Application.UseCases.Exceptions.ApplicationException;
 
-namespace CPG.Application.Shared.Exception;
+namespace CPG.Application.Shared.Exceptions;
 
 public class DuplicatePersianNameException(string persianName)
     : ApplicationException(string.Format(GlobalResource.DuplicatePersianName, persianName))
