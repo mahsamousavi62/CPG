@@ -33,6 +33,7 @@ public class Company : AuditableEntity<long>, IAggregateRoot
     public bool NationalCodeMatchingRequied => _nationalCodeMatchingRequied;
     public List<CompanyDeposit> CompanyDeposits { get; set; }
     public List<CompanyPaymentMethod> PaymentMethods { get; set; } = [];
+
     public List<User> Users { get; set; }
 
     public static Company Create(PersianName persianName, EnglishName englishName,

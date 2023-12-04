@@ -1,5 +1,5 @@
 ﻿using CPG.Application.Auth;
-using CPG.Domain.SharedKernel;
+using CPG.Domain.SharedKernel.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,8 +10,8 @@ namespace CPG.Infrastructure.Authorization
     {
         public static IServiceCollection AddTokenAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
-             {
-                var serviceProvider = services.BuildServiceProvider();
+            {
+                // var serviceProvider = services.BuildServiceProvider();
 
                 //var mediator = serviceProvider.GetRequiredService<IMediator>();
                 //var authenticationConfig = ( mediator.Send(new GetAuthenticationAppSettingQuery())).GetAwaiter().GetResult();

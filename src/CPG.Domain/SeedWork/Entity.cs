@@ -16,8 +16,10 @@ public abstract class Entity<T> : Entity
 
     public override bool Equals(object obj)
     {
-        if (!(obj is Entity<T>))
+        if (obj is not Entity<T>)
+        {
             return false;
+        }
 
         if (ReferenceEquals(this, obj))
             return true;
@@ -59,6 +61,8 @@ public abstract class Entity<T> : Entity
 
 public abstract class Entity
 {
+    public bool IsActive { get; set; }
+
     private List<INotification> _domainEvents;
     public IReadOnlyCollection<INotification> DomainEvents => _domainEvents?.AsReadOnly();
 
