@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CPG.API.Controllers;
 
+/// <summary>
+/// Abstract Class for Api's
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 public abstract class ApiBaseController : ControllerBase
