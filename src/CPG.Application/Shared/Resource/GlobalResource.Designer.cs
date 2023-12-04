@@ -61,6 +61,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Application with ID {0} has not been found..
+        /// </summary>
+        public static string ApplicationNotFound {
+            get {
+                return ResourceManager.GetString("ApplicationNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ApplicationSettings.
         /// </summary>
         public static string ApplicationSettings {
@@ -88,6 +97,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bank with ID {0} has not been found..
+        /// </summary>
+        public static string BankNotFound {
+            get {
+                return ResourceManager.GetString("BankNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Banks.
         /// </summary>
         public static string Banks {
@@ -106,6 +124,24 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to companyDepositNotFound.
+        /// </summary>
+        public static string CompanyDepositNotFound {
+            get {
+                return ResourceManager.GetString("CompanyDepositNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CompanyNotFound.
+        /// </summary>
+        public static string CompanyNotFound {
+            get {
+                return ResourceManager.GetString("CompanyNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create.
         /// </summary>
         public static string Create {
@@ -120,6 +156,33 @@ namespace CPG.Application.Shared.Resource {
         public static string DirectDebit {
             get {
                 return ResourceManager.GetString("DirectDebit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  EnglishName &apos;{0}&apos; has already been created.
+        /// </summary>
+        public static string DuplicateEnglishName {
+            get {
+                return ResourceManager.GetString("DuplicateEnglishName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DuplicateIban.
+        /// </summary>
+        public static string DuplicateIban {
+            get {
+                return ResourceManager.GetString("DuplicateIban", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  PersianName &apos;{0}&apos; has already been created.
+        /// </summary>
+        public static string DuplicatePersianName {
+            get {
+                return ResourceManager.GetString("DuplicatePersianName", resourceCulture);
             }
         }
         
@@ -156,6 +219,15 @@ namespace CPG.Application.Shared.Resource {
         public static string PaymentReceipt {
             get {
                 return ResourceManager.GetString("PaymentReceipt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Provider with ID {0} has not been found..
+        /// </summary>
+        public static string ProviderNotFound {
+            get {
+                return ResourceManager.GetString("ProviderNotFound", resourceCulture);
             }
         }
         
@@ -219,6 +291,15 @@ namespace CPG.Application.Shared.Resource {
         public static string Users {
             get {
                 return ResourceManager.GetString("Users", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UsersNotFound.
+        /// </summary>
+        public static string UsersNotFound {
+            get {
+                return ResourceManager.GetString("UsersNotFound", resourceCulture);
             }
         }
     }

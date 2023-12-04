@@ -2,10 +2,8 @@
 
 namespace CPG.Domain.AggregateModels.CompanyAggregate.Exceptions;
 
-internal class InvalidPaymentMethodType : DomainException
+public class InvalidPaymentMethodType(string message)
+        : DomainException(string.Format(Resource.Invalid_PaymentMethodType, message))
 {
-    public override string Code => "invalid_PaymentMethodType_extention";
-    public InvalidPaymentMethodType(string message) : base(message)
-    {
-    }
+    public override string Code => "invalid_PaymentMethodType";
 }

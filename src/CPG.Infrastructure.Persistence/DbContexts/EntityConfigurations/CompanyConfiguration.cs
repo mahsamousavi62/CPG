@@ -26,10 +26,14 @@ namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations
          .HasForeignKey(p => p.CompanyId);
 
             entity
-           .HasMany(c => c.users)
+           .HasMany(c => c.Users)
            .WithOne(p => p.Company)
            .HasForeignKey(p => p.CompanyId);
 
+            entity
+         .HasMany(c => c.CompanyDeposits)
+         .WithOne(p => p.Company)
+         .HasForeignKey(p => p.CompanyId);
         }
     }
 }

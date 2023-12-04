@@ -1,7 +1,9 @@
-﻿using CPG.Domain.AggregateModels.BankAggregate.Events;
+﻿using CPG.Application.UseCases.CompanyDeposits;
+using CPG.Domain.AggregateModels.BankAggregate.Events;
 using CPG.Domain.AggregateModels.BankAggregate.Exceptions;
 using CPG.Domain.SeedWork;
 using System;
+using System.Collections.Generic;
 
 namespace CPG.Domain.AggregateModels.BankAggregate;
 
@@ -14,42 +16,42 @@ public class Bank : AuditableEntity<int>, IAggregateRoot
     public string Name => _name;
     public string LogoAddress => _logoAddress;
     public IbanPrefix IbanPrefix => _ibanPrefix;
+    public List<CompanyDeposit> CompanyDeposits { get; set; }
 
     public Bank()
     {
     }
 
-    public void Update(IbanPrefix ibanPrefix, long userId)
+    public void Update(IbanPrefix ibanPrefix)
     {
         _ibanPrefix = ibanPrefix;
-        SetModificationData(userId);
+        SetModificationData();
     }
 
-    public void SetModificationData(long userId)
+    public void SetModificationData()
     {
         ModificationDate = DateTime.Now;
-        ModificationUserId = userId;            
     }
 
-    public void SetAsActive(long userId)
+    public void SetAsActive()
     {
         if (IsActive == true)
             throw new BankIsActiveException(Id);
 
         IsActive = true;
-        SetModificationData(userId);
+        SetModificationData();
 
-        AddDomainEvent(new ChangeBankStatusEvent(Id, IsActive, userId, DateTime.Now));
+        AddDomainEvent(new ChangeBankStatusEvent(Id, IsActive, DateTime.Now));
     }
 
-    public void SetAsInactive(long userId)
+    public void SetAsInactive()
     {
         if (IsActive == false)
             throw new BankIsNotActiveException(Id);
 
         IsActive = false;
-        SetModificationData(userId);
+        SetModificationData();
 
-        AddDomainEvent(new ChangeBankStatusEvent(Id, IsActive, userId, DateTime.Now));
+        AddDomainEvent(new ChangeBankStatusEvent(Id, IsActive, DateTime.Now));
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Security.Claims;
-using CPG.Domain.SharedKernel;
+using CPG.Domain.SharedKernel.Interfaces;
 using Microsoft.AspNetCore.Http;
 
 namespace CPG.Infrastructure.Authorization;

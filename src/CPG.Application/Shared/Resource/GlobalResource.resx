@@ -162,6 +162,12 @@
   <data name="SetDeActive" xml:space="preserve">
     <value>SetDeActive</value>
   </data>
+  <data name="DuplicateEnglishName" xml:space="preserve">
+    <value> EnglishName '{0}' has already been created</value>
+  </data>
+  <data name="DuplicatePersianName" xml:space="preserve">
+    <value> PersianName '{0}' has already been created</value>
+  </data>
   <data name="Test" xml:space="preserve">
     <value>test</value>
   </data>
@@ -170,5 +176,26 @@
   </data>
   <data name="Users" xml:space="preserve">
     <value>Users</value>
+  </data>
+  <data name="ApplicationNotFound" xml:space="preserve">
+    <value>Application with ID {0} has not been found.</value>
+  </data>
+  <data name="BankNotFound" xml:space="preserve">
+    <value>Bank with ID {0} has not been found.</value>
+  </data>
+  <data name="ProviderNotFound" xml:space="preserve">
+    <value>Provider with ID {0} has not been found.</value>
+  </data>
+  <data name="CompanyDepositNotFound" xml:space="preserve">
+    <value>companyDepositNotFound</value>
+  </data>
+  <data name="DuplicateIban" xml:space="preserve">
+    <value>DuplicateIban</value>
+  </data>
+  <data name="CompanyNotFound" xml:space="preserve">
+    <value>CompanyNotFound</value>
+  </data>
+  <data name="UsersNotFound" xml:space="preserve">
+    <value>UsersNotFound</value>
   </data>
 </root>

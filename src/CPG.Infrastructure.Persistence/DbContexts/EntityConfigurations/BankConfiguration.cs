@@ -39,6 +39,11 @@ namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations
                     .HasColumnType("varchar")
                     .IsRequired();
             });
+
+            entity
+          .HasMany(c => c.CompanyDeposits)
+          .WithOne(p => p.Bank)
+          .HasForeignKey(p => p.BankId);
         }
     }
 }

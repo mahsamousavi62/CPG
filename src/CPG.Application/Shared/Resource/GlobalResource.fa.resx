@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ApplicationNotFound" xml:space="preserve">
+    <value>برنامه با شناسه {0} یافت نشد</value>
+  </data>
   <data name="ApplicationSettings" xml:space="preserve">
     <value>تنظیمات برنامه</value>
   </data>
@@ -126,17 +129,35 @@
   <data name="Apps" xml:space="preserve">
     <value>برنامه‌ها</value>
   </data>
+  <data name="BankNotFound" xml:space="preserve">
+    <value>بانک با شناسه {0} یافت نشد</value>
+  </data>
   <data name="Banks" xml:space="preserve">
     <value>بانک‌ها</value>
   </data>
   <data name="Companies" xml:space="preserve">
     <value>شرکت‌ها</value>
   </data>
+  <data name="CompanyDepositNotFound" xml:space="preserve">
+    <value>حساب شرکت یافت نشد</value>
+  </data>
+  <data name="CompanyNotFound" xml:space="preserve">
+    <value>شرکت یافت نشد</value>
+  </data>
   <data name="Create" xml:space="preserve">
     <value>ایجاد</value>
   </data>
   <data name="DirectDebit" xml:space="preserve">
     <value>برداشت مستقیم</value>
+  </data>
+  <data name="DuplicateEnglishName" xml:space="preserve">
+    <value> نام لاتین '{0}' قبلا ثبت شده است</value>
+  </data>
+  <data name="DuplicateIban" xml:space="preserve">
+    <value>شبا {0}تکراری است</value>
+  </data>
+  <data name="DuplicatePersianName" xml:space="preserve">
+    <value>نام فارسی '{0}' قبلا ثبت شده است</value>
   </data>
   <data name="Edit" xml:space="preserve">
     <value>ویرایش</value>
@@ -149,6 +170,9 @@
   </data>
   <data name="PaymentReceipt" xml:space="preserve">
     <value>فیش واریزی</value>
+  </data>
+  <data name="ProviderNotFound" xml:space="preserve">
+    <value>سرویس دهنده با شناسه {0} یافت نشد</value>
   </data>
   <data name="Providers" xml:space="preserve">
     <value>سرویس‌دهنده‌ها</value>
@@ -170,5 +194,8 @@
   </data>
   <data name="Users" xml:space="preserve">
     <value>کاربان</value>
+  </data>
+  <data name="UsersNotFound" xml:space="preserve">
+    <value>لیست کاربران نامعتبر می باشد</value>
   </data>
 </root>

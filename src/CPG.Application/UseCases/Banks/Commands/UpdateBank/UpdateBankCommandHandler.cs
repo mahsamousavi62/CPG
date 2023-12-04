@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using CPG.Domain.AggregateModels.BankAggregate;
 using CPG.Application.UseCases.Banks.Exceptions;
+using CPG.Domain.SharedKernel.Interfaces;
 
 namespace CPG.Application.UseCases.Banks.Commands.UpdateBank;
 
@@ -17,7 +18,7 @@ public class UpdateBankCommandHandler(IAggregateRepository<Bank> bankRepository,
         var bank = await _bankRepository.GetByIdAsync(command.BankId, cancellationToken)
                    ?? throw new BankNotFoundException(command.BankId);
 
-        bank.Update(command.IbanPrefix, _currentUser.UserId);
+        bank.Update(command.IbanPrefix);
 
         await _bankRepository.SaveChangesAsync(cancellationToken);
     }

@@ -18,6 +18,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Minio;
 using Minio.AspNetCore;
+using System.Net.Http;
+using System;
+using Polly;
+using System.Net;
+using Api.Juros.Infrastructure.External;
+using Confluent.Kafka;
+using System.Net.Http.Headers;
 
 namespace CPG.Infrastructure;
 
@@ -34,7 +41,9 @@ public static class DependencyInjection
             .AddScoped<IMinioProvider, MinioProvider>()
             //.AddMinio(configuration)
             .AddHttpClient()
-            .AddTransient<IHttpClientFactoryService, HttpClientFactoryService>();
+            .AddTransient<IHttpClientFactoryService, HttpClientFactoryService>()
+            .AddScoped<ICharisPayClient, CharisPayClient>()
+        .AddConfigureHttpClientService(configuration);
 
     public static IServiceCollection AddMinio(this IServiceCollection services, IConfiguration configuration)
     {
@@ -85,6 +94,27 @@ public static class DependencyInjection
             });
        });
 
+        return services;
+    }
+
+    public static IServiceCollection AddConfigureHttpClientService(this IServiceCollection services, IConfiguration configuration)
+    {
+        //var retryPolicy = Policy
+        //    .HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode && r.StatusCode != HttpStatusCode.BadRequest)
+        //    .WaitAndRetryAsync(new[]
+        //    {
+        //            TimeSpan.FromSeconds(1),
+        //            TimeSpan.FromSeconds(3),
+        //            TimeSpan.FromSeconds(6)
+        //    });
+
+        services.AddHttpClient("charisPayClient", c =>
+        {
+            c.BaseAddress =new Uri($"{configuration["Infrastructure:CharisPay:BaseUrl"]}");
+            c.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
+            c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+        });//.AddPolicyHandler(retryPolicy);
         return services;
     }
 

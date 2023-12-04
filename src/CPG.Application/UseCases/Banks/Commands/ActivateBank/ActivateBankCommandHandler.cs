@@ -1,6 +1,7 @@
 ﻿using CPG.Application.UseCases.Banks.Exceptions;
 using CPG.Domain.AggregateModels.BankAggregate;
 using CPG.Domain.SharedKernel;
+using CPG.Domain.SharedKernel.Interfaces;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,9 +19,9 @@ public class ActivateBankCommandHandler(IAggregateRepository<Bank> bankRepositor
                    ?? throw new BankNotFoundException(command.BankId);
 
         if (command.IsActive)
-            bank.SetAsActive(_currentUser.UserId);
+            bank.SetAsActive();
         else 
-            bank.SetAsInactive(_currentUser.UserId);
+            bank.SetAsInactive();
 
         await _bankRepository.SaveChangesAsync(cancellationToken);
     }

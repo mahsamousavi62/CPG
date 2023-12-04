@@ -1,27 +1,14 @@
 ﻿@CPG.API_HostAddress = https://localhost:7050
 
-GET {{CPG.API_HostAddress}}/api/company/GetAll
-
-###
-
-POST {{CPG.API_HostAddress}}/api/company
+POST {{CPG.API_HostAddress}}/api/companydeposit
 Content-Type: application/json
 
 {
-  "persianName": "تست",
-  "englishName": "string",
-  "nationalCodeMatchingRequied": true,
-  "uploadFile": {
-    "file": "C:\\Users\\m.mousavi\\Pictures\\download.jfif",
-    "detailType": "string",
-    "chunkNumber": 0,
-    "totalChunks": 0,
-    "chunkSize": 0,
-    "filePath": "string"
-  },
-  "methodTypes": [
-    0
-  ]
+  //CreateCompanyDepositViewModel
 }
+
+###
+
+GET {{CPG.API_HostAddress}}/api/company/GetAll
 
 ###

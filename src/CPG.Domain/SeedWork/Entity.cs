@@ -16,8 +16,10 @@ public abstract class Entity<T> : Entity
 
     public override bool Equals(object obj)
     {
-        if (!(obj is Entity<T>))
+        if (obj is not Entity<T>)
+        {
             return false;
+        }
 
         if (ReferenceEquals(this, obj))
             return true;
