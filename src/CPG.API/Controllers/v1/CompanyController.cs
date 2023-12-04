@@ -1,5 +1,4 @@
-﻿using CPG.API.Model;
-using CPG.Application.UseCases.Companies.Commands.CreateCompany;
+﻿using CPG.Application.UseCases.Companies.Commands.CreateCompany;
 using CPG.Application.UseCases.Companies.Queries;
 using CPG.Application.UseCases.Companies.ViewModels;
 using CPG.Domain.SharedKernel;
@@ -24,11 +23,11 @@ public class CompanyController : ApiBaseController
 
     [HttpGet("GetCompanyPaymentMethodsType")]
     [EnumDataType(typeof(Enums.CompanyPaymentMethodType))]
-       public async Task<IActionResult> GetCompanyPaymentMethodsType(Enums.CompanyPaymentMethodType type)
+    public async Task<IActionResult> GetCompanyPaymentMethodsType(Enums.CompanyPaymentMethodType type)
         => Ok(await Mediator.Send(new GetCompanyPaymentMethodsQuery()));
 
     [HttpPost]
-    public async Task<IActionResult> CreateCompany([FromForm] CreateCompanyModel model)
+    public async Task<IActionResult> CreateCompany([FromBody] CreateCompanyModel model)
     {
         CreateCompanyViewModel createCompanyViewModel = new(
              model.PersianName, model.EnglishName, model.NationalCodeMatchingRequied,

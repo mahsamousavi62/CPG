@@ -2,12 +2,14 @@
 using CPG.Application.UseCases.Application.Commands.CreateApplication;
 using CPG.Application.UseCases.Application.Queries;
 using CPG.Application.UseCases.Application.ViewModels;
-using Microsoft.AspNetCore.Mvc;
-using CPG.API.Model;
 using CPG.Infrastructure.File;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CPG.API.Controllers.v1;
 
+/// <summary>
+/// Client Application API
+/// </summary>
 public class ApplicationController : ApiBaseController
 {
     [HttpGet("{id:int}")]
@@ -23,7 +25,7 @@ public class ApplicationController : ApiBaseController
         => Ok(await Mediator.Send(new GetActiveApplicationsQuery()));
 
     [HttpPost]
-    public async Task<IActionResult> CreateApplication([FromForm] CreateApplicationModel model)
+    public async Task<IActionResult> CreateApplication([FromBody] CreateApplicationModel model)
     {
         CreateApplicationViewModel createApplicationViewModel = new(model.PersianName, model.EnglishName, model.ResponseApiUrl, model.IdpClientIds, new FormFileProxy(model.File));
 
