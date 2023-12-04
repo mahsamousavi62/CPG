@@ -13,7 +13,7 @@ public class PersianName
         Guard.Against.NullOrEmpty(persianName);
 
         if (string.IsNullOrWhiteSpace(persianName))
-            throw new UserCreationException($"Parameter {nameof(persianName)} cannot be empty.");
+            throw new EmptyPersianNameException(persianName);
 
         if (!Regex.IsMatch(persianName, "^[\\u0600-\\u06FF\\s]+$"))
             throw new InvalidPersianNameException(persianName);

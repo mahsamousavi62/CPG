@@ -13,11 +13,10 @@ public class EnglishName
     public EnglishName(string englishName)
     {
         if (string.IsNullOrWhiteSpace(englishName))
-            throw new EmptyEnglishNameException($"Parameter {nameof(englishName)} cannot be empty.");
+            throw new EmptyEnglishNameException(englishName);
 
         if (!Regex.IsMatch(englishName, "[A-Za-z\\s]+"))
-
-            throw new InvalidEnglishNameException($"Parameter {nameof(englishName)} is invalid.");
+            throw new InvalidEnglishNameException(englishName);
 
         Value = englishName;
     }
