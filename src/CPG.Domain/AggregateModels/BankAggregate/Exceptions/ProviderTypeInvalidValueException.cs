@@ -2,8 +2,8 @@
 
 namespace CPG.Domain.AggregateModels.BankAggregate.Exceptions;
 
-public class ProviderTypeInvalidValueException(int providerType) : DomainException(string.Format(Resource.InvalidIbanPrefix, providerType))
+public class ProviderTypeInvalidValueException(int providerType) : DomainException(string.Format(Resource.InvalidProviderType, providerType))
     {
-    public override string Code => "invalid_providerRype_value";
+    public override string Code => "invalid_providerType_value";
     public int ProviderType { get; } = providerType;
 }

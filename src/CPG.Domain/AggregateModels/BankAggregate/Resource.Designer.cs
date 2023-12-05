@@ -86,5 +86,16 @@ namespace CPG.Domain.AggregateModels.BankAggregate {
                 return ResourceManager.GetString("InvalidIbanPrefix", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to نوع سرویس دهنده {0} نامعتبر می باشد.
+        /// </summary>
+        internal static string InvalidProviderType
+        {
+            get
+            {
+                return ResourceManager.GetString("InvalidProviderType", resourceCulture);
+            }
+        }
     }
 }

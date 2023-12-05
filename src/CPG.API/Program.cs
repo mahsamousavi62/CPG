@@ -78,7 +78,7 @@ builder.Services.Configure<RequestLocalizationOptions>(opt =>
 {
     var supportedLanguages = new List<CultureInfo>
     {
-        new("en"),
+        //new("en"),
         new("fa")
     };
 
