@@ -15,6 +15,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using CPG.Application.UseCases.Common.Queries;
 using CPG.Infrastructure.Persistence.Redis;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using CPG.Domain.AggregateModels.CompanyAggregate;
+using CPG.Infrastructure.Persistence.Interceptors;
 
 namespace CPG.Infrastructure.Persistence
 {
@@ -24,9 +27,14 @@ namespace CPG.Infrastructure.Persistence
 
         public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
+            services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
+
             services
-                .AddDbContext<WriteDbContext>(options =>
+                .AddDbContext<WriteDbContext>((sp, options) =>
                 {
+                    options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
+
                     options.EnableDetailedErrors();
                     options.UseSqlServer(configuration.GetConnectionString(ConnectionStringConfigName));
                 })

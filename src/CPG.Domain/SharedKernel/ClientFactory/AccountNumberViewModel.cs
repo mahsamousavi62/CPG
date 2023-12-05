@@ -9,10 +9,12 @@ namespace CPG.Application.UseCases.CharisPayServices.Queries
     public class AccountNumberViewModel
     {
         public string AccountNumber { get; set; }
-
-        public AccountNumberViewModel(string accountNumber)
+        public string BankName { get; set; }
+        public AccountNumberViewModel(string accountNumber, string bankName)
         {
+
             AccountNumber = accountNumber;
+            BankName = bankName;
         }
     }
 }

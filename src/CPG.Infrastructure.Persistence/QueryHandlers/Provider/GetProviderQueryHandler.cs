@@ -1,19 +1,11 @@
 ﻿using Ardalis.GuardClauses;
-using CPG.Application.UseCases.Banks.Exceptions;
-using CPG.Application.UseCases.Banks.Queries;
-using CPG.Application.UseCases.Banks.ViewModels;
 using CPG.Application.UseCases.Providers.Exceptions;
 using CPG.Application.UseCases.Providers.Queries;
 using CPG.Application.UseCases.Providers.ViewModels;
-using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Domain.SharedKernel.Minio;
 using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 

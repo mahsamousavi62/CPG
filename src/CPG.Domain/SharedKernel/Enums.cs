@@ -39,6 +39,7 @@ public class Enums
         Company = 1,
         Bank = 2,
         Provider = 3,
+        Application = 4,
     }
 
     public enum ProviderType : byte

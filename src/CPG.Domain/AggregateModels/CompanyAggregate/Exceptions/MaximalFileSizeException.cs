@@ -2,10 +2,8 @@
 
 namespace CPG.Domain.AggregateModels.CompanyAggregate.Exceptions;
 
-internal class MaximalFileSizeException : DomainException
+internal class MaximalFileSizeException(string message) : 
+    DomainException(string.Format(Resource.MaximalFileSize, message))
 {
-    public override string Code => "MaximalFileSize";
-    public MaximalFileSizeException(string message) : base(message)
-    {
-    }
+    public override string Code => "MaximalLogoSize";
 }

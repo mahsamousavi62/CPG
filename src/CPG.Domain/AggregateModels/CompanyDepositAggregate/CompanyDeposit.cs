@@ -4,6 +4,7 @@ using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Domain.AggregateModels.CompanyAggregate.Events;
 using CPG.Domain.AggregateModels.CompanyDepositAggregate.Events;
 using CPG.Domain.SeedWork;
+using CPG.Domain.SharedKernel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,19 +33,18 @@ namespace CPG.Application.UseCases.CompanyDeposits
         public Company Company { get; set; }
         public Bank Bank { get; set; }
 
-        public CompanyDeposit(string name, Iban iban, int bankId, string accountNumber, long companyId)
+        public CompanyDeposit(PersianName name, Iban iban, int bankId, string accountNumber, long companyId)
         {
-            Guard.Against.NullOrEmpty(name);
             Guard.Against.NullOrEmpty(accountNumber);
 
-            _name = name;
+            _name = name.Value;
             _iban = iban.Value;
             _bankId = bankId;
             _accountNumber = accountNumber;
             _companyId = companyId;
         }
 
-        public static CompanyDeposit Create(string name, Iban iban, int bankId, string accountNumber, long companyId)
+        public static CompanyDeposit Create(PersianName name, Iban iban, int bankId, string accountNumber, long companyId)
         {
             var companyDeposit = new CompanyDeposit(name, iban, bankId, accountNumber, companyId);
 

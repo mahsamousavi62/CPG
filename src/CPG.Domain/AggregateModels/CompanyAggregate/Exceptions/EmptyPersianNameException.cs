@@ -1,13 +1,11 @@
-﻿using CPG.Domain.Exceptions;
+﻿using CPG.Domain.AggregateModels.UserAggregate;
+using CPG.Domain.Exceptions;
 
 namespace CPG.Domain.AggregateModels.CompanyAggregate.Exceptions
 {
-    public class EmptyPersianNameException:DomainException
+    public class EmptyPersianNameException(string name)
+        : DomainException(string.Format(Resource.Empty_PersianName, name))
     {
-        public override string Code => "empt♂y_persianName";
-        public EmptyPersianNameException(string message) : base(message)
-        {
-        }
-
+        public override string Code => "empty_persianName";
     }
 }
