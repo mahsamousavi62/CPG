@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using AutoFixture;
-using CPG.Domain.AggregateModels.BookAggregate;
+using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Interfaces;
 using MediatR;

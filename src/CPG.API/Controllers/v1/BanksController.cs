@@ -26,11 +26,6 @@ public class BanksController : ApiBaseController
     public async Task<ActionResult<IReadOnlyCollection<BankViewModel>>> GetActiveBanks()
         => Ok(await Mediator.Send(new GetActiveBanksQuery()));
 
-    [HttpGet("bankProviders/{providerType}")]
-    [ProducesResponseType(typeof(BankProviderViewModel), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<BankProviderViewModel>> GetBankProvider(ProviderType providerType)
-        => Ok(await Mediator.Send(new GetBankProvidersQuery(providerType)));
-
     [HttpPost("update/{bankId:int}/{ibanPrefix}")]
     public async Task<IActionResult> UpdateBank(UpdateBankCommand command)
     {

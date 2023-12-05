@@ -13,5 +13,4 @@ public class BankReadModel
     public DateTime CreationDate { get; set; }
     public DateTime? ModificationDate { get; set; }
     public ICollection<CompanyDepositReadModel> CompanyDeposits { get; set; }
-    public ICollection<BankProviderReadModel> BankProviders { get; set; }
 }

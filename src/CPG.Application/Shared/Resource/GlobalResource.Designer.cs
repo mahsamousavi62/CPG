@@ -61,7 +61,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Application with ID {0} has not been found..
+        ///   Looks up a localized string similar to Application with Id {0} has not been found..
         /// </summary>
         public static string ApplicationNotFound {
             get {
@@ -97,7 +97,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bank with ID {0} has not been found..
+        ///   Looks up a localized string similar to Bank with Id {0} has not been found..
         /// </summary>
         public static string BankNotFound {
             get {
@@ -214,6 +214,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to IPGType with Id {0} has not been found.
+        /// </summary>
+        public static string IPGTypeNotFound {
+            get {
+                return ResourceManager.GetString("IPGTypeNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to PaymentReceipt.
         /// </summary>
         public static string PaymentReceipt {
@@ -223,7 +232,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Provider with ID {0} has not been found..
+        ///   Looks up a localized string similar to Provider with Id {0} has not been found..
         /// </summary>
         public static string ProviderNotFound {
             get {
