@@ -1,8 +1,8 @@
 ﻿using CPG.Application.UseCases.PaymentRequests.Commands.CreatePaymentRequest;
 using CPG.Application.UseCases.PaymentRequests.ViewModels;
-using HotChocolate.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Client;
+
 
 namespace CPG.API.Controllers.v1
 {

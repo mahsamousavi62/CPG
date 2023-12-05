@@ -1,5 +1,6 @@
 using System;
 using System.Data;
+using CPG.Domain.AggregateModels.ApplicationAggregate;
 using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Domain.SeedWork;
 
@@ -26,6 +27,7 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
         IsUsed = isUsed;
     }
 
+    
     public long ApplicationId { get; set; }
     public string DestinationIban { get; set; }
     public string NationalCode { get; set; }
@@ -39,11 +41,12 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
     public bool IsUsed { get; set; }
     public DateTime? VerificationDateTime { get; set; }
     public DateTime UrlExpirationDateTime { get; set; }
-
+    public Application Application { get; set; }
     public Company Company { get; set; }
 
-public static PaymentRequest Create(PaymentRequest paymentRequest)
+    public static PaymentRequest Create(PaymentRequest paymentRequest)
     {
+        paymentRequest.UrlExpirationDateTime= DateTime.UtcNow;
         return paymentRequest;
     }
 

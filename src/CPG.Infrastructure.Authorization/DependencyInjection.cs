@@ -16,11 +16,14 @@ namespace CPG.Infrastructure.Authorization
         public static IServiceCollection AddTokenAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
             {
-                var serviceProvider = services.BuildServiceProvider();
+                services.AddTransient<ICurrentUser, CurrentUser>();
+                services.AddAuthorization();
+                services.AddHttpContextAccessor();
+                services.AddTransient<IAuthService, JwtService>();
 
+                var serviceProvider = services.BuildServiceProvider();
                 var mediator = serviceProvider.GetRequiredService<IMediator>();
                 var authenticationConfig = (mediator.Send(new GetAuthenticationAppSettingQuery())).GetAwaiter().GetResult();
-
                 services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                   .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, configureOption =>
                   {
@@ -39,10 +42,8 @@ namespace CPG.Infrastructure.Authorization
                       };
                   });
 
-                services.AddAuthorization();
-                services.AddHttpContextAccessor();
-                services.AddTransient<IAuthService, JwtService>();
-                services.AddTransient<ICurrentUser, CurrentUser>();
+                
+               
 
                 return services;
             }

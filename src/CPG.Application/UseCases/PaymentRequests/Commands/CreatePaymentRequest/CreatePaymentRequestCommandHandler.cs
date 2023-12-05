@@ -8,6 +8,7 @@ using CPG.Domain.AggregateModels.PaymentRequestAggregate;
 using CPG.Domain.AggregateModels.PaymentRequestAggregate.Specifications;
 using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Domain.SharedKernel;
+using Mapster;
 using MediatR;
 using System;
 using System.Threading;
@@ -25,6 +26,7 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
     public async Task<PaymentRequestViewModel> Handle(CreatePaymentRequestCommand request, CancellationToken cancellationToken)
     {
         await Validate(request.Model);
+        PaymentRequest paymentRequest = MapModel(request.Model);
         //var applicationId = 1;
         //var paymentRequest = PaymentRequest.Create(request.Model.CompanyId,
         //    request.Model.DestinationIban,
@@ -34,44 +36,67 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
         //    request.Model.Amount,
 
         //    ,);
-        //await _paymentRequestRepository.AddAsync(paymentRequest);
+        PaymentRequest.Create(paymentRequest);
+        await _paymentRequestRepository.AddAsync(paymentRequest);
         await _paymentRequestRepository.SaveChangesAsync();
-        throw new Exception();
+
+        return new PaymentRequestViewModel
+        {
+            ExpirationDateTime = paymentRequest.UrlExpirationDateTime,
+            Code = paymentRequest.Code,
+            PageUrl = paymentRequest.CallBackUrl,
+            Status = paymentRequest.Status
+        };
+    }
+
+    private PaymentRequest MapModel(CreatePaymentRequestViewModel model)
+    {
+        TypeAdapterConfig<CreatePaymentRequestViewModel, PaymentRequest>.NewConfig();
+
+        var paymentRequest = model.Adapt<PaymentRequest>();
+
+       return paymentRequest;
     }
 
     private async Task Validate(CreatePaymentRequestViewModel model)
     {
         //TODO:check applicationId
         //TODO:check callbackUrl
-       
+
         if (string.IsNullOrEmpty(model.DestinationIban))
         {
-            var iban = new Iban(model.DestinationIban);
+            throw new Exception($"{nameof(model.DestinationIban)} is null or empty.");
         }
-        var amount = new Amount(model.Amount);
-        var callBackUrl=new CallBackUrl(model.CallBackUrl);
 
+        var iban = new Iban(model.DestinationIban);
+        var amount = new Amount(model.Amount);
+        var callBackUrl = new CallBackUrl(model.CallBackUrl);
         var nationalCode = new NationalCode(model.NationalCode);
 
         var companyDeposit = await _companyDepositRepository.GetBySpecAsync(new CompanyDepositByIban(model.DestinationIban));
+
         if (companyDeposit.CompanyId != model.CompanyId)
-            throw new Exception();
-
-
-        if (model.CompanyId.HasValue)
         {
-            var comapny = await _companyRepository.GetByIdAsync(model.CompanyId);
-            if (comapny != null) throw new Exception();
+            throw new Exception("Company ID does not match.");
         }
-        else
+
+        if (model.CompanyId == null)
         {
-        model.CompanyId = companyDeposit.CompanyId;
-            
+            model.CompanyId = companyDeposit.CompanyId;
+        }
+
+        var existingCompany = await _companyRepository.GetByIdAsync(model.CompanyId);
+        if (existingCompany != null)
+        {
+            throw new Exception("Company with the specified ID already exists.");
         }
 
         var sameTrackerId = await _paymentRequestRepository.GetBySpecAsync(new PaymentRequestByTrackerId(model.TrackerId));
         if (sameTrackerId != null)
-            throw new Exception();
+        {
+            throw new Exception("Payment request with the same Tracker ID already exists.");
+        }
+
 
     }
 }
