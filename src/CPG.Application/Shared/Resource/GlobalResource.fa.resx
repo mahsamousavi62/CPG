@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Active" xml:space="preserve">
+    <value>فعال</value>
+  </data>
+  <data name="Active/DeActive" xml:space="preserve">
+    <value>فعال/غیرفعال</value>
+  </data>
   <data name="ApplicationNotFound" xml:space="preserve">
     <value>برنامه با شناسه {0} یافت نشد</value>
   </data>
@@ -135,6 +141,9 @@
   <data name="Banks" xml:space="preserve">
     <value>بانک‌ها</value>
   </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>لغو</value>
+  </data>
   <data name="Companies" xml:space="preserve">
     <value>شرکت‌ها</value>
   </data>
@@ -146,6 +155,18 @@
   </data>
   <data name="Create" xml:space="preserve">
     <value>ایجاد</value>
+  </data>
+  <data name="CreateApplication" xml:space="preserve">
+    <value>ایجاد برنامه</value>
+  </data>
+  <data name="CreateCompany" xml:space="preserve">
+    <value>ایجاد شرکت</value>
+  </data>
+  <data name="CreationDate" xml:space="preserve">
+    <value>تاریخ و زمان ایجاد</value>
+  </data>
+  <data name="DeActive" xml:space="preserve">
+    <value>غیر فعال</value>
   </data>
   <data name="DirectDebit" xml:space="preserve">
     <value>برداشت مستقیم</value>
@@ -162,20 +183,50 @@
   <data name="Edit" xml:space="preserve">
     <value>ویرایش</value>
   </data>
+  <data name="EnglishName" xml:space="preserve">
+    <value>نام لاتین</value>
+  </data>
+  <data name="False" xml:space="preserve">
+    <value>غیر</value>
+  </data>
   <data name="Filter" xml:space="preserve">
     <value>فیلتر</value>
+  </data>
+  <data name="IbanPrefix" xml:space="preserve">
+    <value>شناسه شبا</value>
+  </data>
+  <data name="IdpClientIds" xml:space="preserve">
+    <value>شناسه(ها)</value>
   </data>
   <data name="InternetPaymentGateway" xml:space="preserve">
     <value>درگاه پرداخت اینترنتی</value>
   </data>
+  <data name="MethodTypes" xml:space="preserve">
+    <value>روش‌(های) برداشت</value>
+  </data>
+  <data name="ModificationDate" xml:space="preserve">
+    <value>تاریخ و زمان بروز رسانی</value>
+  </data>
+  <data name="NationalCodeMatchingRequied" xml:space="preserve">
+    <value>تطبیق کدملی</value>
+  </data>
+  <data name="NationalCodeMatchingRequiedWithCardNumber" xml:space="preserve">
+    <value>تطبیق کدملی پرداخت کننده با شماره کارت</value>
+  </data>
   <data name="PaymentReceipt" xml:space="preserve">
     <value>فیش واریزی</value>
+  </data>
+  <data name="PersianName" xml:space="preserve">
+    <value>نام فارسی</value>
   </data>
   <data name="ProviderNotFound" xml:space="preserve">
     <value>سرویس دهنده با شناسه {0} یافت نشد</value>
   </data>
   <data name="Providers" xml:space="preserve">
     <value>سرویس‌دهنده‌ها</value>
+  </data>
+  <data name="ResponseApiUrl" xml:space="preserve">
+    <value>نشانی API بازگردانی نتیجه</value>
   </data>
   <data name="Search" xml:space="preserve">
     <value>جستجو</value>
@@ -186,14 +237,26 @@
   <data name="SetDeActive" xml:space="preserve">
     <value>غیرفعال کردن</value>
   </data>
+  <data name="Submit" xml:space="preserve">
+    <value>تایید</value>
+  </data>
   <data name="Test" xml:space="preserve">
     <value>تست</value>
   </data>
   <data name="TitleMainMenu" xml:space="preserve">
     <value>تنظیمات پایه روش های برداشت/پرداخت کاریزما</value>
   </data>
+  <data name="True" xml:space="preserve">
+    <value>بله</value>
+  </data>
+  <data name="UploadApplicationLogo" xml:space="preserve">
+    <value>انتخاب فایل یا رها کردن فایل تصویر لوگوی شرکت</value>
+  </data>
+  <data name="UploadCompanyLogo" xml:space="preserve">
+    <value>انتخاب فایل یا رها کردن فایل تصویر لوگوی شرکت</value>
+  </data>
   <data name="Users" xml:space="preserve">
-    <value>کاربان</value>
+    <value>کاربران</value>
   </data>
   <data name="UsersNotFound" xml:space="preserve">
     <value>لیست کاربران نامعتبر می باشد</value>

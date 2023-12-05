@@ -7,6 +7,13 @@ variables:
 ##################################################################################################
 steps:
 - task: DotNetCoreCLI@2
+  displayName: Clean
+  inputs:
+    command: 'custom'
+    projects: '**/CPG.API.csproj'
+    custom: 'clean'
+##################################################################################################
+- task: DotNetCoreCLI@2
   displayName: Restore
   inputs:
     command: restore

@@ -10,10 +10,12 @@ public class CurrentUser(IHttpContextAccessor httpContextAccessor) : ICurrentUse
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
-    public long UserId => GetUserId();
+    public long UserId => 1;// GetUserId();
 
     private long GetUserId()
     {
+
+        return 1;
         var claims = _httpContextAccessor.HttpContext?.User.Claims 
                      ?? throw new ArgumentException("Cannot obtain UserId value from JWT token.");
 

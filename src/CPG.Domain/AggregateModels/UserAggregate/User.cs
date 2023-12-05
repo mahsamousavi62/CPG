@@ -87,9 +87,9 @@ namespace CPG.Domain.AggregateModels.UserAggregate
 
         public static void UpdateUserCompany(List<User> users, long companyId) => users.ForEach(user => { user.CompanyId = companyId; });
 
-        public static Task<string> GetUserName(long userId)
+        public static  Task<string> GetUserName(long userId)
         {
-            throw new NotImplementedException();
+            return Task.FromResult("CPG Test");
         }
     }
 }

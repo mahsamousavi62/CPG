@@ -1,6 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
-namespace CPG.API.Model;
+namespace CPG.Application.UseCases.Application.ViewModels;
 
 public class CreateApplicationModel
 {
