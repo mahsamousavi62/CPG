@@ -37,15 +37,9 @@ public class Application : AuditableEntity<long>, IAggregateRoot
         var application = new Application(persianName, englishName, logo, responseApiUrl);
         var applicationIdentifiers = ApplicationIdentifier.Create(details);
         application.ApplicationIdentifiers.AddRange(applicationIdentifiers);
-
-        application.CreationDate = DateTime.Now;
+        application.IsActive = true;        
 
         return application;
-    }
-
-    public void SetModificationData()
-    {
-        ModificationDate = DateTime.Now;
     }
 
     public void SetAsActive(long userId)
@@ -54,7 +48,6 @@ public class Application : AuditableEntity<long>, IAggregateRoot
             throw new ApplicationIsActiveException(Id);
 
         IsActive = true;
-        SetModificationData();
 
         AddDomainEvent(new ChangeApplicationStatusEvent(Id, IsActive, DateTime.Now));
     }
@@ -65,7 +58,6 @@ public class Application : AuditableEntity<long>, IAggregateRoot
             throw new ApplicationIsNotActiveException(Id);
 
         IsActive = false;
-        SetModificationData();
 
         AddDomainEvent(new ChangeApplicationStatusEvent(Id, IsActive, DateTime.Now));
     }

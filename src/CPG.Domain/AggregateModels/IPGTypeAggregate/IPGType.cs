@@ -27,7 +27,7 @@ public class IPGType : AuditableEntity<long>, IAggregateRoot
     public static IPGType Create(PersianName persianName, EnglishName englishName, Logo logo)
     {
         var provider = new IPGType(persianName, englishName, logo);
-        provider.CreationDate = DateTime.Now;
+        provider.IsActive = true;
         return provider;
     }
 }

@@ -1,10 +1,8 @@
-﻿using CPG.Domain.AggregateModels.BankAggregate;
-using CPG.Domain.AggregateModels.ProviderAggregate.Events;
+﻿using CPG.Domain.AggregateModels.ProviderAggregate.Events;
 using CPG.Domain.AggregateModels.ProviderAggregate.Exceptions;
 using CPG.Domain.SeedWork;
 using CPG.Domain.SharedKernel;
 using System;
-using System.Collections.Generic;
 using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Domain.AggregateModels.ProviderAggregate;
@@ -38,7 +36,7 @@ public class Provider : AuditableEntity<long>, IAggregateRoot
     public static Provider Create(PersianName persianName, EnglishName englishName, ProviderType providerType, Logo logo, string providerData)
     {
         var provider = new Provider(persianName, englishName, providerType, logo, providerData);
-        provider.CreationDate = DateTime.Now;
+        provider.IsActive = true;
         return provider;
     }
 
@@ -49,12 +47,6 @@ public class Provider : AuditableEntity<long>, IAggregateRoot
         _providerType = providerType;
         _providerData = providerData;
         _logo = logo.Value;
-        SetModificationData();
-    }
-
-    public void SetModificationData()
-    {
-        ModificationDate = DateTime.Now;
     }
 
     public void SetAsActive(long userId)
@@ -63,7 +55,6 @@ public class Provider : AuditableEntity<long>, IAggregateRoot
             throw new ProviderIsActiveException(Id);
 
         IsActive = true;
-        SetModificationData();
 
         AddDomainEvent(new ChangeProviderStatusEvent(Id, IsActive, DateTime.Now));
     }
@@ -74,7 +65,6 @@ public class Provider : AuditableEntity<long>, IAggregateRoot
             throw new ProviderIsNotActiveException(Id);
 
         IsActive = false;
-        SetModificationData();
 
         AddDomainEvent(new ChangeProviderStatusEvent(Id, IsActive, DateTime.Now));
     }
