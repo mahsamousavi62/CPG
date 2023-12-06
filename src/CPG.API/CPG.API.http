@@ -1,5 +1,6 @@
 ﻿@CPG.API_HostAddress = https://localhost:7050
 
-GET {{CPG.API_HostAddress}}/api/paymentrequest
-
+GET {{CPG.API_HostAddress}}/api/companydeposit/GetAll
 ###
+
+GET https://localhost:7050/api/companydeposit/GetAll

@@ -142,6 +142,15 @@ namespace CPG.Domain.AggregateModels.CompanyAggregate {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to تعداد کاراکتر نام  انگلیسی مجاز نمی باشد.
+        /// </summary>
+        internal static string Invalid_EnglishNameCharachterLimit {
+            get {
+                return ResourceManager.GetString("Invalid_EnglishNameCharachterLimit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to لوگو مجاز نمی باشد.
         /// </summary>
         internal static string Invalid_logo {
@@ -192,6 +201,15 @@ namespace CPG.Domain.AggregateModels.CompanyAggregate {
         internal static string Invalid_PersianName {
             get {
                 return ResourceManager.GetString("Invalid_PersianName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to تعداد کاراکتر نام  فارسی مجاز نمی باشد.
+        /// </summary>
+        internal static string Invalid_PersianNameCharachterLimit {
+            get {
+                return ResourceManager.GetString("Invalid_PersianNameCharachterLimit", resourceCulture);
             }
         }
         

@@ -17,7 +17,6 @@ namespace CPG.Infrastructure.Authorization
 
         public IAuthenticationSchemeProvider Schemes { get; set; }
 
-
         public async Task Invoke(HttpContext context)
         {
             if (context.User.Identity.IsAuthenticated)

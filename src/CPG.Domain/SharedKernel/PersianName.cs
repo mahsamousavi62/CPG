@@ -10,10 +10,11 @@ public class PersianName
     public string Value { get; init; }
     public PersianName(string persianName)
     {
-        Guard.Against.NullOrEmpty(persianName);
-
         if (string.IsNullOrWhiteSpace(persianName))
             throw new EmptyPersianNameException(persianName);
+
+        if (persianName.Length < 3 || persianName.Length > 255)
+            throw new InvalidPersianNameCharachterException(persianName);
 
         if (!Regex.IsMatch(persianName, "^[\\u0600-\\u06FF\\s]+$"))
             throw new InvalidPersianNameException(persianName);

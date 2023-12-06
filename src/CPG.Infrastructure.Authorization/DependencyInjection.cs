@@ -1,5 +1,7 @@
 ﻿using CPG.Application.Auth;
 using CPG.Application.UseCases.Common.Queries;
+using CPG.Domain.SharedKernel;
+using CPG.Domain.SharedKernel.ApplicationSettings;
 using CPG.Domain.SharedKernel.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -20,30 +22,25 @@ namespace CPG.Infrastructure.Authorization
                 services.AddAuthorization();
                 services.AddHttpContextAccessor();
                 services.AddTransient<IAuthService, JwtService>();
-
+                services.AddScoped<IAuthenticationService, AuthenticationService>();
                 var serviceProvider = services.BuildServiceProvider();
-                var mediator = serviceProvider.GetRequiredService<IMediator>();
-                var authenticationConfig = (mediator.Send(new GetAuthenticationAppSettingQuery())).GetAwaiter().GetResult();
+                var repository = serviceProvider.GetRequiredService<IApplicationSettingsRepository>();
+                var applicationConfigViewModel = repository.GetAllApplicationSettings().GetAwaiter().GetResult();
                 services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                   .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, configureOption =>
                   {
-
-                      configureOption.Authority = authenticationConfig.Authority;
-                      configureOption.Audience = authenticationConfig.ClientApiKey;
-
+                      configureOption.Authority = applicationConfigViewModel.Authority;
+                      configureOption.Audience = applicationConfigViewModel.ClientApiKey;
                       configureOption.TokenValidationParameters = new TokenValidationParameters
                       {
-                          ValidIssuer = authenticationConfig.Authority,
-                          ValidAudience = authenticationConfig.ClientApiKey,
-                          ValidateIssuer = authenticationConfig.ValidateIssuer,
-                          ValidateAudience = authenticationConfig.ValidateAudience,
-                          ValidateLifetime = authenticationConfig.ValidateLifetime,
-                          ClockSkew = TimeSpan.FromSeconds(Convert.ToInt32(authenticationConfig.ClockSkew)),
+                          ValidIssuer = applicationConfigViewModel.Authority,
+                          ValidAudience = applicationConfigViewModel.ClientApiKey,
+                          ValidateIssuer = applicationConfigViewModel.ValidateIssuer,
+                          ValidateAudience = applicationConfigViewModel.ValidateAudience,
+                          ValidateLifetime = applicationConfigViewModel.ValidateLifetime,
+                          ClockSkew = TimeSpan.FromSeconds(Convert.ToInt32(applicationConfigViewModel.ClockSkew)),
                       };
                   });
-
-                
-               
 
                 return services;
             }

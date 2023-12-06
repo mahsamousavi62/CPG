@@ -34,7 +34,7 @@ public static class DependencyInjection
         => services
             .AddDatabase(configuration)
             .AddGraphQLQueries()
-            .AddTokenAuthentication(configuration)
+            . AddTokenAuthentication(configuration)
             .AddTransient<ICurrentDateTime, CurrentDateTime>()
             .AddMasstransitInfrastructure(configuration)
             .AddScoped<IMinioProvider, MinioProvider>()

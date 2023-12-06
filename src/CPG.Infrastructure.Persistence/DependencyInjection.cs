@@ -18,6 +18,7 @@ using CPG.Infrastructure.Persistence.Redis;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Infrastructure.Persistence.Interceptors;
+using CPG.Domain.SharedKernel.ApplicationSettings;
 
 namespace CPG.Infrastructure.Persistence
 {
@@ -46,6 +47,7 @@ namespace CPG.Infrastructure.Persistence
                 .AddScoped(typeof(IAggregateRepository<>), typeof(AggregateRepository<>))
                 .AddScoped(typeof(IAggregateReadRepository<>), typeof(AggregateRepository<>))
                 .AddScoped(typeof(ICommonServiceRepository<>), typeof(CommonServiceRepository<>))
+                .AddScoped(typeof(IApplicationSettingsRepository), typeof(ApplicationSettingsRepository))
                 .AddScoped<IRedisCaheService, RedisCacheService>();
 
             _ = bool.TryParse(configuration["Redis:Enable"], out var enableRedis);

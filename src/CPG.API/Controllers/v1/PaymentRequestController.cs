@@ -17,13 +17,14 @@ namespace CPG.API.Controllers.v1
         {
             return Ok("Private!");
         }
-        
-        
+
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost]
         [ProducesResponseType(typeof(PaymentRequestViewModel),200)]
         public async Task<ActionResult<PaymentRequestViewModel>> PaymentRequest([FromBody]CreatePaymentRequestViewModel model)
