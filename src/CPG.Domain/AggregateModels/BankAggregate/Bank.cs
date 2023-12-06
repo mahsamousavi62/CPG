@@ -25,21 +25,14 @@ public class Bank : AuditableEntity<int>, IAggregateRoot
     public void Update(IbanPrefix ibanPrefix)
     {
         _ibanPrefix = ibanPrefix;
-        SetModificationData();
     }
-
-    public void SetModificationData()
-    {
-        ModificationDate = DateTime.Now;
-    }
-
+    
     public void SetAsActive()
     {
         if (IsActive == true)
             throw new BankIsActiveException(Id);
 
         IsActive = true;
-        SetModificationData();
 
         AddDomainEvent(new ChangeBankStatusEvent(Id, IsActive, DateTime.Now));
     }
@@ -50,7 +43,6 @@ public class Bank : AuditableEntity<int>, IAggregateRoot
             throw new BankIsNotActiveException(Id);
 
         IsActive = false;
-        SetModificationData();
 
         AddDomainEvent(new ChangeBankStatusEvent(Id, IsActive, DateTime.Now));
     }

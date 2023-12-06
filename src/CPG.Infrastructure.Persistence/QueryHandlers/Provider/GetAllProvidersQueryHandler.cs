@@ -33,4 +33,3 @@ public class GetAllProvidersQueryHandler(ReadDbContext context, IMinioProvider m
         })).ConfigureAwait(false);
     }
 }
-

@@ -261,4 +261,7 @@
   <data name="UsersNotFound" xml:space="preserve">
     <value>لیست کاربران نامعتبر می باشد</value>
   </data>
+  <data name="IPGTypeNotFound" xml:space="preserve">
+    <value>نوع درگاه با شناسه {0} یافت نشد </value>
+  </data>
 </root>

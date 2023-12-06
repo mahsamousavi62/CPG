@@ -2,7 +2,6 @@
 using CPG.Application.UseCases.Banks.Commands.UpdateBank;
 using CPG.Application.UseCases.Banks.Queries;
 using CPG.Application.UseCases.Banks.ViewModels;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CPG.API.Controllers;

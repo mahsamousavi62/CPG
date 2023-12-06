@@ -1,4 +1,8 @@
-﻿using AutoFixture;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using AutoFixture;
 using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Interfaces;
