@@ -29,8 +29,8 @@ public class WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator 
     public DbSet<Domain.AggregateModels.ApplicationAggregate.Application> Applications { get; set; }
     public DbSet<ApplicationIdentifier> ApplicationIdentifiers { get; set; }
     public DbSet<ApplicationCallbackUrl> ApplicationCallbackUrls { get; set; }
-
     public DbSet<IPGType> IPGTypes { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
         => modelBuilder
             .ApplyConfiguration(new ApplicationSettingsConfiguration())

@@ -1,5 +1,6 @@
 ﻿using CPG.Domain.AggregateModels.ApplicationAggregate.Exceptions;
 using CPG.Domain.SeedWork;
+using CPG.Domain.SharedKernel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +20,7 @@ public class ApplicationCallbackUrl : AuditableEntity<long>
         CallbackUrl = callbackUrl;
     }
 
-    public static List<ApplicationCallbackUrl> Create(string[] callbackUrlList)
+    public static List<ApplicationCallbackUrl> Create(Url[] callbackUrlList)
     {
         if (callbackUrlList == null || !callbackUrlList.Any())
             return null;
@@ -27,7 +28,7 @@ public class ApplicationCallbackUrl : AuditableEntity<long>
         if (callbackUrlList.Select(x => x).Distinct().Count() != callbackUrlList.Length)
             throw new DuplicateCallbackUrlException(string.Empty);
 
-        var applicationCallbackUrls = callbackUrlList.Select(i => new ApplicationCallbackUrl(i)).ToList();
+        var applicationCallbackUrls = callbackUrlList.Select(i => new ApplicationCallbackUrl(i.Value)).ToList();
         applicationCallbackUrls.ForEach(x => x.IsActive = true);
         return applicationCallbackUrls;
     }

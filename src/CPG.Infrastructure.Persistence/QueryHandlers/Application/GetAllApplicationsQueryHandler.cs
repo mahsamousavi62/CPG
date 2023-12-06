@@ -20,20 +20,22 @@ public class GetAllApplicationsQueryHandler(ReadDbContext context, IMinioProvide
     {
         var apps1 = await _context.ApplicationIdentifierReadModels.ToListAsync();
         var apps = await _context.ApplicationReadModels
-            .Include(m => m.ApplicationIdentifiers)
+            .Include(x => x.ApplicationIdentifiers)
+            .Include(x => x.ApplicationCallbackUrls)
             .ToListAsync(cancellationToken: cancellationToken);
 
-        return await Task.WhenAll(apps.Select(async company => new ApplicationViewModel
+        return await Task.WhenAll(apps.Select(async app => new ApplicationViewModel
         {
-            Id = company.Id,
-            PersianName = company.PersianName,
-            EnglishName = company.EnglishName,
-            Logo = await _minioProvider.PresignedGetObject(company.Logo),
-            CreationDate = company.CreationDate,
-            ModificationDate = company.ModificationDate,
-            IsActive = company.IsActive,
-            ResponseApiUrl = company.ResponseApiUrl,
-            IdpClientIds = company.ApplicationIdentifiers.ToDictionary(key => key.Id, value => value.IdpClientId)          
+            Id = app.Id,
+            PersianName = app.PersianName,
+            EnglishName = app.EnglishName,
+            Logo = await _minioProvider.PresignedGetObject(app.Logo),
+            CreationDate = app.CreationDate,
+            ModificationDate = app.ModificationDate,
+            IsActive = app.IsActive,
+            ResponseApiUrl = app.ResponseApiUrl,
+            IdpClientIds = app.ApplicationIdentifiers.ToDictionary(key => key.Id, value => value.IdpClientId),
+            CallbackUrls = app.ApplicationIdentifiers.ToDictionary(key => key.Id, value => value.IdpClientId)
         })).ConfigureAwait(false);        
     }
 }

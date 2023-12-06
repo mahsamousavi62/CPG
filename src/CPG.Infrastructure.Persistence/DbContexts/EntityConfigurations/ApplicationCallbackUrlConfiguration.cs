@@ -13,7 +13,7 @@ public class ApplicationCallbackUrlConfiguration : IEntityTypeConfiguration<Appl
 
         entity.Ignore(x => x.DomainEvents);
         entity.Property(x => x.Id).HasColumnName("Id").UseIdentityColumn();
-        entity.Property(x => x.CallbackUrl).HasColumnName("CallbackUrl").HasColumnType("varchar").HasMaxLength(512).IsRequired();
+        entity.Property(x => x.CallbackUrl).HasColumnName("CallbackUrl").HasColumnType("varchar").HasMaxLength(2048).IsRequired();
         entity.Property(x => x.ApplicationId).IsRequired();
     }
 }

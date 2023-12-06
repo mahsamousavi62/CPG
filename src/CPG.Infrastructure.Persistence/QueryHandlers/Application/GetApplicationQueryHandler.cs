@@ -37,7 +37,8 @@ public class GetApplicationQueryHandler(ReadDbContext context, IMinioProvider mi
             ModificationDate = app.ModificationDate,
             IsActive = app.IsActive,
             ResponseApiUrl = app.ResponseApiUrl,
-            IdpClientIds = app.ApplicationIdentifiers.ToDictionary(key => key.Id, value => value.IdpClientId)
+            IdpClientIds = app.ApplicationIdentifiers.ToDictionary(key => key.Id, value => value.IdpClientId),
+            CallbackUrls = app.ApplicationCallbackUrls.ToDictionary(key => key.Id, value => value.CallbackUrl)
         };
 
         return appModel;

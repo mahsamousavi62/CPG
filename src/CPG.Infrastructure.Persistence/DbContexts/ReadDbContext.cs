@@ -41,7 +41,7 @@ public class ReadDbContext(DbContextOptions<ReadDbContext> options) : DbContext(
             .ApplyConfiguration(new ApplicationReadModelConfiguration())
             .ApplyConfiguration(new ApplicationIdentifierReadModelConfiguration())
             .ApplyConfiguration(new ApplicationCallbackUrlReadModelConfiguration())
+            .ApplyConfiguration(new IPGTypeReadModelConfiguration())
             ;
-            .ApplyConfiguration(new IPGTypeReadModelConfiguration());
     }
 }

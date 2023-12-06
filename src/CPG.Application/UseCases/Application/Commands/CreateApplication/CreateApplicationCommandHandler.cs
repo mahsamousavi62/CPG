@@ -10,12 +10,13 @@ using CPG.Domain.AggregateModels.ApplicationAggregate;
 using Ardalis.Specification;
 using CPG.Domain.AggregateModels.ApplicationAggregate.Exceptions;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace CPG.Application.UseCases.Applications.Commands.CreateApplication;
 
 internal class CreateApplicationCommandHandler(IAggregateRepository<Domain.AggregateModels.ApplicationAggregate.Application> applicationRepository,
                                                IReadRepository<ApplicationIdentifier> identifierRepository,
-                                               IMinioProvider minioProvider) 
+                                               IMinioProvider minioProvider)
     : IRequestHandler<CreateApplicationCommand, long>
 {
     private readonly IAggregateRepository<Domain.AggregateModels.ApplicationAggregate.Application> _applicationRepository = applicationRepository;
@@ -34,16 +35,19 @@ internal class CreateApplicationCommandHandler(IAggregateRepository<Domain.Aggre
         {
             throw new DuplicateEnglishNameException(request.Model.EnglishName);
         }
-        var idpClientIds = await _identifierRepository.ListAsync(new ApplicationIdentifierContainsIdpClientId(request.Model.IdpClientIds));
-        if (idpClientIds != null || idpClientIds.Count != 0)
-        {
-            throw new DuplicateIdpClientIdsException(string.Join('-', idpClientIds.Select(t => t.IdpClientId)));
-        }
+        //var idpClientIds = await _identifierRepository.ListAsync(new ApplicationIdentifierContainsIdpClientId(request.Model.IdpClientIds));
+        //if (idpClientIds != null || idpClientIds.Count != 0)
+        //{
+        //    throw new DuplicateIdpClientIdsException(string.Join('-', idpClientIds.Select(t => t.IdpClientId)));
+        //}
+        
         PersianName persianName = new(request.Model.PersianName);
         EnglishName englishName = new(request.Model.EnglishName);
         Logo logo = new(request.Model.File, Enums.UploadFromEntityType.Application.ToString(), _minioProvider);
+        Url responseUrl = new(request.Model.ResponseApiUrl);
+        var urls = request.Model.CallbackUrls.Select(t => new Url(t)).ToArray();
 
-        var application = Domain.AggregateModels.ApplicationAggregate.Application.Create(persianName, englishName, request.Model.ResponseApiUrl, logo, request.Model.IdpClientIds, request.Model.CallbackUrls);
+        var application = Domain.AggregateModels.ApplicationAggregate.Application.Create(persianName, englishName, responseUrl, logo, request.Model.IdpClientIds, urls);
 
         await _applicationRepository.AddAsync(application, cancellationToken);
         await _applicationRepository.SaveChangesAsync(cancellationToken);
