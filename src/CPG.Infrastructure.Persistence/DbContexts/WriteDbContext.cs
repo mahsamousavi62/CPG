@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using CPG.Application.UseCases.CompanyDeposits;
 using CPG.Domain.AggregateModels.BankAggregate;
 using CPG.Domain.AggregateModels.CompanyAggregate;
-using CPG.Domain.AggregateModels.ProviderAggregate;
+using CPG.Domain.AggregateModels.IPGTypeAggregate;
 using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Domain.SharedKernel.ApplicationSettings;
 using CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations;
@@ -11,6 +11,7 @@ using CPG.Infrastructure.Persistence.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using CPG.Domain.AggregateModels.ApplicationAggregate;
+using CPG.Domain.AggregateModels.ProviderAggregate;
 
 namespace CPG.Infrastructure.Persistence.DbContexts;
 
@@ -29,6 +30,7 @@ public class WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator 
     public DbSet<ApplicationIdentifier> ApplicationIdentifiers { get; set; }
     public DbSet<ApplicationCallbackUrl> ApplicationCallbackUrls { get; set; }
 
+    public DbSet<IPGType> IPGTypes { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
         => modelBuilder
             .ApplyConfiguration(new ApplicationSettingsConfiguration())
@@ -39,8 +41,9 @@ public class WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator 
             .ApplyConfiguration(new BankConfiguration())
             .ApplyConfiguration(new ProviderConfiguration())
             .ApplyConfiguration(new CompanyDepositConfiguration())
-        //.ApplyConfiguration(new CompanyIPGConfiguration())
-        //.ApplyConfiguration(new CompanyIPGDepositConfiguration())
+            .ApplyConfiguration(new IPGTypeConfiguration())
+            //.ApplyConfiguration(new CompanyIPGConfiguration())
+            //.ApplyConfiguration(new CompanyIPGDepositConfiguration())
             .ApplyConfiguration(new ApplicationConfiguration())
             .ApplyConfiguration(new ApplicationIdentifierConfiguration())
             .ApplyConfiguration(new ApplicationCallbackUrlConfiguration())

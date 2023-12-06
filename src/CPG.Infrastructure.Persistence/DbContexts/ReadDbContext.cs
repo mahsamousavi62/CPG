@@ -24,6 +24,8 @@ public class ReadDbContext(DbContextOptions<ReadDbContext> options) : DbContext(
 
     public IQueryable<ApplicationIdentifierReadModel> ApplicationIdentifierReadModels => Set<ApplicationIdentifierReadModel>().AsNoTracking();
 
+    public IQueryable<IPGTypeReadModel> IPGTypeReadModels => Set<IPGTypeReadModel>().AsNoTracking();
+
     public IQueryable<ApplicationCallbackUrlReadModel> ApplicationCallbackUrlReadModels => Set<ApplicationCallbackUrlReadModel>().AsNoTracking();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -40,5 +42,6 @@ public class ReadDbContext(DbContextOptions<ReadDbContext> options) : DbContext(
             .ApplyConfiguration(new ApplicationIdentifierReadModelConfiguration())
             .ApplyConfiguration(new ApplicationCallbackUrlReadModelConfiguration())
             ;
+            .ApplyConfiguration(new IPGTypeReadModelConfiguration());
     }
 }

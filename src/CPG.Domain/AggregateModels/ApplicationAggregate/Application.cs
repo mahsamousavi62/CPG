@@ -46,6 +46,7 @@ public class Application : AuditableEntity<long>, IAggregateRoot
             var applicationCallbackUrls = ApplicationCallbackUrl.Create(callbackUrls);
             application.ApplicationCallbackUrls.AddRange(applicationCallbackUrls);
         }
+        application.IsActive = true;        
 
         return application;
     }
@@ -55,7 +56,7 @@ public class Application : AuditableEntity<long>, IAggregateRoot
         if (IsActive == true)
             throw new ApplicationIsActiveException(Id);
 
-        IsActive = true;        
+        IsActive = true;
 
         AddDomainEvent(new ChangeApplicationStatusEvent(Id, IsActive, DateTime.Now));
     }

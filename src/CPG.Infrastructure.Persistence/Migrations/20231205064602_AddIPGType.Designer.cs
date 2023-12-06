@@ -4,6 +4,7 @@ using CPG.Infrastructure.Persistence.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CPG.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(WriteDbContext))]
-    partial class WriteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231205064602_AddIPGType")]
+    partial class AddIPGType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -133,46 +136,6 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.ToTable("Application", (string)null);
                 });
 
-            modelBuilder.Entity("CPG.Domain.AggregateModels.ApplicationAggregate.ApplicationCallbackUrl", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("Id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<long>("ApplicationId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("CallbackUrl")
-                        .IsRequired()
-                        .HasMaxLength(512)
-                        .HasColumnType("varchar")
-                        .HasColumnName("CallbackUrl");
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("CreationUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("ModificationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("ModificationUserId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ApplicationId");
-
-                    b.ToTable("ApplicationCallbackUrl", (string)null);
-                });
-
             modelBuilder.Entity("CPG.Domain.AggregateModels.ApplicationAggregate.ApplicationIdentifier", b =>
                 {
                     b.Property<long>("Id")
@@ -193,9 +156,7 @@ namespace CPG.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("IdpClientId")
                         .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("varchar")
-                        .HasColumnName("IdpClientId");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -606,17 +567,6 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.Navigation("Company");
                 });
 
-            modelBuilder.Entity("CPG.Domain.AggregateModels.ApplicationAggregate.ApplicationCallbackUrl", b =>
-                {
-                    b.HasOne("CPG.Domain.AggregateModels.ApplicationAggregate.Application", "Application")
-                        .WithMany("ApplicationCallbackUrls")
-                        .HasForeignKey("ApplicationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Application");
-                });
-
             modelBuilder.Entity("CPG.Domain.AggregateModels.ApplicationAggregate.ApplicationIdentifier", b =>
                 {
                     b.HasOne("CPG.Domain.AggregateModels.ApplicationAggregate.Application", "Application")
@@ -683,8 +633,6 @@ namespace CPG.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("CPG.Domain.AggregateModels.ApplicationAggregate.Application", b =>
                 {
-                    b.Navigation("ApplicationCallbackUrls");
-
                     b.Navigation("ApplicationIdentifiers");
                 });
 
