@@ -14,6 +14,6 @@ public class ApplicationIdentifierConfiguration : IEntityTypeConfiguration<Appli
         entity.Ignore(x => x.DomainEvents);
         entity.Property(x => x.Id).HasColumnName("Id").UseIdentityColumn();
         entity.Property(x => x.ApplicationId).IsRequired();
-        entity.Property(x => x.IdpClientId).IsRequired();
+        entity.Property(x => x.IdpClientId).HasColumnName("IdpClientId").HasColumnType("varchar").HasMaxLength(128).IsRequired();
     }
 }

@@ -4,6 +4,7 @@ using CPG.Domain.SeedWork;
 using CPG.Domain.SharedKernel;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CPG.Domain.AggregateModels.ApplicationAggregate;
 
@@ -31,41 +32,40 @@ public class Application : AuditableEntity<long>, IAggregateRoot
     public string Logo => _logo;
     public string ResponseApiUrl => _responseApiUrl;
     public List<ApplicationIdentifier> ApplicationIdentifiers { get; set; } = [];
+    public List<ApplicationCallbackUrl> ApplicationCallbackUrls { get; set; } = [];
 
-    public static Application Create(PersianName persianName, EnglishName englishName, string responseApiUrl, Logo logo, string[] details)
+    public static Application Create(PersianName persianName, EnglishName englishName, string responseApiUrl, Logo logo, string[] details, string[] callbackUrls)
     {
         var application = new Application(persianName, englishName, logo, responseApiUrl);
+
         var applicationIdentifiers = ApplicationIdentifier.Create(details);
         application.ApplicationIdentifiers.AddRange(applicationIdentifiers);
 
-        application.CreationDate = DateTime.Now;
+        if (callbackUrls?.Any() is true)
+        {
+            var applicationCallbackUrls = ApplicationCallbackUrl.Create(callbackUrls);
+            application.ApplicationCallbackUrls.AddRange(applicationCallbackUrls);
+        }
 
         return application;
     }
 
-    public void SetModificationData()
-    {
-        ModificationDate = DateTime.Now;
-    }
-
-    public void SetAsActive(long userId)
+    public void SetAsActive()
     {
         if (IsActive == true)
             throw new ApplicationIsActiveException(Id);
 
-        IsActive = true;
-        SetModificationData();
+        IsActive = true;        
 
         AddDomainEvent(new ChangeApplicationStatusEvent(Id, IsActive, DateTime.Now));
     }
 
-    public void SetAsInactive(long userId)
+    public void SetAsInactive()
     {
         if (IsActive == false)
             throw new ApplicationIsNotActiveException(Id);
 
         IsActive = false;
-        SetModificationData();
 
         AddDomainEvent(new ChangeApplicationStatusEvent(Id, IsActive, DateTime.Now));
     }

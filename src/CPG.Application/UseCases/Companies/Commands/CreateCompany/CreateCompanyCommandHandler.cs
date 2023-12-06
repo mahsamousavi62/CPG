@@ -34,7 +34,7 @@ public class CreateCompanyCommandHandler(IAggregateRepository<Company> companyRe
             var spec = new UserByUserIdsSpec(request.Model.Users);
             var users = await userRepository.ListAsync(spec, cancellationToken);
 
-            if (users.Count == 0)
+            if (users == null || users.Count == 0)
                 throw new UsersNotFoundException();
 
             var company = Company.Create(persianName, englishName,

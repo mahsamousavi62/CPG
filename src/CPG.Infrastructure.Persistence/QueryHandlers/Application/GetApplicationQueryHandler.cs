@@ -19,6 +19,7 @@ public class GetApplicationQueryHandler(ReadDbContext context, IMinioProvider mi
 
     public async Task<ApplicationViewModel> Handle(GetApplicationQuery request, CancellationToken cancellationToken)
     {
+        var apps = await _context.ApplicationIdentifierReadModels.ToListAsync();
         Guard.Against.NegativeOrZero(request.AppId, nameof(request.AppId));
 
         var app = await _context.ApplicationReadModels.FirstOrDefaultAsync(t => t.Id == request.AppId);

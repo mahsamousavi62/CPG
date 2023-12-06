@@ -18,6 +18,7 @@ using CPG.Infrastructure.Persistence.Redis;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Infrastructure.Persistence.Interceptors;
+using Ardalis.Specification;
 
 namespace CPG.Infrastructure.Persistence
 {
@@ -45,6 +46,7 @@ namespace CPG.Infrastructure.Persistence
                 })
                 .AddScoped(typeof(IAggregateRepository<>), typeof(AggregateRepository<>))
                 .AddScoped(typeof(IAggregateReadRepository<>), typeof(AggregateRepository<>))
+                .AddScoped(typeof(IReadRepository<>), typeof(ReadRepository<>))
                 .AddScoped(typeof(ICommonServiceRepository<>), typeof(CommonServiceRepository<>))
                 .AddScoped<IRedisCaheService, RedisCacheService>();
 
