@@ -273,6 +273,42 @@
   <data name="Validation_Required" xml:space="preserve">
     <value>فیلد {0} الزامی می باشد</value>
   </data>
+  <data name="AccountNumber" xml:space="preserve">
+    <value>شماره حساب</value>
+  </data>
+  <data name="BankName" xml:space="preserve">
+    <value>بانک</value>
+  </data>
+  <data name="CreateDeposit" xml:space="preserve">
+    <value>ایجاد حساب</value>
+  </data>
+  <data name="CreateDepositCompanyFor" xml:space="preserve">
+    <value>ایجاد حساب بانکی برای</value>
+  </data>
+  <data name="Deposits" xml:space="preserve">
+    <value>حساب‌ها</value>
+  </data>
+  <data name="Iban" xml:space="preserve">
+    <value>شبا</value>
+  </data>
+  <data name="IPGs" xml:space="preserve">
+    <value>درگاه‌های پرداخت</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>نام</value>
+  </data>
+  <data name="Validation_IBan" xml:space="preserve">
+    <value>شبا نامعتبر است</value>
+  </data>
+
+
+  <data name="PaymentRequestRequiredData" xml:space="preserve">
+    <value>شرکت یا شبای مقصد را وارد کنید</value>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value />
+  </data>
+
   <data name="PaymentRequestRequiredData" xml:space="preserve">
     <value>شرکت یا شبای مقصد را وارد کنید</value>
   </data>
