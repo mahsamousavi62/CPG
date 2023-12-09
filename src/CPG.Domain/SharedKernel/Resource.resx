@@ -117,19 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ApplicationIsAlreadyActive" xml:space="preserve">
-    <value>برنامه با شناسه {0} فعال می باشد</value>
+  <data name="InvalidUrlCharacterLimit" xml:space="preserve">
+    <value>تعداد کاراکتر آدرس '{0}' در محدوده مجاز نمی باشد</value>
   </data>
-  <data name="ApplicationIsAlreadyNotActive" xml:space="preserve">
-    <value>برنامه با شناسه {0} غیرفعال می باشد</value>
-  </data>
-  <data name="Duplicate_CallbackUrl" xml:space="preserve">
-    <value>نشانی بازگشتی تکراری است</value>
-  </data>
-  <data name="Duplicate_IdpClientId" xml:space="preserve">
-    <value>شناسه Idp تکراری است</value>
-  </data>
-  <data name="Duplicate_IdpClientIds" xml:space="preserve">
-    <value>شناسه یا شناسه های {0} قبلا ثبت شده است</value>
+  <data name="InvalidUrlFormat" xml:space="preserve">
+    <value>فرمت آدرس '{0}' معتبر نمی باشد</value>
   </data>
 </root>

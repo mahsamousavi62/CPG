@@ -27,7 +27,7 @@ public class ApplicationController : ApiBaseController
     [HttpPost]
     public async Task<IActionResult> CreateApplication([FromForm] CreateApplicationModel model)
     {
-        CreateApplicationViewModel createApplicationViewModel = new(model.PersianName, model.EnglishName, model.ResponseApiUrl, model.IdpClientIds, new FormFileProxy(model.File));
+        CreateApplicationViewModel createApplicationViewModel = new(model.PersianName, model.EnglishName, model.ResponseApiUrl, model.IdpClientIds, model.CallbackUrls, new FormFileProxy(model.File));
 
         var ApplicationId = await Mediator.Send(new CreateApplicationCommand(createApplicationViewModel));
 

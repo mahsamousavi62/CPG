@@ -8,10 +8,9 @@ using System.Threading.Tasks;
 
 namespace CPG.Application.UseCases.Applications.Commands.ActivateApplication;
 
-public class ActivateApplicationCommandHandler(IAggregateRepository<Domain.AggregateModels.ApplicationAggregate.Application> ApplicationRepository, ICurrentUser currentUser) : IRequestHandler<ActivateApplicationCommand>
+public class ActivateApplicationCommandHandler(IAggregateRepository<Domain.AggregateModels.ApplicationAggregate.Application> ApplicationRepository) : IRequestHandler<ActivateApplicationCommand>
 {
     private readonly IAggregateRepository<Domain.AggregateModels.ApplicationAggregate.Application> _ApplicationRepository = ApplicationRepository;
-    private readonly ICurrentUser _currentUser = currentUser;
 
     public async Task Handle(ActivateApplicationCommand command, CancellationToken cancellationToken)
     {
@@ -19,9 +18,9 @@ public class ActivateApplicationCommandHandler(IAggregateRepository<Domain.Aggre
                    ?? throw new ApplicationNotFoundException(command.ApplicationId);
 
         if (command.IsActive)
-            bank.SetAsActive(_currentUser.UserId);
+            bank.SetAsActive();
         else
-            bank.SetAsInactive(_currentUser.UserId);
+            bank.SetAsInactive();
 
         await _ApplicationRepository.SaveChangesAsync(cancellationToken);
     }

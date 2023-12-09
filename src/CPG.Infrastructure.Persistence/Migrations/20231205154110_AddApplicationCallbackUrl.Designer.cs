@@ -4,6 +4,7 @@ using CPG.Infrastructure.Persistence.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CPG.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(WriteDbContext))]
-    partial class WriteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231205154110_AddApplicationCallbackUrl")]
+    partial class AddApplicationCallbackUrl
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -341,52 +344,6 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.HasIndex("CompanyId");
 
                     b.ToTable("CompanyPaymentMethods", (string)null);
-                });
-
-            modelBuilder.Entity("CPG.Domain.AggregateModels.IPGTypeAggregate.IPGType", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("Id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("CreationUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("EnglishName")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("varchar")
-                        .HasColumnName("EnglishName");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Logo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Logo");
-
-                    b.Property<DateTime?>("ModificationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("ModificationUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("PersianName")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar")
-                        .HasColumnName("PersianName");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("IPGType", (string)null);
                 });
 
             modelBuilder.Entity("CPG.Domain.AggregateModels.ProviderAggregate.Provider", b =>
