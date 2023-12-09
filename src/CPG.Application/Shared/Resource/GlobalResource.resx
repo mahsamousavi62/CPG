@@ -267,4 +267,31 @@
   <data name="Validation_Required" xml:space="preserve">
     <value>Validation_Required</value>
   </data>
+  <data name="AccountNumber" xml:space="preserve">
+    <value>AccountNumber</value>
+  </data>
+  <data name="BankName" xml:space="preserve">
+    <value>BankName</value>
+  </data>
+  <data name="CreateDeposit" xml:space="preserve">
+    <value>CreateDeposit</value>
+  </data>
+  <data name="CreateDepositCompanyFor" xml:space="preserve">
+    <value>CreateDepositCompanyFor</value>
+  </data>
+  <data name="Deposits" xml:space="preserve">
+    <value>Deposits</value>
+  </data>
+  <data name="Iban" xml:space="preserve">
+    <value>Iban</value>
+  </data>
+  <data name="IPGs" xml:space="preserve">
+    <value>IPGs</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Validation_IBan" xml:space="preserve">
+    <value>Validation_IBan</value>
+  </data>
 </root>
