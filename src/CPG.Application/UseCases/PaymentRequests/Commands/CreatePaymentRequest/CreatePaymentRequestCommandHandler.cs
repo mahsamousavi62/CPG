@@ -1,6 +1,8 @@
 ﻿using Ardalis.GuardClauses;
 using CPG.Application.UseCases.CompanyDeposits;
 using CPG.Application.UseCases.PaymentRequests.ViewModels;
+using CPG.Domain.AggregateModels.ApplicationAggregate;
+using CPG.Domain.AggregateModels.ApplicationAggregate.Specifications;
 using CPG.Domain.AggregateModels.BankAggregate;
 using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Domain.AggregateModels.CompanyDepositAggregate.Specifications;
@@ -12,6 +14,7 @@ using CPG.Domain.SharedKernel.ApplicationSettings;
 using Mapster;
 using MediatR;
 using System;
+using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,25 +22,33 @@ namespace CPG.Application.UseCases.PaymentRequests.Commands.CreatePaymentRequest
 
 public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequest> paymentRequestRepository,
     IAggregateRepository<CompanyDeposit> companyDepositRepository, IAggregateRepository<Company> companyRepository,
-   IApplicationSettingsRepository applicationSettingsRepository, IAuthenticationService authenticationService) : IRequestHandler<CreatePaymentRequestCommand, PaymentRequestViewModel>
+   IApplicationSettingsRepository applicationSettingsRepository, IAuthenticationService authenticationService,
+    IAggregateRepository<CPG.Domain.AggregateModels.ApplicationAggregate.Application> applicationRepository) : IRequestHandler<CreatePaymentRequestCommand, PaymentRequestViewModel>
 {
+
     private readonly IAggregateRepository<PaymentRequest> _paymentRequestRepository = paymentRequestRepository;
     private readonly IAggregateRepository<CompanyDeposit> _companyDepositRepository = companyDepositRepository;
     private readonly IAggregateRepository<Company> _companyRepository = companyRepository;
     private readonly IApplicationSettingsRepository _applicationSettingsRepository = applicationSettingsRepository;
     private readonly IAuthenticationService _authenticationService = authenticationService;
+    private readonly IAggregateRepository<Domain.AggregateModels.ApplicationAggregate.Application> _applicationRepository = applicationRepository;
 
     public async Task<PaymentRequestViewModel> Handle(CreatePaymentRequestCommand request, CancellationToken cancellationToken)
     {
+        if (request.Model.CompanyId==0 || string.IsNullOrEmpty(request.Model.DestinationIban))
+            throw new Exception("شرکت یا شبای مقصد را وارد کنید");
+        
+        
         var config = await _applicationSettingsRepository.GetAllApplicationSettings();
         var clientId = await _authenticationService.GetClientId(config.Authority);
 
-
+        var application = await _applicationRepository.GetBySpecAsync(new ApplicationByIdpClientId(clientId));
+        if (application == null) { throw new Exception("application not found"); }
 
         await Validate(request.Model);
         PaymentRequest paymentRequest = MapModel(request.Model);
-
-        PaymentRequest.Create(paymentRequest, config.ExpireTime);
+        paymentRequest.ApplicationId = application.Id;
+        PaymentRequest.Create(paymentRequest, config.ExpireTime, clientId, application.EnglishName);
         await _paymentRequestRepository.AddAsync(paymentRequest);
         await _paymentRequestRepository.SaveChangesAsync();
 
@@ -53,17 +64,11 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
     private PaymentRequest MapModel(CreatePaymentRequestViewModel model)
     {
         TypeAdapterConfig<CreatePaymentRequestViewModel, PaymentRequest>.NewConfig();
-
-        var paymentRequest = model.Adapt<PaymentRequest>();
-
-        return paymentRequest;
+        return model.Adapt<PaymentRequest>();
     }
 
     private async Task Validate(CreatePaymentRequestViewModel model)
     {
-
-       
-
 
         //TODO:check applicationId
         //TODO:check callbackUrl

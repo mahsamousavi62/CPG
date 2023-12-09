@@ -31,6 +31,7 @@ public class Application : AuditableEntity<long>, IAggregateRoot
     public string Logo => _logo;
     public string ResponseApiUrl => _responseApiUrl;
     public List<ApplicationIdentifier> ApplicationIdentifiers { get; set; } = [];
+    public List<PaymentRequest> PaymentRequests { get; set; } = [];
 
     public static Application Create(PersianName persianName, EnglishName englishName, string responseApiUrl, Logo logo, string[] details)
     {

@@ -1,25 +1,29 @@
 ﻿using System;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
+using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Interfaces;
 using Microsoft.AspNetCore.Http;
 
 namespace CPG.Infrastructure.Authorization;
 
-public class CurrentUser(IHttpContextAccessor httpContextAccessor) : ICurrentUser
+public class CurrentUser(IHttpContextAccessor httpContextAccessor, IAuthenticationService authenticationService) : ICurrentUser
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+    private readonly IAuthenticationService _authenticationService = authenticationService;
 
-    public long UserId => 1;// GetUserId();
+    public long UserId => GetUserId();
 
     private long GetUserId()
     {
-
-        return 1;
-        var claims = _httpContextAccessor.HttpContext?.User.Claims 
+       // var subid = await _authenticationService.GetDataFromClaim<string>("sub");
+        //return 1;
+        //TODO: select userid from user where idpuserid=sub
+        var claims = _httpContextAccessor.HttpContext?.User.Claims
                      ?? throw new ArgumentException("Cannot obtain UserId value from JWT token.");
 
-        var userId = claims.SingleOrDefault(x => x.Type == ClaimTypes.Sid)?.Value 
+        var userId = claims.SingleOrDefault(x => x.Type == ClaimTypes.Sid)?.Value
                ?? throw new ArgumentException("Cannot obtain UserId value from JWT token.");
 
         return long.Parse(userId);

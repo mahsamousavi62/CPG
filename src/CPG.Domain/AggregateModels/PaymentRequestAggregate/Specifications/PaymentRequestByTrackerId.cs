@@ -1,11 +1,5 @@
 ﻿using Ardalis.Specification;
-using CPG.Application.UseCases.CompanyDeposits;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CPG.Domain.AggregateModels.PaymentRequestAggregate.Specifications
 {

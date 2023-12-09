@@ -14,4 +14,5 @@ public class ApplicationReadModel
     public DateTime CreationDate { get; set; }
     public DateTime? ModificationDate { get; set; }
     public ICollection<ApplicationIdentifierReadModel> ApplicationIdentifiers { get; set; }
+    public ICollection<PaymentRequestReadModel> PaymentRequests{ get; set; }
 }

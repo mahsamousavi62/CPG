@@ -17,7 +17,7 @@
         public int ExpireTime { get; set; }
         public string Minio_AccessKey { get; set; }
         public string Minio_SecretKey { get; set; }
-        public string Minio_WithSSL { get; set; }
+        public bool Minio_WithSSL { get; set; }
         public string Minio_EndPoint { get; set; }
 
     }

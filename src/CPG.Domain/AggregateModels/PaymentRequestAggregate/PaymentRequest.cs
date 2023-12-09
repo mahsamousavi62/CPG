@@ -46,13 +46,17 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
     public Application Application { get; set; }
     public Company Company { get; set; }
 
-    public static PaymentRequest Create(PaymentRequest paymentRequest, int expireTime)
+    public static PaymentRequest Create(PaymentRequest paymentRequest, int expireTime,string clientId, string applicationEnglishName)
     {
         paymentRequest.UrlExpirationDateTime = DateTime.UtcNow.AddMinutes(expireTime);
         paymentRequest.IsActive = true;
-        string hexString = System.Guid.NewGuid().ToString("N");
+        string hexString = Guid.NewGuid().ToString("N");
         string randomString = hexString.Substring(0, 16);
-        paymentRequest.Code = randomString;
+        paymentRequest.Code = $"{applicationEnglishName}_{clientId}_{randomString}";
+        paymentRequest.Status = 0;
+        paymentRequest.IsVerified = false;
+        paymentRequest.IsActive = true;
+        paymentRequest.IsUsed = false;
         return paymentRequest;
     }
 

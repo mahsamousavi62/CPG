@@ -29,6 +29,8 @@ public class WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator 
     public DbSet<Domain.AggregateModels.ApplicationAggregate.Application> Applications { get; set; }
     public DbSet<ApplicationIdentifier> ApplicationIdentifiers { get; set; }
     public DbSet<IPGType> IPGTypes { get; set; }
+    public DbSet<PaymentRequest> PaymentRequests { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
         => modelBuilder
             .ApplyConfiguration(new ApplicationSettingsConfiguration())
@@ -44,6 +46,7 @@ public class WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator 
             //.ApplyConfiguration(new CompanyIPGDepositConfiguration())
             .ApplyConfiguration(new ApplicationConfiguration())
             .ApplyConfiguration(new ApplicationIdentifierConfiguration())
+            .ApplyConfiguration(new PaymentRequestConfiguration())
         ;
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())

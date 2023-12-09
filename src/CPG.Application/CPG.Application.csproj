@@ -3,8 +3,11 @@
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="UseCases\Application\**" />
     <Compile Remove="UseCases\PaymentRequest\**" />
+    <EmbeddedResource Remove="UseCases\Application\**" />
     <EmbeddedResource Remove="UseCases\PaymentRequest\**" />
+    <None Remove="UseCases\Application\**" />
     <None Remove="UseCases\PaymentRequest\**" />
   </ItemGroup>
   <ItemGroup>
@@ -43,7 +46,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="UseCases\Application\EventHandlers\" />
     <Folder Include="UseCases\Banks\EventHandlers\" />
     <Folder Include="UseCases\Common\Commands\" />
     <Folder Include="UseCases\CompanyIPG\Commands\CreateCompanyIPG\" />
