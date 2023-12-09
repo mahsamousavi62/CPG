@@ -23,6 +23,10 @@ public class ApplicationReadModelConfiguration : IEntityTypeConfiguration<Applic
                  .WithOne(x => x.Application)
                  .HasForeignKey(x => x.ApplicationId);
 
+        readModel.HasMany(x => x.ApplicationCallbackUrls)
+                 .WithOne(x => x.Application)
+                 .HasForeignKey(x => x.ApplicationId);
+
         readModel
        .HasMany(c => c.PaymentRequests)
        .WithOne(p => p.Application)

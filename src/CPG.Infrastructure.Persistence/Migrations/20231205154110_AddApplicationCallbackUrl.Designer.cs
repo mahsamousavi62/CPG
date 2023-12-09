@@ -4,6 +4,7 @@ using CPG.Infrastructure.Persistence.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CPG.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(WriteDbContext))]
-    partial class WriteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231205154110_AddApplicationCallbackUrl")]
+    partial class AddApplicationCallbackUrl
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -343,52 +346,6 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.ToTable("CompanyPaymentMethods", (string)null);
                 });
 
-            modelBuilder.Entity("CPG.Domain.AggregateModels.IPGTypeAggregate.IPGType", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("Id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("CreationUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("EnglishName")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("varchar")
-                        .HasColumnName("EnglishName");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Logo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Logo");
-
-                    b.Property<DateTime?>("ModificationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("ModificationUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("PersianName")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar")
-                        .HasColumnName("PersianName");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("IPGType", (string)null);
-                });
-
             modelBuilder.Entity("CPG.Domain.AggregateModels.ProviderAggregate.Provider", b =>
                 {
                     b.Property<long>("Id")
@@ -587,107 +544,6 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.ToTable("Application_Settings", (string)null);
                 });
 
-            modelBuilder.Entity("PaymentRequest", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("Id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<decimal>("Amount")
-                        .HasPrecision(18)
-                        .HasColumnType("numeric")
-                        .HasColumnName("Amount");
-
-                    b.Property<long>("ApplicationId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("ApplicationId");
-
-                    b.Property<string>("CallBackUrl")
-                        .IsRequired()
-                        .HasMaxLength(2048)
-                        .HasColumnType("varchar")
-                        .HasColumnName("CallBackUrl");
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("varchar")
-                        .HasColumnName("Code");
-
-                    b.Property<long>("CompanyId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("CompanyId");
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("CreationUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar")
-                        .HasColumnName("Description");
-
-                    b.Property<string>("DestinationIban")
-                        .IsRequired()
-                        .HasMaxLength(26)
-                        .HasColumnType("nvarchar")
-                        .HasColumnName("DestinationIban");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsUsed")
-                        .HasColumnType("bit")
-                        .HasColumnName("IsUsed");
-
-                    b.Property<bool>("IsVerified")
-                        .HasColumnType("bit")
-                        .HasColumnName("IsVerified");
-
-                    b.Property<DateTime?>("ModificationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("ModificationUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("NationalCode")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("varchar")
-                        .HasColumnName("NationalCode");
-
-                    b.Property<byte>("Status")
-                        .HasColumnType("tinyint")
-                        .HasColumnName("Status");
-
-                    b.Property<string>("TrackerId")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar")
-                        .HasColumnName("TrackerId");
-
-                    b.Property<DateTime>("UrlExpirationDateTime")
-                        .HasColumnType("datetime2(7)")
-                        .HasColumnName("UrlExpirationDateTime");
-
-                    b.Property<DateTime?>("VerificationDateTime")
-                        .HasColumnType("datetime2(7)")
-                        .HasColumnName("VerificationDateTime");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ApplicationId");
-
-                    b.HasIndex("CompanyId");
-
-                    b.ToTable("PaymentRequest", (string)null);
-                });
-
             modelBuilder.Entity("CPG.Application.UseCases.CompanyDeposits.CompanyDeposit", b =>
                 {
                     b.HasOne("CPG.Domain.AggregateModels.BankAggregate.Bank", "Bank")
@@ -782,32 +638,11 @@ namespace CPG.Infrastructure.Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PaymentRequest", b =>
-                {
-                    b.HasOne("CPG.Domain.AggregateModels.ApplicationAggregate.Application", "Application")
-                        .WithMany("PaymentRequests")
-                        .HasForeignKey("ApplicationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CPG.Domain.AggregateModels.CompanyAggregate.Company", "Company")
-                        .WithMany("PaymentRequests")
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Application");
-
-                    b.Navigation("Company");
-                });
-
             modelBuilder.Entity("CPG.Domain.AggregateModels.ApplicationAggregate.Application", b =>
                 {
                     b.Navigation("ApplicationCallbackUrls");
 
                     b.Navigation("ApplicationIdentifiers");
-
-                    b.Navigation("PaymentRequests");
                 });
 
             modelBuilder.Entity("CPG.Domain.AggregateModels.BankAggregate.Bank", b =>
@@ -820,8 +655,6 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.Navigation("CompanyDeposits");
 
                     b.Navigation("PaymentMethods");
-
-                    b.Navigation("PaymentRequests");
 
                     b.Navigation("Users");
                 });
