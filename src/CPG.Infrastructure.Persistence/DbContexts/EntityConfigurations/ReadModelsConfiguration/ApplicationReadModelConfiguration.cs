@@ -22,5 +22,9 @@ public class ApplicationReadModelConfiguration : IEntityTypeConfiguration<Applic
         readModel.HasMany(x => x.ApplicationIdentifiers)
                  .WithOne(x => x.Application)
                  .HasForeignKey(x => x.ApplicationId);
+
+        readModel.HasMany(x => x.ApplicationCallbackUrls)
+                 .WithOne(x => x.Application)
+                 .HasForeignKey(x => x.ApplicationId);
     }
 }

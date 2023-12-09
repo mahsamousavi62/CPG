@@ -19,4 +19,6 @@ public class CreateApplicationModel
 
     [Required]
     public required string[] IdpClientIds { get; set; }
+
+    public string[] CallbackUrls { get; set; }
 }

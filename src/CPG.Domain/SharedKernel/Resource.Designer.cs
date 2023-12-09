@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace CPG.Domain.AggregateModels.ApplicationAggregate {
+namespace CPG.Domain.SharedKernel {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace CPG.Domain.AggregateModels.ApplicationAggregate {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CPG.Domain.AggregateModels.ApplicationAggregate.Resource", typeof(Resource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CPG.Domain.SharedKernel.Resource", typeof(Resource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,47 +61,20 @@ namespace CPG.Domain.AggregateModels.ApplicationAggregate {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to برنامه با شناسه {0} فعال می باشد.
+        ///   Looks up a localized string similar to تعداد کاراکتر آدرس &apos;{0}&apos; در محدوده مجاز نمی باشد.
         /// </summary>
-        internal static string ApplicationIsAlreadyActive {
+        internal static string InvalidUrlCharacterLimit {
             get {
-                return ResourceManager.GetString("ApplicationIsAlreadyActive", resourceCulture);
+                return ResourceManager.GetString("InvalidUrlCharacterLimit", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to برنامه با شناسه {0} غیرفعال می باشد.
+        ///   Looks up a localized string similar to فرمت آدرس &apos;{0}&apos; معتبر نمی باشد.
         /// </summary>
-        internal static string ApplicationIsAlreadyNotActive {
+        internal static string InvalidUrlFormat {
             get {
-                return ResourceManager.GetString("ApplicationIsAlreadyNotActive", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to نشانی بازگشتی تکراری است.
-        /// </summary>
-        internal static string Duplicate_CallbackUrl {
-            get {
-                return ResourceManager.GetString("Duplicate_CallbackUrl", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to شناسه Idp تکراری است.
-        /// </summary>
-        internal static string Duplicate_IdpClientId {
-            get {
-                return ResourceManager.GetString("Duplicate_IdpClientId", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to شناسه یا شناسه های {0} قبلا ثبت شده است.
-        /// </summary>
-        internal static string Duplicate_IdpClientIds {
-            get {
-                return ResourceManager.GetString("Duplicate_IdpClientIds", resourceCulture);
+                return ResourceManager.GetString("InvalidUrlFormat", resourceCulture);
             }
         }
     }
