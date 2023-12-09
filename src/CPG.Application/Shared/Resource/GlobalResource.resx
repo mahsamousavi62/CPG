@@ -240,8 +240,8 @@
   <data name="True" xml:space="preserve">
     <value>True</value>
   </data>
-  <data name="UploadCompanyLogo" xml:space="preserve">
-    <value>UploadCompanyLogo</value>
+  <data name="CompanyLogo" xml:space="preserve">
+    <value>CompanyLogo</value>
   </data>
   <data name="CreateApplication" xml:space="preserve">
     <value>CreateApplication</value>
@@ -252,10 +252,19 @@
   <data name="ResponseApiUrl" xml:space="preserve">
     <value>ResponseApiUrl</value>
   </data>
-  <data name="UploadApplicationLogo" xml:space="preserve">
-    <value>UploadApplicationLogo</value>
+  <data name="ApplicationLogo" xml:space="preserve">
+    <value>ApplicationLogo</value>
   </data>
   <data name="IPGTypeNotFound" xml:space="preserve">
     <value>IPGType with Id {0} has not been found</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="BrokerageCharisma" xml:space="preserve">
+    <value>BrokerageCharisma</value>
+  </data>
+  <data name="Validation_Required" xml:space="preserve">
+    <value>Validation_Required</value>
   </data>
 </root>
