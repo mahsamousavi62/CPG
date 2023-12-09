@@ -258,4 +258,7 @@
   <data name="IPGTypeNotFound" xml:space="preserve">
     <value>IPGType with Id {0} has not been found</value>
   </data>
+  <data name="PaymentRequestRequiredData" xml:space="preserve">
+    <value>PaymentRequestRequiredData</value>
+  </data>
 </root>

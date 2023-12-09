@@ -38,12 +38,13 @@ namespace CPG.Infrastructure.Persistence
                     options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
 
                     options.EnableDetailedErrors();
-                    options.UseSqlServer(configuration.GetConnectionString(ConnectionStringConfigName));
+                    options.EnableSensitiveDataLogging().UseSqlServer(configuration.GetConnectionString(ConnectionStringConfigName));
                 })
                 .AddDbContext<ReadDbContext>(options =>
                 {
                     options.EnableDetailedErrors();
-                    options.UseSqlServer(configuration.GetConnectionString(ConnectionStringConfigName));
+                    options.UseSqlServer(configuration.GetConnectionString(ConnectionStringConfigName))
+                    .LogTo(Console.WriteLine);
                 })
                 .AddScoped(typeof(IAggregateRepository<>), typeof(AggregateRepository<>))
                 .AddScoped(typeof(IAggregateReadRepository<>), typeof(AggregateRepository<>))

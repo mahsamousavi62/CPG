@@ -14,7 +14,7 @@ namespace CPG.Domain.AggregateModels.CompanyDepositAggregate.Specifications
     {
         public CompanyDepositByIban(string iban)
         {
-            Query.Where(c => c.Iban == iban);
+            Query.Include(c=>c.Bank).Where(c => c.Iban == iban);
         }
     }
 }

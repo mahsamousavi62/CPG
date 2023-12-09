@@ -264,4 +264,7 @@
   <data name="IPGTypeNotFound" xml:space="preserve">
     <value>نوع درگاه با شناسه {0} یافت نشد </value>
   </data>
+  <data name="PaymentRequestRequiredData" xml:space="preserve">
+    <value>شرکت یا شبای مقصد را وارد کنید</value>
+  </data>
 </root>

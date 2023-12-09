@@ -79,7 +79,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Application with ID {0} has not been found..
+        ///   Looks up a localized string similar to Application with Id {0} has not been found..
         /// </summary>
         public static string ApplicationNotFound {
             get {
@@ -349,7 +349,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Provider with Id {0} has not been found..
+        ///   Looks up a localized string similar to PaymentRequestRequiredData.
+        /// </summary>
+        public static string PaymentRequestRequiredData {
+            get {
+                return ResourceManager.GetString("PaymentRequestRequiredData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to PersianName.
         /// </summary>
         public static string PersianName {
@@ -359,7 +367,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Provider with ID {0} has not been found..
+        ///   Looks up a localized string similar to Provider with Id {0} has not been found..
         /// </summary>
         public static string ProviderNotFound {
             get {
