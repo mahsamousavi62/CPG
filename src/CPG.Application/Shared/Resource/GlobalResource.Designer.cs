@@ -385,6 +385,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to PaymentRequestRequiredData.
+        /// </summary>
+        public static string PaymentRequestRequiredData {
+            get {
+                return ResourceManager.GetString("PaymentRequestRequiredData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to PersianName.
         /// </summary>
         public static string PersianName {

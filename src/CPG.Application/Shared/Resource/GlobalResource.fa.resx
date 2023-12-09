@@ -273,4 +273,13 @@
   <data name="Validation_Required" xml:space="preserve">
     <value>فیلد {0} الزامی می باشد</value>
   </data>
+
+
+  <data name="PaymentRequestRequiredData" xml:space="preserve">
+    <value>شرکت یا شبای مقصد را وارد کنید</value>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value />
+  </data>
+
 </root>
