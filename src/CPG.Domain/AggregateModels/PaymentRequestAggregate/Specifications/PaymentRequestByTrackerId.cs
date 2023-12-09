@@ -7,7 +7,7 @@ namespace CPG.Domain.AggregateModels.PaymentRequestAggregate.Specifications
     {
         public PaymentRequestByTrackerId(string trackerId)
         {
-            Query.Where(c => c.TrackerId == trackerId);
+            Query.Where(c => c.TrackerId == trackerId );
         }
     }
 }

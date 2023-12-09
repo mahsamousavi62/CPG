@@ -1,6 +1,7 @@
 ﻿using Ardalis.GuardClauses;
 using CPG.Application.UseCases.Users.ViewModel;
 using CPG.Domain.AggregateModels.BankAggregate;
+using CPG.Domain.AggregateModels.PaymentRequestAggregate.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,8 +23,8 @@ namespace CPG.Domain.AggregateModels.PaymentRequestAggregate
             decimal minValue = 10000m;
             decimal maxValue = 100000000000m;
 
-            if (amount < minValue && amount > maxValue)
-                throw new Exception();
+            if (amount < minValue || amount > maxValue)
+                throw new InvalidAmountException(amount);
         }
 
         public static implicit operator decimal(Amount amount) => amount.Value;

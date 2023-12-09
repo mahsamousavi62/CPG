@@ -1,4 +1,5 @@
 ﻿using CPG.Application.UseCases.PaymentRequests.Commands.CreatePaymentRequest;
+using CPG.Application.UseCases.PaymentRequests.Queries;
 using CPG.Application.UseCases.PaymentRequests.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,13 +12,12 @@ namespace CPG.API.Controllers.v1
     /// </summary>
     public class PaymentRequestController : ApiBaseController
     {
-        [Authorize]
         [HttpGet]
-        public async Task<IActionResult> Private()
+        [ProducesResponseType(typeof(IReadOnlyCollection<PaymentRequestVm>), 200)]
+        public async Task<IActionResult> Get()
         {
-            return Ok("Private!");
+            return Ok(await Mediator.Send(new GetPaymentRequestQuery()));
         }
-
 
         /// <summary>
         /// 

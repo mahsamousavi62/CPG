@@ -18,7 +18,7 @@ public class CurrentUser(IHttpContextAccessor httpContextAccessor, IAuthenticati
     private long GetUserId()
     {
        // var subid = await _authenticationService.GetDataFromClaim<string>("sub");
-        //return 1;
+        return 1;
         //TODO: select userid from user where idpuserid=sub
         var claims = _httpContextAccessor.HttpContext?.User.Claims
                      ?? throw new ArgumentException("Cannot obtain UserId value from JWT token.");

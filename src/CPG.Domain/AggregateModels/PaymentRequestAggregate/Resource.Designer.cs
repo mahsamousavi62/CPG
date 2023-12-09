@@ -59,5 +59,14 @@ namespace CPG.Domain.AggregateModels.PaymentRequestAggregate {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to بازه ی مبلغ  10000ريال تا 100000000000ريال می باشد.
+        /// </summary>
+        internal static string AmountIsNotInRange {
+            get {
+                return ResourceManager.GetString("AmountIsNotInRange", resourceCulture);
+            }
+        }
     }
 }
