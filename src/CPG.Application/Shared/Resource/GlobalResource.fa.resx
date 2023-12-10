@@ -244,21 +244,60 @@
     <value>تست</value>
   </data>
   <data name="TitleMainMenu" xml:space="preserve">
-    <value>تنظیمات پایه روش های برداشت/پرداخت کاریزما</value>
+    <value>تنظیمات پایه</value>
   </data>
   <data name="True" xml:space="preserve">
     <value>بله</value>
   </data>
-  <data name="UploadApplicationLogo" xml:space="preserve">
-    <value>انتخاب فایل یا رها کردن فایل تصویر لوگوی شرکت</value>
+  <data name="ApplicationLogo" xml:space="preserve">
+    <value>لوگوی برنامه</value>
   </data>
-  <data name="UploadCompanyLogo" xml:space="preserve">
-    <value>انتخاب فایل یا رها کردن فایل تصویر لوگوی شرکت</value>
+  <data name="CompanyLogo" xml:space="preserve">
+    <value>لوگوی شرکت</value>
   </data>
   <data name="Users" xml:space="preserve">
     <value>کاربران</value>
   </data>
   <data name="UsersNotFound" xml:space="preserve">
     <value>لیست کاربران نامعتبر می باشد</value>
+  </data>
+  <data name="IPGTypeNotFound" xml:space="preserve">
+    <value>نوع درگاه با شناسه {0} یافت نشد </value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>حذف</value>
+  </data>
+  <data name="BrokerageCharisma" xml:space="preserve">
+    <value>کارگزاری کاریزما</value>
+  </data>
+  <data name="Validation_Required" xml:space="preserve">
+    <value>فیلد {0} الزامی می باشد</value>
+  </data>
+  <data name="AccountNumber" xml:space="preserve">
+    <value>شماره حساب</value>
+  </data>
+  <data name="BankName" xml:space="preserve">
+    <value>بانک</value>
+  </data>
+  <data name="CreateDeposit" xml:space="preserve">
+    <value>ایجاد حساب</value>
+  </data>
+  <data name="CreateDepositCompanyFor" xml:space="preserve">
+    <value>ایجاد حساب بانکی برای</value>
+  </data>
+  <data name="Deposits" xml:space="preserve">
+    <value>حساب‌ها</value>
+  </data>
+  <data name="Iban" xml:space="preserve">
+    <value>شبا</value>
+  </data>
+  <data name="IPGs" xml:space="preserve">
+    <value>درگاه‌های پرداخت</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>نام</value>
+  </data>
+  <data name="Validation_IBan" xml:space="preserve">
+    <value>شبا نامعتبر است</value>
   </data>
 </root>

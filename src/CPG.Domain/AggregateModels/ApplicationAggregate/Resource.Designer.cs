@@ -77,5 +77,32 @@ namespace CPG.Domain.AggregateModels.ApplicationAggregate {
                 return ResourceManager.GetString("ApplicationIsAlreadyNotActive", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to نشانی بازگشتی تکراری است.
+        /// </summary>
+        internal static string Duplicate_CallbackUrl {
+            get {
+                return ResourceManager.GetString("Duplicate_CallbackUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to شناسه Idp تکراری است.
+        /// </summary>
+        internal static string Duplicate_IdpClientId {
+            get {
+                return ResourceManager.GetString("Duplicate_IdpClientId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to شناسه یا شناسه های {0} قبلا ثبت شده است.
+        /// </summary>
+        internal static string Duplicate_IdpClientIds {
+            get {
+                return ResourceManager.GetString("Duplicate_IdpClientIds", resourceCulture);
+            }
+        }
     }
 }

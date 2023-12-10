@@ -126,4 +126,7 @@
   <data name="InvalidIbanPrefix" xml:space="preserve">
     <value>شناسه شبا {0} نامعتبر می باشد</value>
   </data>
+  <data name="InvalidProviderType" xml:space="preserve">
+    <value>نوع سرویس دهنده {0} نامعتبر می باشد</value>
+  </data>
 </root>

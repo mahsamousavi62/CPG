@@ -61,6 +61,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to AccountNumber.
+        /// </summary>
+        public static string AccountNumber {
+            get {
+                return ResourceManager.GetString("AccountNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Active.
         /// </summary>
         public static string Active {
@@ -79,7 +88,16 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Application with ID {0} has not been found..
+        ///   Looks up a localized string similar to ApplicationLogo.
+        /// </summary>
+        public static string ApplicationLogo {
+            get {
+                return ResourceManager.GetString("ApplicationLogo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Application with Id {0} has not been found..
         /// </summary>
         public static string ApplicationNotFound {
             get {
@@ -115,7 +133,16 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bank with ID {0} has not been found..
+        ///   Looks up a localized string similar to BankName.
+        /// </summary>
+        public static string BankName {
+            get {
+                return ResourceManager.GetString("BankName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bank with Id {0} has not been found..
         /// </summary>
         public static string BankNotFound {
             get {
@@ -129,6 +156,15 @@ namespace CPG.Application.Shared.Resource {
         public static string Banks {
             get {
                 return ResourceManager.GetString("Banks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to BrokerageCharisma.
+        /// </summary>
+        public static string BrokerageCharisma {
+            get {
+                return ResourceManager.GetString("BrokerageCharisma", resourceCulture);
             }
         }
         
@@ -156,6 +192,15 @@ namespace CPG.Application.Shared.Resource {
         public static string CompanyDepositNotFound {
             get {
                 return ResourceManager.GetString("CompanyDepositNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CompanyLogo.
+        /// </summary>
+        public static string CompanyLogo {
+            get {
+                return ResourceManager.GetString("CompanyLogo", resourceCulture);
             }
         }
         
@@ -196,11 +241,47 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CreateDeposit.
+        /// </summary>
+        public static string CreateDeposit {
+            get {
+                return ResourceManager.GetString("CreateDeposit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CreateDepositCompanyFor.
+        /// </summary>
+        public static string CreateDepositCompanyFor {
+            get {
+                return ResourceManager.GetString("CreateDepositCompanyFor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to DeActive.
         /// </summary>
         public static string DeActive {
             get {
                 return ResourceManager.GetString("DeActive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string Delete {
+            get {
+                return ResourceManager.GetString("Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deposits.
+        /// </summary>
+        public static string Deposits {
+            get {
+                return ResourceManager.GetString("Deposits", resourceCulture);
             }
         }
         
@@ -277,6 +358,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Iban.
+        /// </summary>
+        public static string Iban {
+            get {
+                return ResourceManager.GetString("Iban", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to IbanPrefix.
         /// </summary>
         public static string IbanPrefix {
@@ -304,11 +394,38 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to IPGs.
+        /// </summary>
+        public static string IPGs {
+            get {
+                return ResourceManager.GetString("IPGs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to IPGType with Id {0} has not been found.
+        /// </summary>
+        public static string IPGTypeNotFound {
+            get {
+                return ResourceManager.GetString("IPGTypeNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to MethodTypes.
         /// </summary>
         public static string MethodTypes {
             get {
                 return ResourceManager.GetString("MethodTypes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string Name {
+            get {
+                return ResourceManager.GetString("Name", resourceCulture);
             }
         }
         
@@ -349,7 +466,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Provider with ID {0} has not been found..
+        ///   Looks up a localized string similar to Provider with Id {0} has not been found..
         /// </summary>
         public static string ProviderNotFound {
             get {
@@ -439,24 +556,6 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to UploadApplicationLogo.
-        /// </summary>
-        public static string UploadApplicationLogo {
-            get {
-                return ResourceManager.GetString("UploadApplicationLogo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to UploadCompanyLogo.
-        /// </summary>
-        public static string UploadCompanyLogo {
-            get {
-                return ResourceManager.GetString("UploadCompanyLogo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Users.
         /// </summary>
         public static string Users {
@@ -471,6 +570,24 @@ namespace CPG.Application.Shared.Resource {
         public static string UsersNotFound {
             get {
                 return ResourceManager.GetString("UsersNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Validation_IBan.
+        /// </summary>
+        public static string Validation_IBan {
+            get {
+                return ResourceManager.GetString("Validation_IBan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Validation_Required.
+        /// </summary>
+        public static string Validation_Required {
+            get {
+                return ResourceManager.GetString("Validation_Required", resourceCulture);
             }
         }
     }
