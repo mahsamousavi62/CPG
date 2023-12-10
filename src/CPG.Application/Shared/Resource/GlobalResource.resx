@@ -267,4 +267,7 @@
   <data name="Validation_Required" xml:space="preserve">
     <value>Validation_Required</value>
   </data>
+  <data name="CompanyIPGNotFound" xml:space="preserve">
+    <value>CompanyIPGNotFound</value>
+  </data>
 </root>

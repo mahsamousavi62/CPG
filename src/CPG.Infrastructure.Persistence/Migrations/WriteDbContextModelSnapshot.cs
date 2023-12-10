@@ -630,7 +630,7 @@ namespace CPG.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("CPG.Domain.AggregateModels.BankAggregate.Bank", b =>
                 {
-                    b.OwnsOne("CPG.Domain.AggregateModels.BankAggregate.IbanPrefix", "IbanPrefix", b1 =>
+                    b.OwnsOne("CPG.Domain.AggregateModels.BankAggregate.Bank.IbanPrefix#CPG.Domain.AggregateModels.BankAggregate.IbanPrefix", "IbanPrefix", b1 =>
                         {
                             b1.Property<int>("BankId")
                                 .HasColumnType("int");
@@ -643,7 +643,7 @@ namespace CPG.Infrastructure.Persistence.Migrations
 
                             b1.HasKey("BankId");
 
-                            b1.ToTable("Bank");
+                            b1.ToTable("Bank", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("BankId");

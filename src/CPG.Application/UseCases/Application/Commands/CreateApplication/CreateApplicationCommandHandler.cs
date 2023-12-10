@@ -25,6 +25,9 @@ internal class CreateApplicationCommandHandler(IAggregateRepository<Domain.Aggre
 
     public async Task<long> Handle(CreateApplicationCommand request, CancellationToken cancellationToken)
     {
+        PersianName persianName = new(request.Model.PersianName);
+        EnglishName englishName = new(request.Model.EnglishName);
+
         var samePersianNameApplication = await _applicationRepository.GetBySpecAsync(new ApplicationByPersianName(request.Model.PersianName), cancellationToken);
         if (samePersianNameApplication != null)
         {

@@ -273,4 +273,7 @@
   <data name="Validation_Required" xml:space="preserve">
     <value>فیلد {0} الزامی می باشد</value>
   </data>
+  <data name="CompanyIPGNotFound" xml:space="preserve">
+    <value>درگاه شرکت با شناسه {0} یافت نشد</value>
+  </data>
 </root>

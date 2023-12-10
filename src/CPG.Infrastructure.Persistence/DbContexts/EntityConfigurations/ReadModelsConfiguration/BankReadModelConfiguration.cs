@@ -16,9 +16,9 @@ public class BankReadModelConfiguration : IEntityTypeConfiguration<BankReadModel
         readModel.Property(x => x.IbanPrefix).HasColumnName("IbanPrefix");
         readModel.Property(x => x.LogoAddress).HasColumnName("LogoAddress");
 
-        readModel
-          .HasMany(c => c.CompanyDeposits)
-          .WithOne(p => p.Bank)
-          .HasForeignKey(p => p.BankId);
+        //readModel
+        //  .HasMany(c => c.CompanyDeposits)
+        //  .WithOne(p => p.Bank)
+        //  .HasForeignKey(p => p.BankId);
     }
 }
