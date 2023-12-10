@@ -1,7 +1,7 @@
-﻿using CPG.Application.UseCases.IPGType.ViewModels;
+﻿using CPG.Application.UseCases.IPGTypes.ViewModels;
 using MediatR;
 
-namespace CPG.Application.UseCases.IPGType.Queries;
+namespace CPG.Application.UseCases.IPGTypes.Queries;
 
 public class GetIPGTypeQuery(long ipgTypeId) : IRequest<IPGTypeViewModel>
 {

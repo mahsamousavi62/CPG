@@ -25,6 +25,9 @@ internal class CreateApplicationCommandHandler(IAggregateRepository<Domain.Aggre
 
     public async Task<long> Handle(CreateApplicationCommand request, CancellationToken cancellationToken)
     {
+        PersianName persianName = new(request.Model.PersianName);
+        EnglishName englishName = new(request.Model.EnglishName);
+
         var samePersianNameApplication = await _applicationRepository.GetBySpecAsync(new ApplicationByPersianName(request.Model.PersianName), cancellationToken);
         if (samePersianNameApplication != null)
         {
@@ -41,8 +44,6 @@ internal class CreateApplicationCommandHandler(IAggregateRepository<Domain.Aggre
         //    throw new DuplicateIdpClientIdsException(string.Join('-', idpClientIds.Select(t => t.IdpClientId)));
         //}
         
-        PersianName persianName = new(request.Model.PersianName);
-        EnglishName englishName = new(request.Model.EnglishName);
         Logo logo = new(request.Model.File, Enums.UploadFromEntityType.Application.ToString(), _minioProvider);
         Url responseUrl = new(request.Model.ResponseApiUrl);
         var urls = request.Model.CallbackUrls.Select(t => new Url(t)).ToArray();

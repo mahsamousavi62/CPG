@@ -1,9 +1,6 @@
 ﻿using CPG.Application.UseCases.CompanyDeposits;
-using CPG.Domain.AggregateModels.CompanyAggregate;
-using CPG.Domain.AggregateModels.UserAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.Reflection.Emit;
 
 namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations
 {
@@ -22,7 +19,10 @@ namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations
             entity.Property(x => x.AccountNumber).HasColumnName("AccountNumber").HasMaxLength(255).HasColumnType("varchar").IsRequired();
             entity.Property(x => x.CompanyId).HasColumnName("CompanyId").HasColumnType("bigint").IsRequired();
 
-           
+            entity
+                .HasMany(c => c.CompanyIPGDeposits)
+                .WithOne(p => p.CompanyDeposit)
+                .HasForeignKey(p => p.CompanyDepositId);
 
         }
     }

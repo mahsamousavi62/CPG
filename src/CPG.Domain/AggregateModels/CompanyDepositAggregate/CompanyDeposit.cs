@@ -3,6 +3,7 @@ using CPG.Domain.AggregateModels.BankAggregate;
 using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Domain.AggregateModels.CompanyAggregate.Events;
 using CPG.Domain.AggregateModels.CompanyDepositAggregate.Events;
+using CPG.Domain.AggregateModels.CompanyIPGAggregate;
 using CPG.Domain.SeedWork;
 using CPG.Domain.SharedKernel;
 using System;
@@ -17,7 +18,7 @@ namespace CPG.Application.UseCases.CompanyDeposits
     {
         public CompanyDeposit()
         {
-            
+
         }
         private string _name;
         private string _iban;
@@ -32,6 +33,8 @@ namespace CPG.Application.UseCases.CompanyDeposits
 
         public Company Company { get; set; }
         public Bank Bank { get; set; }
+
+        public List<CompanyIPGDeposit> CompanyIPGDeposits { get; set; }
 
         public CompanyDeposit(PersianName name, Iban iban, int bankId, string accountNumber, long companyId)
         {
