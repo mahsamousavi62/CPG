@@ -33,16 +33,17 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         => services
+        .AddTransient<IHttpClientFactoryService, HttpClientFactoryService>()
+            .AddScoped<ICharisPayClient, CharisPayClient>()
+            .AddTransient<ICurrentDateTime, CurrentDateTime>()
             .AddDatabase(configuration)
             .AddGraphQLQueries()
             . AddTokenAuthentication(configuration)
-            .AddTransient<ICurrentDateTime, CurrentDateTime>()
             .AddMasstransitInfrastructure(configuration)
             .AddScoped<IMinioProvider, MinioProvider>()
             .AddMinio(configuration)
             .AddHttpClient()
-            .AddTransient<IHttpClientFactoryService, HttpClientFactoryService>()
-            .AddScoped<ICharisPayClient, CharisPayClient>()
+            
             .AddConfigureHttpClientService(configuration);
 
     public static IServiceCollection AddMinio(this IServiceCollection services, IConfiguration configuration)

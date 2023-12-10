@@ -120,6 +120,12 @@
   <data name="cannot_create_company" xml:space="preserve">
     <value>خطا در ایجاد رکورد جدید</value>
   </data>
+  <data name="CompanyHasNotCompanyDeposit" xml:space="preserve">
+    <value>شرکت مورد نظر هیچ حسابی ندارد</value>
+  </data>
+  <data name="CompanyIsAlreadyNotActive" xml:space="preserve">
+    <value>شرکت فعال نمی باشد</value>
+  </data>
   <data name="Duplicate_EnglishName" xml:space="preserve">
     <value>نام انگلیسی تکراری است</value>
   </data>
@@ -170,5 +176,8 @@
   </data>
   <data name="MaximalFileSize" xml:space="preserve">
     <value>سایز لوگو مجاز نمی باشد</value>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value />
   </data>
 </root>

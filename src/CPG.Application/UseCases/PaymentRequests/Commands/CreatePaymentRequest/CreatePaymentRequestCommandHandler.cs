@@ -6,8 +6,11 @@ using CPG.Application.UseCases.PaymentRequests.ViewModels;
 using CPG.Domain.AggregateModels.ApplicationAggregate.Exceptions;
 using CPG.Domain.AggregateModels.ApplicationAggregate.Specifications;
 using CPG.Domain.AggregateModels.BankAggregate;
+using CPG.Domain.AggregateModels.BankAggregate.Exceptions;
 using CPG.Domain.AggregateModels.CompanyAggregate;
+using CPG.Domain.AggregateModels.CompanyAggregate.Exceptions;
 using CPG.Domain.AggregateModels.CompanyAggregate.Specifications;
+using CPG.Domain.AggregateModels.CompanyDepositAggregate.Exceptions;
 using CPG.Domain.AggregateModels.CompanyDepositAggregate.Specifications;
 using CPG.Domain.AggregateModels.PaymentRequestAggregate;
 using CPG.Domain.AggregateModels.PaymentRequestAggregate.Specifications;
@@ -44,19 +47,16 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
 
         var config = await _applicationSettingsRepository.GetAllApplicationSettings();
         var clientId = await _authenticationService.GetClientId(config.Authority);
-        
         //applicationIdentifier
-        
         var application = await _applicationRepository.GetBySpecAsync(new ApplicationByIdpClientId(clientId));
         if (application == null)
             throw new ApplicationNotFoundException(application.Id);
         if (!application.IsActive)
             throw new ApplicationIsNotActiveException(application.Id);
-
+        
         paymentRequest.ApplicationId = application.Id;
-       
-
         PaymentRequest.Create(paymentRequest, config.ExpireTime, clientId, application.EnglishName);
+
         await _paymentRequestRepository.AddAsync(paymentRequest);
         await _paymentRequestRepository.SaveChangesAsync();
 
@@ -72,12 +72,12 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
     private async Task Validate(CreatePaymentRequestViewModel model)
     {
         if ((!model.CompanyId.HasValue || model.CompanyId == 0) && string.IsNullOrEmpty(model.DestinationIban))
-            throw new Exception("هر 2 پارامتر شناسه شرکت و شبای مقصد نمیتواند به صورت همزمان خالی باشد.");
+            throw new PaymentRequestRequiredDataException();
 
         //TODO: check applicationcallbackurl exsist
 
-        //TODO:check callbackUrl
-        //نحوه تشخیص تمامی روش های پرداختی مربوط به شرکتTODO:
+            //TODO:check callbackUrl
+            //نحوه تشخیص تمامی روش های پرداختی مربوط به شرکتTODO:
 
         var amount = new Amount(model.Amount);
         var callBackUrl = new Url(model.CallBackUrl);
@@ -91,13 +91,13 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
                 throw new CompanyNotFoundException(model.CompanyId.Value);
 
             if (!company.IsActive)
-                throw new Exception("شرکت مورد نظر غیرفعال است");
+                throw new CompanyIsNotActiveException(model.CompanyId.Value);
 
-            if (company.CompanyDeposits.Count==0)
-                throw new Exception("شرکت مورد نظر هیچ حسابی ندارد");
+            if ( company.CompanyDeposits.Count==0)
+                throw new CompanyHasNotCompanyDepositException(model.CompanyId.Value);
 
             if (company.CompanyDeposits.Where(cd => cd.IsActive).Count() == 0)
-                throw new Exception("تمامی حساب های شرکت مورد نظر غیرفعال هستند.");
+                throw new AllCompanyDepositsIsInActiveException(model.CompanyId.Value);
         }
 
         if (!string.IsNullOrEmpty(model.DestinationIban))
@@ -106,20 +106,20 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
 
             var companyDeposit = await _companyDepositRepository.GetBySpecAsync(new CompanyDepositByIban(model.DestinationIban));
             if (companyDeposit is null)
-                throw new Exception("به ازای شبای ارائه شده هیچ حسابی تعریف نشده است");
+                throw new PaymentRequestNotDefinedCompanyDepositException();
             if (!companyDeposit.IsActive)
-                throw new Exception("حساب مورد نظر غیرفعال است.");
+                throw new CompanyDepositIsNotActiveException(companyDeposit.Id);
             if (!companyDeposit.Bank.IsActive)
-                throw new Exception("بانک حساب مورد نظر غیرفعال است");
+                throw new BankIsNotActiveException(companyDeposit.Bank.Id);
 
             if ((model.CompanyId.HasValue && model.CompanyId != 0) && !string.IsNullOrEmpty(iban))
                 if (companyDeposit.CompanyId != model.CompanyId)
-                    throw new Exception("حساب ارائه شده با شرکت مورد نظر ارتباطی نداشته و برای این شرکت تعریف نشده است.");
+                    throw new PaymentRequestNotMatchIbanAndCompanyException();
 
             if (!companyDeposit.Company.IsActive)
-                throw new Exception("شرکت مربوط به شبای ارائه شده غیرفعال است.");
+                throw new PaymentRequestIbanCompanyInActiveException();
 
-          if(!model.CompanyId.HasValue || model.CompanyId == 0) 
+          if (!model.CompanyId.HasValue || model.CompanyId == 0) 
                 model.CompanyId = companyDeposit.CompanyId;
         }
         var sameTrackerId = await _paymentRequestRepository.GetBySpecAsync(new PaymentRequestByTrackerId(model.TrackerId));

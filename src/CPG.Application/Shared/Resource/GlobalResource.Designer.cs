@@ -466,11 +466,38 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PaymentRequestRequiredData.
+        ///   Looks up a localized string similar to IbanCompanyInActive.
         /// </summary>
-        public static string PaymentRequestRequiredData {
+        public static string PaymentRequestIbanCompanyInActive {
             get {
-                return ResourceManager.GetString("PaymentRequestRequiredData", resourceCulture);
+                return ResourceManager.GetString("PaymentRequestIbanCompanyInActive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NotDefinedCompanyDeposit.
+        /// </summary>
+        public static string PaymentRequestNotDefinedCompanyDeposit {
+            get {
+                return ResourceManager.GetString("PaymentRequestNotDefinedCompanyDeposit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NotMatchIbanAndCompany.
+        /// </summary>
+        public static string PaymentRequestNotMatchIbanAndCompany {
+            get {
+                return ResourceManager.GetString("PaymentRequestNotMatchIbanAndCompany", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PaymentRequestRequiredIbanOrCompany.
+        /// </summary>
+        public static string PaymentRequestRequiredIbanOrCompany {
+            get {
+                return ResourceManager.GetString("PaymentRequestRequiredIbanOrCompany", resourceCulture);
             }
         }
         
