@@ -15,4 +15,5 @@ public class CompanyReadModel
     public DateTime? ModificationDate { get; set; }
     public ICollection<CompanyPaymentMethodsReadModel> PaymentMethods { get; set; }
     public ICollection<CompanyDepositReadModel> CompanyDeposits { get; set; }
+    public ICollection<PaymentRequestReadModel> PaymentRequests { get; set; }
 }

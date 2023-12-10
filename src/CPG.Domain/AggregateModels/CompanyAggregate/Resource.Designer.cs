@@ -70,6 +70,24 @@ namespace CPG.Domain.AggregateModels.CompanyAggregate {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to شرکت مورد نظر هیچ حسابی ندارد.
+        /// </summary>
+        internal static string CompanyHasNotCompanyDeposit {
+            get {
+                return ResourceManager.GetString("CompanyHasNotCompanyDeposit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to شرکت فعال نمی باشد.
+        /// </summary>
+        internal static string CompanyIsAlreadyNotActive {
+            get {
+                return ResourceManager.GetString("CompanyIsAlreadyNotActive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to نام انگلیسی تکراری است.
         /// </summary>
         internal static string Duplicate_EnglishName {
@@ -142,6 +160,15 @@ namespace CPG.Domain.AggregateModels.CompanyAggregate {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to تعداد کاراکتر نام  انگلیسی مجاز نمی باشد.
+        /// </summary>
+        internal static string Invalid_EnglishNameCharachterLimit {
+            get {
+                return ResourceManager.GetString("Invalid_EnglishNameCharachterLimit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to لوگو مجاز نمی باشد.
         /// </summary>
         internal static string Invalid_logo {
@@ -196,11 +223,29 @@ namespace CPG.Domain.AggregateModels.CompanyAggregate {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to تعداد کاراکتر نام  فارسی مجاز نمی باشد.
+        /// </summary>
+        internal static string Invalid_PersianNameCharachterLimit {
+            get {
+                return ResourceManager.GetString("Invalid_PersianNameCharachterLimit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to سایز لوگو مجاز نمی باشد.
         /// </summary>
         internal static string MaximalFileSize {
             get {
                 return ResourceManager.GetString("MaximalFileSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string String1 {
+            get {
+                return ResourceManager.GetString("String1", resourceCulture);
             }
         }
     }

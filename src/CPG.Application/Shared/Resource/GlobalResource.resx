@@ -318,4 +318,19 @@
   <data name="CompanySettings" xml:space="preserve">
     <value>CompanySettings</value>
   </data>
+  <data name="PaymentRequestRequiredIbanOrCompany" xml:space="preserve">
+    <value>PaymentRequestRequiredIbanOrCompany</value>
+  </data>
+  <data name="PaymentRequestDuplicateTrackerId" xml:space="preserve">
+    <value>PaymentRequestDuplicateTrackerId</value>
+  </data>
+  <data name="PaymentRequestIbanCompanyInActive" xml:space="preserve">
+    <value>IbanCompanyInActive</value>
+  </data>
+  <data name="PaymentRequestNotDefinedCompanyDeposit" xml:space="preserve">
+    <value>NotDefinedCompanyDeposit</value>
+  </data>
+  <data name="PaymentRequestNotMatchIbanAndCompany" xml:space="preserve">
+    <value>NotMatchIbanAndCompany</value>
+  </data>
 </root>

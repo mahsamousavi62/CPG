@@ -31,6 +31,8 @@ public class WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator 
     public DbSet<ApplicationIdentifier> ApplicationIdentifiers { get; set; }
     public DbSet<ApplicationCallbackUrl> ApplicationCallbackUrls { get; set; }
     public DbSet<IPGType> IPGTypes { get; set; }
+    public DbSet<PaymentRequest> PaymentRequests { get; set; }
+
     public DbSet<CompanyIPG> CompanyIPGs { get; set; }
     public DbSet<CompanyIPGDeposit> CompanyIPGDeposits { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -48,6 +50,7 @@ public class WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator 
             .ApplyConfiguration(new CompanyIPGDepositConfiguration())
             .ApplyConfiguration(new ApplicationConfiguration())
             .ApplyConfiguration(new ApplicationIdentifierConfiguration())
+            .ApplyConfiguration(new PaymentRequestConfiguration())
             .ApplyConfiguration(new ApplicationCallbackUrlConfiguration())
         ;
 

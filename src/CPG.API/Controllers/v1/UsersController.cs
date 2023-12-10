@@ -1,8 +1,8 @@
 ﻿using CPG.Application.UseCases.Users;
 using CPG.Application.UseCases.Users.Commands;
 using CPG.Application.UseCases.Users.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Net;
 
 namespace CPG.API.Controllers;
@@ -29,6 +29,7 @@ public class UsersController : ApiBaseController
     /// </summary>
     /// <returns></returns>
     [HttpGet]
+    [Authorize]
     [ProducesResponseType(typeof(IReadOnlyCollection<UserViewModel>), (int)HttpStatusCode.OK)]
     public async Task<IActionResult> GetCompanyUsers() => Ok(await Mediator.Send(new GetCompanyUsersQuery()));
 }

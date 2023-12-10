@@ -493,6 +493,51 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to PaymentRequestDuplicateTrackerId.
+        /// </summary>
+        public static string PaymentRequestDuplicateTrackerId {
+            get {
+                return ResourceManager.GetString("PaymentRequestDuplicateTrackerId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to IbanCompanyInActive.
+        /// </summary>
+        public static string PaymentRequestIbanCompanyInActive {
+            get {
+                return ResourceManager.GetString("PaymentRequestIbanCompanyInActive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NotDefinedCompanyDeposit.
+        /// </summary>
+        public static string PaymentRequestNotDefinedCompanyDeposit {
+            get {
+                return ResourceManager.GetString("PaymentRequestNotDefinedCompanyDeposit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NotMatchIbanAndCompany.
+        /// </summary>
+        public static string PaymentRequestNotMatchIbanAndCompany {
+            get {
+                return ResourceManager.GetString("PaymentRequestNotMatchIbanAndCompany", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PaymentRequestRequiredIbanOrCompany.
+        /// </summary>
+        public static string PaymentRequestRequiredIbanOrCompany {
+            get {
+                return ResourceManager.GetString("PaymentRequestRequiredIbanOrCompany", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to PersianName.
         /// </summary>
         public static string PersianName {
