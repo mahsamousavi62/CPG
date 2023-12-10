@@ -11,9 +11,9 @@ namespace CPG.Infrastructure.Authorization
         public static IServiceCollection AddTokenAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
             {
-                // var serviceProvider = services.BuildServiceProvider();
+                // var serviceIPGType = services.BuildServiceIPGType();
 
-                //var mediator = serviceProvider.GetRequiredService<IMediator>();
+                //var mediator = serviceIPGType.GetRequiredService<IMediator>();
                 //var authenticationConfig = ( mediator.Send(new GetAuthenticationAppSettingQuery())).GetAwaiter().GetResult();
 
                 //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

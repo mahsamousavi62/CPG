@@ -123,4 +123,13 @@
   <data name="ApplicationIsAlreadyNotActive" xml:space="preserve">
     <value>برنامه با شناسه {0} غیرفعال می باشد</value>
   </data>
+  <data name="Duplicate_CallbackUrl" xml:space="preserve">
+    <value>نشانی بازگشتی تکراری است</value>
+  </data>
+  <data name="Duplicate_IdpClientId" xml:space="preserve">
+    <value>شناسه Idp تکراری است</value>
+  </data>
+  <data name="Duplicate_IdpClientIds" xml:space="preserve">
+    <value>شناسه یا شناسه های {0} قبلا ثبت شده است</value>
+  </data>
 </root>

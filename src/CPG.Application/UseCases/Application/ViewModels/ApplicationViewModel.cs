@@ -17,6 +17,8 @@ public class ApplicationViewModel
 
     public Dictionary<long, string> IdpClientIds { get; set; }
 
+    public Dictionary<long, string> CallbackUrls { get; set; }
+
     public bool IsActive { get; set; }
 
     public DateTime CreationDate { get; set; }

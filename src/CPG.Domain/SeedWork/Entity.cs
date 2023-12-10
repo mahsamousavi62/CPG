@@ -63,7 +63,7 @@ public abstract class Entity
 {
     public bool IsActive { get; set; }
 
-    private List<INotification> _domainEvents;
+    private List<INotification> _domainEvents = [];
     public IReadOnlyCollection<INotification> DomainEvents => _domainEvents?.AsReadOnly();
 
     public void AddDomainEvent(INotification eventItem)

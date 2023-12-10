@@ -22,6 +22,7 @@ public class Company : AuditableEntity<long>, IAggregateRoot
         NationalCodeMatchingRequied = nationalCodeMatchingRequied;
         Logo = logo.Value;
         PaymentMethods = [];
+        IsActive = true;
     }
 
     public string PersianName { get; }

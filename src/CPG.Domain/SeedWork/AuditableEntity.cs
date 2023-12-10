@@ -62,7 +62,7 @@ public abstract class AuditableEntity : Entity
 {
     public DateTime CreationDate { get; set; }
 
-    public long? CreationUserId { get; set; }
+    public long CreationUserId { get; set; }
 
     public DateTime? ModificationDate { get; set; }
 

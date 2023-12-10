@@ -1,4 +1,5 @@
-﻿using CPG.Domain.SeedWork;
+﻿using CPG.Domain.AggregateModels.ApplicationAggregate.Exceptions;
+using CPG.Domain.SeedWork;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,10 +25,11 @@ public class ApplicationIdentifier : AuditableEntity<long>
             throw new ArgumentNullException(nameof(IdpClientIdList));
 
         if (IdpClientIdList.Select(x => x).Distinct().Count() != IdpClientIdList.Length)
-            throw new ArgumentException("detail is duplicated");
+            throw new DuplicateIdpClientIdException(string.Empty);
 
-        var ApplicationIdentifiers = IdpClientIdList.Select(i => new ApplicationIdentifier(i)).ToList();
-        return ApplicationIdentifiers;
+        var applicationIdentifiers = IdpClientIdList.Select(i => new ApplicationIdentifier(i)).ToList();
+        applicationIdentifiers.ForEach(x => x.IsActive = true);
+        return applicationIdentifiers;
     }
 
     public string IdpClientId { get; set; }

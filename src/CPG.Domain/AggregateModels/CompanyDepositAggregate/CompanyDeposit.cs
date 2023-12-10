@@ -42,6 +42,7 @@ namespace CPG.Application.UseCases.CompanyDeposits
             _bankId = bankId;
             _accountNumber = accountNumber;
             _companyId = companyId;
+            IsActive = true;
         }
 
         public static CompanyDeposit Create(PersianName name, Iban iban, int bankId, string accountNumber, long companyId)

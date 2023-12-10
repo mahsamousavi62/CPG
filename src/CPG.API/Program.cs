@@ -75,14 +75,13 @@ builder.Services.AddCors(
                         .AllowCredentials()));
 builder.Services.AddLocalization();
 
-builder.Services.Configure<RequestLocalizationOptions>(opt =>
-{
-    var supportedLanguages = new List<CultureInfo>
+var supportedLanguages = new List<CultureInfo>
     {
-        new("en"),
-        new("fa")
+        new("en")
     };
 
+builder.Services.Configure<RequestLocalizationOptions>(opt =>
+{
     opt.DefaultRequestCulture = new RequestCulture("fa", "fa");
     opt.SupportedCultures = supportedLanguages;
     opt.SupportedUICultures = supportedLanguages;
@@ -99,6 +98,13 @@ if (Convert.ToBoolean(configuration["EnableSwagger"]))
     app.UseDeveloperExceptionPage();
 }
 
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture("en"),
+    SupportedCultures = supportedLanguages,
+    SupportedUICultures = supportedLanguages
+});
+
 app.UseHttpsRedirection();
 app.UseRouting();
 
@@ -106,8 +112,6 @@ app.UseInfrastructure(configuration, app.Environment);
 
 app.UseSerilogRequestLogging();
 app.UseExceptionHandler();
-
-app.UseRequestLocalization();
 
 app.MigrateDatabase();
 

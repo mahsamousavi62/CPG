@@ -178,13 +178,13 @@
     <value>Users</value>
   </data>
   <data name="ApplicationNotFound" xml:space="preserve">
-    <value>Application with ID {0} has not been found.</value>
+    <value>Application with Id {0} has not been found.</value>
   </data>
   <data name="BankNotFound" xml:space="preserve">
-    <value>Bank with ID {0} has not been found.</value>
+    <value>Bank with Id {0} has not been found.</value>
   </data>
   <data name="ProviderNotFound" xml:space="preserve">
-    <value>Provider with ID {0} has not been found.</value>
+    <value>Provider with Id {0} has not been found.</value>
   </data>
   <data name="CompanyDepositNotFound" xml:space="preserve">
     <value>companyDepositNotFound</value>
@@ -197,5 +197,101 @@
   </data>
   <data name="UsersNotFound" xml:space="preserve">
     <value>UsersNotFound</value>
+  </data>
+  <data name="Active" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="Active/DeActive" xml:space="preserve">
+    <value>Active/DeActive</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="CreateCompany" xml:space="preserve">
+    <value>CreateCompany</value>
+  </data>
+  <data name="DeActive" xml:space="preserve">
+    <value>DeActive</value>
+  </data>
+  <data name="EnglishName" xml:space="preserve">
+    <value>EnglishName</value>
+  </data>
+  <data name="False" xml:space="preserve">
+    <value>False</value>
+  </data>
+  <data name="IbanPrefix" xml:space="preserve">
+    <value>IbanPrefix</value>
+  </data>
+  <data name="MethodTypes" xml:space="preserve">
+    <value>MethodTypes</value>
+  </data>
+  <data name="NationalCodeMatchingRequied" xml:space="preserve">
+    <value>NationalCodeMatchingRequied</value>
+  </data>
+  <data name="NationalCodeMatchingRequiedWithCardNumber" xml:space="preserve">
+    <value>NationalCodeMatchingRequiedWithCardNumber</value>
+  </data>
+  <data name="PersianName" xml:space="preserve">
+    <value>PersianName</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Submit</value>
+  </data>
+  <data name="True" xml:space="preserve">
+    <value>True</value>
+  </data>
+  <data name="CompanyLogo" xml:space="preserve">
+    <value>CompanyLogo</value>
+  </data>
+  <data name="CreateApplication" xml:space="preserve">
+    <value>CreateApplication</value>
+  </data>
+  <data name="IdpClientIds" xml:space="preserve">
+    <value>IdpClientIds</value>
+  </data>
+  <data name="ResponseApiUrl" xml:space="preserve">
+    <value>ResponseApiUrl</value>
+  </data>
+  <data name="ApplicationLogo" xml:space="preserve">
+    <value>ApplicationLogo</value>
+  </data>
+  <data name="IPGTypeNotFound" xml:space="preserve">
+    <value>IPGType with Id {0} has not been found</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="BrokerageCharisma" xml:space="preserve">
+    <value>BrokerageCharisma</value>
+  </data>
+  <data name="Validation_Required" xml:space="preserve">
+    <value>Validation_Required</value>
+  </data>
+  <data name="AccountNumber" xml:space="preserve">
+    <value>AccountNumber</value>
+  </data>
+  <data name="BankName" xml:space="preserve">
+    <value>BankName</value>
+  </data>
+  <data name="CreateDeposit" xml:space="preserve">
+    <value>CreateDeposit</value>
+  </data>
+  <data name="CreateDepositCompanyFor" xml:space="preserve">
+    <value>CreateDepositCompanyFor</value>
+  </data>
+  <data name="Deposits" xml:space="preserve">
+    <value>Deposits</value>
+  </data>
+  <data name="Iban" xml:space="preserve">
+    <value>Iban</value>
+  </data>
+  <data name="IPGs" xml:space="preserve">
+    <value>IPGs</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Validation_IBan" xml:space="preserve">
+    <value>Validation_IBan</value>
   </data>
 </root>
