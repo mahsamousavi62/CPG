@@ -1,9 +1,6 @@
-﻿using CPG.Domain.AggregateModels.CompanyAggregate;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CPG.Infrastructure.Persistence.DbContexts.ReadModels
 {
@@ -20,5 +17,7 @@ namespace CPG.Infrastructure.Persistence.DbContexts.ReadModels
         public DateTime? ModificationDate { get; set; }
         public BankReadModel Bank { get; set; }
         public CompanyReadModel Company { get; set; }
+
+        public ICollection<CompanyIPGDepositReadModel> CompanyIPGDeposits { get; set; }
     }
 }
