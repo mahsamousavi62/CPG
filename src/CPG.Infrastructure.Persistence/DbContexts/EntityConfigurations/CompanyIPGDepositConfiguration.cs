@@ -12,6 +12,9 @@ namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations
             entity.HasKey(x => x.Id);
 
             entity.Ignore(x => x.DomainEvents);
+            entity.Ignore(x => x.CompanyIPG);
+            entity.Ignore(x => x.CompanyDeposit);
+
             entity.Property(x => x.Id).HasColumnName("Id").UseIdentityColumn();
             entity.Property(x => x.CompanyIPGId).HasColumnName("CompanyIPGId").IsRequired();
             entity.Property(x => x.CompanyDepositId).HasColumnName("CompanyDepositId").IsRequired();

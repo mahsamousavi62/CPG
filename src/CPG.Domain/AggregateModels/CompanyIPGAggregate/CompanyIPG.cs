@@ -30,7 +30,7 @@ namespace CPG.Domain.AggregateModels.CompanyIPGAggregate
         public Company Company { get; set; }
         public Provider Provider { get; set; }
         public IPGType IPGType { get; set; }
-        public List<CompanyIPGDeposit> IPGDeposits { get; set; }
+        public ICollection<CompanyIPGDeposit> IPGDeposits { get; set; }
 
         public static CompanyIPG Create(long companyId, long providerId, long ipgTypeId, short verificationTimeLimit, string providerData, CompanyIPGDeposit[] details)
         {
