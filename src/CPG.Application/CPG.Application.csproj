@@ -1,24 +1,34 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="UseCases\Application\**" />
+    <Compile Remove="UseCases\PaymentRequest\**" />
+    <EmbeddedResource Remove="UseCases\Application\**" />
+    <EmbeddedResource Remove="UseCases\PaymentRequest\**" />
+    <None Remove="UseCases\Application\**" />
+    <None Remove="UseCases\PaymentRequest\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="UseCases\CompanyIPG\**" />
+    <EmbeddedResource Remove="UseCases\CompanyIPG\**" />
+    <None Remove="UseCases\CompanyIPG\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="IdentityModel" Version="6.2.0" />
+    <PackageReference Include="Mapster" Version="7.4.0" />
     <PackageReference Include="MediatR" Version="12.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0" />
-	
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\CPG.Domain\CPG.Domain.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <Compile Update="Shared\Resource\Data\DataModel.Designer.cs">
       <DependentUpon>DataModel.resx</DependentUpon>
@@ -31,7 +41,6 @@
       <DependentUpon>GlobalResource.resx</DependentUpon>
     </Compile>
   </ItemGroup>
-
   <ItemGroup>
     <EmbeddedResource Update="Shared\Resource\Data\DataModel.resx">
       <LastGenOutput>DataModel.Designer.cs</LastGenOutput>
@@ -42,17 +51,16 @@
       <LastGenOutput>GlobalResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-
   <ItemGroup>
-    <Folder Include="UseCases\Application\EventHandlers\" />
     <Folder Include="UseCases\Banks\EventHandlers\" />
     <Folder Include="UseCases\Common\Commands\" />
     <Folder Include="UseCases\CompanyIPG\Commands\CreateCompanyIPG\" />
     <Folder Include="UseCases\CompanyIPG\EventHandler\" />
     <Folder Include="UseCases\CompanyIPG\Exceptions\" />
     <Folder Include="UseCases\CompanyIPG\Queries\" />
+    <Folder Include="UseCases\PaymentRequests\EventHandler\" />
+    <Folder Include="UseCases\CompanyIPGs\EventHandler\" />
     <Folder Include="UseCases\Providers\Commands\UpdateProvider\" />
     <Folder Include="UseCases\Providers\EventHandlers\" />
   </ItemGroup>
-
 </Project>

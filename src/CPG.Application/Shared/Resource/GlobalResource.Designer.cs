@@ -169,6 +169,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CallbackUrls.
+        /// </summary>
+        public static string CallbackUrls {
+            get {
+                return ResourceManager.GetString("CallbackUrls", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string Cancel {
@@ -196,6 +205,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CompanyIPGNotFound.
+        /// </summary>
+        public static string CompanyIPGNotFound {
+            get {
+                return ResourceManager.GetString("CompanyIPGNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CompanyLogo.
         /// </summary>
         public static string CompanyLogo {
@@ -210,6 +228,15 @@ namespace CPG.Application.Shared.Resource {
         public static string CompanyNotFound {
             get {
                 return ResourceManager.GetString("CompanyNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CompanySettings.
+        /// </summary>
+        public static string CompanySettings {
+            get {
+                return ResourceManager.GetString("CompanySettings", resourceCulture);
             }
         }
         
@@ -255,6 +282,15 @@ namespace CPG.Application.Shared.Resource {
         public static string CreateDepositCompanyFor {
             get {
                 return ResourceManager.GetString("CreateDepositCompanyFor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CreateProvider.
+        /// </summary>
+        public static string CreateProvider {
+            get {
+                return ResourceManager.GetString("CreateProvider", resourceCulture);
             }
         }
         
@@ -457,11 +493,65 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to PaymentRequestDuplicateTrackerId.
+        /// </summary>
+        public static string PaymentRequestDuplicateTrackerId {
+            get {
+                return ResourceManager.GetString("PaymentRequestDuplicateTrackerId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to IbanCompanyInActive.
+        /// </summary>
+        public static string PaymentRequestIbanCompanyInActive {
+            get {
+                return ResourceManager.GetString("PaymentRequestIbanCompanyInActive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NotDefinedCompanyDeposit.
+        /// </summary>
+        public static string PaymentRequestNotDefinedCompanyDeposit {
+            get {
+                return ResourceManager.GetString("PaymentRequestNotDefinedCompanyDeposit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NotMatchIbanAndCompany.
+        /// </summary>
+        public static string PaymentRequestNotMatchIbanAndCompany {
+            get {
+                return ResourceManager.GetString("PaymentRequestNotMatchIbanAndCompany", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PaymentRequestRequiredIbanOrCompany.
+        /// </summary>
+        public static string PaymentRequestRequiredIbanOrCompany {
+            get {
+                return ResourceManager.GetString("PaymentRequestRequiredIbanOrCompany", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to PersianName.
         /// </summary>
         public static string PersianName {
             get {
                 return ResourceManager.GetString("PersianName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ProviderLogo.
+        /// </summary>
+        public static string ProviderLogo {
+            get {
+                return ResourceManager.GetString("ProviderLogo", resourceCulture);
             }
         }
         
@@ -480,6 +570,15 @@ namespace CPG.Application.Shared.Resource {
         public static string Providers {
             get {
                 return ResourceManager.GetString("Providers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ProviderType.
+        /// </summary>
+        public static string ProviderType {
+            get {
+                return ResourceManager.GetString("ProviderType", resourceCulture);
             }
         }
         
@@ -556,6 +655,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        public static string Type {
+            get {
+                return ResourceManager.GetString("Type", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Users.
         /// </summary>
         public static string Users {
@@ -588,6 +696,15 @@ namespace CPG.Application.Shared.Resource {
         public static string Validation_Required {
             get {
                 return ResourceManager.GetString("Validation_Required", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vandar.
+        /// </summary>
+        public static string Vandar {
+            get {
+                return ResourceManager.GetString("Vandar", resourceCulture);
             }
         }
     }

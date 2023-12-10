@@ -1,8 +1,5 @@
-﻿using CPG.Domain.AggregateModels.CompanyAggregate;
-using CPG.Domain.AggregateModels.CompanyAggregate.Exceptions;
-using CPG.Domain.AggregateModels.CompanyAggregate.Specifications;
+﻿using CPG.Domain.AggregateModels.CompanyAggregate.Exceptions;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace CPG.Domain.SharedKernel;
 
@@ -13,13 +10,14 @@ public class EnglishName
     public EnglishName(string englishName)
     {
         if (string.IsNullOrWhiteSpace(englishName))
-            throw new EmptyEnglishNameException($"Parameter {nameof(englishName)} cannot be empty.");
+            throw new EmptyEnglishNameException(englishName);
+
+        if (englishName.Length<3 || englishName.Length>255)
+            throw new InvalidEnglishNameCharachterException(englishName);
 
         if (!Regex.IsMatch(englishName, "[A-Za-z\\s]+"))
-
-            throw new InvalidEnglishNameException($"Parameter {nameof(englishName)} is invalid.");
+            throw new InvalidEnglishNameException(englishName);
 
         Value = englishName;
     }
-
 }

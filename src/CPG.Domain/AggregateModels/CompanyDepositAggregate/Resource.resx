@@ -117,8 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AllCompanyDepositsInActive" xml:space="preserve">
+    <value>تمامی حساب های شرکت مورد نظر غیرفعال هستند</value>
+  </data>
   <data name="cannot_create_companyDeposit" xml:space="preserve">
     <value>خطا در ایجاد رکورد جدید</value>
+  </data>
+  <data name="CompanyDepositIsAlreadyNotActive" xml:space="preserve">
+    <value>حساب مورد نظر غیرفعال است</value>
   </data>
   <data name="InvalidIban" xml:space="preserve">
     <value>شماره شبا معتبر نمی باشد</value>

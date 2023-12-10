@@ -26,7 +26,13 @@ public class ReadDbContext(DbContextOptions<ReadDbContext> options) : DbContext(
 
     public IQueryable<IPGTypeReadModel> IPGTypeReadModels => Set<IPGTypeReadModel>().AsNoTracking();
 
+    public IQueryable<CompanyIPGReadModel> CompanyIPGReadModels => Set<CompanyIPGReadModel>().AsNoTracking();
+
+    public IQueryable<CompanyIPGDepositReadModel> CompanyIPGDepositReadModels => Set<CompanyIPGDepositReadModel>().AsNoTracking();
+
     public IQueryable<ApplicationCallbackUrlReadModel> ApplicationCallbackUrlReadModels => Set<ApplicationCallbackUrlReadModel>().AsNoTracking();
+
+    public IQueryable<PaymentRequestReadModel> PaymentRequestReadModels=> Set<PaymentRequestReadModel>().AsNoTracking();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -41,7 +47,11 @@ public class ReadDbContext(DbContextOptions<ReadDbContext> options) : DbContext(
             .ApplyConfiguration(new ApplicationReadModelConfiguration())
             .ApplyConfiguration(new ApplicationIdentifierReadModelConfiguration())
             .ApplyConfiguration(new ApplicationCallbackUrlReadModelConfiguration())
+            
             .ApplyConfiguration(new IPGTypeReadModelConfiguration())
+            .ApplyConfiguration(new PaymentRequestReadModelConfiguration());
+            //.ApplyConfiguration(new CompanyIPGReadModelConfiguration())
+            //.ApplyConfiguration(new CompanyIPGDepositReadModelConfiguration())
             ;
     }
 }

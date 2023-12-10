@@ -14,8 +14,6 @@ public class Logo
 {
     private IMinioProvider _provider;
 
-
-
     public string Value { get; init; }
 
     public Logo(IFile file, string uploadFromEntityType, IMinioProvider provider)

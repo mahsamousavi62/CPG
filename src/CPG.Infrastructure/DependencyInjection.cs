@@ -25,6 +25,7 @@ using System.Net;
 using Api.Juros.Infrastructure.External;
 using Confluent.Kafka;
 using System.Net.Http.Headers;
+using CPG.Domain.SharedKernel.ApplicationSettings;
 
 namespace CPG.Infrastructure;
 
@@ -32,25 +33,31 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         => services
+        .AddTransient<IHttpClientFactoryService, HttpClientFactoryService>()
+            .AddScoped<ICharisPayClient, CharisPayClient>()
+            .AddTransient<ICurrentDateTime, CurrentDateTime>()
             .AddDatabase(configuration)
             .AddGraphQLQueries()
-            .AddTokenAuthentication(configuration)
-            .AddTransient<ICurrentDateTime, CurrentDateTime>()
+            . AddTokenAuthentication(configuration)
             .AddMasstransitInfrastructure(configuration)
             .AddScoped<IMinioProvider, MinioProvider>()
             .AddMinio(configuration)
             .AddHttpClient()
-            .AddTransient<IHttpClientFactoryService, HttpClientFactoryService>()
-            .AddScoped<ICharisPayClient, CharisPayClient>()
-        .AddConfigureHttpClientService(configuration);
+            
+            .AddConfigureHttpClientService(configuration);
 
     public static IServiceCollection AddMinio(this IServiceCollection services, IConfiguration configuration)
     {
-           services.AddMinio(configureClient => configureClient
-          .WithEndpoint(configuration["Infrastructure:Minio:EndPoint"])
-          .WithCredentials(configuration["Infrastructure:Minio:AccessKey"],
-           configuration["Infrastructure:Minio:SecretKey"])
-          .WithSSL(false));
+        var serviceProvider = services.BuildServiceProvider();
+        var repository = serviceProvider.GetRequiredService<IApplicationSettingsRepository>();
+        var applicationConfigViewModel = repository.GetAllApplicationSettings().GetAwaiter().GetResult();
+
+
+        services.AddMinio(configureClient => configureClient
+          .WithEndpoint(applicationConfigViewModel.Minio_EndPoint)
+          .WithCredentials(applicationConfigViewModel.Minio_AccessKey,
+          applicationConfigViewModel.Minio_SecretKey)
+          .WithSSL(applicationConfigViewModel.Minio_WithSSL));
 
         return services;
     }
@@ -89,22 +96,12 @@ public static class DependencyInjection
 
     public static IServiceCollection AddConfigureHttpClientService(this IServiceCollection services, IConfiguration configuration)
     {
-        //var retryPolicy = Policy
-        //    .HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode && r.StatusCode != HttpStatusCode.BadRequest)
-        //    .WaitAndRetryAsync(new[]
-        //    {
-        //            TimeSpan.FromSeconds(1),
-        //            TimeSpan.FromSeconds(3),
-        //            TimeSpan.FromSeconds(6)
-        //    });
-
         services.AddHttpClient("charisPayClient", c =>
         {
-            c.BaseAddress =new Uri($"{configuration["Infrastructure:CharisPay:BaseUrl"]}");
+            c.BaseAddress = new Uri($"{configuration["Infrastructure:CharisPay:BaseUrl"]}");
             c.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-        });//.AddPolicyHandler(retryPolicy);
+        });
         return services;
     }
 
@@ -118,7 +115,7 @@ public static class DependencyInjection
             .UseMiddleware<ErrorHandlingMiddleware>()
             .UseTokenAuthentication()
             .UseTokenAuthorization()
-            // .UseAuthenticationMiddleware()
+            .UseAuthenticationMiddleware()
             .UseGraphQLQueries(configuration.GetSection("Infrastructure:GraphQL"), env)
             .UseEndpoints(endpoints =>
             {

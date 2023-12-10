@@ -294,4 +294,43 @@
   <data name="Validation_IBan" xml:space="preserve">
     <value>Validation_IBan</value>
   </data>
+  <data name="CreateProvider" xml:space="preserve">
+    <value>CreateProvider</value>
+  </data>
+  <data name="ProviderLogo" xml:space="preserve">
+    <value>ProviderLogo</value>
+  </data>
+  <data name="ProviderType" xml:space="preserve">
+    <value>ProviderType</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="Vandar" xml:space="preserve">
+    <value>Vandar</value>
+  </data>
+  <data name="CompanyIPGNotFound" xml:space="preserve">
+    <value>CompanyIPGNotFound</value>
+  </data>
+  <data name="CallbackUrls" xml:space="preserve">
+    <value>CallbackUrls</value>
+  </data>
+  <data name="CompanySettings" xml:space="preserve">
+    <value>CompanySettings</value>
+  </data>
+  <data name="PaymentRequestRequiredIbanOrCompany" xml:space="preserve">
+    <value>PaymentRequestRequiredIbanOrCompany</value>
+  </data>
+  <data name="PaymentRequestDuplicateTrackerId" xml:space="preserve">
+    <value>PaymentRequestDuplicateTrackerId</value>
+  </data>
+  <data name="PaymentRequestIbanCompanyInActive" xml:space="preserve">
+    <value>IbanCompanyInActive</value>
+  </data>
+  <data name="PaymentRequestNotDefinedCompanyDeposit" xml:space="preserve">
+    <value>NotDefinedCompanyDeposit</value>
+  </data>
+  <data name="PaymentRequestNotMatchIbanAndCompany" xml:space="preserve">
+    <value>NotMatchIbanAndCompany</value>
+  </data>
 </root>

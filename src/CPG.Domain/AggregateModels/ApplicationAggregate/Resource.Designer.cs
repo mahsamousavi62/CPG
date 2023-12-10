@@ -104,5 +104,14 @@ namespace CPG.Domain.AggregateModels.ApplicationAggregate {
                 return ResourceManager.GetString("Duplicate_IdpClientIds", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to شناسه idp غیرفعال می باشد.
+        /// </summary>
+        internal static string IdpClientIdIsNotActive {
+            get {
+                return ResourceManager.GetString("IdpClientIdIsNotActive", resourceCulture);
+            }
+        }
     }
 }

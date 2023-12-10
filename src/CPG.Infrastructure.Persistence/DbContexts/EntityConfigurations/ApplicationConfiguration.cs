@@ -20,5 +20,9 @@ public class ApplicationConfiguration : IEntityTypeConfiguration<Domain.Aggregat
         entity.HasMany(x => x.ApplicationIdentifiers)
               .WithOne(x => x.Application)
               .HasForeignKey(x => x.ApplicationId);
+
+        entity.HasMany(x => x.PaymentRequests)
+              .WithOne(x => x.Application)
+              .HasForeignKey(x => x.ApplicationId);
     }
 }

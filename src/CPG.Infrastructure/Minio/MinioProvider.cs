@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -36,6 +37,12 @@ public class MinioProvider : IMinioProvider
 
     public async Task<string> PutObject(string uploadFromEntityType, IFile file)
     {
+
+        CultureInfo originalCulture = CultureInfo.CurrentCulture;
+        CultureInfo newCulture = new CultureInfo("en-US");
+        CultureInfo.CurrentCulture = newCulture;
+
+
         var bucketName = _configuration["Infrastructure:Minio:bucketName"];
         var objectName = $"{uploadFromEntityType}/{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid()}_{file.FileName}";
 
@@ -59,6 +66,10 @@ public class MinioProvider : IMinioProvider
         catch (MinioException e)
         {
             return e.Message;
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = originalCulture;
         }
     }
 

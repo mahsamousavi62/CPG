@@ -300,4 +300,52 @@
   <data name="Validation_IBan" xml:space="preserve">
     <value>شبا نامعتبر است</value>
   </data>
+  <data name="CreateProvider" xml:space="preserve">
+    <value>ایجاد سرویس‌دهنده</value>
+  </data>
+  <data name="ProviderLogo" xml:space="preserve">
+    <value>لوگوی سرویس‌دهنده</value>
+  </data>
+  <data name="ProviderType" xml:space="preserve">
+    <value>نوع سرویس‌دهنده</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>نوع</value>
+  </data>
+  <data name="Vandar" xml:space="preserve">
+    <value>وندار</value>
+  </data>
+  <data name="CompanyIPGNotFound" xml:space="preserve">
+    <value>درگاه شرکت با شناسه {0} یافت نشد</value>
+  </data>
+  <data name="CallbackUrls" xml:space="preserve">
+    <value>نشانی‌های بازگشتی (Callback URL)</value>
+  </data>
+  <data name="CompanySettings" xml:space="preserve">
+    <value>تنظیمات شرکت</value>
+  </data>
+
+
+  <data name="PaymentRequestRequiredData" xml:space="preserve">
+    <value>شرکت یا شبای مقصد را وارد کنید</value>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PaymentRequestDuplicateTrackerId" xml:space="preserve">
+    <value>شناسه رهگیری تکراری است</value>
+  </data>
+  <data name="PaymentRequestIbanCompanyInActive" xml:space="preserve">
+    <value>شرکت مربوط به شبای ارائه شده غیرفعال است</value>
+  </data>
+  <data name="PaymentRequestNotDefinedCompanyDeposit" xml:space="preserve">
+    <value>به ازای شبای ارائه شده هیچ حسابی تعریف نشده است</value>
+  </data>
+  <data name="PaymentRequestNotMatchIbanAndCompany" xml:space="preserve">
+    <value>حساب ارائه شده با شرکت مورد نظر ارتباطی نداشته و برای این شرکت تعریف نشده است.</value>
+  </data>
+
+  <data name="PaymentRequestRequiredData" xml:space="preserve">
+    <value>شرکت یا شبای مقصد را وارد کنید</value>
+  </data>
 </root>

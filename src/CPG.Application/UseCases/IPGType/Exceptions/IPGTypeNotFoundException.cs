@@ -1,7 +1,7 @@
 ﻿using CPG.Application.Shared.Resource;
 using CPG.Application.UseCases.Exceptions;
 
-namespace CPG.Application.UseCases.IPGType.Exceptions;
+namespace CPG.Application.UseCases.IPGTypes.Exceptions;
 
 public class IPGTypeNotFoundException(long ipgTypeId) : ApplicationException(string.Format(GlobalResource.IPGTypeNotFound, ipgTypeId))
 {

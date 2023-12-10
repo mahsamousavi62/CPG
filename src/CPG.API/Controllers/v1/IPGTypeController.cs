@@ -1,5 +1,5 @@
-﻿using CPG.Application.UseCases.IPGType.Queries;
-using CPG.Application.UseCases.IPGType.ViewModels;
+﻿using CPG.Application.UseCases.IPGTypes.Queries;
+using CPG.Application.UseCases.IPGTypes.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CPG.API.Controllers.v1
