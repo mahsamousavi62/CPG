@@ -98,6 +98,7 @@ namespace CPG.Application.Shared.Resource {
         
         /// <summary>
         ///   Looks up a localized string similar to Application with Id {0} has not been found..
+        ///   Looks up a localized string similar to Application with Id {0} has not been found..
         /// </summary>
         public static string ApplicationNotFound {
             get {
@@ -205,6 +206,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CompanyIPGNotFound.
+        /// </summary>
+        public static string CompanyIPGNotFound {
+            get {
+                return ResourceManager.GetString("CompanyIPGNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CompanyNotFound.
         /// </summary>
         public static string CompanyNotFound {
@@ -255,6 +265,15 @@ namespace CPG.Application.Shared.Resource {
         public static string CreateDepositCompanyFor {
             get {
                 return ResourceManager.GetString("CreateDepositCompanyFor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CreateProvider.
+        /// </summary>
+        public static string CreateProvider {
+            get {
+                return ResourceManager.GetString("CreateProvider", resourceCulture);
             }
         }
         
@@ -475,6 +494,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ProviderLogo.
+        /// </summary>
+        public static string ProviderLogo {
+            get {
+                return ResourceManager.GetString("ProviderLogo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Provider with Id {0} has not been found..
         /// </summary>
         public static string ProviderNotFound {
@@ -489,6 +517,15 @@ namespace CPG.Application.Shared.Resource {
         public static string Providers {
             get {
                 return ResourceManager.GetString("Providers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ProviderType.
+        /// </summary>
+        public static string ProviderType {
+            get {
+                return ResourceManager.GetString("ProviderType", resourceCulture);
             }
         }
         
@@ -565,6 +602,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        public static string Type {
+            get {
+                return ResourceManager.GetString("Type", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Users.
         /// </summary>
         public static string Users {
@@ -597,6 +643,15 @@ namespace CPG.Application.Shared.Resource {
         public static string Validation_Required {
             get {
                 return ResourceManager.GetString("Validation_Required", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vandar.
+        /// </summary>
+        public static string Vandar {
+            get {
+                return ResourceManager.GetString("Vandar", resourceCulture);
             }
         }
     }

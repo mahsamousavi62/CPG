@@ -1,7 +1,7 @@
 ﻿using Ardalis.GuardClauses;
-using CPG.Application.UseCases.IPGType.Exceptions;
-using CPG.Application.UseCases.IPGType.Queries;
-using CPG.Application.UseCases.IPGType.ViewModels;
+using CPG.Application.UseCases.IPGTypes.Exceptions;
+using CPG.Application.UseCases.IPGTypes.Queries;
+using CPG.Application.UseCases.IPGTypes.ViewModels;
 using CPG.Domain.SharedKernel.Minio;
 using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;

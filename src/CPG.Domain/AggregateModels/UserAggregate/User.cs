@@ -10,6 +10,10 @@ namespace CPG.Domain.AggregateModels.UserAggregate
 {
     public class User : Entity<long>, IAggregateRoot
     {
+        public User()
+        {
+            
+        }
         public User(string iDPId, string nationalCode, string firstName, string lastName, string phoneNumber)
         {
             IDPId = iDPId;
