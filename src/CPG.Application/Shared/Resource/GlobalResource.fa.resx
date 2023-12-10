@@ -315,4 +315,7 @@
   <data name="Vandar" xml:space="preserve">
     <value>وندار</value>
   </data>
+  <data name="CallbackUrls" xml:space="preserve">
+    <value>نشانی‌های بازگشتی (Callback URL)</value>
+  </data>
 </root>

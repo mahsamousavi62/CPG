@@ -309,4 +309,7 @@
   <data name="Vandar" xml:space="preserve">
     <value>Vandar</value>
   </data>
+  <data name="CallbackUrls" xml:space="preserve">
+    <value>CallbackUrls</value>
+  </data>
 </root>

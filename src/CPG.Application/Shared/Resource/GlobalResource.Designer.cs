@@ -169,6 +169,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CallbackUrls.
+        /// </summary>
+        public static string CallbackUrls {
+            get {
+                return ResourceManager.GetString("CallbackUrls", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string Cancel {
