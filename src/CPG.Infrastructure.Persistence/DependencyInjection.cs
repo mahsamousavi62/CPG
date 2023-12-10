@@ -23,6 +23,7 @@ using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Infrastructure.Persistence.Interceptors;
 using Ardalis.Specification;
 using CPG.Domain.SharedKernel.ApplicationSettings;
+using System;
 
 namespace CPG.Infrastructure.Persistence
 {
