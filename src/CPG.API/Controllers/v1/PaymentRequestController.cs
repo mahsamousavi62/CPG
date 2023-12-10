@@ -13,7 +13,7 @@ namespace CPG.API.Controllers.v1
     public class PaymentRequestController : ApiBaseController
     {
         [HttpGet]
-        [ProducesResponseType(typeof(IReadOnlyCollection<PaymentRequestVm>), 200)]
+        [ProducesResponseType(typeof(IReadOnlyCollection<PaymentRequestViewModel>), 200)]
         public async Task<IActionResult> Get()
         {
             return Ok(await Mediator.Send(new GetPaymentRequestQuery()));
@@ -26,8 +26,8 @@ namespace CPG.API.Controllers.v1
         /// <returns></returns>
         [Authorize]
         [HttpPost]
-        [ProducesResponseType(typeof(PaymentRequestViewModel),200)]
-        public async Task<ActionResult<PaymentRequestViewModel>> PaymentRequest([FromBody]CreatePaymentRequestViewModel model)
+        [ProducesResponseType(typeof(PaymentRequestResponseViewModel),200)]
+        public async Task<ActionResult<PaymentRequestResponseViewModel>> PaymentRequest([FromBody]CreatePaymentRequestViewModel model)
         => Ok(await Mediator.Send(new CreatePaymentRequestCommand(model)));
     }
 }

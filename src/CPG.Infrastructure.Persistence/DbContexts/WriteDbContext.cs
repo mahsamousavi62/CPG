@@ -35,6 +35,7 @@ public class WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator 
 
     public DbSet<CompanyIPG> CompanyIPGs { get; set; }
     public DbSet<CompanyIPGDeposit> CompanyIPGDeposits { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
         => modelBuilder
             .ApplyConfiguration(new ApplicationSettingsConfiguration())

@@ -14,16 +14,16 @@ using System.Threading.Tasks;
 namespace CPG.Infrastructure.Persistence.QueryHandlers.PaymentRequests
 {
     public class GetPaymentRequestQueryHandler(ReadDbContext context) :
-        IRequestHandler<GetPaymentRequestQuery, IReadOnlyCollection<PaymentRequestVm>>
+        IRequestHandler<GetPaymentRequestQuery, IReadOnlyCollection<PaymentRequestViewModel>>
     {
         private readonly ReadDbContext _context = context;
     
-        public async Task<IReadOnlyCollection<PaymentRequestVm>> Handle(GetPaymentRequestQuery request, CancellationToken cancellationToken)
+        public async Task<IReadOnlyCollection<PaymentRequestViewModel>> Handle(GetPaymentRequestQuery request, CancellationToken cancellationToken)
         {
             var paymentRequests= await _context.PaymentRequestReadModels.Include(p => p.Application)
                 .Include(p=>p.Company).ToListAsync(cancellationToken);
 
-            return paymentRequests.Select(p=>new PaymentRequestVm 
+            return paymentRequests.Select(p=>new PaymentRequestViewModel 
             { ApplicationId = p.ApplicationId,
             Amount = p.Amount,
             ApplicationName =p.Application.PersianName,

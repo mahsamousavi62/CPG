@@ -1,7 +1,6 @@
 ﻿using CPG.Infrastructure.Persistence.DbContexts.ReadModels;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
-using CPG.Domain.SeedWork;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations.ReadModelsConfiguration;
 
@@ -11,6 +10,7 @@ public class BankReadModelConfiguration : IEntityTypeConfiguration<BankReadModel
     {
         readModel.ToTable("Bank");
         readModel.HasKey(x => x.Id);
+
         readModel.Property(x => x.Id).HasColumnName("Id");
         readModel.Property(x => x.Name).HasColumnName("Name");
         readModel.Property(x => x.IbanPrefix).HasColumnName("IbanPrefix");
