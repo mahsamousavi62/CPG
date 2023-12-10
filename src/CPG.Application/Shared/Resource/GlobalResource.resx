@@ -312,4 +312,10 @@
   <data name="CompanyIPGNotFound" xml:space="preserve">
     <value>CompanyIPGNotFound</value>
   </data>
+  <data name="CallbackUrls" xml:space="preserve">
+    <value>CallbackUrls</value>
+  </data>
+  <data name="CompanySettings" xml:space="preserve">
+    <value>CompanySettings</value>
+  </data>
 </root>

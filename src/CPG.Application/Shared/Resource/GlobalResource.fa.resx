@@ -318,6 +318,12 @@
   <data name="CompanyIPGNotFound" xml:space="preserve">
     <value>درگاه شرکت با شناسه {0} یافت نشد</value>
   </data>
+  <data name="CallbackUrls" xml:space="preserve">
+    <value>نشانی‌های بازگشتی (Callback URL)</value>
+  </data>
+  <data name="CompanySettings" xml:space="preserve">
+    <value>تنظیمات شرکت</value>
+  </data>
 
 
   <data name="PaymentRequestRequiredData" xml:space="preserve">

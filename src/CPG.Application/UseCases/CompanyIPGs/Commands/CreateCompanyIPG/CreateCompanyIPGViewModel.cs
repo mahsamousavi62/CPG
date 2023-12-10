@@ -2,12 +2,18 @@
 
 namespace CPG.Application.UseCases.CompanyIPGs.Commands.CreateCompanyIPG;
 
-public class CreateCompanyIPGViewModel
+public class CreateCompanyIPGViewModel(long companyId,
+    long providerId,
+    long iPGTypeId,
+    string providerData,
+    short verificationTimeLimit,
+    CompanyIPGDepositViewModel[] companyIPGDeposits
+    )
 {
-    public long CompanyId { get; set; }
-    public long ProviderId { get; set; }
-    public long IPGTypeId { get; set; }
-    public string ProviderData { get; set; }
-    public short VerificationTimeLimit { get; set; }
-    public CompanyIPGDepositViewModel[] CompanyIPGDeposits { get; set; }
+    public long CompanyId { get; set; } = companyId;
+    public long ProviderId { get; set; } = providerId;
+    public long IPGTypeId { get; set; } = iPGTypeId;
+    public string ProviderData { get; set; } = providerData;
+    public short VerificationTimeLimit { get; set; } = verificationTimeLimit;
+    public CompanyIPGDepositViewModel[] CompanyIPGDeposits { get; set; } = companyIPGDeposits;
 }
