@@ -1,23 +1,22 @@
-﻿using System;
-using HotChocolate.AspNetCore;
+﻿using CPG.Application.UseCases.Common.Queries;
 using CPG.Domain.SharedKernel;
 using CPG.Infrastructure.Persistence.DbContexts;
 using CPG.Infrastructure.Persistence.GraphQL.ErrorHandling;
 using CPG.Infrastructure.Persistence.GraphQL.Queries;
 using CPG.Infrastructure.Persistence.GraphQL.Types;
+using CPG.Infrastructure.Persistence.Interceptors;
+using CPG.Infrastructure.Persistence.Redis;
 using CPG.Infrastructure.Persistence.Repositories;
+using HotChocolate.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using CPG.Application.UseCases.Common.Queries;
-using CPG.Infrastructure.Persistence.Redis;
-using Microsoft.EntityFrameworkCore.Diagnostics;
-using CPG.Domain.AggregateModels.CompanyAggregate;
-using CPG.Infrastructure.Persistence.Interceptors;
+using System;
 
 namespace CPG.Infrastructure.Persistence
 {
