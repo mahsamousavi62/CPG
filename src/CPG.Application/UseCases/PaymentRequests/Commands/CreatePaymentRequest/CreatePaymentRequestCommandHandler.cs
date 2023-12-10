@@ -38,7 +38,7 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
     private readonly IApplicationSettingsRepository _applicationSettingsRepository = applicationSettingsRepository;
     private readonly IAuthenticationService _authenticationService = authenticationService;
     private readonly IAggregateRepository<Domain.AggregateModels.ApplicationAggregate.Application> _applicationRepository = applicationRepository;
-   
+
     public async Task<PaymentRequestViewModel> Handle(CreatePaymentRequestCommand request, CancellationToken cancellationToken)
     {
         await Validate(request.Model);
@@ -47,13 +47,17 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
 
         var config = await _applicationSettingsRepository.GetAllApplicationSettings();
         var clientId = await _authenticationService.GetClientId(config.Authority);
+
         //applicationIdentifier
         var application = await _applicationRepository.GetBySpecAsync(new ApplicationByIdpClientId(clientId));
         if (application == null)
             throw new ApplicationNotFoundException(application.Id);
         if (!application.IsActive)
             throw new ApplicationIsNotActiveException(application.Id);
-        
+        if (application.ApplicationIdentifiers.SingleOrDefault(a => a.IdpClientId == clientId).IsActive)
+            throw new IdpClientIdIsNotActiveException(clientId);
+
+
         paymentRequest.ApplicationId = application.Id;
         PaymentRequest.Create(paymentRequest, config.ExpireTime, clientId, application.EnglishName);
 
@@ -76,14 +80,14 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
 
         //TODO: check applicationcallbackurl exsist
 
-            //TODO:check callbackUrl
-            //نحوه تشخیص تمامی روش های پرداختی مربوط به شرکتTODO:
+        //TODO:check callbackUrl
+        //نحوه تشخیص تمامی روش های پرداختی مربوط به شرکتTODO:
 
         var amount = new Amount(model.Amount);
         var callBackUrl = new Url(model.CallBackUrl);
         var nationalCode = new NationalCode(model.NationalCode);
 
-        if (model.CompanyId.HasValue && model.CompanyId!=0)
+        if (model.CompanyId.HasValue && model.CompanyId != 0)
         {
             var company = await _companyRepository.GetBySpecAsync(new CompanyByIdSpec(model.CompanyId.Value));
 
@@ -93,7 +97,7 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
             if (!company.IsActive)
                 throw new CompanyIsNotActiveException(model.CompanyId.Value);
 
-            if ( company.CompanyDeposits.Count==0)
+            if (company.CompanyDeposits.Count == 0)
                 throw new CompanyHasNotCompanyDepositException(model.CompanyId.Value);
 
             if (company.CompanyDeposits.Where(cd => cd.IsActive).Count() == 0)
@@ -119,7 +123,7 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
             if (!companyDeposit.Company.IsActive)
                 throw new PaymentRequestIbanCompanyInActiveException();
 
-          if (!model.CompanyId.HasValue || model.CompanyId == 0) 
+            if (!model.CompanyId.HasValue || model.CompanyId == 0)
                 model.CompanyId = companyDeposit.CompanyId;
         }
         var sameTrackerId = await _paymentRequestRepository.GetBySpecAsync(new PaymentRequestByTrackerId(model.TrackerId));

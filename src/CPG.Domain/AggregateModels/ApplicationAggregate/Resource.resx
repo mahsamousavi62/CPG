@@ -132,4 +132,7 @@
   <data name="Duplicate_IdpClientIds" xml:space="preserve">
     <value>شناسه یا شناسه های {0} قبلا ثبت شده است</value>
   </data>
+  <data name="IdpClientIdIsNotActive" xml:space="preserve">
+    <value>شناسه idp غیرفعال می باشد</value>
+  </data>
 </root>
