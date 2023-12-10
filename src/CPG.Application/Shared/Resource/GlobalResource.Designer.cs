@@ -98,6 +98,7 @@ namespace CPG.Application.Shared.Resource {
         
         /// <summary>
         ///   Looks up a localized string similar to Application with Id {0} has not been found..
+        ///   Looks up a localized string similar to Application with Id {0} has not been found..
         /// </summary>
         public static string ApplicationNotFound {
             get {
@@ -201,6 +202,15 @@ namespace CPG.Application.Shared.Resource {
         public static string CompanyLogo {
             get {
                 return ResourceManager.GetString("CompanyLogo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CompanyIPGNotFound.
+        /// </summary>
+        public static string CompanyIPGNotFound {
+            get {
+                return ResourceManager.GetString("CompanyIPGNotFound", resourceCulture);
             }
         }
         

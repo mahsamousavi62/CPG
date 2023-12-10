@@ -1,15 +1,21 @@
 ﻿using CPG.Domain.AggregateModels.CompanyIPGAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
 
 namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations
 {
     public class CompanyIPGDepositConfiguration : IEntityTypeConfiguration<CompanyIPGDeposit>
     {
-        public void Configure(EntityTypeBuilder<CompanyIPGDeposit> builder)
+        public void Configure(EntityTypeBuilder<CompanyIPGDeposit> entity)
         {
-            throw new NotImplementedException();
+            entity.ToTable("CompanyIPGDeposit");
+            entity.HasKey(x => x.Id);
+
+            entity.Ignore(x => x.DomainEvents);
+            entity.Property(x => x.Id).HasColumnName("Id").UseIdentityColumn();
+            entity.Property(x => x.CompanyIPGId).HasColumnName("CompanyIPGId").IsRequired();
+            entity.Property(x => x.CompanyDepositId).HasColumnName("CompanyDepositId").IsRequired();
+            entity.Property(x => x.IsDefault).HasColumnName("IsDefault").HasColumnType("bit").IsRequired();
         }
     }
 }

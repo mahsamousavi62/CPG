@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="UseCases\CompanyIPG\**" />
+    <EmbeddedResource Remove="UseCases\CompanyIPG\**" />
+    <None Remove="UseCases\CompanyIPG\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="IdentityModel" Version="6.2.0" />
     <PackageReference Include="MediatR" Version="12.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
@@ -47,10 +53,7 @@
     <Folder Include="UseCases\Application\EventHandlers\" />
     <Folder Include="UseCases\Banks\EventHandlers\" />
     <Folder Include="UseCases\Common\Commands\" />
-    <Folder Include="UseCases\CompanyIPG\Commands\CreateCompanyIPG\" />
-    <Folder Include="UseCases\CompanyIPG\EventHandler\" />
-    <Folder Include="UseCases\CompanyIPG\Exceptions\" />
-    <Folder Include="UseCases\CompanyIPG\Queries\" />
+    <Folder Include="UseCases\CompanyIPGs\EventHandler\" />
     <Folder Include="UseCases\Providers\Commands\UpdateProvider\" />
     <Folder Include="UseCases\Providers\EventHandlers\" />
   </ItemGroup>

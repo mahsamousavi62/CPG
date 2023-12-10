@@ -315,4 +315,7 @@
   <data name="Vandar" xml:space="preserve">
     <value>وندار</value>
   </data>
+  <data name="CompanyIPGNotFound" xml:space="preserve">
+    <value>درگاه شرکت با شناسه {0} یافت نشد</value>
+  </data>
 </root>
