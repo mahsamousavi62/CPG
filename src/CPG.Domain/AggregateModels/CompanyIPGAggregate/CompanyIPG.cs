@@ -36,7 +36,7 @@ namespace CPG.Domain.AggregateModels.CompanyIPGAggregate
         {
             var companyIpg = new CompanyIPG(companyId, providerId, ipgTypeId, verificationTimeLimit, providerData);
             var ipgDeposits = CompanyIPGDeposit.Create(details.Select(t => new { t.CompanyDepositId, t.IsDefault }).ToArray());
-            companyIpg.IPGDeposits.AddRange(ipgDeposits);
+            //companyIpg.IPGDeposits.AddRange(ipgDeposits);
             return companyIpg;
         }
     }

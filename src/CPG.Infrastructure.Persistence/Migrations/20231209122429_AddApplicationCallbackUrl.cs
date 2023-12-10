@@ -26,7 +26,7 @@ namespace CPG.Infrastructure.Persistence.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CallbackUrl = table.Column<string>(type: "varchar(512)", maxLength: 512, nullable: false),
+                    CallbackUrl = table.Column<string>(type: "varchar(2048)", maxLength: 2048, nullable: false),
                     ApplicationId = table.Column<long>(type: "bigint", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),

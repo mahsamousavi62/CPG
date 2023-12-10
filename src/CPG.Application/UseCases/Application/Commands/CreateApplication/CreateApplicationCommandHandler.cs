@@ -44,8 +44,6 @@ internal class CreateApplicationCommandHandler(IAggregateRepository<Domain.Aggre
         //    throw new DuplicateIdpClientIdsException(string.Join('-', idpClientIds.Select(t => t.IdpClientId)));
         //}
         
-        PersianName persianName = new(request.Model.PersianName);
-        EnglishName englishName = new(request.Model.EnglishName);
         Logo logo = new(request.Model.File, Enums.UploadFromEntityType.Application.ToString(), _minioProvider);
         Url responseUrl = new(request.Model.ResponseApiUrl);
         var urls = request.Model.CallbackUrls.Select(t => new Url(t)).ToArray();
