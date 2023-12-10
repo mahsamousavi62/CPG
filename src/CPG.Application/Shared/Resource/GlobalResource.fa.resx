@@ -300,8 +300,28 @@
   <data name="Validation_IBan" xml:space="preserve">
     <value>شبا نامعتبر است</value>
   </data>
-  <data name="PaymentRequestRequiredIbanOrCompany" xml:space="preserve">
-    <value>هر 2 پارامتر شناسه شرکت و شبای مقصد نمیتواند به صورت همزمان خالی باشد</value>
+  <data name="CreateProvider" xml:space="preserve">
+    <value>ایجاد سرویس‌دهنده</value>
+  </data>
+  <data name="ProviderLogo" xml:space="preserve">
+    <value>لوگوی سرویس‌دهنده</value>
+  </data>
+  <data name="ProviderType" xml:space="preserve">
+    <value>نوع سرویس‌دهنده</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>نوع</value>
+  </data>
+  <data name="Vandar" xml:space="preserve">
+    <value>وندار</value>
+  </data>
+  <data name="CompanyIPGNotFound" xml:space="preserve">
+    <value>درگاه شرکت با شناسه {0} یافت نشد</value>
+  </data>
+
+
+  <data name="PaymentRequestRequiredData" xml:space="preserve">
+    <value>شرکت یا شبای مقصد را وارد کنید</value>
   </data>
   <data name="String1" xml:space="preserve">
     <value />

@@ -45,6 +45,7 @@ public class Enums
     public enum ProviderType : byte
     {
         Vandar = 1,
+        AsanPardakht = 2,
     }
 }
 

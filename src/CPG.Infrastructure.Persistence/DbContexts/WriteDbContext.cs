@@ -12,6 +12,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using CPG.Domain.AggregateModels.ApplicationAggregate;
 using CPG.Domain.AggregateModels.ProviderAggregate;
+using CPG.Domain.AggregateModels.CompanyIPGAggregate;
 
 namespace CPG.Infrastructure.Persistence.DbContexts;
 
@@ -32,6 +33,8 @@ public class WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator 
     public DbSet<IPGType> IPGTypes { get; set; }
     public DbSet<PaymentRequest> PaymentRequests { get; set; }
 
+    public DbSet<CompanyIPG> CompanyIPGs { get; set; }
+    public DbSet<CompanyIPGDeposit> CompanyIPGDeposits { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
         => modelBuilder
             .ApplyConfiguration(new ApplicationSettingsConfiguration())
@@ -43,8 +46,8 @@ public class WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator 
             .ApplyConfiguration(new ProviderConfiguration())
             .ApplyConfiguration(new CompanyDepositConfiguration())
             .ApplyConfiguration(new IPGTypeConfiguration())
-            //.ApplyConfiguration(new CompanyIPGConfiguration())
-            //.ApplyConfiguration(new CompanyIPGDepositConfiguration())
+            .ApplyConfiguration(new CompanyIPGConfiguration())
+            .ApplyConfiguration(new CompanyIPGDepositConfiguration())
             .ApplyConfiguration(new ApplicationConfiguration())
             .ApplyConfiguration(new ApplicationIdentifierConfiguration())
             .ApplyConfiguration(new PaymentRequestConfiguration())

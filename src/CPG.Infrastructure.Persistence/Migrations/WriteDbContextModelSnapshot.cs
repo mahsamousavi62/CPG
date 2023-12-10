@@ -147,7 +147,7 @@ namespace CPG.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("CallbackUrl")
                         .IsRequired()
-                        .HasMaxLength(512)
+                        .HasMaxLength(2048)
                         .HasColumnType("varchar")
                         .HasColumnName("CallbackUrl");
 
@@ -342,7 +342,7 @@ namespace CPG.Infrastructure.Persistence.Migrations
 
                     b.ToTable("CompanyPaymentMethods", (string)null);
                 });
-
+                       
             modelBuilder.Entity("CPG.Domain.AggregateModels.IPGTypeAggregate.IPGType", b =>
                 {
                     b.Property<long>("Id")
@@ -731,7 +731,7 @@ namespace CPG.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("CPG.Domain.AggregateModels.BankAggregate.Bank", b =>
                 {
-                    b.OwnsOne("CPG.Domain.AggregateModels.BankAggregate.IbanPrefix", "IbanPrefix", b1 =>
+                    b.OwnsOne("CPG.Domain.AggregateModels.BankAggregate.Bank.IbanPrefix#CPG.Domain.AggregateModels.BankAggregate.IbanPrefix", "IbanPrefix", b1 =>
                         {
                             b1.Property<int>("BankId")
                                 .HasColumnType("int");
@@ -744,7 +744,7 @@ namespace CPG.Infrastructure.Persistence.Migrations
 
                             b1.HasKey("BankId");
 
-                            b1.ToTable("Bank");
+                            b1.ToTable("Bank", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("BankId");
@@ -763,7 +763,7 @@ namespace CPG.Infrastructure.Persistence.Migrations
 
                     b.Navigation("Company");
                 });
-
+                        
             modelBuilder.Entity("CPG.Domain.AggregateModels.UserAggregate.User", b =>
                 {
                     b.HasOne("CPG.Domain.AggregateModels.CompanyAggregate.Company", "Company")

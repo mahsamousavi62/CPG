@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static CPG.Domain.SharedKernel.Enums;
 
-namespace CPG.Application.UseCases.IPGType.ViewModels;
+namespace CPG.Application.UseCases.IPGTypes.ViewModels;
 
 public class IPGTypeViewModel
 {
