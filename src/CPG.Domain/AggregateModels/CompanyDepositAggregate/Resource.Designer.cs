@@ -61,11 +61,29 @@ namespace CPG.Domain.AggregateModels.CompanyDepositAggregate {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to تمامی حساب های شرکت مورد نظر غیرفعال هستند.
+        /// </summary>
+        internal static string AllCompanyDepositsInActive {
+            get {
+                return ResourceManager.GetString("AllCompanyDepositsInActive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to خطا در ایجاد رکورد جدید.
         /// </summary>
         internal static string cannot_create_companyDeposit {
             get {
                 return ResourceManager.GetString("cannot_create_companyDeposit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to حساب مورد نظر غیرفعال است.
+        /// </summary>
+        internal static string CompanyDepositIsAlreadyNotActive {
+            get {
+                return ResourceManager.GetString("CompanyDepositIsAlreadyNotActive", resourceCulture);
             }
         }
         

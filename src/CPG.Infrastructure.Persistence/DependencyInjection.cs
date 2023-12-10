@@ -16,6 +16,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using CPG.Application.UseCases.Common.Queries;
+using CPG.Infrastructure.Persistence.Redis;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using CPG.Domain.AggregateModels.CompanyAggregate;
+using CPG.Infrastructure.Persistence.Interceptors;
+using Ardalis.Specification;
+using CPG.Domain.SharedKernel.ApplicationSettings;
 using System;
 
 namespace CPG.Infrastructure.Persistence
@@ -35,17 +42,19 @@ namespace CPG.Infrastructure.Persistence
                     options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
 
                     options.EnableDetailedErrors();
-                    options.UseSqlServer(configuration.GetConnectionString(ConnectionStringConfigName));
+                    options.EnableSensitiveDataLogging().UseSqlServer(configuration.GetConnectionString(ConnectionStringConfigName));
                 })
                 .AddDbContext<ReadDbContext>(options =>
                 {
                     options.EnableDetailedErrors();
-                    options.UseSqlServer(configuration.GetConnectionString(ConnectionStringConfigName));
+                    options.UseSqlServer(configuration.GetConnectionString(ConnectionStringConfigName))
+                    .LogTo(Console.WriteLine);
                 })
                 .AddScoped(typeof(IAggregateRepository<>), typeof(AggregateRepository<>))
                 .AddScoped(typeof(IAggregateReadRepository<>), typeof(AggregateRepository<>))
                 .AddScoped(typeof(IReadRepository<>), typeof(ReadRepository<>))
                 .AddScoped(typeof(ICommonServiceRepository<>), typeof(CommonServiceRepository<>))
+                .AddScoped(typeof(IApplicationSettingsRepository), typeof(ApplicationSettingsRepository))
                 .AddScoped<IRedisCaheService, RedisCacheService>();
 
             _ = bool.TryParse(configuration["Redis:Enable"], out var enableRedis);

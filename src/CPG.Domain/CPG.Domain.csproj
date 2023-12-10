@@ -8,6 +8,7 @@
     <PackageReference Include="Ardalis.GuardClauses" Version="4.2.0" />
     <PackageReference Include="Ardalis.Specification" Version="7.0.0" />
     <PackageReference Include="IdentityModel" Version="6.2.0" />
+    <PackageReference Include="Mapster" Version="7.4.0" />
     <PackageReference Include="MediatR" Version="12.2.0" />
     <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="8.0.0" />
 	  <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="6.0.0" />
@@ -31,6 +32,11 @@
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
     <Compile Update="AggregateModels\CompanyIPGAggregate\Resource.Designer.cs">
+      <DependentUpon>Resource.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="AggregateModels\PaymentRequestAggregate\Resource.Designer.cs">
       <DependentUpon>Resource.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -65,6 +71,10 @@
       <LastGenOutput>Resource.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
+    <EmbeddedResource Update="AggregateModels\PaymentRequestAggregate\Resource.resx">
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="AggregateModels\ProviderAggregate\Resource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource.Designer.cs</LastGenOutput>
@@ -89,6 +99,7 @@
     <Folder Include="AggregateModels\CompanyIPGAggregate\Guards\" />
     <Folder Include="AggregateModels\CompanyIPGAggregate\Specifications\" />
     <Folder Include="AggregateModels\CompanyIPGAggregate\Specifications\" />
+    <Folder Include="AggregateModels\PaymentRequestAggregate\Events\" />
     <Folder Include="AggregateModels\ProviderAggregate\Guards\" />
     <Folder Include="AggregateModels\CompanyDepositAggregate\Guards\" />
     <Folder Include="AggregateModels\UserAggregate\Idp\" />

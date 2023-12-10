@@ -1,9 +1,5 @@
-﻿@CPG.API_HostAddress = http://localhost:5144
+﻿@CPG.API_HostAddress = https://localhost:7050
 
-GET {{CPG.API_HostAddress}}/api/application/all
-
-###
-
-GET {{CPG.API_HostAddress}}/api/banks/all
+GET {{CPG.API_HostAddress}}/api/common/resources
 
 ###
