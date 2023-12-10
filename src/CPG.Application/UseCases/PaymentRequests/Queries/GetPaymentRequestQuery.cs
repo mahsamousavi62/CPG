@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CPG.Application.UseCases.PaymentRequests.Queries
 {
-    public class GetPaymentRequestQuery:IRequest<IReadOnlyCollection<PaymentRequestVm>>
+    public class GetPaymentRequestQuery:IRequest<IReadOnlyCollection<PaymentRequestViewModel>>
     {
     }
 }

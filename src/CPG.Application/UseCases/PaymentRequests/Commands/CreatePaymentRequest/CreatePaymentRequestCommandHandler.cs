@@ -29,7 +29,7 @@ namespace CPG.Application.UseCases.PaymentRequests.Commands.CreatePaymentRequest
 public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequest> paymentRequestRepository,
     IAggregateRepository<CompanyDeposit> companyDepositRepository, IAggregateRepository<Company> companyRepository,
    IApplicationSettingsRepository applicationSettingsRepository, IAuthenticationService authenticationService,
-    IAggregateRepository<CPG.Domain.AggregateModels.ApplicationAggregate.Application> applicationRepository) : IRequestHandler<CreatePaymentRequestCommand, PaymentRequestViewModel>
+    IAggregateRepository<CPG.Domain.AggregateModels.ApplicationAggregate.Application> applicationRepository) : IRequestHandler<CreatePaymentRequestCommand, PaymentRequestResponseViewModel>
 {
 
     private readonly IAggregateRepository<PaymentRequest> _paymentRequestRepository = paymentRequestRepository;
@@ -39,7 +39,7 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
     private readonly IAuthenticationService _authenticationService = authenticationService;
     private readonly IAggregateRepository<Domain.AggregateModels.ApplicationAggregate.Application> _applicationRepository = applicationRepository;
 
-    public async Task<PaymentRequestViewModel> Handle(CreatePaymentRequestCommand request, CancellationToken cancellationToken)
+    public async Task<PaymentRequestResponseViewModel> Handle(CreatePaymentRequestCommand request, CancellationToken cancellationToken)
     {
         await Validate(request.Model);
 
@@ -64,7 +64,7 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
         await _paymentRequestRepository.AddAsync(paymentRequest);
         await _paymentRequestRepository.SaveChangesAsync();
 
-        return new PaymentRequestViewModel
+        return new PaymentRequestResponseViewModel
         {
             ExpirationDateTime = paymentRequest.UrlExpirationDateTime,
             Code = paymentRequest.Code,
@@ -100,7 +100,7 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
             if (company.CompanyDeposits.Count == 0)
                 throw new CompanyHasNotCompanyDepositException(model.CompanyId.Value);
 
-            if (company.CompanyDeposits.Where(cd => cd.IsActive).Count() == 0)
+            if (!company.CompanyDeposits.All(cd => cd.IsActive))
                 throw new AllCompanyDepositsIsInActiveException(model.CompanyId.Value);
         }
 
