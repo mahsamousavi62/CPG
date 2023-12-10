@@ -31,9 +31,17 @@ namespace CPG.Infrastructure.Persistence.Repositories
             cacheData = new ApplicationConfigViewModel();
             var type = cacheData.GetType();
             var prs = type.GetProperties();
-            foreach (var item in prs)
+            try
             {
-                item.SetValue(cacheData, Convert.ChangeType(appSettings[item.Name], Type.GetTypeCode(item.PropertyType)));
+                foreach (var item in prs)
+                {
+                    item.SetValue(cacheData, Convert.ChangeType(appSettings[item.Name], Type.GetTypeCode(item.PropertyType)));
+                }
+            }
+            catch (Exception)
+            {
+
+                
             }
 
             _cacheService.SetData(CacheKey, cacheData);
