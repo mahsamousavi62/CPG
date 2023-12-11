@@ -51,17 +51,26 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
 
         paymentRequest.Status = 1;
         await _paymentRequestRepository.UpdateAsync(paymentRequest);
-        var company = await _companyRepository.GetBySpecAsync(new CompanyWithDepositsBankByIdSpec(paymentRequest.CompanyId), cancellationToken);
+
+        Company company = null;
+        if (!string.IsNullOrEmpty(paymentRequest.DestinationIban))
+        {
+            company = await _companyRepository.GetBySpecAsync(new CompanyByIdAndDepositIbanSpec(paymentRequest.CompanyId, paymentRequest.DestinationIban), cancellationToken);
+        }
+        else
+        {
+            company = await _companyRepository.GetBySpecAsync(new CompanyFullDataByIdSpec(paymentRequest.CompanyId), cancellationToken);
+        }
 
         if (!company.IsActive)
         {
             throw new CompanyIsInactiveException(company.PersianName);
-
         }
 
         return new PaymentMethodsViewModel
         {
             Amount = paymentRequest.Amount,
+            //IPGs = company.
         };
     }
 }

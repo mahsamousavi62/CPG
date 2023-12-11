@@ -6,6 +6,6 @@ namespace CPG.Application.UseCases.PaymentRequests.ViewModels;
 public class PaymentMethodsViewModel
 {
     public decimal Amount { get; set; }
-    List<CompanyIPG> IPGs { get; set; }
+    public List<CompanyIPG> IPGs { get; set; }
 }
 
