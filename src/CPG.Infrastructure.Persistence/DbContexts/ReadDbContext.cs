@@ -47,11 +47,11 @@ public class ReadDbContext(DbContextOptions<ReadDbContext> options) : DbContext(
             .ApplyConfiguration(new ApplicationReadModelConfiguration())
             .ApplyConfiguration(new ApplicationIdentifierReadModelConfiguration())
             .ApplyConfiguration(new ApplicationCallbackUrlReadModelConfiguration())
-            
             .ApplyConfiguration(new IPGTypeReadModelConfiguration())
-            .ApplyConfiguration(new PaymentRequestReadModelConfiguration());
+            .ApplyConfiguration(new PaymentRequestReadModelConfiguration())
             //.ApplyConfiguration(new CompanyIPGReadModelConfiguration())
             //.ApplyConfiguration(new CompanyIPGDepositReadModelConfiguration())
             ;
+
     }
 }

@@ -14,25 +14,22 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using CPG.Application.UseCases.Companies.ViewModels;
 
-namespace CPG.Infrastructure.Persistence.QueryHandlers.CompanyDeposit
+namespace CPG.Infrastructure.Persistence.QueryHandlers.CompanyDeposit;
+
+public class GetAllCompanyDepositQueryHandler(ReadDbContext context, IMinioProvider minioProvider) : IRequestHandler<GetAllCompanyDepositQuery, IReadOnlyCollection<CompanyDepositViewModel>>
 {
-    public class GetAllCompanyDepositQueryHandler : IRequestHandler<GetAllCompanyDepositQuery, IReadOnlyCollection<CompanyDepositViewModel>>
+    private readonly ReadDbContext _context = context;
+    private readonly IMinioProvider _minioProvider = minioProvider;
+
+    public async Task<IReadOnlyCollection<CompanyDepositViewModel>> Handle(GetAllCompanyDepositQuery request, CancellationToken cancellationToken)
     {
-        private readonly ReadDbContext _context;
-        private readonly IMinioProvider _minioProvider;
+        var companyDeposits = await _context.CompanyDepositReadModels
+            .Include(c => c.Bank)
+            .Include(c => c.Company)
+            .ToListAsync(cancellationToken);
 
-        public GetAllCompanyDepositQueryHandler(ReadDbContext context, IMinioProvider minioProvider)
-        {
-            _context = context;
-            _minioProvider = minioProvider;
-        }
-
-        public async Task<IReadOnlyCollection<CompanyDepositViewModel>> Handle(GetAllCompanyDepositQuery request, CancellationToken cancellationToken)
-        {
-            var companyDeposits = await _context.CompanyDepositReadModels.Include(c => c.Bank).Include(c => c.Company).ToListAsync(cancellationToken);
-
-            var companyViewModels = await Task.WhenAll( 
-                companyDeposits.Select(async company => new CompanyDepositViewModel
+        var companyViewModels = await Task.WhenAll( 
+            companyDeposits.Select(async company => new CompanyDepositViewModel
             {
                 Id = company.Id,
                 Name = company.Name,
@@ -46,8 +43,9 @@ namespace CPG.Infrastructure.Persistence.QueryHandlers.CompanyDeposit
                 CreationDate = company.CreationDate,
                 IsActive = company.IsActive,
                 ModificationDate = company.ModificationDate,
-            })).ConfigureAwait(false);
-            return companyViewModels.ToList();
-        }
+            }))
+            .ConfigureAwait(false);
+
+        return companyViewModels.ToList();
     }
 }

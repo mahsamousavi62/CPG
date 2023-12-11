@@ -23,13 +23,9 @@ namespace CPG.Domain.AggregateModels.CompanyIPGAggregate
         }
 
         public long CompanyIPGId { get; set; }
-
         public CompanyIPG CompanyIPG { get; set; }
-
         public long CompanyDepositId { get; set; }
-
         public CompanyDeposit CompanyDeposit { get; set; }
-
         public bool IsDefault { get; set; }
 
         public static List<CompanyIPGDeposit> Create(dynamic[] values)

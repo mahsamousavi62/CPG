@@ -1,6 +1,6 @@
 ﻿using CPG.Infrastructure.Persistence.DbContexts.ReadModels;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore;
 
 namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations;
 
@@ -10,7 +10,6 @@ public class CompanyIPGDepositReadModelConfiguration : IEntityTypeConfiguration<
     {
         readModel.ToTable("CompanyIPGDeposit");
         readModel.HasKey(x => x.Id);
-
         readModel.Property(x => x.Id).HasColumnName("Id");
         readModel.Property(x => x.CompanyIPGId).HasColumnName("CompanyIPGId");
         readModel.Property(x => x.CompanyDepositId).HasColumnName("CompanyDepositId");
@@ -18,10 +17,5 @@ public class CompanyIPGDepositReadModelConfiguration : IEntityTypeConfiguration<
         readModel.Property(x => x.IsActive);
         readModel.Property(x => x.CreationDate);
         readModel.Property(x => x.ModificationDate);
-
-        readModel.HasOne(x => x.CompanyDeposit)
-            .WithMany(x => x.CompanyIPGDeposits)
-            .OnDelete(DeleteBehavior.NoAction)
-            .HasForeignKey(x => x.CompanyDepositId);
     }
 }
