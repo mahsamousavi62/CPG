@@ -27,6 +27,7 @@ public class Url
         const string pattern = @"^(https?|http?):\/\/[^\s\/$.?#].[^\s]*$";
         if (!Regex.IsMatch(url, pattern))
             throw new InvalidUrlFormatException(url);
+        Value = url;
     }
 
     public static implicit operator string(Url url) => url.Value;
