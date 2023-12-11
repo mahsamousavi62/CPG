@@ -49,7 +49,9 @@ public class ReadDbContext(DbContextOptions<ReadDbContext> options) : DbContext(
             .ApplyConfiguration(new ApplicationCallbackUrlReadModelConfiguration())
             .ApplyConfiguration(new IPGTypeReadModelConfiguration())
             .ApplyConfiguration(new PaymentRequestReadModelConfiguration())
-            .ApplyConfiguration(new CompanyIPGReadModelConfiguration())
-            .ApplyConfiguration(new CompanyIPGDepositReadModelConfiguration());
+            //.ApplyConfiguration(new CompanyIPGReadModelConfiguration())
+            //.ApplyConfiguration(new CompanyIPGDepositReadModelConfiguration())
+            ;
+
     }
 }

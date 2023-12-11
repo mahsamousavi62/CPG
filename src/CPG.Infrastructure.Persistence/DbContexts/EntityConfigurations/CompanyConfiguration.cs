@@ -21,14 +21,14 @@ namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations
             entity.Property(x => x.Logo).HasColumnName("Logo").HasColumnType("nvarchar(max)").IsRequired();
 
             entity
-            .HasMany(c => c.PaymentMethods)
-            .WithOne(p => p.Company)
-            .HasForeignKey(p => p.CompanyId);
+         .HasMany(c => c.PaymentMethods)
+         .WithOne(p => p.Company)
+         .HasForeignKey(p => p.CompanyId);
 
             entity
-            .HasMany(c => c.Users)
-            .WithOne(p => p.Company)
-            .HasForeignKey(p => p.CompanyId);
+           .HasMany(c => c.Users)
+           .WithOne(p => p.Company)
+           .HasForeignKey(p => p.CompanyId);
 
             entity
              .HasMany(c => c.CompanyDeposits)
