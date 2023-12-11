@@ -20,7 +20,7 @@ public class Application : AuditableEntity<long>, IAggregateRoot
         _englishName = englishName.Value;
         _logo = logo.Value;
         _responseApiUrl = responseApiUrl.Value;
-        ApplicationIdentifiers = new List<ApplicationIdentifier>();
+        ApplicationIdentifiers = [];
     }
 
     private string _persianName;
@@ -42,7 +42,7 @@ public class Application : AuditableEntity<long>, IAggregateRoot
         var applicationIdentifiers = ApplicationIdentifier.Create(details);
         application.ApplicationIdentifiers.AddRange(applicationIdentifiers);
 
-        if (callbackUrls?.Any() is true)
+        if (callbackUrls?.Length > 0 is true)
         {
             var applicationCallbackUrls = ApplicationCallbackUrl.Create(callbackUrls);
             application.ApplicationCallbackUrls.AddRange(applicationCallbackUrls);

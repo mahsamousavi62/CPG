@@ -17,6 +17,8 @@ public class CompanyDepositReadModelConfiguration : IEntityTypeConfiguration<Com
         readModel.HasKey(x => x.Id);
         readModel.ToTable("CompanyDeposit");
 
+        readModel.Ignore(x => x.CompanyIPGDeposits);
+
         readModel.Property(x => x.Id).HasColumnName("Id");
         readModel.Property(x => x.Name).HasColumnName("Name");
         readModel.Property(x => x.Iban).HasColumnName("Iban");
@@ -26,5 +28,15 @@ public class CompanyDepositReadModelConfiguration : IEntityTypeConfiguration<Com
         readModel.Property(x => x.IsActive);
         readModel.Property(x => x.ModificationDate);
         readModel.Property(x => x.CreationDate);
+
+        readModel.HasOne(t => t.Company)
+            .WithMany(t => t.CompanyDeposits)
+            .HasForeignKey(t => t.CompanyId)
+            .IsRequired();
+
+        readModel.HasOne(t => t.Bank)
+            .WithMany(t => t.CompanyDeposits)
+            .HasForeignKey(t => t.BankId)
+            .IsRequired();
     }
 }

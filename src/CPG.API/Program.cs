@@ -52,8 +52,8 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
 builder.Services
-    .AddApplication(configuration)
-    .AddInfrastructure(configuration);
+    .AddInfrastructure(configuration)
+    .AddApplication(configuration);
 
 builder.Host.UseSerilog((context, configuation) =>
     configuation.ReadFrom.Configuration(context.Configuration));
