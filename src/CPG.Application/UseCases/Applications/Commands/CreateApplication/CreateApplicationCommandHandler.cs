@@ -11,6 +11,7 @@ using Ardalis.Specification;
 using CPG.Domain.AggregateModels.ApplicationAggregate.Exceptions;
 using System.Linq;
 using System.Collections.Generic;
+using System;
 
 namespace CPG.Application.UseCases.Applications.Commands.CreateApplication;
 
@@ -46,13 +47,20 @@ internal class CreateApplicationCommandHandler(IAggregateRepository<Domain.Aggre
         
         Logo logo = new(request.Model.File, Enums.UploadFromEntityType.Application.ToString(), _minioProvider);
         Url responseUrl = new(request.Model.ResponseApiUrl);
-        var urls = request.Model.CallbackUrls.Select(t => new Url(t)).ToArray();
+
+        var urls = request.Model.CallbackUrls?.Select(t => new Url(t)).ToArray();
 
         var application = Domain.AggregateModels.ApplicationAggregate.Application.Create(persianName, englishName, responseUrl, logo, request.Model.IdpClientIds, urls);
 
-        await _applicationRepository.AddAsync(application, cancellationToken);
-        await _applicationRepository.SaveChangesAsync(cancellationToken);
-
+        try
+        {
+            await _applicationRepository.AddAsync(application, cancellationToken);
+            await _applicationRepository.SaveChangesAsync(cancellationToken);
+        }        
+        catch(Exception  ex)
+        {
+            
+        }
         return application.Id;
     }
 }
