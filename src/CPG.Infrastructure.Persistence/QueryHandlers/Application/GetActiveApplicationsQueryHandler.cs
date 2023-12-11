@@ -33,8 +33,8 @@ public class GetActiveApplicationsQueryHandler(ReadDbContext context, IMinioProv
             ModificationDate = app.ModificationDate,
             IsActive = app.IsActive,
             ResponseApiUrl = app.ResponseApiUrl,
-            IdpClientIds = app.ApplicationIdentifiers.ToDictionary(key => key.Id, value => value.IdpClientId),
-            CallbackUrls = app.ApplicationCallbackUrls.ToDictionary(key => key.Id, value => value.CallbackUrl)
+            IdpClientIds = app.ApplicationIdentifiers?.ToDictionary(key => key.Id, value => value.IdpClientId),
+            CallbackUrls = app.ApplicationCallbackUrls?.ToDictionary(key => key.Id, value => value.CallbackUrl)
         })).ConfigureAwait(false);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using CPG.Application.UseCases.PaymentRequests.Commands.CreatePaymentRequest;
+using CPG.Application.UseCases.PaymentRequests.Commands.GetPaymentMethods;
 using CPG.Application.UseCases.PaymentRequests.Queries;
 using CPG.Application.UseCases.PaymentRequests.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -29,5 +30,11 @@ namespace CPG.API.Controllers.v1
         [ProducesResponseType(typeof(PaymentRequestViewModel),200)]
         public async Task<ActionResult<PaymentRequestViewModel>> PaymentRequest([FromBody]CreatePaymentRequestViewModel model)
         => Ok(await Mediator.Send(new CreatePaymentRequestCommand(model)));
+
+        [AllowAnonymous]
+        [HttpPost("GetPaymentMethods")]
+        [ProducesResponseType(typeof(PaymentMethodsViewModel), 200)]
+        public async Task<ActionResult<PaymentMethodsViewModel>> PaymentMethods([FromBody] GetPaymentMethodsViewModel model)
+        => Ok(await Mediator.Send(new GetPaymentMethodsCommand(model)));
     }
 }

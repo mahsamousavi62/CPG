@@ -18,8 +18,7 @@ public class GetApplicationQueryHandler(ReadDbContext context, IMinioProvider mi
     private readonly IMinioProvider _minioProvider = minioProvider;
 
     public async Task<ApplicationViewModel> Handle(GetApplicationQuery request, CancellationToken cancellationToken)
-    {
-        var apps = await _context.ApplicationIdentifierReadModels.ToListAsync();
+    {   
         Guard.Against.NegativeOrZero(request.AppId, nameof(request.AppId));
 
         var app = await _context.ApplicationReadModels.FirstOrDefaultAsync(t => t.Id == request.AppId);
@@ -37,8 +36,8 @@ public class GetApplicationQueryHandler(ReadDbContext context, IMinioProvider mi
             ModificationDate = app.ModificationDate,
             IsActive = app.IsActive,
             ResponseApiUrl = app.ResponseApiUrl,
-            IdpClientIds = app.ApplicationIdentifiers.ToDictionary(key => key.Id, value => value.IdpClientId),
-            CallbackUrls = app.ApplicationCallbackUrls.ToDictionary(key => key.Id, value => value.CallbackUrl)
+            IdpClientIds = app.ApplicationIdentifiers?.ToDictionary(key => key.Id, value => value.IdpClientId),
+            CallbackUrls = app.ApplicationCallbackUrls?.ToDictionary(key => key.Id, value => value.CallbackUrl)
         };
 
         return appModel;
