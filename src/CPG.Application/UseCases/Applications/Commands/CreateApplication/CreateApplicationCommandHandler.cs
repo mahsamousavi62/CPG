@@ -52,9 +52,15 @@ internal class CreateApplicationCommandHandler(IAggregateRepository<Domain.Aggre
 
         var application = Domain.AggregateModels.ApplicationAggregate.Application.Create(persianName, englishName, responseUrl, logo, request.Model.IdpClientIds, urls);
 
-        await _applicationRepository.AddAsync(application, cancellationToken);
-        await _applicationRepository.SaveChangesAsync(cancellationToken);
-
+        try
+        {
+            await _applicationRepository.AddAsync(application, cancellationToken);
+            await _applicationRepository.SaveChangesAsync(cancellationToken);
+        }        
+        catch(Exception  ex)
+        {
+            
+        }
         return application.Id;
     }
 }
