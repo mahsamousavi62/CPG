@@ -14,7 +14,8 @@ public class CreateCompanyIPGCommandHandler(IAggregateRepository<CompanyIPG> agg
 
     public async Task<long> Handle(CreateCompanyIPGCommand request, CancellationToken cancellationToken)
     {
-        var companyIPGDeposits = request.Model.CompanyIPGDeposits.Select(t => new CompanyIPGDeposit(t.CompanyDepositId,t.IsDefault)).ToArray();
+        var companyIPGDeposits = request.Model.CompanyIPGDeposits.Select(t => new CompanyIPGDeposit(t.CompanyDepositId, t.IsDefault)).ToArray();
+                
         var companyIPG = CompanyIPG.Create(request.Model.CompanyId,
                                            request.Model.ProviderId,
                                            request.Model.IPGTypeId,
