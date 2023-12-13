@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CPG.Application.UseCases.Users.ViewModel
-{
+namespace CPG.Application.UseCases.Users.ViewModel;
 
     public class Address
     {
@@ -120,4 +119,4 @@ namespace CPG.Application.UseCases.Users.ViewModel
         public string ThirdPart { get; set; }
         public string Code { get; set; }
     }
-}
+

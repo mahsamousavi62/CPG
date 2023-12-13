@@ -26,6 +26,8 @@ using Api.Juros.Infrastructure.External;
 using Confluent.Kafka;
 using System.Net.Http.Headers;
 using CPG.Domain.SharedKernel.ApplicationSettings;
+using CPG.Domain.SharedKernel.ClientFactory;
+using CPG.Infrastructure.ClientFactory;
 
 namespace CPG.Infrastructure;
 
@@ -35,15 +37,16 @@ public static class DependencyInjection
         => services
         .AddTransient<IHttpClientFactoryService, HttpClientFactoryService>()
             .AddScoped<ICharisPayClient, CharisPayClient>()
+            .AddScoped<IIdpClient, IdpClient>()
             .AddTransient<ICurrentDateTime, CurrentDateTime>()
             .AddDatabase(configuration)
             .AddGraphQLQueries()
-            . AddTokenAuthentication(configuration)
+            .AddTokenAuthentication(configuration)
             .AddMasstransitInfrastructure(configuration)
             .AddScoped<IMinioProvider, MinioProvider>()
             .AddMinio(configuration)
             .AddHttpClient()
-            
+
             .AddConfigureHttpClientService(configuration);
 
     public static IServiceCollection AddMinio(this IServiceCollection services, IConfiguration configuration)
@@ -51,7 +54,6 @@ public static class DependencyInjection
         var serviceProvider = services.BuildServiceProvider();
         var repository = serviceProvider.GetRequiredService<IApplicationSettingsRepository>();
         var applicationConfigViewModel = repository.GetAllApplicationSettings().GetAwaiter().GetResult();
-
 
         services.AddMinio(configureClient => configureClient
           .WithEndpoint(applicationConfigViewModel.Minio_EndPoint)
@@ -96,12 +98,25 @@ public static class DependencyInjection
 
     public static IServiceCollection AddConfigureHttpClientService(this IServiceCollection services, IConfiguration configuration)
     {
+        var serviceProvider = services.BuildServiceProvider();
+        var repository = serviceProvider.GetRequiredService<IApplicationSettingsRepository>();
+        var appConfig = repository.GetAllApplicationSettings().GetAwaiter().GetResult();
+
         services.AddHttpClient("charisPayClient", c =>
         {
-            c.BaseAddress = new Uri($"{configuration["Infrastructure:CharisPay:BaseUrl"]}");
+            c.BaseAddress = new Uri(appConfig.CharisPay_BaseUrl);
             c.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         });
+
+        services.AddHttpClient("idpClient", c =>
+        {
+            c.BaseAddress = new Uri(appConfig.Authority);
+            c.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
+            c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        });
+
+
         return services;
     }
 
