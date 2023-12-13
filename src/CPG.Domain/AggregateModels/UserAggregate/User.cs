@@ -13,17 +13,19 @@ namespace CPG.Domain.AggregateModels.UserAggregate
     {
         public User()
         {
-            
+
         }
-        public User(string iDPId, string nationalCode, string firstName, string lastName, string phoneNumber, long companyId)
+        public User(string idpId, string nationalCode, string firstName, string lastName, string phoneNumber, long companyId)
         {
-            IDPId = iDPId;
+            IdpId = idpId;
             NationalCode = nationalCode;
             FirstName = firstName;
             LastName = lastName;
             PhoneNumber = phoneNumber;
             KYCStatus = 1;
-            CompanyId = companyId;
+            CompanyId = companyId;  
+            IsActive = true;
+            IsLegal = false;
         }
 
         public User(string firstName, string lastName, string phoneNumber)
@@ -36,7 +38,7 @@ namespace CPG.Domain.AggregateModels.UserAggregate
 
         #region [ Fields And Properties ]
 
-        public string IDPId { get; }
+        public string IdpId { get; }
 
         public string NationalCode { get; }
 
@@ -50,7 +52,7 @@ namespace CPG.Domain.AggregateModels.UserAggregate
 
         public DateTime? LastUpdateFromIDP { get; set; }
 
-        public short KYCStatus { get; }
+        public short? KYCStatus { get; }
 
         public bool IsLegal { get; }
 
@@ -60,11 +62,11 @@ namespace CPG.Domain.AggregateModels.UserAggregate
 
         #endregion
 
-        public static User Create(string iDPId, NationalCode nationalCode, Name name, PhoneNumber phoneNumber, long companyId, UserRoleType userRoleType)
+        public static User Create(string idpId, NationalCode nationalCode, Name name, PhoneNumber phoneNumber, long companyId, UserRoleType userRoleType)
         {
-            var user = new User(iDPId, nationalCode.Value, name.FirstName, name.LastName, phoneNumber.Value, companyId);
+            var user = new User(idpId, nationalCode.Value, name.FirstName, name.LastName, phoneNumber.Value, companyId);
             user.UserRoles.Add(new UserRole(userRoleType));
-           
+            user.LastUpdateFromIDP = DateTime.UtcNow;            
             return user;
         }
 
@@ -82,7 +84,7 @@ namespace CPG.Domain.AggregateModels.UserAggregate
 
         public static void UpdateUserCompany(List<User> users, long companyId) => users.ForEach(user => { user.CompanyId = companyId; });
 
-        public static  Task<string> GetUserName(long userId)
+        public static Task<string> GetUserName(long userId)
         {
             return Task.FromResult("CPG Test");
         }

@@ -13,7 +13,7 @@ public class UserReadModel
     public string LastName { get; }
     public string PhoneNumber { get; }
     public DateTime? LastUpdateFromIDP { get; set; }
-    public short KYCStatus { get; }
+    public short? KYCStatus { get; }
     public bool IsLegal { get; }
     public bool IsActive { get; }
     public DateTime CreationDate { get; set; }

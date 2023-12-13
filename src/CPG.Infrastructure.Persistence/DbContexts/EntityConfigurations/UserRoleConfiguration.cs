@@ -18,5 +18,7 @@ public class UserRoleConfiguration : IEntityTypeConfiguration<UserRole>
         entity.HasOne(x => x.User)
             .WithMany(x => x.UserRoles)
             .HasForeignKey(x => x.UserId);
+
+        entity.HasIndex(x => new { x.RoleType, x.UserId }).IsUnique();
     }
 }
