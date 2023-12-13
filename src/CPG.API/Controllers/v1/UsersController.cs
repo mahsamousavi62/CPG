@@ -28,8 +28,7 @@ public class UsersController : ApiBaseController
     /// 
     /// </summary>
     /// <returns></returns>
-    [HttpGet]
-    [Authorize]
+    [HttpGet]    
     [ProducesResponseType(typeof(IReadOnlyCollection<UserViewModel>), (int)HttpStatusCode.OK)]
     public async Task<IActionResult> GetCompanyUsers() => Ok(await Mediator.Send(new GetCompanyUsersQuery()));
 }
