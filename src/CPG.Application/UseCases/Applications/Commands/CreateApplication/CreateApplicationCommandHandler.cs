@@ -44,7 +44,7 @@ internal class CreateApplicationCommandHandler(IAggregateRepository<Domain.Aggre
         //{
         //    throw new DuplicateIdpClientIdsException(string.Join('-', idpClientIds.Select(t => t.IdpClientId)));
         //}
-        
+
         Logo logo = new(request.Model.File, Enums.UploadFromEntityType.Application.ToString(), _minioProvider);
         Url responseUrl = new(request.Model.ResponseApiUrl);
 
@@ -52,15 +52,9 @@ internal class CreateApplicationCommandHandler(IAggregateRepository<Domain.Aggre
 
         var application = Domain.AggregateModels.ApplicationAggregate.Application.Create(persianName, englishName, responseUrl, logo, request.Model.IdpClientIds, urls);
 
-        try
-        {
-            await _applicationRepository.AddAsync(application, cancellationToken);
-            await _applicationRepository.SaveChangesAsync(cancellationToken);
-        }        
-        catch(Exception  ex)
-        {
-            
-        }
+        await _applicationRepository.AddAsync(application, cancellationToken);
+        await _applicationRepository.SaveChangesAsync(cancellationToken);
+
         return application.Id;
     }
 }
