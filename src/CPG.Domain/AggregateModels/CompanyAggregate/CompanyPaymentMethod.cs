@@ -9,6 +9,10 @@ namespace CPG.Domain.AggregateModels.CompanyAggregate;
 
 public class CompanyPaymentMethod : AuditableEntity<long>
 {
+    public short MethodType { get; set; }
+    public long CompanyId { get; set; }
+    public Company Company { get; set; }
+
     public CompanyPaymentMethod(short methodType, long companyId)
     {
         MethodType = methodType;
@@ -20,6 +24,7 @@ public class CompanyPaymentMethod : AuditableEntity<long>
     {
         MethodType = methodType;
     }
+
     public static List<CompanyPaymentMethod> Create(short[] methodTypes)
     {
         if (methodTypes is null || methodTypes.Length == 0)
@@ -36,8 +41,4 @@ public class CompanyPaymentMethod : AuditableEntity<long>
         var companyPaymentMethods = methodTypes.Select(i => new CompanyPaymentMethod(i)).ToList();
         return companyPaymentMethods;
     }
-
-    public short MethodType { get; set; }
-    public long CompanyId { get; set; }
-    public Company Company { get; set; }
 }
