@@ -12,7 +12,7 @@ namespace CPG.Infrastructure.Persistence.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "CompanyIPGs",
+                name: "CompanyIPG",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
@@ -20,8 +20,8 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     CompanyId = table.Column<long>(type: "bigint", nullable: false),
                     ProviderId = table.Column<long>(type: "bigint", nullable: false),
                     IPGTypeId = table.Column<long>(type: "bigint", nullable: false),
-                    ProviderData = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    VerificationTimeLimit = table.Column<short>(type: "smallint", nullable: false),
+                    ProviderData = table.Column<string>(type: "varchar(max)", nullable: false),
+                    VerificationTimeLimit = table.Column<byte>(type: "tinyint", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreationUserId = table.Column<long>(type: "bigint", nullable: false),
@@ -30,29 +30,29 @@ namespace CPG.Infrastructure.Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CompanyIPGs", x => x.Id);
+                    table.PrimaryKey("PK_CompanyIPG", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CompanyIPGs_Company_CompanyId",
+                        name: "FK_CompanyIPG_Company_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "Company",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
-                        name: "FK_CompanyIPGs_IPGType_IPGTypeId",
+                        name: "FK_CompanyIPG_IPGType_IPGTypeId",
                         column: x => x.IPGTypeId,
                         principalTable: "IPGType",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
-                        name: "FK_CompanyIPGs_Provider_ProviderId",
+                        name: "FK_CompanyIPG_Provider_ProviderId",
                         column: x => x.ProviderId,
                         principalTable: "Provider",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
-                name: "CompanyIPGDeposits",
+                name: "CompanyIPGDeposit",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
@@ -68,55 +68,55 @@ namespace CPG.Infrastructure.Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CompanyIPGDeposits", x => x.Id);
+                    table.PrimaryKey("PK_CompanyIPGDeposit", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CompanyIPGDeposits_CompanyDeposit_CompanyDepositId",
+                        name: "FK_CompanyIPGDeposit_CompanyDeposit_CompanyDepositId",
                         column: x => x.CompanyDepositId,
                         principalTable: "CompanyDeposit",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
-                        name: "FK_CompanyIPGDeposits_CompanyIPGs_CompanyIPGId",
+                        name: "FK_CompanyIPGDeposit_CompanyIPG_CompanyIPGId",
                         column: x => x.CompanyIPGId,
-                        principalTable: "CompanyIPGs",
+                        principalTable: "CompanyIPG",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_CompanyIPGDeposits_CompanyDepositId",
-                table: "CompanyIPGDeposits",
-                column: "CompanyDepositId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CompanyIPGDeposits_CompanyIPGId",
-                table: "CompanyIPGDeposits",
-                column: "CompanyIPGId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CompanyIPGs_CompanyId",
-                table: "CompanyIPGs",
+                name: "IX_CompanyIPG_CompanyId",
+                table: "CompanyIPG",
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CompanyIPGs_IPGTypeId",
-                table: "CompanyIPGs",
+                name: "IX_CompanyIPG_IPGTypeId",
+                table: "CompanyIPG",
                 column: "IPGTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CompanyIPGs_ProviderId",
-                table: "CompanyIPGs",
+                name: "IX_CompanyIPG_ProviderId",
+                table: "CompanyIPG",
                 column: "ProviderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CompanyIPGDeposit_CompanyDepositId",
+                table: "CompanyIPGDeposit",
+                column: "CompanyDepositId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CompanyIPGDeposit_CompanyIPGId",
+                table: "CompanyIPGDeposit",
+                column: "CompanyIPGId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "CompanyIPGDeposits");
-
+                name: "CompanyIPGDeposit");
+                       
             migrationBuilder.DropTable(
-                name: "CompanyIPGs");
+                name: "CompanyIPG");
         }
     }
 }

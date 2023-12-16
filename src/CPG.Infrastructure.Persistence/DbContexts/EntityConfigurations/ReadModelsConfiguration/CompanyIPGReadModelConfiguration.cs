@@ -15,7 +15,7 @@ public class CompanyIPGReadModelConfiguration : IEntityTypeConfiguration<Company
         readModel.Property(x => x.CompanyId).HasColumnName("CompanyId");
         readModel.Property(x => x.ProviderId).HasColumnName("ProviderId");
         readModel.Property(x => x.IPGTypeId).HasColumnName("IPGTypeId");
-        readModel.Property(x => x.VerificationTimeLimit).HasColumnName("VerificationTimeLimit");
+        readModel.Property(x => x.VerificationTimeLimit).HasColumnName("VerificationTimeLimit").HasColumnType("tinyint");
         readModel.Property(x => x.ProviderData).HasColumnName("ProviderData");
         readModel.Property(x => x.IsActive);
         readModel.Property(x => x.CreationDate);

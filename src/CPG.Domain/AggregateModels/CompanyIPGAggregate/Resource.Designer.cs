@@ -59,5 +59,32 @@ namespace CPG.Domain.AggregateModels.CompanyIPGAggregate {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to حساب تکراری انتخاب شده است.
+        /// </summary>
+        internal static string DuplicateDeposit {
+            get {
+                return ResourceManager.GetString("DuplicateDeposit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to حساب یا حسابهای {0} مربوط به شرکت {1} نمی باشند.
+        /// </summary>
+        internal static string InvalidDeposits {
+            get {
+                return ResourceManager.GetString("InvalidDeposits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to بیشتر از یک حساب به عنوان حساب پیش فرض انتخاب شده است.
+        /// </summary>
+        internal static string MultipleDefaultDeposit {
+            get {
+                return ResourceManager.GetString("MultipleDefaultDeposit", resourceCulture);
+            }
+        }
     }
 }
