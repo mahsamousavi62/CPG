@@ -15,7 +15,9 @@ public class Enums
 
     public enum UserRoleType
     {
-        Customer = 3
+        SuperAdmin = 1,
+        CompanyUser = 2,
+        CustomerUser = 3
     }
 
     public enum OperationResult : byte

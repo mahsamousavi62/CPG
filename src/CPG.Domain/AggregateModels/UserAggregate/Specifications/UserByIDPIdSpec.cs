@@ -7,7 +7,7 @@ namespace CPG.Domain.AggregateModels.UserAggregate.Specifications
     {
         public UserByIDPIdSpec(string iDPId)
         {
-            Query.Where(user => user.IDPId == iDPId);
+            Query.Where(user => user.IdpId == iDPId);
         }
     }
 }
