@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace CPG.Application.UseCases.CompanyIPGs.Queries;
 
-public class GetCompanyIPGDepositsQuery(long companyIPGId) : IRequest<List<CompanyDepositViewModel>>
+public class GetCompanyIPGDepositsQuery(long companyIPGId) : IRequest<IReadOnlyCollection<CompanyDepositViewModel>>
 {
     public long CompanyIPGId { get; } = companyIPGId;
 }

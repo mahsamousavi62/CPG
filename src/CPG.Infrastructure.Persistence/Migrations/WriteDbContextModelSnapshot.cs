@@ -347,7 +347,8 @@ namespace CPG.Infrastructure.Persistence.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("Id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
@@ -373,13 +374,14 @@ namespace CPG.Infrastructure.Persistence.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("ProviderData")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("varchar(max)");
 
                     b.Property<long>("ProviderId")
                         .HasColumnType("bigint");
 
-                    b.Property<short>("VerificationTimeLimit")
-                        .HasColumnType("smallint");
+                    b.Property<byte>("VerificationTimeLimit")
+                        .HasColumnType("tinyint");
 
                     b.HasKey("Id");
 
@@ -389,22 +391,25 @@ namespace CPG.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("ProviderId");
 
-                    b.ToTable("CompanyIPGs");
+                    b.ToTable("CompanyIPG", (string)null);
                 });
 
             modelBuilder.Entity("CPG.Domain.AggregateModels.CompanyIPGAggregate.CompanyIPGDeposit", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("Id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<long>("CompanyDepositId")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("CompanyDepositId");
 
                     b.Property<long>("CompanyIPGId")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("CompanyIPGId");
 
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
@@ -416,7 +421,8 @@ namespace CPG.Infrastructure.Persistence.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsDefault")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("IsDefault");
 
                     b.Property<DateTime?>("ModificationDate")
                         .HasColumnType("datetime2");
@@ -430,7 +436,7 @@ namespace CPG.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("CompanyIPGId");
 
-                    b.ToTable("CompanyIPGDeposits");
+                    b.ToTable("CompanyIPGDeposit", (string)null);
                 });
 
             modelBuilder.Entity("CPG.Domain.AggregateModels.IPGTypeAggregate.IPGType", b =>
@@ -875,19 +881,19 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.HasOne("CPG.Domain.AggregateModels.CompanyAggregate.Company", "Company")
                         .WithMany()
                         .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("CPG.Domain.AggregateModels.IPGTypeAggregate.IPGType", "IPGType")
                         .WithMany()
                         .HasForeignKey("IPGTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("CPG.Domain.AggregateModels.ProviderAggregate.Provider", "Provider")
                         .WithMany()
                         .HasForeignKey("ProviderId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Company");
@@ -902,13 +908,13 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.HasOne("CPG.Application.UseCases.CompanyDeposits.CompanyDeposit", "CompanyDeposit")
                         .WithMany("CompanyIPGDeposits")
                         .HasForeignKey("CompanyDepositId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("CPG.Domain.AggregateModels.CompanyIPGAggregate.CompanyIPG", "CompanyIPG")
                         .WithMany("IPGDeposits")
                         .HasForeignKey("CompanyIPGId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("CompanyDeposit");
