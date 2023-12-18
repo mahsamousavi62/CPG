@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using CPG.Application.Shared.Resource;
 using CPG.Domain.SharedKernel.File;
 using CPG.Domain.SharedKernel.Minio;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
@@ -39,7 +41,7 @@ public class MinioProvider : IMinioProvider
     {
 
         CultureInfo originalCulture = CultureInfo.CurrentCulture;
-        CultureInfo newCulture = new CultureInfo("en-US");
+        CultureInfo newCulture = new("en-US");
         CultureInfo.CurrentCulture = newCulture;
 
 
@@ -98,7 +100,7 @@ public class MinioProvider : IMinioProvider
             }
             catch (Exception)
             {
-                throw new Exception("Not found FileName");
+                throw new Exception(GlobalResource.FileNotFound);
             }
 
             return new FileViewModel()
