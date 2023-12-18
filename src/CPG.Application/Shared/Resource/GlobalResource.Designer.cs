@@ -403,6 +403,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File Not Found.
+        /// </summary>
+        public static string FileNotFound {
+            get {
+                return ResourceManager.GetString("FileNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Filter.
         /// </summary>
         public static string Filter {
@@ -763,7 +772,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Validation_IBan.
+        ///   Looks up a localized string similar to IBan Validation.
         /// </summary>
         public static string Validation_IBan {
             get {
@@ -772,7 +781,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Validation_Required.
+        ///   Looks up a localized string similar to Validation is required.
         /// </summary>
         public static string Validation_Required {
             get {

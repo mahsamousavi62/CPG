@@ -3,9 +3,9 @@ using System.Linq;
 
 namespace CPG.Domain.AggregateModels.CompanyAggregate.Specifications;
 
-public class CompanyDepositAndPaymentMethodsByIdSpec : Specification<Company>, ISingleResultSpecification<Company>
+public class CompanyPaymentMethodsByIdSpec : Specification<Company>, ISingleResultSpecification<Company>
 {
-    public CompanyDepositAndPaymentMethodsByIdSpec(long companyId)
+    public CompanyPaymentMethodsByIdSpec(long companyId)
     {
         Query.Include(a => a.PaymentMethods.Where(b => b.IsActive))
              .Include(a => a.CompanyDeposits.Where(b => b.IsActive && b.Bank.IsActive))         

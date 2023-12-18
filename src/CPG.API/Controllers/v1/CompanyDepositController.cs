@@ -24,7 +24,7 @@ namespace CPG.API.Controllers.v1
         public async Task<ActionResult<CompanyDepositViewModel>> GetById(long id)
             => Ok(await Mediator.Send(new GetCompanyDepositQuery(id)));
 
-        [HttpGet("{companyId:long}")]
+        [HttpGet("Company/{companyId:long}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<CompanyDepositViewModel>), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<IReadOnlyCollection<CompanyDepositViewModel>>> GetByCompanyId(long companyId)
             => Ok(await Mediator.Send(new GetCompanyDepositsByCompanyIdQuery(companyId)));
