@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace CPG.Application.UseCases.CompanyIPGs.Queries;
 
-public class GetCompanyIPGsQuery(long companyId) : IRequest<IReadOnlyCollection<CompanyIPGViewModel>>
+public class GetCompanyIPGsQuery(long companyId) : IRequest<IReadOnlyCollection<CompanyIPGDataViewModel>>
 {
     public long CompanyId { get; } = companyId;
 }

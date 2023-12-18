@@ -20,6 +20,7 @@ namespace CPG.Domain.AggregateModels.CompanyIPGAggregate
             IPGTypeId = ipgTypeId;
             VerificationTimeLimit = verificationTimeLimit;
             ProviderData = providerData;
+            IsActive = true;
         }
 
         public long CompanyId { get; set; }
@@ -35,8 +36,8 @@ namespace CPG.Domain.AggregateModels.CompanyIPGAggregate
         public static CompanyIPG Create(long companyId, long providerId, long ipgTypeId, short verificationTimeLimit, string providerData, CompanyIPGDeposit[] details)
         {
             var companyIpg = new CompanyIPG(companyId, providerId, ipgTypeId, verificationTimeLimit, providerData);
-            var ipgDeposits = CompanyIPGDeposit.Create(details.Select(t => new { t.CompanyDepositId, t.IsDefault }).ToArray());
-            //companyIpg.IPGDeposits.AddRange(ipgDeposits);
+            var ipgDeposits = CompanyIPGDeposit.Create(details);
+            companyIpg.IPGDeposits = ipgDeposits;
             return companyIpg;
         }
     }

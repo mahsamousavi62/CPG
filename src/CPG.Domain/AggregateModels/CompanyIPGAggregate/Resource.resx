@@ -117,4 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="DuplicateDeposit" xml:space="preserve">
+    <value>حساب تکراری انتخاب شده است</value>
+  </data>
+  <data name="InvalidDeposits" xml:space="preserve">
+    <value>حساب یا حسابهای {0} مربوط به شرکت {1} نمی باشند</value>
+  </data>
+  <data name="MultipleDefaultDeposit" xml:space="preserve">
+    <value>بیشتر از یک حساب به عنوان حساب پیش فرض انتخاب شده است</value>
+  </data>
 </root>
