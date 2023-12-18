@@ -38,6 +38,7 @@ public class Company : AuditableEntity<long>, IAggregateRoot
     public List<CompanyPaymentMethod> PaymentMethods { get; set; } = [];
 
     public List<User> Users { get; set; }
+
     public List<PaymentRequest> PaymentRequests{ get; set; }
     
     public static Company Create(PersianName persianName, EnglishName englishName,

@@ -1,5 +1,5 @@
 ﻿using CPG.Application.UseCases.CompanyDeposits;
-using CPG.Domain.AggregateModels.CompanyAggregate.Exceptions;
+using CPG.Domain.AggregateModels.CompanyIPGAggregate.Exceptions;
 using CPG.Domain.SeedWork;
 using System;
 using System.Collections.Generic;
@@ -28,19 +28,18 @@ namespace CPG.Domain.AggregateModels.CompanyIPGAggregate
         public CompanyDeposit CompanyDeposit { get; set; }
         public bool IsDefault { get; set; }
 
-        public static List<CompanyIPGDeposit> Create(dynamic[] values)
+        public static List<CompanyIPGDeposit> Create(CompanyIPGDeposit[] values)
         {
             if (values is null || values.Length == 0)
                 throw new ArgumentNullException(nameof(values));
 
-            if (values.Select(x => x.Item1).Distinct().Count() != values.Length)
-                throw new DuplicatePaymentMethodTypeException(nameof(values));
+            if (values.Select(x => x.CompanyDepositId).Distinct().Count() != values.Length)
+                throw new DuplicateDepositException(string.Empty);
 
-            if (values.Count(x => x.Item2) > 0)
-                throw new InvalidPaymentMethodType(nameof(values));
+            if (values.Count(x => x.IsDefault == true) > 1)
+                throw new MultipleDefaultDepositException(string.Empty);
 
-            var ipgDeposits = values.Select(i => new CompanyIPGDeposit(i.Item1, i.Item2)).ToList();
-            return ipgDeposits;
+            return values.ToList();
         }
     }
 }

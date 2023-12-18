@@ -1,34 +1,21 @@
-﻿using CPG.Application.UseCases.Companies.Exceptions;
-using CPG.Application.UseCases.CompanyDeposits.Exceptions;
+﻿using CPG.Application.UseCases.CompanyDeposits.Exceptions;
 using CPG.Application.UseCases.CompanyDeposits.Queries;
 using CPG.Application.UseCases.CompanyDeposits.ViewModels;
-using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Domain.SharedKernel.Minio;
 using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.CompanyDeposit
 {
-    public class GetCompanyDepositQueryHandler :
+    public class GetCompanyDepositQueryHandler(ReadDbContext context, IMinioProvider minioProvider) :
         IRequestHandler<GetCompanyDepositQuery, CompanyDepositViewModel>
     {
-        private readonly ReadDbContext _context;
-        private readonly IMinioProvider _minioProvider;
-
-        public GetCompanyDepositQueryHandler(ReadDbContext context, IMinioProvider minioProvider)
-        {
-            _context = context;
-            _minioProvider = minioProvider;
-        }
-
+        private readonly ReadDbContext _context=context;
+        private readonly IMinioProvider _minioProvider=minioProvider;
+      
         public async Task<CompanyDepositViewModel> Handle(GetCompanyDepositQuery request, CancellationToken cancellationToken)
         {
             var companyDeposit = await _context.CompanyDepositReadModels.

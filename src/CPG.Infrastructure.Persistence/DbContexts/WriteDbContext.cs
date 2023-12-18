@@ -21,6 +21,7 @@ public class WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator 
     private readonly IMediator _mediator = mediator;
 
     public DbSet<User> Users { get; set; }
+    public DbSet<UserRole> UserRoles { get; set; }
     public DbSet<ApplicationSettings> ApplicationSettings { get; set; }
     public DbSet<Bank> Banks { get; set; }
     public DbSet<Company> Companies { get; set; }
