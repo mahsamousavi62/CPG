@@ -133,6 +133,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to AsanPardakht.
+        /// </summary>
+        public static string AsanPardakht {
+            get {
+                return ResourceManager.GetString("AsanPardakht", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to BankName.
         /// </summary>
         public static string BankName {
@@ -156,6 +165,15 @@ namespace CPG.Application.Shared.Resource {
         public static string Banks {
             get {
                 return ResourceManager.GetString("Banks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to BaseOnMinute.
+        /// </summary>
+        public static string BaseOnMinute {
+            get {
+                return ResourceManager.GetString("BaseOnMinute", resourceCulture);
             }
         }
         
@@ -210,6 +228,15 @@ namespace CPG.Application.Shared.Resource {
         public static string CompanyDepositNotFound {
             get {
                 return ResourceManager.GetString("CompanyDepositNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CompanyIPGDeposits.
+        /// </summary>
+        public static string CompanyIPGDeposits {
+            get {
+                return ResourceManager.GetString("CompanyIPGDeposits", resourceCulture);
             }
         }
         
@@ -295,6 +322,24 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CreateIPG.
+        /// </summary>
+        public static string CreateIPG {
+            get {
+                return ResourceManager.GetString("CreateIPG", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CreateIPGCompanyFor.
+        /// </summary>
+        public static string CreateIPGCompanyFor {
+            get {
+                return ResourceManager.GetString("CreateIPGCompanyFor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CreateProvider.
         /// </summary>
         public static string CreateProvider {
@@ -309,6 +354,24 @@ namespace CPG.Application.Shared.Resource {
         public static string DeActive {
             get {
                 return ResourceManager.GetString("DeActive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DefaultDeposit.
+        /// </summary>
+        public static string DefaultDeposit {
+            get {
+                return ResourceManager.GetString("DefaultDeposit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DefaultIPGDeposit.
+        /// </summary>
+        public static string DefaultIPGDeposit {
+            get {
+                return ResourceManager.GetString("DefaultIPGDeposit", resourceCulture);
             }
         }
         
@@ -457,6 +520,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to IPGTypeId.
+        /// </summary>
+        public static string IPGTypeId {
+            get {
+                return ResourceManager.GetString("IPGTypeId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to IPGType with Id {0} has not been found.
         /// </summary>
         public static string IPGTypeNotFound {
@@ -471,6 +543,15 @@ namespace CPG.Application.Shared.Resource {
         public static string MethodTypes {
             get {
                 return ResourceManager.GetString("MethodTypes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minute.
+        /// </summary>
+        public static string Minute {
+            get {
+                return ResourceManager.GetString("Minute", resourceCulture);
             }
         }
         
@@ -561,6 +642,15 @@ namespace CPG.Application.Shared.Resource {
         public static string PersianName {
             get {
                 return ResourceManager.GetString("PersianName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ProviderId.
+        /// </summary>
+        public static string ProviderId {
+            get {
+                return ResourceManager.GetString("ProviderId", resourceCulture);
             }
         }
         
@@ -723,6 +813,24 @@ namespace CPG.Application.Shared.Resource {
         public static string Vandar {
             get {
                 return ResourceManager.GetString("Vandar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VerificationTimeLimit.
+        /// </summary>
+        public static string VerificationTimeLimit {
+            get {
+                return ResourceManager.GetString("VerificationTimeLimit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VerificationTimeLimitIPG.
+        /// </summary>
+        public static string VerificationTimeLimitIPG {
+            get {
+                return ResourceManager.GetString("VerificationTimeLimitIPG", resourceCulture);
             }
         }
     }
