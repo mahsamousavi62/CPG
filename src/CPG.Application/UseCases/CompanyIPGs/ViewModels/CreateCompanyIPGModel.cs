@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using CPG.Application.UseCases.CompanyIPGs.Commands.CreateCompanyIPG;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace CPG.Application.UseCases.CompanyIPGs.ViewModels;
 
@@ -20,5 +22,5 @@ public class CreateCompanyIPGModel
     public short VerificationTimeLimit { get; set; }
 
     [Required]
-    public CompanyIPGDepositViewModel[] CompanyIPGDeposits { get; set; }
+    public CreateCompanyIPGDepositModel[] CompanyIPGDeposits { get; set; }
 }

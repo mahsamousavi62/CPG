@@ -7,29 +7,40 @@ using System.Threading.Tasks;
 using CPG.Application.UseCases.CompanyIPGs.Queries;
 using CPG.Application.UseCases.CompanyIPGs.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using CPG.Domain.SharedKernel.Minio;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.CompanyIPG;
 
-public class GetCompanyIPGsQueryHandler(ReadDbContext context) : IRequestHandler<GetCompanyIPGsQuery, IReadOnlyCollection<CompanyIPGViewModel>>
+public class GetCompanyIPGsQueryHandler(ReadDbContext context, IMinioProvider minioProvider) : IRequestHandler<GetCompanyIPGsQuery, IReadOnlyCollection<CompanyIPGDataViewModel>>
 {
     private readonly ReadDbContext _context = context;
-    
-    public async Task<IReadOnlyCollection<CompanyIPGViewModel>> Handle(GetCompanyIPGsQuery request, CancellationToken cancellationToken)
-    {   
-        return await _context.CompanyIPGReadModels
+    private readonly IMinioProvider _minioProvider = minioProvider;
+
+    public async Task<IReadOnlyCollection<CompanyIPGDataViewModel>> Handle(GetCompanyIPGsQuery request, CancellationToken cancellationToken)
+    {
+        var data = await _context.CompanyIPGReadModels
             .Include(t => t.CompanyIPGDeposits)
-            .Where(t => t.CompanyId == request.CompanyId)
-            .Select(entity => new CompanyIPGViewModel
-            {
-                Id = entity.Id,
-                CompanyId = entity.CompanyId,
-                ProviderData = entity.ProviderData,
-                IPGTypeId = entity.IPGTypeId,
-                ProviderId = entity.ProviderId,
-                IPGDeposits = entity.CompanyIPGDeposits.Select(t => new CompanyIPGDepositViewModel { Id = t.Id, CompanyDepositId = t.CompanyDepositId, CompanyIPGId = t.CompanyIPGId, IsDefault = t.IsDefault }).ToList(),
-                CreationDate = entity.CreationDate,
-                ModificationDate = entity.ModificationDate,
-                IsActive = entity.IsActive,
-            }).ToListAsync();
+            .ThenInclude(t => t.CompanyDeposit)
+            .Include(t => t.IPGType)
+            .Include(t => t.Provider)
+            .Where(t => t.CompanyId == request.CompanyId).ToListAsync();
+
+        return await Task.WhenAll(data.Select(async entity => new CompanyIPGDataViewModel
+             {
+                 Id = entity.Id,
+                 CompanyId = entity.CompanyId,
+                 ProviderData = entity.ProviderData,
+                 IPGTypeId = entity.IPGTypeId,
+                 ProviderId = entity.ProviderId,
+                 Deposits = entity.CompanyIPGDeposits.Select(t => new CompanyIPGDepositDataViewModel { Id = t.Id, AccountNumber = t.CompanyDeposit.AccountNumber, Name = t.CompanyDeposit.Name }).ToList(),
+                 CreationDate = entity.CreationDate,
+                 ModificationDate = entity.ModificationDate,
+                 IsActive = entity.IsActive,
+                 DefaultDeposit = entity.CompanyIPGDeposits.Where(t => t.IsDefault == true).Select(t => new CompanyIPGDepositDataViewModel { Id = t.Id, AccountNumber = t.CompanyDeposit.AccountNumber, Name = t.CompanyDeposit.Name }).FirstOrDefault(),
+                 IPGTypeLogo = await _minioProvider.PresignedGetObject(entity.IPGType.Logo),
+                 IPGTypeName = entity.IPGType.PersianName,
+                 ProviderName = entity.Provider.PersianName,
+                 VerificationTimeLimit = entity.VerificationTimeLimit,
+             })).ConfigureAwait(false);
     }
 }

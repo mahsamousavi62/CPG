@@ -10,13 +10,13 @@ namespace CPG.API.Controllers.v1;
 public class CompanyIPGController : ApiBaseController
 {
     [HttpGet("GetCompanyIPGs/{id:long}")]
-    [ProducesResponseType(typeof(IReadOnlyCollection<CompanyIPGViewModel>), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<IReadOnlyCollection<CompanyIPGViewModel>>> GetCompanyIPGs(long id)
+    [ProducesResponseType(typeof(IReadOnlyCollection<CompanyIPGDataViewModel>), (int)HttpStatusCode.OK)]
+    public async Task<ActionResult<IReadOnlyCollection<CompanyIPGDataViewModel>>> GetCompanyIPGs(long id)
      => Ok(await Mediator.Send(new GetCompanyIPGsQuery(id)));
 
     [HttpGet("GetActiveCompanyIPGs/{id:long}")]
-    [ProducesResponseType(typeof(IReadOnlyCollection<CompanyIPGViewModel>), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<IReadOnlyCollection<CompanyIPGViewModel>>> GetActiveCompanyIPGs(long id)
+    [ProducesResponseType(typeof(IReadOnlyCollection<CompanyIPGDataViewModel>), (int)HttpStatusCode.OK)]
+    public async Task<ActionResult<IReadOnlyCollection<CompanyIPGDataViewModel>>> GetActiveCompanyIPGs(long id)
      => Ok(await Mediator.Send(new GetActiveCompanyIPGsQuery(id)));
 
     [HttpGet("{id:long}")]
@@ -30,12 +30,13 @@ public class CompanyIPGController : ApiBaseController
         => Ok(await Mediator.Send(new GetCompanyIPGDepositsQuery(id)));
 
     [HttpPost]
-    public async Task<IActionResult> CreateCompanyIPG([FromForm] CreateCompanyIPGModel model)
+    public async Task<IActionResult> CreateCompanyIPG(CreateCompanyIPGModel model)
     {
-        var createViewModel = new CreateCompanyIPGViewModel(model.CompanyId, model.ProviderId, model.IPGTypeId, model.ProviderData, model.VerificationTimeLimit, model.CompanyIPGDeposits);
+        var createIpgDepositViewModels = model.CompanyIPGDeposits.Select(t => new CreateCompanyIPGDepositViewModel { DepositId = t.DepositId, IsDefault = t.IsDefault }).ToList();
+        var createViewModel = new CreateCompanyIPGViewModel(model.CompanyId, model.ProviderId, model.IPGTypeId, model.ProviderData, model.VerificationTimeLimit, createIpgDepositViewModels);
 
         var companyIpgId = await Mediator.Send(new CreateCompanyIPGCommand(createViewModel));
 
-        return CreatedAtAction(nameof(CreateCompanyIPG), new { id = companyIpgId }, new { companyIpgId });        
+        return CreatedAtAction(nameof(CreateCompanyIPG), new { id = companyIpgId }, new { companyIpgId });
     }
 }
