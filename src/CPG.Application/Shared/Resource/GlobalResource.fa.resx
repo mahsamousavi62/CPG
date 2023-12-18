@@ -324,8 +324,6 @@
   <data name="CompanySettings" xml:space="preserve">
     <value>تنظیمات شرکت</value>
   </data>
-
-
   <data name="PaymentRequestRequiredData" xml:space="preserve">
     <value>شرکت یا شبای مقصد را وارد کنید</value>
   </data>
@@ -344,8 +342,7 @@
   <data name="PaymentRequestNotMatchIbanAndCompany" xml:space="preserve">
     <value>حساب ارائه شده با شرکت مورد نظر ارتباطی نداشته و برای این شرکت تعریف نشده است.</value>
   </data>
-
-  <data name="PaymentRequestRequiredData" xml:space="preserve">
-    <value>شرکت یا شبای مقصد را وارد کنید</value>
+  <data name="CompanyDepositByCompanyIdNotFound" xml:space="preserve">
+    <value>حسابی برای شرکت{0} تعریف نشده است</value>
   </data>
 </root>

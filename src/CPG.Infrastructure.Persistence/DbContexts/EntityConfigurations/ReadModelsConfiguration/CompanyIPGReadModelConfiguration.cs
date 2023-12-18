@@ -9,13 +9,13 @@ public class CompanyIPGReadModelConfiguration : IEntityTypeConfiguration<Company
     public void Configure(EntityTypeBuilder<CompanyIPGReadModel> readModel)
     {
         readModel.ToTable("CompanyIPG");
-
         readModel.HasKey(x => x.Id);
+
         readModel.Property(x => x.Id).HasColumnName("Id");
         readModel.Property(x => x.CompanyId).HasColumnName("CompanyId");
         readModel.Property(x => x.ProviderId).HasColumnName("ProviderId");
         readModel.Property(x => x.IPGTypeId).HasColumnName("IPGTypeId");
-        readModel.Property(x => x.VerificationTimeLimit).HasColumnName("VerificationTimeLimit");
+        readModel.Property(x => x.VerificationTimeLimit).HasColumnName("VerificationTimeLimit").HasColumnType("tinyint");
         readModel.Property(x => x.ProviderData).HasColumnName("ProviderData");
         readModel.Property(x => x.IsActive);
         readModel.Property(x => x.CreationDate);

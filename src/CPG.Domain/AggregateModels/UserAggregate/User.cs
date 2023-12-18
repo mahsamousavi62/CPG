@@ -5,26 +5,27 @@ using System.Collections.Generic;
 using CPG.Domain.AggregateModels.UserAggregate.UserViewModel;
 using CPG.Domain.AggregateModels.CompanyAggregate;
 using System.Threading.Tasks;
+using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Domain.AggregateModels.UserAggregate
 {
-    public class User : Entity<long>, IAggregateRoot
+    public class User : AuditableEntity<long>, IAggregateRoot
     {
         public User()
         {
-            
+
         }
-        public User(string iDPId, string nationalCode, string firstName, string lastName, string phoneNumber)
+        public User(string idpId, string nationalCode, string firstName, string lastName, string phoneNumber, long companyId)
         {
-            IDPId = iDPId;
+            IdpId = idpId;
             NationalCode = nationalCode;
             FirstName = firstName;
             LastName = lastName;
             PhoneNumber = phoneNumber;
-            IsLegal = true;
             KYCStatus = 1;
-            LastUpdateFromIDP = DateTime.Now;
-            CreatationDateTime = DateTime.Now;
+            CompanyId = companyId;  
+            IsActive = true;
+            IsLegal = false;
         }
 
         public User(string firstName, string lastName, string phoneNumber)
@@ -33,13 +34,11 @@ namespace CPG.Domain.AggregateModels.UserAggregate
             LastName = lastName;
             PhoneNumber = phoneNumber;
             KYCStatus = 1;
-            LastUpdateFromIDP = DateTime.Now;
-            CreatationDateTime = DateTime.Now;
         }
 
         #region [ Fields And Properties ]
 
-        public string IDPId { get; }
+        public string IdpId { get; }
 
         public string NationalCode { get; }
 
@@ -51,17 +50,11 @@ namespace CPG.Domain.AggregateModels.UserAggregate
 
         public string PhoneNumber { get; }
 
-        public DateTime LastUpdateFromIDP { get; set; }
+        public DateTime? LastUpdateFromIDP { get; set; }
 
-        public short KYCStatus { get; }
+        public short? KYCStatus { get; }
 
         public bool IsLegal { get; }
-
-        public bool IsActive { get; }
-
-        public DateTime CreatationDateTime { get; set; }
-
-        public DateTime ModificationDate { get; set; }
 
         public List<UserRole> UserRoles { get; set; } = [];
 
@@ -69,18 +62,18 @@ namespace CPG.Domain.AggregateModels.UserAggregate
 
         #endregion
 
-        public static User Create(string iDPId, NationalCode nationalCode, Name name, PhoneNumber phoneNumber, short userRoleType)
+        public static User Create(string idpId, NationalCode nationalCode, Name name, PhoneNumber phoneNumber, long companyId, UserRoleType userRoleType)
         {
-            var user = new User(iDPId, nationalCode.Value, name.FirstName, name.LastName, phoneNumber.Value);
+            var user = new User(idpId, nationalCode.Value, name.FirstName, name.LastName, phoneNumber.Value, companyId);
             user.UserRoles.Add(new UserRole(userRoleType));
-           
+            user.LastUpdateFromIDP = DateTime.UtcNow;            
             return user;
         }
 
         public static User Update(Name name, string phoneNumber)
         {
             var user = new User(name.FirstName, name.LastName, phoneNumber);
-
+            user.LastUpdateFromIDP = DateTime.UtcNow;
             return user;
         }
 
@@ -91,7 +84,7 @@ namespace CPG.Domain.AggregateModels.UserAggregate
 
         public static void UpdateUserCompany(List<User> users, long companyId) => users.ForEach(user => { user.CompanyId = companyId; });
 
-        public static  Task<string> GetUserName(long userId)
+        public static Task<string> GetUserName(long userId)
         {
             return Task.FromResult("CPG Test");
         }
