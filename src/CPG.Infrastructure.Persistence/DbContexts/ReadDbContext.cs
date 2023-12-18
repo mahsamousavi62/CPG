@@ -20,6 +20,8 @@ public class ReadDbContext(DbContextOptions<ReadDbContext> options) : DbContext(
 
     public IQueryable<UserReadModel> UserReadModels => Set<UserReadModel>().AsNoTracking();
 
+    public IQueryable<UserRoleReadModel> UserRoleReadModels => Set<UserRoleReadModel>().AsNoTracking();
+
     public IQueryable<ApplicationReadModel> ApplicationReadModels => Set<ApplicationReadModel>().AsNoTracking();
 
     public IQueryable<ApplicationIdentifierReadModel> ApplicationIdentifierReadModels => Set<ApplicationIdentifierReadModel>().AsNoTracking();
@@ -43,15 +45,16 @@ public class ReadDbContext(DbContextOptions<ReadDbContext> options) : DbContext(
             .ApplyConfiguration(new BankReadModelConfiguration())
             .ApplyConfiguration(new CompanyDepositReadModelConfiguration())
             .ApplyConfiguration(new UserReadModelConfiguration())
+            .ApplyConfiguration(new UserRoleReadModelConfiguration())
             .ApplyConfiguration(new ProviderReadModelConfiguration())
             .ApplyConfiguration(new ApplicationReadModelConfiguration())
             .ApplyConfiguration(new ApplicationIdentifierReadModelConfiguration())
             .ApplyConfiguration(new ApplicationCallbackUrlReadModelConfiguration())
-            
             .ApplyConfiguration(new IPGTypeReadModelConfiguration())
-            .ApplyConfiguration(new PaymentRequestReadModelConfiguration());
-            //.ApplyConfiguration(new CompanyIPGReadModelConfiguration())
-            //.ApplyConfiguration(new CompanyIPGDepositReadModelConfiguration())
+            .ApplyConfiguration(new PaymentRequestReadModelConfiguration())
+            .ApplyConfiguration(new CompanyIPGReadModelConfiguration())
+            .ApplyConfiguration(new CompanyIPGDepositReadModelConfiguration())
             ;
+
     }
 }

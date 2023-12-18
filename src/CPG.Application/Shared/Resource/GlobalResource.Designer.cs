@@ -196,6 +196,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CompanyDepositByCompanyIdNotFound.
+        /// </summary>
+        public static string CompanyDepositByCompanyIdNotFound {
+            get {
+                return ResourceManager.GetString("CompanyDepositByCompanyIdNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to companyDepositNotFound.
         /// </summary>
         public static string CompanyDepositNotFound {

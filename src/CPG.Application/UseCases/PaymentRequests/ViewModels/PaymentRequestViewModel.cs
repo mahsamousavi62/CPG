@@ -2,7 +2,7 @@
 
 namespace CPG.Application.UseCases.PaymentRequests.ViewModels
 {
-    public class PaymentRequestViewModel
+    public class PaymentRequestResponseViewModel
     {
         public string Code { get; set; }
         public string PageUrl { get; set; }

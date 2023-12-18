@@ -9,7 +9,9 @@ using System.Net;
 
 namespace CPG.API.Controllers.v1
 {
-
+    /// <summary>
+    /// 
+    /// </summary>
     public class CompanyDepositController : ApiBaseController
     {
         [HttpGet("GetAll")]
@@ -17,18 +19,18 @@ namespace CPG.API.Controllers.v1
         public async Task<ActionResult<IReadOnlyCollection<CompanyDepositViewModel>>> GetAll()
      => Ok(await Mediator.Send(new GetAllCompanyDepositQuery()));
 
-
         [HttpGet("{id:long}")]
         [ProducesResponseType(typeof(CompanyDepositViewModel), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<CompanyDepositViewModel>> Get(long id)
             => Ok(await Mediator.Send(new GetCompanyDepositQuery(id)));
 
-
-
+        [HttpGet("GetByCompanyId{companyId:long}")]
+        [ProducesResponseType(typeof(IReadOnlyCollection<CompanyDepositViewModel>), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult<IReadOnlyCollection<CompanyDepositViewModel>>> GetAll(long companyId)
+     => Ok(await Mediator.Send(new GetCompanyDepositsByCompanyIdQuery(companyId)));
 
         [HttpPost("GetAccountNumber")]
         [ProducesResponseType(typeof(ResultData<AccountNumberViewModel>), (int)HttpStatusCode.OK)]
-
         public async Task<ActionResult<ResultData<AccountNumberViewModel>>> GetAccoutnNumber([FromBody] IbanViewModel model)
         {
             var result = await Mediator.Send(new GetAccountNumberQuery(model.Iban));

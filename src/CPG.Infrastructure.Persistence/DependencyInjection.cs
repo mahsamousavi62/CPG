@@ -1,5 +1,6 @@
 ﻿using CPG.Application.UseCases.Common.Queries;
 using CPG.Domain.SharedKernel;
+using CPG.Domain.SharedKernel.ApplicationSettings;
 using CPG.Infrastructure.Persistence.DbContexts;
 using CPG.Infrastructure.Persistence.GraphQL.ErrorHandling;
 using CPG.Infrastructure.Persistence.GraphQL.Queries;
@@ -16,13 +17,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using CPG.Application.UseCases.Common.Queries;
-using CPG.Infrastructure.Persistence.Redis;
-using Microsoft.EntityFrameworkCore.Diagnostics;
-using CPG.Domain.AggregateModels.CompanyAggregate;
-using CPG.Infrastructure.Persistence.Interceptors;
-using Ardalis.Specification;
-using CPG.Domain.SharedKernel.ApplicationSettings;
 using System;
 
 namespace CPG.Infrastructure.Persistence

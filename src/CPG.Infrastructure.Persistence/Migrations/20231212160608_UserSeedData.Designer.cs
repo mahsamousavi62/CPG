@@ -4,6 +4,7 @@ using CPG.Infrastructure.Persistence.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CPG.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(WriteDbContext))]
-    partial class WriteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231212160608_UserSeedData")]
+    partial class UserSeedData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -558,7 +561,7 @@ namespace CPG.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(255)")
                         .HasColumnName("FirstName");
 
-                    b.Property<string>("IdpId")
+                    b.Property<string>("IDPId")
                         .HasColumnType("varchar(255)")
                         .HasColumnName("IDPId");
 
@@ -569,7 +572,7 @@ namespace CPG.Infrastructure.Persistence.Migrations
                         .HasColumnType("bit")
                         .HasColumnName("IsLegal");
 
-                    b.Property<byte?>("KYCStatus")
+                    b.Property<byte>("KYCStatus")
                         .HasColumnType("tinyint")
                         .HasColumnName("KYCStatus");
 
@@ -601,9 +604,6 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
-
-                    b.HasIndex("NationalCode")
-                        .IsUnique();
 
                     b.ToTable("User", (string)null);
                 });
@@ -643,9 +643,6 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
-
-                    b.HasIndex("RoleType", "UserId")
-                        .IsUnique();
 
                     b.ToTable("UserRole", (string)null);
                 });

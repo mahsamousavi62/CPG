@@ -23,10 +23,7 @@ public class GetCompanyQueryHandler(ReadDbContext context, IMinioProvider minioP
         Guard.Against.NegativeOrZero(request.CompanyId, nameof(request.CompanyId));
 
         var company = await _context.CompanyReadModels.Include(x => x.PaymentMethods)
-             .FirstOrDefaultAsync(t => t.Id == request.CompanyId);
-
-        if (company == null)
-            throw new CompanyNotFoundException(request.CompanyId);
+             .FirstOrDefaultAsync(t => t.Id == request.CompanyId, cancellationToken: cancellationToken) ?? throw new CompanyNotFoundException(request.CompanyId);
 
         var companyModel = new CompanyViewModel
         {

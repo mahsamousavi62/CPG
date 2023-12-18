@@ -5,18 +5,22 @@ using CPG.Infrastructure.Persistence.Redis;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace CPG.Infrastructure.Persistence.Repositories
 {
     public class ApplicationSettingsRepository : IApplicationSettingsRepository
     {
         private readonly IRedisCaheService _cacheService;
+        private readonly ILogger<ApplicationSettingsRepository> _logger;
         private readonly ReadDbContext _context;
        public const string CacheKey = "AuthenticationConfigApplicationSettings_key";
-        public ApplicationSettingsRepository(ReadDbContext context, IRedisCaheService cacheService)
+        public ApplicationSettingsRepository(ReadDbContext context, IRedisCaheService cacheService,
+            ILogger<ApplicationSettingsRepository> logger)
         {
             _context = context;
             _cacheService = cacheService;
+            _logger = logger;
         }
 
         public async Task<ApplicationConfigViewModel> GetAllApplicationSettings()
@@ -31,9 +35,17 @@ namespace CPG.Infrastructure.Persistence.Repositories
             cacheData = new ApplicationConfigViewModel();
             var type = cacheData.GetType();
             var prs = type.GetProperties();
-            foreach (var item in prs)
+            try
             {
-                item.SetValue(cacheData, Convert.ChangeType(appSettings[item.Name], Type.GetTypeCode(item.PropertyType)));
+                foreach (var item in prs)
+                {
+                    item.SetValue(cacheData, Convert.ChangeType(appSettings[item.Name], Type.GetTypeCode(item.PropertyType)));
+                    _logger.LogInformation($"appSettings: { appSettings[item.Name]}");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"convert Exception in appsettings:{ ex.Message}");
             }
 
             _cacheService.SetData(CacheKey, cacheData);

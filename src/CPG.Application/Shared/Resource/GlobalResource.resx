@@ -357,4 +357,7 @@
   <data name="UnexpectedError" xml:space="preserve">
     <value>An unexpected error has occurred, please try again or contact support</value>
   </data>
+  <data name="CompanyDepositByCompanyIdNotFound" xml:space="preserve">
+    <value>CompanyDepositByCompanyIdNotFound</value>
+  </data>
 </root>
