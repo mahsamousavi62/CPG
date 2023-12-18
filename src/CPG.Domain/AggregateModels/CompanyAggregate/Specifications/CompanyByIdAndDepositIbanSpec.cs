@@ -7,15 +7,16 @@ public class CompanyByIdAndDepositIbanSpec : Specification<Company>, ISingleResu
 {
     public CompanyByIdAndDepositIbanSpec(long companyId, string destinationIban)
     {
-        Query.Include(a => a.CompanyDeposits.Where(b => b.IsActive && b.Bank.IsActive && b.Iban == destinationIban))
+        Query.Include(a => a.PaymentMethods.Where(b => b.IsActive))
+             .Include(a => a.CompanyDeposits.Where(b => b.IsActive && b.Bank.IsActive && b.Iban == destinationIban))
              .ThenInclude(c => c.Bank)
-             .Include(a => a.PaymentMethods.Where(b => b.IsActive))
-             .Include(a => a.CompanyIPGs.Where(b => b.IsActive && b.IPGType.IsActive))
+             .Include(a => a.CompanyIPGs.Where(b => b.IsActive && b.IPGType.IsActive && b.Provider.IsActive))
              .ThenInclude(c => c.IPGType)
-             .Include(a => a.CompanyIPGs.Where(b => b.IsActive))
-             .ThenInclude(c => c.IPGDeposits.Where(d => d.IsActive))             
-             .Include(a => a.CompanyIPGs.Where(b => b.IsActive && b.Provider.IsActive))
+             .Include(a => a.CompanyIPGs)
              .ThenInclude(c => c.Provider)
-             .Where(company => company.Id == companyId);
+             .Include(a => a.CompanyIPGs)
+             .ThenInclude(c => c.IPGDeposits.Where(d => d.IsActive && d.CompanyDeposit.Iban == destinationIban))
+             .ThenInclude(d => d.CompanyDeposit)
+             .Where(company => company.Id == companyId);       
     }
 }

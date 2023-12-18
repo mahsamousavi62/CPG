@@ -3,11 +3,13 @@ using CPG.Application.UseCases.PaymentRequests.Exceptions;
 using CPG.Application.UseCases.PaymentRequests.ViewModels;
 using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Domain.AggregateModels.CompanyAggregate.Specifications;
+using CPG.Domain.AggregateModels.CompanyIPGAggregate;
 using CPG.Domain.AggregateModels.PaymentRequestAggregate.Specifications;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Minio;
 using MediatR;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -58,20 +60,38 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
         if (!string.IsNullOrEmpty(paymentRequest.DestinationIban))
         {
             company = await _companyRepository.GetBySpecAsync(new CompanyByIdAndDepositIbanSpec(paymentRequest.CompanyId, paymentRequest.DestinationIban), cancellationToken);
+
+            var toBeRemoved = new List<CompanyIPG>();
+            foreach (var companyIPGItem in company?.CompanyIPGs)
+            {
+                var found = companyIPGItem.IPGDeposits.Any(t => t.CompanyDeposit.Iban == paymentRequest.DestinationIban);
+                if (!found)
+                {
+                    toBeRemoved.Add(companyIPGItem);
+                }
+            }
+            foreach (var companyIPGItem in toBeRemoved)
+            {
+                company.CompanyIPGs.Remove(companyIPGItem);
+            }            
         }
         else
         {
-            company = await _companyRepository.GetBySpecAsync(new CompanyFullDataByIdSpec(paymentRequest.CompanyId), cancellationToken);
+            company = await _companyRepository.GetBySpecAsync(new CompanyDepositAndPaymentMethodsByIdSpec(paymentRequest.CompanyId), cancellationToken);
 
+            var toBeRemoved = new List<CompanyIPG>();
             foreach (var companyIPGItem in company?.CompanyIPGs) 
             {
                 var defaultDeposit = companyIPGItem.IPGDeposits.FirstOrDefault(t => t.IsDefault);
                 if (!defaultDeposit.IsActive)
                 {
-                    company.CompanyIPGs.Remove(companyIPGItem);
+                    toBeRemoved.Add(companyIPGItem);
                 }
             }
-            
+            foreach(var companyIPGItem in toBeRemoved)
+            {
+                company.CompanyIPGs.Remove(companyIPGItem);
+            }
         }
 
         if (company == null)
@@ -84,13 +104,7 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
             throw new CompanyIsInactiveException(company.PersianName);
         }
 
-        if (company.CompanyIPGs?.Any() is false)
-        {
-            //ToDo: Mohsen should add error code
-            throw new UnexpectedErrorException();
-        }
-
-        var ipgResult = await Task.WhenAll(company.CompanyIPGs.Select(t => t.IPGType).Select(async t => new IPGInfo
+        var ipgResult = await Task.WhenAll(company.CompanyIPGs?.Select(t => t.IPGType).Select(async t => new IPGInfo
         {
             Id = t.Id,
             Logo = await _minioProvider.PresignedGetObject(t.Logo),
@@ -100,7 +114,7 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
         return new PaymentMethodsViewModel
         {
             Amount = paymentRequest.Amount,
-            IPGs = ipgResult.ToList(),
+            IPGs = ipgResult?.ToList(),
         };
     }
 }

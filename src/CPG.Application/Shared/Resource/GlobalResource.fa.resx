@@ -344,6 +344,7 @@
   </data>
   <data name="CompanyDepositByCompanyIdNotFound" xml:space="preserve">
     <value>حسابی برای شرکت{0} تعریف نشده است</value>
+  </data>
   <data name="CompanyIsInactive" xml:space="preserve">
     <value>کاربر گرامی، شرکت "{0}" در حال حاضر غیرفعال بوده و امکان پرداخت وجه به آن امکان پذیر نیست. لطفا با پشتیبانی تماس بگیرید یا در ساعات دیگری از روز مراجعه کنید</value>
   </data>
