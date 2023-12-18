@@ -33,6 +33,9 @@ public class IdpClient(IHttpClientFactory httpClientFactory, IApplicationSetting
         var client = _httpClientFactory.CreateClient("idpClient");
         client.SetBearerToken(accessTokenResult.Data);
         using var response = await client.GetAsync($"{appConfig.IdpGetProfileUrl}{idpId}");
+       if(!response.IsSuccessStatusCode)
+           return new ResultData<IdpUserProfile> { Error=response.StatusCode.ToString(), 
+                                                   OperationResult=Enums.OperationResult.Failed}; 
         response.EnsureSuccessStatusCode();
         var content = await response.Content.ReadAsStringAsync();
         try
@@ -44,7 +47,7 @@ public class IdpClient(IHttpClientFactory httpClientFactory, IApplicationSetting
         {
             dynamic d = JObject.Parse(content);
 
-            resultData.Error = d.result;
+            resultData.Error = d;
             resultData.OperationResult = Enums.OperationResult.Failed;
         }
         return resultData;
