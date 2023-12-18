@@ -10,13 +10,13 @@ namespace CPG.API.Controllers.v1;
 public class CompanyIPGController : ApiBaseController
 {
     [HttpGet("GetCompanyIPGs/{id:long}")]
-    [ProducesResponseType(typeof(IReadOnlyCollection<CompanyIPGViewModel>), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<IReadOnlyCollection<CompanyIPGViewModel>>> GetCompanyIPGs(long id)
+    [ProducesResponseType(typeof(IReadOnlyCollection<CompanyIPGDataViewModel>), (int)HttpStatusCode.OK)]
+    public async Task<ActionResult<IReadOnlyCollection<CompanyIPGDataViewModel>>> GetCompanyIPGs(long id)
      => Ok(await Mediator.Send(new GetCompanyIPGsQuery(id)));
 
     [HttpGet("GetActiveCompanyIPGs/{id:long}")]
-    [ProducesResponseType(typeof(IReadOnlyCollection<CompanyIPGViewModel>), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<IReadOnlyCollection<CompanyIPGViewModel>>> GetActiveCompanyIPGs(long id)
+    [ProducesResponseType(typeof(IReadOnlyCollection<CompanyIPGDataViewModel>), (int)HttpStatusCode.OK)]
+    public async Task<ActionResult<IReadOnlyCollection<CompanyIPGDataViewModel>>> GetActiveCompanyIPGs(long id)
      => Ok(await Mediator.Send(new GetActiveCompanyIPGsQuery(id)));
 
     [HttpGet("{id:long}")]
