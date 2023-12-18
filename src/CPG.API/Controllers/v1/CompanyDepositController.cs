@@ -17,17 +17,17 @@ namespace CPG.API.Controllers.v1
         [HttpGet("GetAll")]
         [ProducesResponseType(typeof(IReadOnlyCollection<CompanyDepositViewModel>), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<IReadOnlyCollection<CompanyDepositViewModel>>> GetAll()
-     => Ok(await Mediator.Send(new GetAllCompanyDepositQuery()));
+            => Ok(await Mediator.Send(new GetAllCompanyDepositQuery()));
 
         [HttpGet("{id:long}")]
         [ProducesResponseType(typeof(CompanyDepositViewModel), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<CompanyDepositViewModel>> Get(long id)
+        public async Task<ActionResult<CompanyDepositViewModel>> GetById(long id)
             => Ok(await Mediator.Send(new GetCompanyDepositQuery(id)));
 
-        [HttpGet("GetByCompanyId{companyId:long}")]
+        [HttpGet("Company/{companyId:long}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<CompanyDepositViewModel>), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<IReadOnlyCollection<CompanyDepositViewModel>>> GetAll(long companyId)
-     => Ok(await Mediator.Send(new GetCompanyDepositsByCompanyIdQuery(companyId)));
+        public async Task<ActionResult<IReadOnlyCollection<CompanyDepositViewModel>>> GetByCompanyId(long companyId)
+            => Ok(await Mediator.Send(new GetCompanyDepositsByCompanyIdQuery(companyId)));
 
         [HttpPost("GetAccountNumber")]
         [ProducesResponseType(typeof(ResultData<AccountNumberViewModel>), (int)HttpStatusCode.OK)]
