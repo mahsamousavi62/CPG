@@ -30,8 +30,4 @@
 		<ProjectReference Include="..\CPG.Infrastructure.Persistence\CPG.Infrastructure.Persistence.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="ClientFactory\Ipg\" />
-	</ItemGroup>
-
 </Project>

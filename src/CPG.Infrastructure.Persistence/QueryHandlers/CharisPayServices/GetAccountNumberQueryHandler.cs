@@ -1,8 +1,8 @@
 ﻿
-using Api.Juros.Infrastructure.External;
 using CPG.Application.UseCases.CharisPayServices.Queries;
 using CPG.Domain.AggregateModels.BankAggregate;
 using CPG.Domain.SharedKernel;
+using CPG.Domain.SharedKernel.ClientFactory;
 using MediatR;
 using System;
 using System.Collections.Generic;

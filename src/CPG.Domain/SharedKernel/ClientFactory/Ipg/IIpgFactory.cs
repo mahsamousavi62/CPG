@@ -1,4 +1,5 @@
-﻿using static CPG.Domain.SharedKernel.Enums;
+﻿using CCPG.Domain.SharedKernel.ClientFactory.Ipg;
+using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Domain.SharedKernel.ClientFactory.Ipg
 {
