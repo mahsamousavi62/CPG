@@ -250,6 +250,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dear user, company &quot;{0}&quot; is inactive right now and unable for payment. Call support team or try later.
+        /// </summary>
+        public static string CompanyIsInactive {
+            get {
+                return ResourceManager.GetString("CompanyIsInactive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CompanyLogo.
         /// </summary>
         public static string CompanyLogo {
@@ -592,11 +601,56 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pay : &quot;{0} rial&quot; | {1} tooman for company : {2}.
+        /// </summary>
+        public static string PaymentMessage {
+            get {
+                return ResourceManager.GetString("PaymentMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to PaymentReceipt.
         /// </summary>
         public static string PaymentReceipt {
             get {
                 return ResourceManager.GetString("PaymentReceipt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dear user, the payment address has expired, repeat the operation if necessary.
+        /// </summary>
+        public static string PaymentRequestCodeIsExpired {
+            get {
+                return ResourceManager.GetString("PaymentRequestCodeIsExpired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dear user, this request has already been finalized.
+        /// </summary>
+        public static string PaymentRequestCodeIsFinalized {
+            get {
+                return ResourceManager.GetString("PaymentRequestCodeIsFinalized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dear user, this address has already been used, repeat the operation if necessary.
+        /// </summary>
+        public static string PaymentRequestCodeIsUsed {
+            get {
+                return ResourceManager.GetString("PaymentRequestCodeIsUsed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dear user, the payment address is invalid.
+        /// </summary>
+        public static string PaymentRequestCodeNotFound {
+            get {
+                return ResourceManager.GetString("PaymentRequestCodeNotFound", resourceCulture);
             }
         }
         
@@ -642,6 +696,15 @@ namespace CPG.Application.Shared.Resource {
         public static string PaymentRequestRequiredIbanOrCompany {
             get {
                 return ResourceManager.GetString("PaymentRequestRequiredIbanOrCompany", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dear user, the request status is invalid.
+        /// </summary>
+        public static string PaymentRequestStatusIsInvalid {
+            get {
+                return ResourceManager.GetString("PaymentRequestStatusIsInvalid", resourceCulture);
             }
         }
         
@@ -786,6 +849,15 @@ namespace CPG.Application.Shared.Resource {
         public static string UserNotFound {
             get {
                 return ResourceManager.GetString("UserNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An unexpected error has occurred, please try again or contact support.
+        /// </summary>
+        public static string UnexpectedError {
+            get {
+                return ResourceManager.GetString("UnexpectedError", resourceCulture);
             }
         }
         

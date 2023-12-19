@@ -16,6 +16,10 @@ namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations
             entity.Property(x => x.CompanyIPGId).HasColumnName("CompanyIPGId").IsRequired();
             entity.Property(x => x.CompanyDepositId).HasColumnName("CompanyDepositId").IsRequired();
             entity.Property(x => x.IsDefault).HasColumnName("IsDefault").HasColumnType("bit").IsRequired();
+
+            entity.HasOne(x => x.CompanyDeposit)
+                .WithMany(x => x.CompanyIPGDeposits)
+                .HasForeignKey(x => x.CompanyDepositId);
         }
     }
 }
