@@ -2,7 +2,7 @@
 using CPG.Domain.SharedKernel;
 using System.Threading.Tasks;
 
-namespace Api.Juros.Infrastructure.External
+namespace CPG.Domain.SharedKernel.ClientFactory;
 {
     public interface ICharisPayClient
     {
