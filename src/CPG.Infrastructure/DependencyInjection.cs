@@ -22,12 +22,13 @@ using System.Net.Http;
 using System;
 using Polly;
 using System.Net;
-using Api.Juros.Infrastructure.External;
 using Confluent.Kafka;
 using System.Net.Http.Headers;
 using CPG.Domain.SharedKernel.ApplicationSettings;
-using CPG.Domain.SharedKernel.ClientFactory;
-using CPG.Infrastructure.ClientFactory;
+using CPG.Domain.SharedKernel.Communication.Charispay;
+using CPG.Domain.SharedKernel.Communication.Idp;
+using CPG.Infrastructure.Providers.Idp;
+using CPG.Infrastructure.Providers.Charispay;
 
 namespace CPG.Infrastructure;
 
@@ -35,8 +36,8 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         => services
-            .AddScoped<ICharisPayClient, CharisPayClient>()
-            .AddScoped<IIdpClient, IdpClient>()
+            .AddScoped<ICharisPayProvider, CharisPayProvider>()
+            .AddScoped<IIdpProvider, IdpProvider>()
             .AddTransient<ICurrentDateTime, CurrentDateTime>()
             .AddDatabase(configuration)
             .AddGraphQLQueries()

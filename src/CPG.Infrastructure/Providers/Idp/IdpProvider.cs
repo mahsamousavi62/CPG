@@ -1,6 +1,5 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
-using CPG.Domain.SharedKernel.ClientFactory;
 using IdentityModel.Client;
 using Confluent.Kafka;
 using System.Reflection.Metadata;
@@ -11,34 +10,39 @@ using CPG.Domain.SharedKernel;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System;
+using CPG.Domain.SharedKernel.Communication.Idp;
+using CPG.Domain.SharedKernel.Communication.Idp.Models.UserProfile;
 
-namespace CPG.Infrastructure.ClientFactory;
-public class IdpClient(IHttpClientFactory httpClientFactory, IApplicationSettingsRepository applicationSettingsRepository) : IIdpClient
+namespace CPG.Infrastructure.Providers.Idp;
+public class IdpProvider(IHttpClientFactory httpClientFactory, IApplicationSettingsRepository applicationSettingsRepository) : IIdpProvider
 {
     public readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
     private readonly IApplicationSettingsRepository _applicationSettingsRepository = applicationSettingsRepository;
 
-    public async Task<ResultData<IdpUserProfile>> GetUserProfile(string idpId)
+    public async Task<ResultData<UserProfileResponse>> GetUserProfile(string idpId)
     {
-        ResultData<IdpUserProfile> resultData = new();
+        ResultData<UserProfileResponse> resultData = new();
 
         var appConfig = await _applicationSettingsRepository.GetAllApplicationSettings();
 
         var accessTokenResult = await GetClientCredentialsToken(appConfig);
-        if(accessTokenResult.OperationResult==Enums.OperationResult.Failed)
-            return new ResultData<IdpUserProfile> { Error=accessTokenResult.Error,OperationResult=Enums.OperationResult.Failed};
+        if (accessTokenResult.OperationResult == Enums.OperationResult.Failed)
+            return new ResultData<UserProfileResponse> { Error = accessTokenResult.Error, OperationResult = Enums.OperationResult.Failed };
 
         var client = _httpClientFactory.CreateClient("idpClient");
         client.SetBearerToken(accessTokenResult.Data);
         using var response = await client.GetAsync($"{appConfig.IdpGetProfileUrl}{idpId}");
-       if(!response.IsSuccessStatusCode)
-           return new ResultData<IdpUserProfile> { Error=response.StatusCode.ToString(), 
-                                                   OperationResult=Enums.OperationResult.Failed}; 
+        if (!response.IsSuccessStatusCode)
+            return new ResultData<UserProfileResponse>
+            {
+                Error = response.StatusCode.ToString(),
+                OperationResult = Enums.OperationResult.Failed
+            };
         response.EnsureSuccessStatusCode();
         var content = await response.Content.ReadAsStringAsync();
         try
         {
-            resultData.Data = JsonConvert.DeserializeObject<IdpUserProfile>(content);
+            resultData.Data = JsonConvert.DeserializeObject<UserProfileResponse>(content);
             resultData.OperationResult = Enums.OperationResult.Succeeded;
         }
         catch (Exception)

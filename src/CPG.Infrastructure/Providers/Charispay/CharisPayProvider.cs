@@ -1,7 +1,8 @@
 ﻿using Azure.Core;
-using CPG.Application.UseCases.CharisPayServices.Queries;
 using CPG.Domain.SharedKernel;
-using CPG.Domain.SharedKernel.ClientFactory;
+using CPG.Domain.SharedKernel.Communication.Charispay;
+using CPG.Domain.SharedKernel.Communication.Charispay.Models;
+using CPG.Domain.SharedKernel.Communication.Charispay.Models.AccountNumber;
 using HotChocolate.Execution.Processing;
 using IdentityModel.Client;
 using Microsoft.Extensions.Configuration;
@@ -13,22 +14,22 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Api.Juros.Infrastructure.External
+namespace CPG.Infrastructure.Providers.Charispay
 {
-    public class CharisPayClient : ICharisPayClient
+    public class CharisPayProvider : ICharisPayProvider
     {
         public readonly IHttpClientFactory _factory;
         private readonly IConfiguration configuration;
 
-        public CharisPayClient(IHttpClientFactory factory,IConfiguration configuration)
+        public CharisPayProvider(IHttpClientFactory factory, IConfiguration configuration)
         {
             _factory = factory;
             this.configuration = configuration;
         }
 
-        public async Task< ResultData<AccountNumberViewModel>> GetAccountNumber(string iban)
+        public async Task<ResultData<AccountNumberResponse>> GetAccountNumber(string iban)
         {
-            ResultData<AccountNumberViewModel> resultData = new();
+            ResultData<AccountNumberResponse> resultData = new();
             var client = _factory.CreateClient("charisPayClient");
             client.SetBearerToken(configuration["Infrastructure:CharisPay:Token"]);
             client.DefaultRequestHeaders.Add("correlation-id", Guid.NewGuid().ToString());
@@ -39,15 +40,15 @@ namespace Api.Juros.Infrastructure.External
             var resultContent = await result.Content.ReadAsStringAsync();
             try
             {
-            var response = JsonConvert.DeserializeObject<inqueryIbanViewModel>(resultContent);
-                resultData.Data= new AccountNumberViewModel(response.result[0].depositNumber, response.result[0].bankName);
+                var response = JsonConvert.DeserializeObject<CharispayResponseBase<InquiryIbanResponse>>(resultContent);
+                resultData.Data = new AccountNumberResponse(response.result[0].depositNumber, response.result[0].bankName);
                 resultData.OperationResult = Enums.OperationResult.Succeeded;
             }
             catch (Exception)
             {
                 dynamic d = JObject.Parse(resultContent);
 
-                resultData.Error= d.result;
+                resultData.Error = d.result;
                 resultData.OperationResult = Enums.OperationResult.Failed;
             }
             return resultData;

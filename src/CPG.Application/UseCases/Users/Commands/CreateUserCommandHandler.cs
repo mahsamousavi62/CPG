@@ -5,7 +5,7 @@ using CPG.Application.UseCases.Users.ViewModel;
 using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Domain.AggregateModels.UserAggregate.Specifications;
 using CPG.Domain.SharedKernel;
-using CPG.Domain.SharedKernel.ClientFactory;
+using CPG.Domain.SharedKernel.Communication.Idp;
 using MediatR;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
@@ -15,11 +15,11 @@ using System.Threading.Tasks;
 
 namespace CPG.Application.UseCases.Users.Commands
 {
-    public class CreateUserCommandHandler(IIdpClient idpClient, IAggregateRepository<User> repository)
+    public class CreateUserCommandHandler(IIdpProvider idpClient, IAggregateRepository<User> repository)
             : IRequestHandler<CreateUserCommnad>
     {
         private readonly IAggregateRepository<User> _repository = repository;
-        private readonly IIdpClient _idpClient = idpClient;
+        private readonly IIdpProvider _idpClient = idpClient;
 
         public async Task Handle(CreateUserCommnad request, CancellationToken cancellationToken)
         {
