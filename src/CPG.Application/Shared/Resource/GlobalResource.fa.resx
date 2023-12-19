@@ -327,9 +327,6 @@
   <data name="PaymentRequestRequiredData" xml:space="preserve">
     <value>شرکت یا شبای مقصد را وارد کنید</value>
   </data>
-  <data name="String1" xml:space="preserve">
-    <value />
-  </data>
   <data name="PaymentRequestDuplicateTrackerId" xml:space="preserve">
     <value>شناسه رهگیری تکراری است</value>
   </data>
@@ -350,5 +347,8 @@
   </data>
   <data name="UserNotFound" xml:space="preserve">
     <value>کاربر وجود ندارد</value>
+  </data>
+  <data name="FileNotFound" xml:space="preserve">
+    <value>فایل مورد نظر یافت نشد</value>
   </data>
 </root>

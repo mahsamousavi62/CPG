@@ -265,7 +265,7 @@
     <value>BrokerageCharisma</value>
   </data>
   <data name="Validation_Required" xml:space="preserve">
-    <value>Validation_Required</value>
+    <value>Validation is required</value>
   </data>
   <data name="AccountNumber" xml:space="preserve">
     <value>AccountNumber</value>
@@ -292,7 +292,7 @@
     <value>Name</value>
   </data>
   <data name="Validation_IBan" xml:space="preserve">
-    <value>Validation_IBan</value>
+    <value>IBan Validation</value>
   </data>
   <data name="CreateProvider" xml:space="preserve">
     <value>CreateProvider</value>
@@ -341,5 +341,8 @@
   </data>
   <data name="UserNotFound" xml:space="preserve">
     <value>UserNotFound</value>
+  </data>
+  <data name="FileNotFound" xml:space="preserve">
+    <value>File Not Found</value>
   </data>
 </root>
