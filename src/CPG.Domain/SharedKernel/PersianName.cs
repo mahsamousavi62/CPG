@@ -16,7 +16,7 @@ public class PersianName
         if (persianName.Length < 3 || persianName.Length > 255)
             throw new InvalidPersianNameCharachterException(persianName);
 
-        if (!Regex.IsMatch(persianName, "^[\\u0600-\\u06FF\\s]+$"))
+        if (!Regex.IsMatch(persianName, "^[\\u0600-\\u06FF\\d\\s]+$"))
             throw new InvalidPersianNameException(persianName);
 
         Value = persianName;

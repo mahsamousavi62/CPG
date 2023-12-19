@@ -1,9 +1,10 @@
-﻿using ApplicationException = CPG.Application.UseCases.Exceptions.ApplicationException;
+﻿using CPG.Application.Shared.Resource;
+using ApplicationException = CPG.Application.UseCases.Exceptions.ApplicationException;
 
 namespace CPG.Application.UseCases.Users.Exceptions;
 
-public class UserNotFoundException(long userId) : ApplicationException($"User with ID {userId} has not been found.")
+public class UserNotFoundException(string idpId) : ApplicationException(string.Format(GlobalResource.UserNotFound, idpId))
 {
     public override string Code => "user_not_found";
-    public long UserId { get; } = userId;
+    public string IdpId { get; } = idpId;
 }

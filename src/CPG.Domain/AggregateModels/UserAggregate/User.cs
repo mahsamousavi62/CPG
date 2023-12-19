@@ -1,8 +1,6 @@
 ﻿using CPG.Domain.SeedWork;
 using System;
-using CPG.Domain.AggregateModels.UserAggregate.Events;
 using System.Collections.Generic;
-using CPG.Domain.AggregateModels.UserAggregate.UserViewModel;
 using CPG.Domain.AggregateModels.CompanyAggregate;
 using System.Threading.Tasks;
 using static CPG.Domain.SharedKernel.Enums;
@@ -15,7 +13,7 @@ namespace CPG.Domain.AggregateModels.UserAggregate
         {
 
         }
-        public User(string idpId, string nationalCode, string firstName, string lastName, string phoneNumber, long companyId)
+        public User(string idpId, string nationalCode, string firstName, string lastName, string phoneNumber)
         {
             IdpId = idpId;
             NationalCode = nationalCode;
@@ -23,7 +21,6 @@ namespace CPG.Domain.AggregateModels.UserAggregate
             LastName = lastName;
             PhoneNumber = phoneNumber;
             KYCStatus = 1;
-            CompanyId = companyId;  
             IsActive = true;
             IsLegal = false;
         }
@@ -44,15 +41,15 @@ namespace CPG.Domain.AggregateModels.UserAggregate
 
         public long? CompanyId { get; set; }
 
-        public string FirstName { get; }
+        public string FirstName { get; set; }
 
-        public string LastName { get; }
+        public string LastName { get; set; }
 
-        public string PhoneNumber { get; }
+        public string PhoneNumber { get; set; }
 
         public DateTime? LastUpdateFromIDP { get; set; }
 
-        public short? KYCStatus { get; }
+        public short? KYCStatus { get; set; }
 
         public bool IsLegal { get; }
 
@@ -62,31 +59,32 @@ namespace CPG.Domain.AggregateModels.UserAggregate
 
         #endregion
 
-        public static User Create(string idpId, NationalCode nationalCode, Name name, PhoneNumber phoneNumber, long companyId, UserRoleType userRoleType)
+        public static User Create(string idpId, NationalCode nationalCode, Name name,
+            PhoneNumber phoneNumber, UserRoleType userRoleType)
         {
-            var user = new User(idpId, nationalCode.Value, name.FirstName, name.LastName, phoneNumber.Value, companyId);
+            var user = new User(idpId, nationalCode.Value, name.FirstName, name.LastName, phoneNumber.Value);
             user.UserRoles.Add(new UserRole(userRoleType));
             user.LastUpdateFromIDP = DateTime.UtcNow;            
             return user;
         }
 
-        public static User Update(Name name, string phoneNumber)
+        public static User Update(User user, Name name, string phoneNumber)
         {
-            var user = new User(name.FirstName, name.LastName, phoneNumber);
+           user.FirstName = name.FirstName;
+           user.LastName = name.LastName;
+           user.PhoneNumber = phoneNumber;
+           user.KYCStatus = 1;
             user.LastUpdateFromIDP = DateTime.UtcNow;
             return user;
         }
-
-        public void GetIdpUserProfile(GetIdpUserProfileModel model)
-        {
-            AddDomainEvent(new GetIdpUserProfileEvent(model));
-        }
-
+     
         public static void UpdateUserCompany(List<User> users, long companyId) => users.ForEach(user => { user.CompanyId = companyId; });
 
         public static Task<string> GetUserName(long userId)
         {
             return Task.FromResult("CPG Test");
         }
+
+      
     }
 }
