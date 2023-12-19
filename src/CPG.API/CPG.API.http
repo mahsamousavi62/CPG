@@ -8,7 +8,7 @@ POST {{CPG.API_HostAddress}}/api/users/CreateUserProfile
 Content-Type: application/json
 
 {
-  "idpId": "35732931625353216"
+  "idpId": 35732931625353216
 }
 
 ###

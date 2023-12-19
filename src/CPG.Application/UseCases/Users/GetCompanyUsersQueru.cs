@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CPG.Application.UseCases.Users
 {
-    public class GetCompanyUsersQuery:IRequest<IReadOnlyCollection<UserViewModel>>
+    public class GetCompanyUsersQuery:IRequest<IReadOnlyCollection<UserCompanyViewModel>>
     {
     }
 }

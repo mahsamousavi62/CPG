@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Users
 {
-    public class GetCompanyUsersQueryHandler : IRequestHandler<GetCompanyUsersQuery, IReadOnlyCollection<UserViewModel>>
+    public class GetCompanyUsersQueryHandler : IRequestHandler<GetCompanyUsersQuery, IReadOnlyCollection<UserCompanyViewModel>>
     {
         private readonly ReadDbContext _context;
 
@@ -22,12 +22,12 @@ namespace CPG.Infrastructure.Persistence.QueryHandlers.Users
             _context = context;
         }
 
-        public async Task<IReadOnlyCollection<UserViewModel>> Handle(GetCompanyUsersQuery request, CancellationToken cancellationToken)
+        public async Task<IReadOnlyCollection<UserCompanyViewModel>> Handle(GetCompanyUsersQuery request, CancellationToken cancellationToken)
         {
             var users = await _context.UserReadModels.
                 Where(u => u.KYCStatus == 1 && u.IsActive && u.CompanyId == null).ToListAsync();
 
-            var userViewModels = users.Select(user => new UserViewModel
+            var userViewModels = users.Select(user => new UserCompanyViewModel
             {
                 FirstName = user.FirstName,
                 LastName = user.LastName,

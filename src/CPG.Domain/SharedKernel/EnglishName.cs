@@ -15,7 +15,7 @@ public class EnglishName
         if (englishName.Length<3 || englishName.Length>255)
             throw new InvalidEnglishNameCharachterException(englishName);
 
-        if (!Regex.IsMatch(englishName, "[A-Za-z\\s]+"))
+        if (!Regex.IsMatch(englishName, "[A-Za-z\\d\\s]+"))
             throw new InvalidEnglishNameException(englishName);
 
         Value = englishName;

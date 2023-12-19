@@ -345,4 +345,10 @@
   <data name="CompanyDepositByCompanyIdNotFound" xml:space="preserve">
     <value>حسابی برای شرکت{0} تعریف نشده است</value>
   </data>
+  <data name="IdpUserProfileException" xml:space="preserve">
+    <value>{0}خطا :</value>
+  </data>
+  <data name="UserNotFound" xml:space="preserve">
+    <value>کاربر وجود ندارد</value>
+  </data>
 </root>
