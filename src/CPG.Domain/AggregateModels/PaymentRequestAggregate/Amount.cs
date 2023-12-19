@@ -1,13 +1,4 @@
-﻿using Ardalis.GuardClauses;
-using CPG.Application.UseCases.Users.ViewModel;
-using CPG.Domain.AggregateModels.BankAggregate;
-using CPG.Domain.AggregateModels.PaymentRequestAggregate.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using CPG.Domain.AggregateModels.PaymentRequestAggregate.Exceptions;
 
 namespace CPG.Domain.AggregateModels.PaymentRequestAggregate
 {

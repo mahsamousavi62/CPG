@@ -360,7 +360,49 @@
   <data name="CompanyDepositByCompanyIdNotFound" xml:space="preserve">
     <value>CompanyDepositByCompanyIdNotFound</value>
   </data>
+  <data name="IdpUserProfileException" xml:space="preserve">
+    <value>Error:{0}</value>
+  </data>
+  <data name="UserNotFound" xml:space="preserve">
+    <value>UserNotFound</value>
+  </data>
   <data name="FileNotFound" xml:space="preserve">
     <value>File Not Found</value>
+  </data>
+  <data name="AsanPardakht" xml:space="preserve">
+    <value>AsanPardakht</value>
+  </data>
+  <data name="BaseOnMinute" xml:space="preserve">
+    <value>BaseOnMinute</value>
+  </data>
+  <data name="CompanyIPGDeposits" xml:space="preserve">
+    <value>CompanyIPGDeposits</value>
+  </data>
+  <data name="CreateIPG" xml:space="preserve">
+    <value>CreateIPG</value>
+  </data>
+  <data name="CreateIPGCompanyFor" xml:space="preserve">
+    <value>CreateIPGCompanyFor</value>
+  </data>
+  <data name="DefaultDeposit" xml:space="preserve">
+    <value>DefaultDeposit</value>
+  </data>
+  <data name="DefaultIPGDeposit" xml:space="preserve">
+    <value>DefaultIPGDeposit</value>
+  </data>
+  <data name="IPGTypeId" xml:space="preserve">
+    <value>IPGTypeId</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>Minute</value>
+  </data>
+  <data name="ProviderId" xml:space="preserve">
+    <value>ProviderId</value>
+  </data>
+  <data name="VerificationTimeLimit" xml:space="preserve">
+    <value>VerificationTimeLimit</value>
+  </data>
+  <data name="VerificationTimeLimitIPG" xml:space="preserve">
+    <value>VerificationTimeLimitIPG</value>
   </data>
 </root>

@@ -10,6 +10,7 @@ public class UserRole : AuditableEntity<long>
     {
         RoleType = roleType;
         CreationDate = DateTime.Now;
+        IsActive = true;
     }
 
     public long UserId { get; set; }

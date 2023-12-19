@@ -42,7 +42,8 @@ namespace CPG.Infrastructure.Persistence
                 {
                     options.EnableDetailedErrors();
                     options.UseSqlServer(configuration.GetConnectionString(ConnectionStringConfigName))
-                    .LogTo(Console.WriteLine);
+                    .EnableSensitiveDataLogging()
+                    .LogTo(Console.WriteLine, LogLevel.Information);
                 })
                 .AddScoped(typeof(IAggregateRepository<>), typeof(AggregateRepository<>))
                 .AddScoped(typeof(IAggregateReadRepository<>), typeof(AggregateRepository<>))
