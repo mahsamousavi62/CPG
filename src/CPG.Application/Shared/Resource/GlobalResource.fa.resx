@@ -351,4 +351,40 @@
   <data name="FileNotFound" xml:space="preserve">
     <value>فایل مورد نظر یافت نشد</value>
   </data>
+  <data name="AsanPardakht" xml:space="preserve">
+    <value>آسان پرداخت</value>
+  </data>
+  <data name="BaseOnMinute" xml:space="preserve">
+    <value>بر حسب دقیقه</value>
+  </data>
+  <data name="CompanyIPGDeposits" xml:space="preserve">
+    <value>حساب (های) متصل به درگاه</value>
+  </data>
+  <data name="CreateIPG" xml:space="preserve">
+    <value>ایجاد درگاه</value>
+  </data>
+  <data name="CreateIPGCompanyFor" xml:space="preserve">
+    <value>ایجاد درگاه برای شرکت</value>
+  </data>
+  <data name="DefaultDeposit" xml:space="preserve">
+    <value>حساب پیشفرض</value>
+  </data>
+  <data name="DefaultIPGDeposit" xml:space="preserve">
+    <value>حساب پیشفرض درگاه</value>
+  </data>
+  <data name="IPGTypeId" xml:space="preserve">
+    <value>نوع درگاه پرداخت</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>دقیقه</value>
+  </data>
+  <data name="ProviderId" xml:space="preserve">
+    <value>سرویس‌دهنده</value>
+  </data>
+  <data name="VerificationTimeLimit" xml:space="preserve">
+    <value>محدودیت زمانی تایید</value>
+  </data>
+  <data name="VerificationTimeLimitIPG" xml:space="preserve">
+    <value>محدودیت زمانی تایید تراکنش درگاه</value>
+  </data>
 </root>
