@@ -1,8 +1,6 @@
 ﻿using CPG.Domain.SeedWork;
 using System;
-using CPG.Domain.AggregateModels.UserAggregate.Events;
 using System.Collections.Generic;
-using CPG.Domain.AggregateModels.UserAggregate.UserViewModel;
 using CPG.Domain.AggregateModels.CompanyAggregate;
 using System.Threading.Tasks;
 using static CPG.Domain.SharedKernel.Enums;

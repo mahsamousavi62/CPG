@@ -4,7 +4,6 @@ using CPG.Application.UseCases.Users.Exceptions;
 using CPG.Application.UseCases.Users.ViewModel;
 using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Domain.AggregateModels.UserAggregate.Specifications;
-using CPG.Domain.AggregateModels.UserAggregate.UserViewModel;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.ClientFactory;
 using MediatR;

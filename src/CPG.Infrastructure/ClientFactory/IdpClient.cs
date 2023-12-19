@@ -1,5 +1,4 @@
 ﻿using System.Net.Http;
-using CPG.Domain.AggregateModels.UserAggregate.UserViewModel;
 using System.Threading.Tasks;
 using CPG.Domain.SharedKernel.ClientFactory;
 using IdentityModel.Client;
@@ -12,7 +11,6 @@ using CPG.Domain.SharedKernel;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System;
-using CPG.Application.UseCases.Users.ViewModel;
 
 namespace CPG.Infrastructure.ClientFactory;
 public class IdpClient(IHttpClientFactory httpClientFactory, IApplicationSettingsRepository applicationSettingsRepository) : IIdpClient

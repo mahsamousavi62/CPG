@@ -35,7 +35,6 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         => services
-        .AddTransient<IHttpClientFactoryService, HttpClientFactoryService>()
             .AddScoped<ICharisPayClient, CharisPayClient>()
             .AddScoped<IIdpClient, IdpClient>()
             .AddTransient<ICurrentDateTime, CurrentDateTime>()
@@ -46,7 +45,6 @@ public static class DependencyInjection
             .AddScoped<IMinioProvider, MinioProvider>()
             .AddMinio(configuration)
             .AddHttpClient()
-
             .AddConfigureHttpClientService(configuration);
 
     public static IServiceCollection AddMinio(this IServiceCollection services, IConfiguration configuration)
