@@ -121,9 +121,12 @@
     <value>حساب تکراری انتخاب شده است</value>
   </data>
   <data name="InvalidDeposits" xml:space="preserve">
-    <value>حساب یا حسابهای {0} مربوط به شرکت {1} نمی باشند</value>
+    <value>حساب یا حسابهای "{0}" مربوط به شرکت {1} نمی باشند</value>
   </data>
   <data name="MultipleDefaultDeposit" xml:space="preserve">
     <value>بیشتر از یک حساب به عنوان حساب پیش فرض انتخاب شده است</value>
+  </data>
+  <data name="NotFoundDeposit" xml:space="preserve">
+    <value>حساب یا حسابهای "{0}" یافت نشد</value>
   </data>
 </root>
