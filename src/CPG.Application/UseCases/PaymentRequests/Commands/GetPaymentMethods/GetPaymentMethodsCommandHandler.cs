@@ -115,6 +115,7 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
         {
             Amount = paymentRequest.Amount,
             IPGs = ipgResult?.ToList(),
+            CompanyName = company.PersianName,
         };
     }
 }
