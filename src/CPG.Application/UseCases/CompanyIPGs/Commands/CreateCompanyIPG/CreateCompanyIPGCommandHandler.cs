@@ -39,15 +39,9 @@ public class CreateCompanyIPGCommandHandler(IAggregateRepository<CompanyIPG> com
                                            request.Model.ProviderData,
                                            companyIPGDeposits);
 
-        try
-        {
-            await _aggregateRepository.AddAsync(companyIPG, cancellationToken);
-            await _aggregateRepository.SaveChangesAsync(cancellationToken);
-        }
-        catch (Exception ex)
-        {
+        await _aggregateRepository.AddAsync(companyIPG, cancellationToken);
+        await _aggregateRepository.SaveChangesAsync(cancellationToken);
 
-        }
         return companyIPG.Id;
     }
 }

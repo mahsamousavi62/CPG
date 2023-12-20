@@ -13,7 +13,8 @@ namespace CPG.Infrastructure.Providers.Ipg
             {
                 case Enums.ProviderType.AsanPardakht:
                     {
-                        return new AsanPardakhtProvider();
+                        //return new AsanPardakhtProvider();
+                        return null;
                     }
                     default: return null;
             }
