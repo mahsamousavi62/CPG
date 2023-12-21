@@ -70,7 +70,7 @@ namespace CPG.Domain.AggregateModels.CompanyIPGAggregate {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to حساب یا حسابهای {0} مربوط به شرکت {1} نمی باشند.
+        ///   Looks up a localized string similar to حساب یا حسابهای &quot;{0}&quot; مربوط به شرکت {1} نمی باشند.
         /// </summary>
         internal static string InvalidDeposits {
             get {
@@ -84,6 +84,15 @@ namespace CPG.Domain.AggregateModels.CompanyIPGAggregate {
         internal static string MultipleDefaultDeposit {
             get {
                 return ResourceManager.GetString("MultipleDefaultDeposit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to حساب یا حسابهای &quot;{0}&quot; یافت نشد.
+        /// </summary>
+        internal static string NotFoundDeposit {
+            get {
+                return ResourceManager.GetString("NotFoundDeposit", resourceCulture);
             }
         }
     }
