@@ -71,7 +71,7 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
         {
             ExpirationDateTime = paymentRequest.UrlExpirationDateTime,
             Code = paymentRequest.Code,
-            PageUrl = $"{config.Payment_Gateway_URL_Prefix.TrimEnd('/')}?code={paymentRequest.Code}",
+            PageUrl = $"{appConfig.Payment_Gateway_URL_Prefix.TrimEnd('/')}?code={paymentRequest.Code}",
             Status = paymentRequest.Status
         };
     }
