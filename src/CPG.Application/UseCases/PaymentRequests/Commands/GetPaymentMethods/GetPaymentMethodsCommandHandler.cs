@@ -48,11 +48,6 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
             throw new PaymentRequestCodeIsFinalizedException();
         }
 
-        if (paymentRequest.Status != 0)
-        {
-            throw new PaymentRequestStatusIsInvalidException();
-        }
-
         paymentRequest.Status = 1;
         await _paymentRequestRepository.UpdateAsync(paymentRequest);
 
