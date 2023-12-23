@@ -411,4 +411,7 @@
   <data name="VerificationTimeLimitIPG" xml:space="preserve">
     <value>محدودیت زمانی تایید تراکنش درگاه</value>
   </data>
+  <data name="PaymentRequestNotFound" xml:space="preserve">
+    <value>درخواست پرداخت  با شناسه {0} یافت نشد </value>
+  </data>
 </root>

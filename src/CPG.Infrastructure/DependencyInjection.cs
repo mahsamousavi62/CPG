@@ -22,12 +22,16 @@ using System.Net.Http;
 using System;
 using Polly;
 using System.Net;
-using Api.Juros.Infrastructure.External;
 using Confluent.Kafka;
 using System.Net.Http.Headers;
 using CPG.Domain.SharedKernel.ApplicationSettings;
-using CPG.Domain.SharedKernel.ClientFactory;
-using CPG.Infrastructure.ClientFactory;
+using CPG.Domain.SharedKernel.Communication.Charispay;
+using CPG.Domain.SharedKernel.Communication.Idp;
+using CPG.Infrastructure.Providers.Idp;
+using CPG.Infrastructure.Providers.Charispay;
+using CPG.Domain.SharedKernel.Communication.Ipg;
+using CPG.Infrastructure.Providers.Ipg;
+using CCPG.Domain.SharedKernel.Communication.Ipg;
 
 namespace CPG.Infrastructure;
 
@@ -35,8 +39,10 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         => services
-            .AddScoped<ICharisPayClient, CharisPayClient>()
-            .AddScoped<IIdpClient, IdpClient>()
+            .AddScoped<ICharisPayProvider, CharisPayProvider>()
+            .AddScoped<IIdpProvider, IdpProvider>()
+            .AddScoped<IIpgFactory, IpgFactory>()
+            .AddScoped<IIpgProvider, AsanPardakhtProvider>()
             .AddTransient<ICurrentDateTime, CurrentDateTime>()
             .AddDatabase(configuration)
             .AddGraphQLQueries()
@@ -114,6 +120,13 @@ public static class DependencyInjection
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         });
 
+        services.AddHttpClient("asanpardakhtClient", c =>
+        {
+            c.BaseAddress = new Uri("https://ipgrest.asanpardakht.ir/");
+            c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/plain"));
+
+            
+        });
 
         return services;
     }

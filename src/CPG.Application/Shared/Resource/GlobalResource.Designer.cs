@@ -682,6 +682,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to PaymentRequestNotFound.
+        /// </summary>
+        public static string PaymentRequestNotFound {
+            get {
+                return ResourceManager.GetString("PaymentRequestNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to NotMatchIbanAndCompany.
         /// </summary>
         public static string PaymentRequestNotMatchIbanAndCompany {
@@ -844,20 +853,20 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to UserNotFound.
-        /// </summary>
-        public static string UserNotFound {
-            get {
-                return ResourceManager.GetString("UserNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to An unexpected error has occurred, please try again or contact support.
         /// </summary>
         public static string UnexpectedError {
             get {
                 return ResourceManager.GetString("UnexpectedError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UserNotFound.
+        /// </summary>
+        public static string UserNotFound {
+            get {
+                return ResourceManager.GetString("UserNotFound", resourceCulture);
             }
         }
         

@@ -3,6 +3,7 @@ using CPG.Application.UseCases.CompanyDeposits.Commands.CreateCompanyDeposit;
 using CPG.Application.UseCases.CompanyDeposits.Queries;
 using CPG.Application.UseCases.CompanyDeposits.ViewModels;
 using CPG.Domain.SharedKernel;
+using CPG.Domain.SharedKernel.Communication.Charispay.Models.AccountNumber;
 using HotChocolate.Execution.Processing;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -30,8 +31,8 @@ namespace CPG.API.Controllers.v1
             => Ok(await Mediator.Send(new GetCompanyDepositsByCompanyIdQuery(companyId)));
 
         [HttpPost("GetAccountNumber")]
-        [ProducesResponseType(typeof(ResultData<AccountNumberViewModel>), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<ResultData<AccountNumberViewModel>>> GetAccoutnNumber([FromBody] IbanViewModel model)
+        [ProducesResponseType(typeof(ResultData<AccountNumberResponse>), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult<ResultData<AccountNumberResponse>>> GetAccoutnNumber([FromBody] IbanViewModel model)
         {
             var result = await Mediator.Send(new GetAccountNumberQuery(model.Iban));
             return Ok(result);
