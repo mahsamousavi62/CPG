@@ -26,6 +26,7 @@ using Api.Juros.Infrastructure.External;
 using Confluent.Kafka;
 using System.Net.Http.Headers;
 using CPG.Domain.SharedKernel.ApplicationSettings;
+using CPG.Infrastructure.Persistence.Redis;
 
 namespace CPG.Infrastructure;
 
@@ -43,21 +44,16 @@ public static class DependencyInjection
             .AddScoped<IMinioProvider, MinioProvider>()
             .AddMinio(configuration)
             .AddHttpClient()
-            
             .AddConfigureHttpClientService(configuration);
 
     public static IServiceCollection AddMinio(this IServiceCollection services, IConfiguration configuration)
     {
-        var serviceProvider = services.BuildServiceProvider();
-        var repository = serviceProvider.GetRequiredService<IApplicationSettingsRepository>();
-        var applicationConfigViewModel = repository.GetAllApplicationSettings().GetAwaiter().GetResult();
-
+        var applicationConfigViewModel = configuration.GetSection("Infrastructure:Minio").Get<MinioConfigViewModel>();;
 
         services.AddMinio(configureClient => configureClient
-          .WithEndpoint(applicationConfigViewModel.Minio_EndPoint)
-          .WithCredentials(applicationConfigViewModel.Minio_AccessKey,
-          applicationConfigViewModel.Minio_SecretKey)
-          .WithSSL(applicationConfigViewModel.Minio_WithSSL));
+          .WithEndpoint(applicationConfigViewModel.EndPoint)
+          .WithCredentials(applicationConfigViewModel.AccessKey, applicationConfigViewModel.SecretKey)
+          .WithSSL(applicationConfigViewModel.WithSSL));
 
         return services;
     }

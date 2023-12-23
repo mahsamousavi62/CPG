@@ -12,22 +12,16 @@ using System.Threading.Tasks;
 
 namespace CPG.Application.UseCases.Users.Commands
 {
-    public class CreateUserCommandHandler : IRequestHandler<CreateUserCommnad>
+    public class CreateUserCommandHandler(IMediator mediator, IAggregateRepository<User> repository, IHttpClientFactoryService httpClientFactoryService) 
+        : IRequestHandler<CreateUserCommnad>
     {
-        private readonly IAggregateRepository<User> _repository;
-        private readonly IMediator _mediator;
-        private readonly IHttpClientFactoryService _httpClientFactoryService;
-
-        public CreateUserCommandHandler(IMediator mediator, IAggregateRepository<User> repository, IHttpClientFactoryService httpClientFactoryService)
-        {
-            _repository = repository;
-            _mediator = mediator;
-            _httpClientFactoryService = httpClientFactoryService;
-        }
+        private readonly IAggregateRepository<User> _repository = repository;
+        private readonly IMediator _mediator = mediator;
+        private readonly IHttpClientFactoryService _httpClientFactoryService = httpClientFactoryService;
 
         public async Task Handle(CreateUserCommnad request, CancellationToken cancellationToken)
         {
-            var authenticationConfig = await _mediator.Send(new GetAuthenticationAppSettingQuery());
+            var authenticationConfig = await _mediator.Send(new GetAuthenticationAppSettingQuery(), cancellationToken);
 
             GetIdpUserProfileModel getIdpUserProfile = new(request.IDPId, authenticationConfig.Authority,
                                                              authenticationConfig.ServerApiKey, authenticationConfig.ServerApiSecret,

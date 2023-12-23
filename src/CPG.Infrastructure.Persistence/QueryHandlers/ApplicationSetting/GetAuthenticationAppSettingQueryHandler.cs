@@ -1,4 +1,5 @@
-﻿using CPG.Application.UseCases.Common.Queries;
+﻿using CPG.Application.Auth;
+using CPG.Application.UseCases.Common.Queries;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.ApplicationSettings;
 using CPG.Infrastructure.Persistence.DbContexts;
@@ -12,36 +13,34 @@ using System.Threading.Tasks;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.ApplicationSetting;
 
-public class GetAuthenticationAppSettingQueryHandler(ReadDbContext context, IRedisCaheService cacheService) 
-    : IRequestHandler<GetAuthenticationAppSettingQuery, ApplicationConfigViewModel>
+public class GetAuthenticationAppSettingQueryHandler(ReadDbContext context, IRedisCaheService cacheService, IAuthService authService) 
+    : IRequestHandler<GetAuthenticationAppSettingQuery, JwtConfigViewModel>
 {
     private readonly ReadDbContext _context = context;
     private readonly IRedisCaheService _cacheService = cacheService;
+    private readonly IAuthService _authService = authService;
     public const string CacheKey = "AuthenticationConfigApplicationSettings_key";
 
-    public async Task<ApplicationConfigViewModel> Handle(GetAuthenticationAppSettingQuery query, CancellationToken cancellationToken)
+    public async Task<JwtConfigViewModel> Handle(GetAuthenticationAppSettingQuery query, CancellationToken cancellationToken)
     => await GetAll(query.EntityType);
 
 
-    public async Task<ApplicationConfigViewModel> GetAll(Enums.ApplicationSettingEntityType entityType)
+    public async Task<JwtConfigViewModel> GetAll(Enums.ApplicationSettingEntityType entityType)
     {
-        var cacheData = _cacheService.GetData<ApplicationConfigViewModel>(CacheKey);
+        var cacheData = _cacheService.GetData<JwtConfigViewModel>(CacheKey);
 
         if (cacheData != null)
             return cacheData;
 
-        var appSettings = await _context.ApplicationSettingReadModels
-            .ToDictionaryAsync(t => t.Key, t => t.Value);
+        var jwtConfig = _authService.GetJwtConfig();
 
-
-        cacheData = new ApplicationConfigViewModel();
-        var type = cacheData.GetType();
-        var prs = type.GetProperties();
-        foreach (var item in prs)
-
-        {
-            item.SetValue(cacheData, Convert.ChangeType(appSettings[item.Name], Type.GetTypeCode(item.PropertyType)));
-        }
+        cacheData = new JwtConfigViewModel();
+        //var type = cacheData.GetType();
+        //var prs = type.GetProperties();
+        //foreach (var item in prs)
+        //{
+        //    item.SetValue(cacheData, Convert.ChangeType(jwtConfig[item.Name], Type.GetTypeCode(item.PropertyType)));
+        //}
 
         _cacheService.SetData(CacheKey, cacheData);
 

@@ -3,6 +3,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using CPG.Application.Auth;
+using CPG.Domain.SharedKernel.ApplicationSettings;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -34,6 +36,10 @@ public class JwtService(IConfiguration config) : IAuthService
         var token = tokenHandler.CreateToken(tokenDescriptor);
 
         return tokenHandler.WriteToken(token);
+    }
 
+    public JwtConfigViewModel GetJwtConfig()
+    {
+        return config.GetSection("JwtConfig").Get<JwtConfigViewModel>();
     }
 }

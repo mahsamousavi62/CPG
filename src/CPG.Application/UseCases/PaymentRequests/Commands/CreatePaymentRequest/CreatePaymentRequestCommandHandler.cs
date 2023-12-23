@@ -1,4 +1,5 @@
-﻿using CPG.Application.UseCases.Application.Exceptions;
+﻿using CPG.Application.Auth;
+using CPG.Application.UseCases.Application.Exceptions;
 using CPG.Application.UseCases.Companies.Exceptions;
 using CPG.Application.UseCases.CompanyDeposits;
 using CPG.Application.UseCases.PaymentRequests.Exceptions;
@@ -19,7 +20,6 @@ using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.ApplicationSettings;
 using Mapster;
 using MediatR;
-using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,7 +29,9 @@ namespace CPG.Application.UseCases.PaymentRequests.Commands.CreatePaymentRequest
 public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequest> paymentRequestRepository,
     IAggregateRepository<CompanyDeposit> companyDepositRepository, IAggregateRepository<Company> companyRepository,
    IApplicationSettingsRepository applicationSettingsRepository, IAuthenticationService authenticationService,
-    IAggregateRepository<CPG.Domain.AggregateModels.ApplicationAggregate.Application> applicationRepository) : IRequestHandler<CreatePaymentRequestCommand, PaymentRequestResponseViewModel>
+    IAggregateRepository<CPG.Domain.AggregateModels.ApplicationAggregate.Application> applicationRepository,
+    IAuthService authService
+    ) : IRequestHandler<CreatePaymentRequestCommand, PaymentRequestResponseViewModel>
 {
 
     private readonly IAggregateRepository<PaymentRequest> _paymentRequestRepository = paymentRequestRepository;
@@ -38,6 +40,7 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
     private readonly IApplicationSettingsRepository _applicationSettingsRepository = applicationSettingsRepository;
     private readonly IAuthenticationService _authenticationService = authenticationService;
     private readonly IAggregateRepository<Domain.AggregateModels.ApplicationAggregate.Application> _applicationRepository = applicationRepository;
+    private readonly IAuthService _authService = authService;
 
     public async Task<PaymentRequestResponseViewModel> Handle(CreatePaymentRequestCommand request, CancellationToken cancellationToken)
     {
@@ -45,11 +48,11 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
 
         PaymentRequest paymentRequest = request.Model.Adapt<PaymentRequest>();
 
-        var config = await _applicationSettingsRepository.GetAllApplicationSettings();
+        var config = _authService.GetJwtConfig();
+        var appConfig = await _applicationSettingsRepository.GetAllApplicationSettings();
         var clientId = await _authenticationService.GetClientId(config.Authority);
 
-        //applicationIdentifier
-        var application = await _applicationRepository.GetBySpecAsync(new ApplicationByIdpClientId(clientId));
+        var application = await _applicationRepository.GetBySpecAsync(new ApplicationByIdpClientId(clientId), cancellationToken);
         if (application == null)
             throw new ApplicationNotFoundException(application.Id);
         if (!application.IsActive)
@@ -61,14 +64,14 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
         paymentRequest.ApplicationId = application.Id;
         PaymentRequest.Create(paymentRequest, config.ExpireTime, clientId, application.EnglishName);
 
-        await _paymentRequestRepository.AddAsync(paymentRequest);
-        await _paymentRequestRepository.SaveChangesAsync();
+        await _paymentRequestRepository.AddAsync(paymentRequest, cancellationToken);
+        await _paymentRequestRepository.SaveChangesAsync(cancellationToken);
 
         return new PaymentRequestResponseViewModel
         {
             ExpirationDateTime = paymentRequest.UrlExpirationDateTime,
             Code = paymentRequest.Code,
-            PageUrl = $"{config.Payment_Gateway_URL_Prefix}{paymentRequest.Code}",
+            PageUrl = $"{appConfig.Payment_Gateway_URL_Prefix}{paymentRequest.Code}",
             Status = paymentRequest.Status
         };
     }
