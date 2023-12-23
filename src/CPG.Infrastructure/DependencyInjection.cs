@@ -32,6 +32,7 @@ using CPG.Infrastructure.Providers.Charispay;
 using CPG.Domain.SharedKernel.Communication.Ipg;
 using CPG.Infrastructure.Providers.Ipg;
 using CCPG.Domain.SharedKernel.Communication.Ipg;
+using CPG.Application.Auth;
 
 namespace CPG.Infrastructure;
 
@@ -101,6 +102,8 @@ public static class DependencyInjection
     {
         var serviceProvider = services.BuildServiceProvider();
         var repository = serviceProvider.GetRequiredService<IApplicationSettingsRepository>();
+        var authService =  serviceProvider.GetRequiredService<IAuthService>();
+        var jwtConfig = authService.GetJwtConfig();
         var appConfig = repository.GetAllApplicationSettings().GetAwaiter().GetResult();
 
         services.AddHttpClient("charisPayClient", c =>
@@ -112,7 +115,7 @@ public static class DependencyInjection
 
         services.AddHttpClient("idpClient", c =>
         {
-            c.BaseAddress = new Uri(appConfig.Authority);
+            c.BaseAddress = new Uri(jwtConfig.Authority);
             c.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         });
@@ -120,9 +123,7 @@ public static class DependencyInjection
         services.AddHttpClient("asanpardakhtClient", c =>
         {
             c.BaseAddress = new Uri("https://ipgrest.asanpardakht.ir/");
-            c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/plain"));
-
-            
+            c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/plain"));  
         });
 
         return services;
