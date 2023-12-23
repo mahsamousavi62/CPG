@@ -18,7 +18,6 @@ namespace CPG.Infrastructure.Providers.Idp;
 public class IdpProvider(IHttpClientFactory httpClientFactory, IApplicationSettingsRepository applicationSettingsRepository, IAuthService authService) : IIdpProvider
 {
     public readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
-    private readonly IApplicationSettingsRepository _applicationSettingsRepository = applicationSettingsRepository;
     private readonly IAuthService _authService = authService;
 
     public async Task<ResultData<UserProfileResponse>> GetUserProfile(string idpId)

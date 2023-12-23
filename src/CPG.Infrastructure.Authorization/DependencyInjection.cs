@@ -29,6 +29,8 @@ namespace CPG.Infrastructure.Authorization
                 services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                   .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, configureOption =>
                   {
+                      //TODO: Remove RequireHttpsMetadata = false 
+                      configureOption.RequireHttpsMetadata = false;
                       configureOption.Authority = JwtConfig.Authority;
                       configureOption.Audience = JwtConfig.ClientApiKey;
                       configureOption.TokenValidationParameters = new TokenValidationParameters
