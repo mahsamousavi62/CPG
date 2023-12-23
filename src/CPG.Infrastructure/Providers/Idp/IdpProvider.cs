@@ -12,18 +12,20 @@ using Newtonsoft.Json;
 using System;
 using CPG.Domain.SharedKernel.Communication.Idp;
 using CPG.Domain.SharedKernel.Communication.Idp.Models.UserProfile;
+using CPG.Application.Auth;
 
 namespace CPG.Infrastructure.Providers.Idp;
-public class IdpProvider(IHttpClientFactory httpClientFactory, IApplicationSettingsRepository applicationSettingsRepository) : IIdpProvider
+public class IdpProvider(IHttpClientFactory httpClientFactory, IApplicationSettingsRepository applicationSettingsRepository, IAuthService authService) : IIdpProvider
 {
     public readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
     private readonly IApplicationSettingsRepository _applicationSettingsRepository = applicationSettingsRepository;
+    private readonly IAuthService _authService = authService;
 
     public async Task<ResultData<UserProfileResponse>> GetUserProfile(string idpId)
     {
         ResultData<UserProfileResponse> resultData = new();
 
-        var appConfig = await _applicationSettingsRepository.GetAllApplicationSettings();
+        var appConfig = _authService.GetJwtConfig();
 
         var accessTokenResult = await GetClientCredentialsToken(appConfig);
         if (accessTokenResult.OperationResult == Enums.OperationResult.Failed)
@@ -55,7 +57,7 @@ public class IdpProvider(IHttpClientFactory httpClientFactory, IApplicationSetti
         return resultData;
     }
 
-    private async Task<ResultData<string>> GetClientCredentialsToken(ApplicationConfigViewModel appConfig)
+    private async Task<ResultData<string>> GetClientCredentialsToken(JwtConfigViewModel appConfig)
     {
         var httpClient = _httpClientFactory.CreateClient("idpClient");
 

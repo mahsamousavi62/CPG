@@ -7,6 +7,5 @@ public class ApplicationConfigViewModel
     public string CharisPay_BaseUrl { get; set; }
     public string CharisPay_InqueryIbanUrl { get; set; }
     public string CharisPay_Token { get; set; }
-
 }
 
