@@ -1,86 +1,75 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using CCPG.Domain.SharedKernel.Communication.Ipg;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.ApplicationSettings;
+using CPG.Domain.SharedKernel.Communication;
+using CPG.Domain.SharedKernel.Communication.Ipg.AsanPardakht;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentTicket;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.TransactionResult;
 using CPG.Infrastructure.Persistence.DbContexts;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace CPG.Infrastructure.Providers.Ipg
 {
-    public class AsanPardakhtProvider(IHttpClientFactory factory, IConfiguration configuration) : IIpgProvider
+    public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext context) : IIpgProvider
     {
-        public IHttpClientFactory ClientFactory;
-        public IMediator Mediator;
         public IApplicationSettingsRepository ApplicationSettingRepositoy;
-        public ReadDbContext Context;
+        private readonly IHttpProvider httpProvider = httpProvider;
+        private readonly ReadDbContext context = context;
 
-        public async Task<ResultData<PaymentTicketResponse>> GetPaymentTicketAsync(PaymentTicketRequest paymentIpgRequest)
+        public async Task<ResultData<PaymentTokenResponse>> GetPaymentTokenAsync(PaymentTokenRequest request)
         {
-            var companyIpg = await Context.CompanyIPGReadModels.FirstOrDefaultAsync(t => t.Id == paymentIpgRequest.CompanyIPGId);
+            dynamic jsonObjectProviderData = JObject.Parse(request.ProviderData);
 
-            dynamic jsonObjectProviderData = JObject.Parse(companyIpg.ProviderData);
-
-            ResultData<PaymentTicketResponse> resultData = new();
-            var client = ClientFactory.CreateClient("asanpardakhtClient");
-            client.DefaultRequestHeaders.Add("usr", (string)jsonObjectProviderData["User_Name"]);
-            client.DefaultRequestHeaders.Add("pwd", (string)jsonObjectProviderData["Password"]);
-            AsanPardakhtRequest asanPardakhtRequest = await CreateRequestModel(paymentIpgRequest, jsonObjectProviderData);
-            string json = JsonConvert.SerializeObject(asanPardakhtRequest);
-            var content = new StringContent(json, null, "application/json-patch+json");
-            var response = await client.PostAsync("v1/Token", content);
-            string result = await response.Content.ReadAsStringAsync();
-            try
-            {
-                if (response.IsSuccessStatusCode)
-                {
-                    resultData.OperationResult = Enums.OperationResult.Succeeded;
-                    Params p = new Params{Token = result.Trim('"')};
-                    resultData.Data = new PaymentTicketResponse {  Params=p,Url= "https://asan.shaparak.ir" };
-                }
-                else
-                {
-                    dynamic jsonObjectResult = JObject.Parse(result);
-                    JToken errorMessage = jsonObjectResult.SelectToken("error.message");
-                    resultData.Error = $"{response.StatusCode} - {errorMessage}";
-                    resultData.OperationResult = Enums.OperationResult.Failed;
-                }
-            }
-            catch (Exception ex)
-            {
-                resultData.Error = $"{response.StatusCode} - {ex.Message}";
-                resultData.OperationResult = Enums.OperationResult.Failed;
-            }
-            return resultData;
-        }
-        private async Task<AsanPardakhtRequest> CreateRequestModel(PaymentTicketRequest paymentIpgRequest, dynamic jsonObjectProviderData)
-        {
+            ResultData<PaymentTokenResponse> resultData = new();
+            var headers = GetHeaders(jsonObjectProviderData);
             var configViewModel = await ApplicationSettingRepositoy.GetAllApplicationSettings();
-            var payment = await Context.PaymentRequestReadModels.SingleOrDefaultAsync(p=>p.Id==paymentIpgRequest.PaymentRequestId);
-
-            var model = new AsanPardakhtRequest
+            var trackerId = await GetTrackerIdAsync();
+            var req = new AsanPardakhtTokenRequest
             {
                 serviceTypeId = 1,
                 paymentId = "0",
                 //TODO:??
-               // https://rhpayment1.br.charisma.ir/p/b/0123456789012345?pcu=https://cpg-stage.charisma.digital/subscription/ipg/result
-                callbackURL = $"{configViewModel.IPG_Callback_URL.Trim()}?track_id={payment.TrackerId}",
+                // https://rhpayment1.br.charisma.ir/p/b/0123456789012345?pcu=https://cpg-stage.charisma.digital/subscription/ipg/result
+                callbackURL = $"{configViewModel.IPG_Callback_URL.Trim()}?track_id={trackerId}",
                 additionalData = CreateAdditionalData(jsonObjectProviderData),
                 merchantConfigurationId = (int)jsonObjectProviderData["Merchant_Configuration_Id"],
-                amountInRials = (long)payment.Amount,
-                localInvoiceId= payment.TrackerId
+                amountInRials = (long)request.PaymentRequestAmount,
+                localInvoiceId = trackerId.ToString(),
             };
+            var response = await httpProvider.PostAsync3<AsanPardakhtTokenRequest, AsanPardakhtTokenResponse,
+                                                        AsanPardakhtResponseBase, dynamic>(new HttpProviderRequest<dynamic>
+                                                        {
+                                                            BaseAddress = "https://ipgrest.asanpardakht.ir/",
+                                                            Uri = "v1/Token",
+                                                            HeaderParameters = headers,
+                                                            Body = req,
+                                                            Provider = Enums.ProviderType.AsanPardakht,
+                                                            Service = Enums.ServiceType.AsanPardakhtToken,
+                                                        }, req, PaymentTokenErrorHandler, (string stringResponse) =>
+                                                        {
+                                                            var formattedResponse = stringResponse;
+                                                            if (!stringResponse.StartsWith("{\"error"))
+                                                            {
+                                                                formattedResponse = string.Format("{0} {1} {2}" ,"{\"token\":", stringResponse, "}");
+                                                            }
+                                                            return System.Text.Json.JsonSerializer.Deserialize<AsanPardakhtTokenResponse>(formattedResponse);
+                                                        });
 
-            return model;
+            Params p = new Params { Token = response.Token };
+            return new ResultData<PaymentTokenResponse>
+            {
+                OperationResult = Enums.OperationResult.Succeeded,
+                Data = new PaymentTokenResponse { Params = p, Url = "https://asan.shaparak.ir", TrackerId = trackerId.ToString() },                
+            };
         }
-        public string CreateAdditionalData(dynamic jsonObjectProviderData)
+
+        
+        private string CreateAdditionalData(dynamic jsonObjectProviderData)
         {
             string hexString = Guid.NewGuid().ToString("N");
             string randomString = hexString.Substring(0, 7);
@@ -96,14 +85,61 @@ namespace CPG.Infrastructure.Providers.Ipg
             return json;
         }
 
+        private List<(string Key, string? Value)> GetHeaders(dynamic providerData)
+        {
+
+            var list = new List<(string Key, string? Value)> { ("usr", (string)providerData["User_Name"]),
+                                                               ("pwd", (string)providerData["Password"]),
+                                                               ("accept", "text/plain")
+            };
+            return list;
+        }
+
+        private async Task<long> GetTrackerIdAsync()
+        {
+            try
+            {
+                return await context.GetNextSequenceValue();
+            }
+            catch (Exception ex)
+            {
+                //logger.Value.LogError(ex.Message, ex, nameof(GetBatchIdAsync));
+                throw;
+            }
+        }
+
         public async Task<ResultData<TransactionResultResponse>> GetTransactionResult(TransactionResultRequest request)
         {
             if (request is null)
             {
                 throw new ArgumentNullException(nameof(request));
             }
-            var client = ClientFactory.CreateClient("charisPayClient");
+            //var client = ClientFactory.CreateClient("charisPayClient");
             return await Task.FromResult(new ResultData<TransactionResultResponse>());
+        }
+
+        private static async Task<TResponse?> PaymentTokenErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest? baseRequest, TResponse? response, TError? error)
+          where TResponse : AsanPardakhtTokenResponse
+          where TError : AsanPardakhtResponseBase
+          where TBaseRequest : AsanPardakhtTokenRequest
+        {
+            if (error?.ErrorResult is not null)
+            {
+                throw new Exception(error.ErrorResult.Message);
+            }
+            else
+            {
+                return await Task.FromResult(BaseErrorHandler<TResponse, TError, TBaseRequest>(error));
+            }
+        }
+
+        private static TResponse BaseErrorHandler<TResponse, TError, TBaseRequest>(AsanPardakhtResponseBase? error)
+           where TResponse : AsanPardakhtResponseBase
+           where TError : AsanPardakhtResponseBase
+           where TBaseRequest : AsanPardakhtRequestBase
+
+        {
+            throw new Exception(error?.ErrorResult.Message);
         }
     }
 }

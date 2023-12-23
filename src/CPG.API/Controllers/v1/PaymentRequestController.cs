@@ -1,4 +1,4 @@
-﻿using CPG.Application.UseCases.Ipg.Queries;
+﻿using CPG.Application.UseCases.Ipg.Commands;
 using CPG.Application.UseCases.PaymentRequests.Commands.CreatePaymentRequest;
 using CPG.Application.UseCases.PaymentRequests.Commands.GetPaymentMethods;
 using CPG.Application.UseCases.PaymentRequests.Queries;
@@ -7,6 +7,7 @@ using CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentTicket;
 using CPG.Domain.SharedKernel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using CPG.Application.UseCases.Ipg.ViewModels;
 
 
 namespace CPG.API.Controllers.v1
@@ -42,9 +43,9 @@ namespace CPG.API.Controllers.v1
 
         [HttpPost("GetPaymentTicketFromAsanPardakhat")]
         [ProducesResponseType(typeof(string), 200)]
-        public async Task<ActionResult<ResultData<PaymentTicketResponse>>> GetAsanPardakhatPaymentTicket([FromBody]PaymentTicketRequest paymentTicketRequest)
+        public async Task<ActionResult<ResultData<PaymentTokenResponse>>> GetAsanPardakhatPaymentTicket([FromBody]PaymentTokenViewModel paymentTicketRequest)
         {
-            return Ok(await Mediator.Send(new GetPaymentTicketQuery(paymentTicketRequest)));
+            return Ok(await Mediator.Send(new GetPaymentTokenCommand(paymentTicketRequest)));
         }
     }
 }

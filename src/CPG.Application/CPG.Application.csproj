@@ -58,6 +58,7 @@
     <Folder Include="UseCases\CompanyIPG\EventHandler\" />
     <Folder Include="UseCases\CompanyIPG\Exceptions\" />
     <Folder Include="UseCases\CompanyIPG\Queries\" />
+    <Folder Include="UseCases\Ipg\Queries\" />
     <Folder Include="UseCases\PaymentRequests\EventHandler\" />
     <Folder Include="UseCases\CompanyIPGs\EventHandler\" />
     <Folder Include="UseCases\Providers\Commands\UpdateProvider\" />

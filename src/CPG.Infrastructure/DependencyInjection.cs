@@ -32,6 +32,8 @@ using CPG.Infrastructure.Providers.Charispay;
 using CPG.Domain.SharedKernel.Communication.Ipg;
 using CPG.Infrastructure.Providers.Ipg;
 using CCPG.Domain.SharedKernel.Communication.Ipg;
+using CPG.Domain.SharedKernel.Communication;
+using CPG.Infrastructure.Providers;
 
 namespace CPG.Infrastructure;
 
@@ -44,6 +46,7 @@ public static class DependencyInjection
             .AddScoped<IIpgFactory, IpgFactory>()
             .AddScoped<IIpgProvider, AsanPardakhtProvider>()
             .AddTransient<ICurrentDateTime, CurrentDateTime>()
+            .AddTransient<IHttpProvider, HttpProvider>()
             .AddDatabase(configuration)
             .AddGraphQLQueries()
             .AddTokenAuthentication(configuration)

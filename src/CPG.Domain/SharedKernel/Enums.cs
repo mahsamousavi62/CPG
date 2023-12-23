@@ -49,6 +49,12 @@ public class Enums
         Vandar = 1,
         AsanPardakht = 2,
     }
+
+    public enum ServiceType : byte
+    {
+        AsanPardakhtToken = 1,
+        AsanPardakhtTransResult = 2,
+    }
 }
 
 public struct ResultData<T>(Enums.OperationResult operationResult)
