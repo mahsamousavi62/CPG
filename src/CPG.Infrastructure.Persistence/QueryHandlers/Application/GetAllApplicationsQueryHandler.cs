@@ -18,7 +18,7 @@ public class GetAllApplicationsQueryHandler(ReadDbContext context, IMinioProvide
 
     public async Task<IReadOnlyCollection<ApplicationViewModel>> Handle(GetAllApplicationsQuery request, CancellationToken cancellationToken)
     {
-                var apps = await _context.ApplicationReadModels
+        var apps = await _context.ApplicationReadModels
             .Include(x => x.ApplicationIdentifiers)
             .Include(x => x.ApplicationCallbackUrls)
             .ToListAsync(cancellationToken: cancellationToken);

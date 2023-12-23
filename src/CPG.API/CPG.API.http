@@ -1,5 +1,28 @@
 ﻿@CPG.API_HostAddress = https://localhost:7050
+@idp_HostAddress=https://authapi-stage.charisma.digital/v1/profile
 
-GET {{CPG.API_HostAddress}}/api/common/resources
 
 ###
+
+POST {{CPG.API_HostAddress}}/api/users/CreateUserProfile
+Content-Type: application/json
+
+{
+  "idpId": 35732931625353216
+}
+
+###
+GET https://authapi-stage.charisma.digital/v1/profile/35732931625353216
+content-Type: application/json
+Authorization:BEARER eyJhbGciOiJSUzI1NiIsImtpZCI6IjUyMENEN0MwN0Y2NDQ3MTlDRTFFRUExMzlEN0IyQzA1IiwidHlwIjoiYXQrand0In0.eyJpc3MiOiJodHRwczovL2F1dGgtc3RhZ2UuY2hhcmlzbWEuZGlnaXRhbCIsIm5iZiI6MTcwMjQ0OTExNywiaWF0IjoxNzAyNDQ5MTE3LCJleHAiOjE3MDI0NTA5MTcsImF1ZCI6WyJpZHBfX2FwaSIsImh0dHBzOi8vYXV0aC1zdGFnZS5jaGFyaXNtYS5kaWdpdGFsL3Jlc291cmNlcyJdLCJzY29wZSI6WyJpZHBfX3Byb2ZpbGUiXSwiY2xpZW50X2lkIjoicGF5X19kYXJ5YWZ0eWFyX2FwaV9jbGllbnQiLCJzdWIiOiIyNyJ9.pjNqLbrAjG7whe0AT78oWjEV5NVnEHzhpu0Tc_MD9dOPLhz6_q2dFoVY_CEp9uBYOWqbKeXdSAgmVelcq-iERlv4iHNneH7o3sKEJKNJzGLUlxwB8ATlAJFaAmY0JbWBhvrrReW07yEUQRhB9f9Qp5wZbNb0CFep9cFA0wpxUV2MVz2WAX518pGHJm18relMk0O-huUbxFzbJAJsrDsOSH63AS586_Z0xpEUdLEIN1YDn5aSFvcjm1gaBeL2ppL0e-DEWVCBxI4nAq9XK6gzlEeyn4Fm_ZY7TiEalvTMACwzoQsJ6ZS_l0A3U7OQV99aU9PhoQrss-jfszEqzgJW7w
+###
+
+POST {{CPG.API_HostAddress}}/api/paymentrequest/GetPaymentTicketFromAsanPardakhat
+Content-Type: application/json
+
+{
+  "companyIPGId": 7,
+  "paymentRequestId": 3
+}
+
+

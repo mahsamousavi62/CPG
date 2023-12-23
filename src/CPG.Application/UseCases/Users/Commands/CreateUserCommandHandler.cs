@@ -1,67 +1,60 @@
 ﻿using CPG.Application.Shared;
 using CPG.Application.UseCases.Common.Queries;
+using CPG.Application.UseCases.Users.Exceptions;
 using CPG.Application.UseCases.Users.ViewModel;
 using CPG.Domain.AggregateModels.UserAggregate;
-using CPG.Domain.AggregateModels.UserAggregate.UserViewModel;
+using CPG.Domain.AggregateModels.UserAggregate.Specifications;
 using CPG.Domain.SharedKernel;
+using CPG.Domain.SharedKernel.Communication.Idp;
 using MediatR;
 using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
 
 namespace CPG.Application.UseCases.Users.Commands
 {
-    public class CreateUserCommandHandler(IMediator mediator, IAggregateRepository<User> repository, IHttpClientFactoryService httpClientFactoryService) 
-        : IRequestHandler<CreateUserCommnad>
+    public class CreateUserCommandHandler(IIdpProvider idpClient, IAggregateRepository<User> repository)
+            : IRequestHandler<CreateUserCommnad>
     {
         private readonly IAggregateRepository<User> _repository = repository;
-        private readonly IMediator _mediator = mediator;
-        private readonly IHttpClientFactoryService _httpClientFactoryService = httpClientFactoryService;
+        private readonly IIdpProvider _idpClient = idpClient;
 
         public async Task Handle(CreateUserCommnad request, CancellationToken cancellationToken)
         {
-            var authenticationConfig = await _mediator.Send(new GetAuthenticationAppSettingQuery(), cancellationToken);
+            
+            var idpUserProfileResponse = await _idpClient.GetUserProfile(request.IdpId);
 
-            GetIdpUserProfileModel getIdpUserProfile = new(request.IDPId, authenticationConfig.Authority,
-                                                             authenticationConfig.ServerApiKey, authenticationConfig.ServerApiSecret,
-            authenticationConfig.ServerScope, authenticationConfig.IdpGetProfileUrl);
+            if (idpUserProfileResponse.OperationResult == Enums.OperationResult.Failed)
+                throw new IdpUserProfileException(idpUserProfileResponse.Error);
 
-            var strModel = await _httpClientFactoryService.Execute(getIdpUserProfile);
-            var idpUserProfile = JsonConvert.DeserializeObject<IdpUserProfile>(strModel);
-
-            //var spec = new UserByIDPIdSpec(idpUserProfile.Result.Id);
-            //var existingUser = await _repository.GetBySpecAsync(spec, cancellationToken);
-            // var existingUser = await _repository.GetByIdAsync<long>(1, cancellationToken);//TODO:
-
-
+            var idpUserProfile = idpUserProfileResponse.Data;
             var name = new Name(idpUserProfile.Result.PrivatePerson.FirstName, idpUserProfile.Result.PrivatePerson.LastName);
             var phoneNumber = new PhoneNumber(idpUserProfile.Result.Mobile.ToString());
             var nationalCode = new NationalCode(idpUserProfile.Result.UniqueIdentifier);
 
-            //if (existingUser is null)
-            //{
-            //    var user = User.Create(idpUserProfile.Result.Id, nationalCode, name, phoneNumber,(short)Enums.UserRoleType.Customer);
+            var spec = new UserByIDPIdSpec(request.IdpId);
+            var existingUser = await _repository.GetBySpecAsync(spec, cancellationToken);
+            var userToUpdate = existingUser;
 
-            //   await _repository.AddAsync(user, cancellationToken);
-            //}
-            //else
-            //{
-            //    var user = User.Update(name, idpUserProfile.Result.Mobile.ToString());
-
-            //    await _repository.UpdateAsync(user, cancellationToken);
-            //}
-
-            try
+            if (userToUpdate == null)
             {
-                //    await _repository.SaveChangesAsync(cancellationToken); TODO:
+                var nationalCodeSpec = new UserByNationalCodeSpec(idpUserProfile.Result.UniqueIdentifier);
+                userToUpdate = await _repository.GetBySpecAsync(nationalCodeSpec);
+
+                if (userToUpdate == null)
+                {
+                    userToUpdate = User.Create(request.IdpId, nationalCode, name, phoneNumber, Enums.UserRoleType.CustomerUser);
+                    await _repository.AddAsync(userToUpdate, cancellationToken);
+                }
             }
-            catch (System.Exception eX)
+            else
             {
-
-                var message = eX.Message;
+                User.Update(userToUpdate, name, phoneNumber);
+                await _repository.UpdateAsync(userToUpdate, cancellationToken);
             }
-
+            await _repository.SaveChangesAsync(cancellationToken);
         }
     }
 }

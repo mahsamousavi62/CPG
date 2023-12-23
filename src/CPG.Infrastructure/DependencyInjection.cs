@@ -22,11 +22,16 @@ using System.Net.Http;
 using System;
 using Polly;
 using System.Net;
-using Api.Juros.Infrastructure.External;
 using Confluent.Kafka;
 using System.Net.Http.Headers;
 using CPG.Domain.SharedKernel.ApplicationSettings;
-using CPG.Infrastructure.Persistence.Redis;
+using CPG.Domain.SharedKernel.Communication.Charispay;
+using CPG.Domain.SharedKernel.Communication.Idp;
+using CPG.Infrastructure.Providers.Idp;
+using CPG.Infrastructure.Providers.Charispay;
+using CPG.Domain.SharedKernel.Communication.Ipg;
+using CPG.Infrastructure.Providers.Ipg;
+using CCPG.Domain.SharedKernel.Communication.Ipg;
 
 namespace CPG.Infrastructure;
 
@@ -34,12 +39,14 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         => services
-        .AddTransient<IHttpClientFactoryService, HttpClientFactoryService>()
-            .AddScoped<ICharisPayClient, CharisPayClient>()
+            .AddScoped<ICharisPayProvider, CharisPayProvider>()
+            .AddScoped<IIdpProvider, IdpProvider>()
+            .AddScoped<IIpgFactory, IpgFactory>()
+            .AddScoped<IIpgProvider, AsanPardakhtProvider>()
             .AddTransient<ICurrentDateTime, CurrentDateTime>()
             .AddDatabase(configuration)
             .AddGraphQLQueries()
-            . AddTokenAuthentication(configuration)
+            .AddTokenAuthentication(configuration)
             .AddMasstransitInfrastructure(configuration)
             .AddScoped<IMinioProvider, MinioProvider>()
             .AddMinio(configuration)
@@ -92,12 +99,32 @@ public static class DependencyInjection
 
     public static IServiceCollection AddConfigureHttpClientService(this IServiceCollection services, IConfiguration configuration)
     {
+        var serviceProvider = services.BuildServiceProvider();
+        var repository = serviceProvider.GetRequiredService<IApplicationSettingsRepository>();
+        var appConfig = repository.GetAllApplicationSettings().GetAwaiter().GetResult();
+
         services.AddHttpClient("charisPayClient", c =>
         {
-            c.BaseAddress = new Uri($"{configuration["Infrastructure:CharisPay:BaseUrl"]}");
+            c.BaseAddress = new Uri(appConfig.CharisPay_BaseUrl);
             c.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         });
+
+        services.AddHttpClient("idpClient", c =>
+        {
+            c.BaseAddress = new Uri(appConfig.Authority);
+            c.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
+            c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        });
+
+        services.AddHttpClient("asanpardakhtClient", c =>
+        {
+            c.BaseAddress = new Uri("https://ipgrest.asanpardakht.ir/");
+            c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/plain"));
+
+            
+        });
+
         return services;
     }
 

@@ -1,4 +1,5 @@
-﻿using CPG.Domain.AggregateModels.UserAggregate.Exceptions;
+﻿using Ardalis.GuardClauses;
+using CPG.Domain.AggregateModels.UserAggregate.Exceptions;
 
 namespace CPG.Domain.AggregateModels.UserAggregate;
 
@@ -13,12 +14,8 @@ public record Name
 
     public Name(string firstName, string lastName)
     {
-        // TODO: Implement Guard clause
-        if (string.IsNullOrWhiteSpace(firstName))
-            throw new UserCreationException($"Parameter {nameof(firstName)} cannot be empty.");
-
-        if (string.IsNullOrWhiteSpace(lastName))
-            throw new UserCreationException($"Parameter {nameof(lastName)} cannot be empty.");
+        Guard.Against.NullOrWhiteSpace(firstName, nameof(firstName));
+        Guard.Against.NullOrWhiteSpace(lastName, nameof(lastName));
 
         FirstName = firstName;
         LastName = lastName;

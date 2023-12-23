@@ -342,7 +342,76 @@
   <data name="CompanyDepositByCompanyIdNotFound" xml:space="preserve">
     <value>حسابی برای شرکت{0} تعریف نشده است</value>
   </data>
+  <data name="CompanyIsInactive" xml:space="preserve">
+    <value>کاربر گرامی، شرکت "{0}" در حال حاضر غیرفعال بوده و امکان پرداخت وجه به آن امکان پذیر نیست. لطفا با پشتیبانی تماس بگیرید یا در ساعات دیگری از روز مراجعه کنید</value>
+  </data>
+  <data name="PaymentMessage" xml:space="preserve">
+    <value>واریز مبلغ : "{0} ریال" | "{1}" تومان برای شرکت : "{2}"</value>
+  </data>
+  <data name="PaymentRequestCodeIsExpired" xml:space="preserve">
+    <value>کاربر گرامی، نشانی پرداخت منقضی شده است، در صورت نیاز مجددا عملیات را تکرار کنید</value>
+  </data>
+  <data name="PaymentRequestCodeIsFinalized" xml:space="preserve">
+    <value>کاربر گرامی، این درخواست قبلا یکبار نهایی شده است</value>
+  </data>
+  <data name="PaymentRequestCodeIsUsed" xml:space="preserve">
+    <value>کاربر گرامی، این نشانی قبلا یکبار استفاده شده است، در صورت نیاز مجددا عملیات را تکرار کنید</value>
+  </data>
+  <data name="PaymentRequestCodeNotFound" xml:space="preserve">
+    <value>کاربر گرامی، نشانی پرداخت نامعتبر است</value>
+  </data>
+  <data name="PaymentRequestStatusIsInvalid" xml:space="preserve">
+    <value>کاربر گرامی، درخواست در وضعیت غیرمجاز است</value>
+  </data>
+  <data name="UnexpectedError" xml:space="preserve">
+    <value>خطایی غیرقابل پیش بینی رخ داده است، لطفا مجددا تلاش کنید یا با پشتیبانی تماس بگیرید</value>
+  </data>
+  <data name="IdpUserProfileException" xml:space="preserve">
+    <value>{0}خطا :</value>
+  </data>
+  <data name="UserNotFound" xml:space="preserve">
+    <value>کاربر وجود ندارد</value>
+  </data>
   <data name="FileNotFound" xml:space="preserve">
     <value>فایل مورد نظر یافت نشد</value>
+  </data>
+  <data name="AsanPardakht" xml:space="preserve">
+    <value>آسان پرداخت</value>
+  </data>
+  <data name="BaseOnMinute" xml:space="preserve">
+    <value>بر حسب دقیقه</value>
+  </data>
+  <data name="CompanyIPGDeposits" xml:space="preserve">
+    <value>حساب (های) متصل به درگاه</value>
+  </data>
+  <data name="CreateIPG" xml:space="preserve">
+    <value>ایجاد درگاه</value>
+  </data>
+  <data name="CreateIPGCompanyFor" xml:space="preserve">
+    <value>ایجاد درگاه برای شرکت</value>
+  </data>
+  <data name="DefaultDeposit" xml:space="preserve">
+    <value>حساب پیشفرض</value>
+  </data>
+  <data name="DefaultIPGDeposit" xml:space="preserve">
+    <value>حساب پیشفرض درگاه</value>
+  </data>
+  <data name="IPGTypeId" xml:space="preserve">
+    <value>نوع درگاه پرداخت</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>دقیقه</value>
+  </data>
+  <data name="ProviderId" xml:space="preserve">
+    <value>سرویس‌دهنده</value>
+  </data>
+  <data name="VerificationTimeLimit" xml:space="preserve">
+    <value>محدودیت زمانی تایید</value>
+  </data>
+  <data name="VerificationTimeLimitIPG" xml:space="preserve">
+    <value>محدودیت زمانی تایید تراکنش درگاه</value>
+  </data>
+  <data name="PaymentRequestNotFound" xml:space="preserve">
+    <value>درخواست پرداخت  با شناسه {0} یافت نشد </value>
   </data>
 </root>

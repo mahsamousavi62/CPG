@@ -1,6 +1,7 @@
 ﻿using CPG.Application.UseCases.Common.Queries;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.ApplicationSettings;
+using CPG.Domain.SharedKernel.Communication.Ipg;
 using CPG.Infrastructure.Persistence.DbContexts;
 using CPG.Infrastructure.Persistence.GraphQL.ErrorHandling;
 using CPG.Infrastructure.Persistence.GraphQL.Queries;
@@ -30,7 +31,7 @@ namespace CPG.Infrastructure.Persistence
         {
             services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
             services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
-
+            
             services
                 .AddDbContext<WriteDbContext>((sp, options) =>
                 {
@@ -44,7 +45,8 @@ namespace CPG.Infrastructure.Persistence
                 {
                     options.EnableDetailedErrors();
                     options.UseSqlServer(configuration.GetConnectionString(ConnectionStringConfigName))
-                    .LogTo(Console.WriteLine);
+                    .EnableSensitiveDataLogging()
+                    .LogTo(Console.WriteLine, LogLevel.Information);
                 })
                 .AddScoped(typeof(IAggregateRepository<>), typeof(AggregateRepository<>))
                 .AddScoped(typeof(IAggregateReadRepository<>), typeof(AggregateRepository<>))

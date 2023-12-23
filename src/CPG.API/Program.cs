@@ -96,7 +96,7 @@ if (Convert.ToBoolean(configuration["EnableSwagger"]))
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseDeveloperExceptionPage();
+    app.UseDeveloperExceptionPage();    
 }
 
 app.UseRequestLocalization(new RequestLocalizationOptions

@@ -41,12 +41,11 @@ namespace CPG.Infrastructure.Persistence.Repositories
                 foreach (var item in prs)
                 {
                     item.SetValue(cacheData, Convert.ChangeType(appSettings[item.Name], Type.GetTypeCode(item.PropertyType)));
-                    _logger.LogInformation($"appSettings: { appSettings[item.Name]}");
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError($"convert Exception in appsettings:{ ex.Message}");
+                _logger.LogError($"convert Exception in appsettings:{ex.Message}");
             }
 
             _cacheService.SetData(CacheKey, cacheData);

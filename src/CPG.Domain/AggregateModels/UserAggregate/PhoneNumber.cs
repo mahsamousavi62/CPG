@@ -1,4 +1,6 @@
-﻿using Ardalis.GuardClauses;
+﻿using System.Text.RegularExpressions;
+using Ardalis.GuardClauses;
+using CPG.Domain.AggregateModels.BookAggregate.Exceptions;
 
 namespace CPG.Domain.AggregateModels.UserAggregate
 {
@@ -10,10 +12,11 @@ namespace CPG.Domain.AggregateModels.UserAggregate
         {
             Guard.Against.NullOrWhiteSpace(phoneNumber, nameof(phoneNumber));
 
-            //if (phoneNumber.Length != 10 || !Regex.IsMatch(phoneNumber, "^\\d{10}$"))
-            //    throw new PhoneNumberInvalidFormatException(phoneNumber);
+            if (phoneNumber.Length != 12 || !Regex.IsMatch(phoneNumber, "^\\d{12}$"))
+                throw new PhoneNumberInvalidFormatException(phoneNumber);
 
-            Value = phoneNumber;
+            var formatNumber = "0" + phoneNumber[2..];
+            Value = formatNumber;
         }
         public static implicit operator string(PhoneNumber phoneNumber) => phoneNumber.Value;
         public static implicit operator PhoneNumber(string phoneNumber) => new(phoneNumber);
