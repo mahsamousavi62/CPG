@@ -18,6 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 
 namespace CPG.Infrastructure.Persistence
 {
@@ -36,7 +37,8 @@ namespace CPG.Infrastructure.Persistence
                     options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
 
                     options.EnableDetailedErrors();
-                    options.EnableSensitiveDataLogging().UseSqlServer(configuration.GetConnectionString(ConnectionStringConfigName));
+                    options.EnableSensitiveDataLogging()
+                        .UseSqlServer(configuration.GetConnectionString(ConnectionStringConfigName));
                 })
                 .AddDbContext<ReadDbContext>(options =>
                 {
@@ -109,7 +111,10 @@ namespace CPG.Infrastructure.Persistence
                 try
                 {
                     var db = services.GetRequiredService<WriteDbContext>();
-                    db.Database.Migrate();
+                    if (db.Database.GetPendingMigrations().Any())
+                    {
+                        db.Database.Migrate();
+                    }
                 }
                 catch (Exception ex)
                 {
