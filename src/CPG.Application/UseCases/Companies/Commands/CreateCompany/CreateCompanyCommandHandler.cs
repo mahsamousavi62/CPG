@@ -28,18 +28,21 @@ public class CreateCompanyCommandHandler(IAggregateRepository<Company> companyRe
             PersianName persianName = new(request.Model.PersianName);
             EnglishName englishName = new(request.Model.EnglishName);
             await CheckUniqueName(request.Model.PersianName, request.Model.EnglishName);
+            Url siteAddress = new Url(request.Model.SiteAddress);
+
+            if (!Enum.TryParse<Enums.IpgRedirectionMethodType>
+                (request.Model.IpgRedirectionMethodType.ToString(), out Enums.IpgRedirectionMethodType methodType))
+                throw new Exception();
 
             Logo logo = new(request.Model.File, Enums.UploadFromEntityType.Company.ToString(), _minioProvider);
-
             var spec = new UserByUserIdsSpec(request.Model.Users);
             var users = await userRepository.ListAsync(spec, cancellationToken);
 
             if (users == null || users.Count == 0)
                 throw new UsersNotFoundException();
 
-            var company = Company.Create(persianName, englishName,
-                                        request.Model.NationalCodeMatchingRequied,
-                                        logo, request.Model.MethodTypes);
+            var company = Company.Create(persianName, englishName, request.Model.NationalCodeMatchingRequied,
+                                        logo, request.Model.MethodTypes, siteAddress, request.Model.IpgRedirectionMethodType);
 
             await _companyRepository.AddAsync(company, cancellationToken);
             await _companyRepository.SaveChangesAsync(cancellationToken);
