@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CPG.Application.UseCases.CharisPayServices.Queries
+namespace CPG.Domain.SharedKernel.Communication.Charispay.Models.AccountNumber
 {
-    public class AccountNumberViewModel
+    public class AccountNumberResponse
     {
         public string AccountNumber { get; set; }
         public string BankName { get; set; }
-        public AccountNumberViewModel(string accountNumber, string bankName)
+        public AccountNumberResponse(string accountNumber, string bankName)
         {
 
             AccountNumber = accountNumber;

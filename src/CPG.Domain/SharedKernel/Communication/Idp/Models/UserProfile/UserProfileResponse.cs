@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CPG.Domain.SharedKernel.ClientFactory;
+namespace CPG.Domain.SharedKernel.Communication.Idp.Models.UserProfile;
 
 public class Address
 {
@@ -106,7 +106,7 @@ public class Result
     public List<object> LegalPersonStakeholders { get; set; }
 }
 
-public class IdpUserProfile
+public class UserProfileResponse
 {
     public Result Result { get; set; }
 }

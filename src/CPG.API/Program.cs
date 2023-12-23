@@ -90,6 +90,7 @@ builder.Services.Configure<RequestLocalizationOptions>(opt =>
 var app = builder.Build();
 
 app.UseCors(DefaultCorsPolicyName);
+app.MigrateDatabase();
 
 if (Convert.ToBoolean(configuration["EnableSwagger"]))
 {
@@ -113,7 +114,6 @@ app.UseInfrastructure(configuration, app.Environment);
 app.UseSerilogRequestLogging();
 app.UseExceptionHandler();
 
-app.MigrateDatabase();
 
 app.UseEndpoints(endpoints =>
 {

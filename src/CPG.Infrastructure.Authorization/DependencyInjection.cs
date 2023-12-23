@@ -24,21 +24,21 @@ namespace CPG.Infrastructure.Authorization
                 services.AddTransient<IAuthService, JwtService>();
                 services.AddScoped<IAuthenticationService, AuthenticationService>();
                 var serviceProvider = services.BuildServiceProvider();
-                var repository = serviceProvider.GetRequiredService<IApplicationSettingsRepository>();
-                var applicationConfigViewModel = repository.GetAllApplicationSettings().GetAwaiter().GetResult();
+
+                var JwtConfig = configuration.GetSection("JwtConfig").Get<JwtConfigViewModel>();
                 services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                   .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, configureOption =>
                   {
-                      configureOption.Authority = applicationConfigViewModel.Authority;
-                      configureOption.Audience = applicationConfigViewModel.ClientApiKey;
+                      configureOption.Authority = JwtConfig.Authority;
+                      configureOption.Audience = JwtConfig.ClientApiKey;
                       configureOption.TokenValidationParameters = new TokenValidationParameters
                       {
-                          ValidIssuer = applicationConfigViewModel.Authority,
-                          ValidAudience = applicationConfigViewModel.ClientApiKey,
-                          ValidateIssuer = applicationConfigViewModel.ValidateIssuer,
-                          ValidateAudience = applicationConfigViewModel.ValidateAudience,
-                          ValidateLifetime = applicationConfigViewModel.ValidateLifetime,
-                          ClockSkew = TimeSpan.FromSeconds(Convert.ToInt32(applicationConfigViewModel.ClockSkew)),
+                          ValidIssuer = JwtConfig.Authority,
+                          ValidAudience = JwtConfig.ClientApiKey,
+                          ValidateIssuer = JwtConfig.ValidateIssuer,
+                          ValidateAudience = JwtConfig.ValidateAudience,
+                          ValidateLifetime = JwtConfig.ValidateLifetime,
+                          ClockSkew = TimeSpan.FromSeconds(Convert.ToInt32(JwtConfig.ClockSkew)),
                       };
                   });
 

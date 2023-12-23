@@ -405,4 +405,7 @@
   <data name="VerificationTimeLimitIPG" xml:space="preserve">
     <value>VerificationTimeLimitIPG</value>
   </data>
+  <data name="PaymentRequestNotFound" xml:space="preserve">
+    <value>PaymentRequestNotFound</value>
+  </data>
 </root>
