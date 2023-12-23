@@ -32,9 +32,9 @@ public class GetAuthenticationAppSettingQueryHandler(ReadDbContext context, IRed
         if (cacheData != null)
             return cacheData;
 
-        var jwtConfig = _authService.GetJwtConfig();
+        cacheData = _authService.GetJwtConfig();
 
-        cacheData = new JwtConfigViewModel();
+        //cacheData = new JwtConfigViewModel();
         //var type = cacheData.GetType();
         //var prs = type.GetProperties();
         //foreach (var item in prs)

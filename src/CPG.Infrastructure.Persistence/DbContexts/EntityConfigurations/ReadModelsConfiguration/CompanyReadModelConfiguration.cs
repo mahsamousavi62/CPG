@@ -1,4 +1,5 @@
-﻿using CPG.Infrastructure.Persistence.DbContexts.ReadModels;
+﻿using CPG.Domain.SeedWork;
+using CPG.Infrastructure.Persistence.DbContexts.ReadModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -14,6 +15,8 @@ namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations.ReadMod
             readModel.Property(x => x.PersianName).HasColumnName("PersianName");
             readModel.Property(x => x.EnglishName).HasColumnName("EnglishName");
             readModel.Property(x => x.Logo).HasColumnName("Logo");
+            readModel.Property(x => x.SiteAddress).HasColumnName("SiteAddress");
+            readModel.Property(x => x.IpgRedirectionMethodType).HasColumnName("IpgRedirectionMethodType");
             readModel.Property(x => x.IsActive);
             readModel.Property(x => x.ModificationDate);
             readModel.Property(x => x.CreationDate);

@@ -26,12 +26,18 @@ public class CompanyController : ApiBaseController
     public async Task<IActionResult> GetCompanyPaymentMethodsType(Enums.CompanyPaymentMethodType type)
         => Ok(await Mediator.Send(new GetCompanyPaymentMethodsQuery()));
 
+    [HttpGet("GetIpgRedirectionMethodType")]
+    [EnumDataType(typeof(Enums.IpgRedirectionMethodType))]
+    public async Task<IActionResult> GetIpgRedirectionMethodType(Enums.IpgRedirectionMethodType type)
+       => Ok(await Mediator.Send(new GetIpgRedirectionMethodTypeQuery()));
+
+
     [HttpPost]
     public async Task<IActionResult> CreateCompany([FromForm] CreateCompanyModel model)
     {
         CreateCompanyViewModel createCompanyViewModel = new(
              model.PersianName, model.EnglishName, model.NationalCodeMatchingRequied,
-             new FormFileProxy(model.File), model.MethodTypes, model.Users);
+             new FormFileProxy(model.File), model.MethodTypes, model.Users,model.SiteAddress,model.IpgRedirectionMethodType);
 
         var result = await Mediator.Send(new CreateCompanyCommand(createCompanyViewModel));
 

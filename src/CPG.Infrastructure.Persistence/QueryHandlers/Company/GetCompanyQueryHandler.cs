@@ -32,6 +32,8 @@ public class GetCompanyQueryHandler(ReadDbContext context, IMinioProvider minioP
             EnglishName = company.EnglishName,
             Logo = await _minioProvider.PresignedGetObject(company.Logo),
             NationalCodeMatchingRequied = company.NationalCodeMatchingRequied,
+            SiteAddress = company.SiteAddress,
+            IpgRedirectionMethodType = company.IpgRedirectionMethodType,
             PaymentMethods = company.PaymentMethods.ToDictionary(p => p.MethodType,
                                     p => ((Enums.CompanyPaymentMethodType)p.MethodType).ToString()),
             CreationDate = company.CreationDate,

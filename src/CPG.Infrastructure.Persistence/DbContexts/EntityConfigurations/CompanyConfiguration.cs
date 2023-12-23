@@ -19,6 +19,9 @@ namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations
             entity.Property(x => x.PersianName).HasColumnName("PersianName").HasMaxLength(256).HasColumnType("nvarchar").IsRequired();
             entity.Property(x => x.EnglishName).HasColumnName("EnglishName").HasMaxLength(256).HasColumnType("varchar").IsRequired();
             entity.Property(x => x.Logo).HasColumnName("Logo").HasColumnType("nvarchar(max)").IsRequired();
+            entity.Property(x => x.SiteAddress).HasColumnName("SiteAddress").HasColumnType("varchar(1000)").IsRequired();
+            entity.Property(x => x.IpgRedirectionMethodType).HasColumnName("IpgRedirectionMethodType").HasColumnType("smallint").IsRequired();
+
 
             entity
          .HasMany(c => c.PaymentMethods)
