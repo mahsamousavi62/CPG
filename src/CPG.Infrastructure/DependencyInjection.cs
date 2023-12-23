@@ -29,6 +29,9 @@ using CPG.Domain.SharedKernel.Communication.Charispay;
 using CPG.Domain.SharedKernel.Communication.Idp;
 using CPG.Infrastructure.Providers.Idp;
 using CPG.Infrastructure.Providers.Charispay;
+using CPG.Domain.SharedKernel.Communication.Ipg;
+using CPG.Infrastructure.Providers.Ipg;
+using CCPG.Domain.SharedKernel.Communication.Ipg;
 
 namespace CPG.Infrastructure;
 
@@ -38,6 +41,8 @@ public static class DependencyInjection
         => services
             .AddScoped<ICharisPayProvider, CharisPayProvider>()
             .AddScoped<IIdpProvider, IdpProvider>()
+            .AddScoped<IIpgFactory, IpgFactory>()
+            .AddScoped<IIpgProvider, AsanPardakhtProvider>()
             .AddTransient<ICurrentDateTime, CurrentDateTime>()
             .AddDatabase(configuration)
             .AddGraphQLQueries()
@@ -115,6 +120,13 @@ public static class DependencyInjection
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         });
 
+        services.AddHttpClient("asanpardakhtClient", c =>
+        {
+            c.BaseAddress = new Uri("https://ipgrest.asanpardakht.ir/");
+            c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/plain"));
+
+            
+        });
 
         return services;
     }
