@@ -6,6 +6,7 @@ public class PaymentMethodsViewModel
 {
     public decimal Amount { get; set; }
     public List<IPGInfo> IPGs { get; set; }
+    public string CompanyName { get; set; }
 }
 
 public class IPGInfo

@@ -1,6 +1,7 @@
 ﻿using CPG.Application.UseCases.Common.Queries;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.ApplicationSettings;
+using CPG.Domain.SharedKernel.Communication.Ipg;
 using CPG.Infrastructure.Persistence.DbContexts;
 using CPG.Infrastructure.Persistence.GraphQL.ErrorHandling;
 using CPG.Infrastructure.Persistence.GraphQL.Queries;
@@ -18,6 +19,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 
 namespace CPG.Infrastructure.Persistence
 {
@@ -29,14 +31,15 @@ namespace CPG.Infrastructure.Persistence
         {
             services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
             services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
-
+            
             services
                 .AddDbContext<WriteDbContext>((sp, options) =>
                 {
                     options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
 
                     options.EnableDetailedErrors();
-                    options.EnableSensitiveDataLogging().UseSqlServer(configuration.GetConnectionString(ConnectionStringConfigName));
+                    options.EnableSensitiveDataLogging()
+                        .UseSqlServer(configuration.GetConnectionString(ConnectionStringConfigName));
                 })
                 .AddDbContext<ReadDbContext>(options =>
                 {
@@ -109,7 +112,10 @@ namespace CPG.Infrastructure.Persistence
                 try
                 {
                     var db = services.GetRequiredService<WriteDbContext>();
-                    db.Database.Migrate();
+                    if (db.Database.GetPendingMigrations().Any())
+                    {
+                        db.Database.Migrate();
+                    }
                 }
                 catch (Exception ex)
                 {
