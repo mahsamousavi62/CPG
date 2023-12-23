@@ -408,4 +408,16 @@
   <data name="PaymentRequestNotFound" xml:space="preserve">
     <value>PaymentRequestNotFound</value>
   </data>
+  <data name="CPGReferencePage" xml:space="preserve">
+    <value>CPGReferencePage</value>
+  </data>
+  <data name="IpgRedirectionMethodType" xml:space="preserve">
+    <value>IpgRedirectionMethodType</value>
+  </data>
+  <data name="RayanReferencePage" xml:space="preserve">
+    <value>RayanReferencePage</value>
+  </data>
+  <data name="SiteAddressCompany" xml:space="preserve">
+    <value>SiteAddressCompany</value>
+  </data>
 </root>
