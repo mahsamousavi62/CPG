@@ -63,11 +63,7 @@ namespace CPG.Infrastructure.Authorization
             {
                 var t = _httpContextAccessor.HttpContext.User.Claims.ToList();
                 var tt = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == propertyName);
-
-                claim = string.IsNullOrEmpty(issuer)
-                    ? _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == propertyName)
-                    : _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c =>
-                        c.Type == propertyName && c.Issuer.Equals(issuer, StringComparison.InvariantCultureIgnoreCase));
+                claim = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == propertyName);
             }
             else
             {
@@ -75,10 +71,8 @@ namespace CPG.Infrastructure.Authorization
                 if (!authenticateResult.Succeeded)
                     return default(T);
 
-                claim = string.IsNullOrEmpty(issuer)
-                   ? authenticateResult.Principal.FindFirst(c => c.Type == propertyName)
-                   : authenticateResult.Principal.FindFirst(c =>
-                       c.Type == propertyName && c.Issuer.Equals(issuer, StringComparison.InvariantCultureIgnoreCase));
+                claim = authenticateResult.Principal.FindFirst(c => c.Type == propertyName);
+                  
             }
 
             if (claim != null)

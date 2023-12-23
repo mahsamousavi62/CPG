@@ -9,6 +9,8 @@ public class CompanyReadModel
     public string PersianName { get; set; }
     public string EnglishName { get; set; }
     public bool NationalCodeMatchingRequied { get; set; }
+    public string SiteAddress { get; set; }
+    public short IpgRedirectionMethodType { get; set; }
     public string Logo { get; set; }
     public bool IsActive { get; set; }
     public DateTime CreationDate { get; set; }

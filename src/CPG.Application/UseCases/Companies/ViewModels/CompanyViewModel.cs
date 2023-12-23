@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace CPG.Application.UseCases.Companies.ViewModels;
 
@@ -12,6 +13,10 @@ public class CompanyViewModel
     public string EnglishName { get; set; }
 
     public bool NationalCodeMatchingRequied { get; set; }
+
+    public string SiteAddress { get; set; }
+
+    public short IpgRedirectionMethodType { get; set; }
 
     public string Logo { get; set; }
 

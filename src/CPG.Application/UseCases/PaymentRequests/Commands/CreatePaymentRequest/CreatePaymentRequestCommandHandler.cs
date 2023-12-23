@@ -57,7 +57,7 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
             throw new ApplicationNotFoundException(application.Id);
         if (!application.IsActive)
             throw new ApplicationIsNotActiveException(application.Id);
-        if (application.ApplicationIdentifiers.SingleOrDefault(a => a.IdpClientId == clientId).IsActive)
+        if (!application.ApplicationIdentifiers.SingleOrDefault(a => a.IdpClientId == clientId).IsActive)
             throw new IdpClientIdIsNotActiveException(clientId);
 
 
@@ -71,7 +71,7 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
         {
             ExpirationDateTime = paymentRequest.UrlExpirationDateTime,
             Code = paymentRequest.Code,
-            PageUrl = $"{appConfig.Payment_Gateway_URL_Prefix}{paymentRequest.Code}",
+            PageUrl = $"{appConfig.Payment_Gateway_URL_Prefix.TrimEnd('/')}?code={paymentRequest.Code}",
             Status = paymentRequest.Status
         };
     }
