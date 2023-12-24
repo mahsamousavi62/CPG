@@ -145,6 +145,6 @@ public class MinioProvider : IMinioProvider
     {
         var directoryPath = Path.GetDirectoryName(destinationfilePath);
 
-        return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "\\Files\\", directoryPath.Replace('/', '\\'));
+        return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files", directoryPath.Replace('/', '\\'));
     }
 }
