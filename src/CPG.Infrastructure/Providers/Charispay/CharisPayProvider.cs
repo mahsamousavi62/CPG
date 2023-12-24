@@ -29,27 +29,36 @@ namespace CPG.Infrastructure.Providers.Charispay
 
         public async Task<ResultData<AccountNumberResponse>> GetAccountNumber(string iban)
         {
-            ResultData<AccountNumberResponse> resultData = new();
-            var client = _factory.CreateClient("charisPayClient");
-            client.SetBearerToken(configuration["Infrastructure:CharisPay:Token"]);
-            client.DefaultRequestHeaders.Add("correlation-id", Guid.NewGuid().ToString());
-            string json = JsonConvert.SerializeObject(new { iban });
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var result = await client.PostAsync(configuration["Infrastructure:CharisPay:InqueryIbanUrl"], content);
-
-            var resultContent = await result.Content.ReadAsStringAsync();
+            var charisPayConfig = configuration.GetSection("Infrastructure:CharisPay").Get<CharisPayConfig>();
+                        ResultData<AccountNumberResponse> resultData = new();
             try
             {
-                var response = JsonConvert.DeserializeObject<CharispayResponseBase<InquiryIbanResponse>>(resultContent);
-                resultData.Data = new AccountNumberResponse(response.result[0].depositNumber, response.result[0].bankName);
-                resultData.OperationResult = Enums.OperationResult.Succeeded;
+                var client = _factory.CreateClient("charisPayClient");
+                client.SetBearerToken(charisPayConfig.Token);
+                client.DefaultRequestHeaders.Add("correlation-id", Guid.NewGuid().ToString());
+                string json = JsonConvert.SerializeObject(new { iban });
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var result = await client.PostAsync(charisPayConfig.InqueryIbanUrl, content);
+
+                var resultContent = await result.Content.ReadAsStringAsync();
+                try
+                {
+                    var response = JsonConvert.DeserializeObject<CharispayResponseBase<InquiryIbanResponse>>(resultContent);
+                    resultData.Data = new AccountNumberResponse(response.result[0].depositNumber, response.result[0].bankName);
+                    resultData.OperationResult = Enums.OperationResult.Succeeded;
+                }
+                catch (Exception)
+                {
+                    dynamic d = JObject.Parse(resultContent);
+
+                    resultData.Error = d.result;
+                    resultData.OperationResult = Enums.OperationResult.Failed;
+                }
             }
             catch (Exception)
             {
-                dynamic d = JObject.Parse(resultContent);
 
-                resultData.Error = d.result;
-                resultData.OperationResult = Enums.OperationResult.Failed;
+                throw;
             }
             return resultData;
         }
