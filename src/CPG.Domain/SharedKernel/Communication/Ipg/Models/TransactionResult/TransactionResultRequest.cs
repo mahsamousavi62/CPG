@@ -1,8 +1,10 @@
-﻿namespace CPG.Domain.SharedKernel.Communication.Ipg.Models.TransactionResult;
+﻿using CPG.Domain.SharedKernel.Communication.Ipg.AsanPardakht;
 
-public class TransactionResultRequest
+namespace CPG.Domain.SharedKernel.Communication.Ipg.Models.TransactionResult;
+
+public class TransactionResultRequest: AsanPardakhtRequestBase
 {
     public string LocalInvoiceId { get; set; }
 
-    public string MerchantConfigurationId { get; set; }
+    public string ProviderData { get; set; }
 }

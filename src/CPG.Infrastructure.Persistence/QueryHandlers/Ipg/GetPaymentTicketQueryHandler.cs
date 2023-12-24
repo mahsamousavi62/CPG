@@ -33,15 +33,20 @@ namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg
             if (paymentRequest is null) { throw new PaymentRequestNotFoundException(request.PaymentToken.PaymentRequestId); }
 
             var companyIpg = await _context.CompanyIPGReadModels.FirstOrDefaultAsync(t => t.Id == request.PaymentToken.CompanyIPGId);
-            if (paymentRequest is null) { throw new CompanyIPGNotFoundException(request.PaymentToken.CompanyIPGId); }
-
-
+            if (companyIpg is null) { throw new CompanyIPGNotFoundException(request.PaymentToken.CompanyIPGId); }
+            
             var ipg = _ipgFactory.GetInstance(Enums.ProviderType.AsanPardakht);
-            var result = await ipg.GetPaymentTokenAsync(new PaymentTokenRequest { ProviderData = companyIpg.ProviderData, PaymentRequestAmount = paymentRequest.Amount });
+            var result = await ipg.GetPaymentTokenAsync(
+                new PaymentTokenRequest { ProviderData = companyIpg.ProviderData,
+                                          PaymentRequestAmount = paymentRequest.Amount,
+                                          IpgRedirectionMethodType = 2,
+                                          SiteAddress= "https://rhpayment1.br.charisma.ir"
+                });
             if (result.OperationResult == Enums.OperationResult.Succeeded)
             {
+                PaymentRequest.Update(paymentRequest);
                 await _paymentRequestRepository.UpdateAsync(paymentRequest);
-                paymentRequest.IsUsed = true;
+                
                 await _paymentRequestRepository.SaveChangesAsync();
             }
             return result;

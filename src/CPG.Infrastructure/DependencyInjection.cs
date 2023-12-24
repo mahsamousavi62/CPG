@@ -63,10 +63,10 @@ public static class DependencyInjection
         var applicationConfigViewModel = repository.GetAllApplicationSettings().GetAwaiter().GetResult();
 
         services.AddMinio(configureClient => configureClient
-          .WithEndpoint(applicationConfigViewModel.Minio_EndPoint)
-          .WithCredentials(applicationConfigViewModel.Minio_AccessKey,
-          applicationConfigViewModel.Minio_SecretKey)
-          .WithSSL(applicationConfigViewModel.Minio_WithSSL));
+          .WithEndpoint("minio.charisma.tech:9000")
+          .WithCredentials("cpg",
+          "3Fh3S9i153Qsgd45f6")
+          .WithSSL(false));
 
         return services;
     }

@@ -60,5 +60,11 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
         return paymentRequest;
     }
 
+    public static  void Update(PaymentRequest paymentRequest)
+    {
+        paymentRequest.IsUsed = true;
+        paymentRequest.Status = 3;
+        paymentRequest.ModificationDate = DateTime.UtcNow;
+    }
 
 }
