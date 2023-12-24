@@ -1,8 +1,10 @@
 ﻿using CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations;
 using CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations.ReadModelsConfiguration;
 using CPG.Infrastructure.Persistence.DbContexts.ReadModels;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace CPG.Infrastructure.Persistence.DbContexts;
 
@@ -56,5 +58,17 @@ public class ReadDbContext(DbContextOptions<ReadDbContext> options) : DbContext(
             .ApplyConfiguration(new CompanyIPGDepositReadModelConfiguration())
             ;
 
+    }
+
+    public async Task<long> GetNextSequenceValue()
+    {
+        var p = new SqlParameter("@result", System.Data.SqlDbType.BigInt)
+        {
+            Direction = System.Data.ParameterDirection.Output
+        };
+        await Database.ExecuteSqlRawAsync("set @result = NEXT VALUE FOR dbo.IncrementalCodeSequence", p);
+        var nextVal = (long)p.Value;
+
+        return nextVal;
     }
 }
