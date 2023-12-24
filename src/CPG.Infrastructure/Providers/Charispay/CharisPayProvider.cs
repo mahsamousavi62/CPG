@@ -31,8 +31,7 @@ namespace CPG.Infrastructure.Providers.Charispay
         {
             var charisPayConfig = configuration.GetSection("Infrastructure:CharisPay").Get<CharisPayConfig>();
                         ResultData<AccountNumberResponse> resultData = new();
-            try
-            {
+            
                 var client = _factory.CreateClient("charisPayClient");
                 client.SetBearerToken(charisPayConfig.Token);
                 client.DefaultRequestHeaders.Add("correlation-id", Guid.NewGuid().ToString());
@@ -54,12 +53,6 @@ namespace CPG.Infrastructure.Providers.Charispay
                     resultData.Error = d.result;
                     resultData.OperationResult = Enums.OperationResult.Failed;
                 }
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
             return resultData;
         }
     }
