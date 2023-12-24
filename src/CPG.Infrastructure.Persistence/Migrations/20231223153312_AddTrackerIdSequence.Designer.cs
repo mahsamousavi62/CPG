@@ -4,6 +4,7 @@ using CPG.Infrastructure.Persistence.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CPG.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(WriteDbContext))]
-    partial class WriteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231223153312_AddIncrementalCodeSequence")]
+    partial class AddIncrementalCodeSequence
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -277,10 +280,6 @@ namespace CPG.Infrastructure.Persistence.Migrations
                         .HasColumnType("varchar")
                         .HasColumnName("EnglishName");
 
-                    b.Property<short>("IpgRedirectionMethodType")
-                        .HasColumnType("smallint")
-                        .HasColumnName("IpgRedirectionMethodType");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -304,11 +303,6 @@ namespace CPG.Infrastructure.Persistence.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar")
                         .HasColumnName("PersianName");
-
-                    b.Property<string>("SiteAddress")
-                        .IsRequired()
-                        .HasColumnType("varchar(1000)")
-                        .HasColumnName("SiteAddress");
 
                     b.HasKey("Id");
 
@@ -945,7 +939,7 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.HasOne("CPG.Domain.AggregateModels.UserAggregate.User", "User")
                         .WithMany("UserRoles")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
