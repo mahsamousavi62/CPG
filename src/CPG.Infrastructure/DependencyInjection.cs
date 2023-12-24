@@ -34,6 +34,7 @@ using CPG.Infrastructure.Providers.Ipg;
 using CCPG.Domain.SharedKernel.Communication.Ipg;
 using CPG.Domain.SharedKernel.Communication;
 using CPG.Infrastructure.Providers;
+using CPG.Application.Auth;
 
 namespace CPG.Infrastructure;
 
@@ -58,15 +59,12 @@ public static class DependencyInjection
 
     public static IServiceCollection AddMinio(this IServiceCollection services, IConfiguration configuration)
     {
-        var serviceProvider = services.BuildServiceProvider();
-        var repository = serviceProvider.GetRequiredService<IApplicationSettingsRepository>();
-        var applicationConfigViewModel = repository.GetAllApplicationSettings().GetAwaiter().GetResult();
+        var applicationConfigViewModel = configuration.GetSection("Infrastructure:Minio").Get<MinioConfigViewModel>();;
 
         services.AddMinio(configureClient => configureClient
-          .WithEndpoint("minio.charisma.tech:9000")
-          .WithCredentials("cpg",
-          "3Fh3S9i153Qsgd45f6")
-          .WithSSL(false));
+          .WithEndpoint(applicationConfigViewModel.EndPoint)
+          .WithCredentials(applicationConfigViewModel.AccessKey, applicationConfigViewModel.SecretKey)
+          .WithSSL(applicationConfigViewModel.WithSSL));
 
         return services;
     }
@@ -106,19 +104,20 @@ public static class DependencyInjection
     public static IServiceCollection AddConfigureHttpClientService(this IServiceCollection services, IConfiguration configuration)
     {
         var serviceProvider = services.BuildServiceProvider();
-        var repository = serviceProvider.GetRequiredService<IApplicationSettingsRepository>();
-        var appConfig = repository.GetAllApplicationSettings().GetAwaiter().GetResult();
+        var authService =  serviceProvider.GetRequiredService<IAuthService>();
+        var jwtConfig = authService.GetJwtConfig();
+        var charisPayConfig = configuration.GetSection("Infrastructure:CharisPay").Get<CharisPayConfig>();
 
         services.AddHttpClient("charisPayClient", c =>
         {
-            c.BaseAddress = new Uri(appConfig.CharisPay_BaseUrl);
+            c.BaseAddress = new Uri(charisPayConfig.BaseUrl);
             c.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         });
 
         services.AddHttpClient("idpClient", c =>
         {
-            c.BaseAddress = new Uri(appConfig.Authority);
+            c.BaseAddress = new Uri(jwtConfig.Authority);
             c.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         });
@@ -126,9 +125,7 @@ public static class DependencyInjection
         services.AddHttpClient("asanpardakhtClient", c =>
         {
             c.BaseAddress = new Uri("https://ipgrest.asanpardakht.ir/");
-            c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/plain"));
-
-            
+            c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/plain"));  
         });
 
         return services;

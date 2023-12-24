@@ -16,23 +16,25 @@ public class Application : AuditableEntity<long>, IAggregateRoot
     }
     public Application(PersianName persianName, EnglishName englishName, Logo logo, Url responseApiUrl)
     {
-        _persianName = persianName.Value;
-        _englishName = englishName.Value;
-        _logo = logo.Value;
-        _responseApiUrl = responseApiUrl.Value;
+        PersianName = persianName.Value;
+        EnglishName = englishName.Value;
+        Logo = logo.Value;
+        ResponseApiUrl = responseApiUrl.Value;
         ApplicationIdentifiers = [];
     }
 
-    private string _persianName;
-    private string _englishName;
-    private string _logo;
-    private string _responseApiUrl;
-    public string PersianName => _persianName;
-    public string EnglishName => _englishName;
-    public string Logo => _logo;
-    public string ResponseApiUrl => _responseApiUrl;
+    public string PersianName { get; }
+
+    public string EnglishName { get; }
+
+    public string Logo { get; }
+
+    public string ResponseApiUrl { get; }
+
     public List<ApplicationIdentifier> ApplicationIdentifiers { get; set; } = [];
+
     public List<ApplicationCallbackUrl> ApplicationCallbackUrls { get; set; } = [];
+
     public List<PaymentRequest> PaymentRequests { get; set; } = [];
 
     public static Application Create(PersianName persianName, EnglishName englishName, Url responseApiUrl, Logo logo, string[] details, Url[] callbackUrls)
@@ -70,5 +72,12 @@ public class Application : AuditableEntity<long>, IAggregateRoot
         IsActive = false;
 
         AddDomainEvent(new ChangeApplicationStatusEvent(Id, IsActive, DateTime.Now));
+    }
+
+    public override bool Equals(object obj)
+    {
+        return obj is Application application &&
+               base.Equals(obj) &&
+               EnglishName == application.EnglishName;
     }
 }

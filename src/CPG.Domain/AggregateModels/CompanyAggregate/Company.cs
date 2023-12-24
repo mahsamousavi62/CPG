@@ -16,12 +16,15 @@ public class Company : AuditableEntity<long>, IAggregateRoot
 
     }
 
-    public Company(PersianName persianName, EnglishName englishName, bool nationalCodeMatchingRequied, Logo logo)
+    public Company(PersianName persianName, EnglishName englishName, bool nationalCodeMatchingRequied, Logo logo,
+        Url siteAddress, short ipgRedirectionMethodType)
     {
         PersianName = persianName.Value;
         EnglishName = englishName.Value;
         NationalCodeMatchingRequied = nationalCodeMatchingRequied;
         Logo = logo.Value;
+        SiteAddress = siteAddress.Value;
+        IpgRedirectionMethodType = ipgRedirectionMethodType;
         PaymentMethods = [];
         IsActive = true;
     }
@@ -34,23 +37,27 @@ public class Company : AuditableEntity<long>, IAggregateRoot
 
     public bool NationalCodeMatchingRequied { get; }
 
+    public string SiteAddress { get; set; }
+
+    public short IpgRedirectionMethodType { get; set; }
+
     public List<CompanyDeposit> CompanyDeposits { get; set; }
 
     public List<CompanyPaymentMethod> PaymentMethods { get; set; } = [];
 
     public List<User> Users { get; set; }
 
-    public List<PaymentRequest> PaymentRequests{ get; set; }
+    public List<PaymentRequest> PaymentRequests { get; set; }
 
     public List<CompanyIPG> CompanyIPGs { get; set; }
 
     public static Company Create(PersianName persianName, EnglishName englishName,
-        bool nationalCodeMatchingRequied, Logo logo, short[] details)
+        bool nationalCodeMatchingRequied, Logo logo, short[] details, Url siteAddress, short IpgRedirectionMethodType)
     {
-        var comapny = new Company(persianName, englishName, nationalCodeMatchingRequied, logo);
-        
+        var comapny = new Company(persianName, englishName, nationalCodeMatchingRequied, logo, siteAddress, IpgRedirectionMethodType);
+
         var companyPaymentMethods = CompanyPaymentMethod.Create(details);
-        
+
         comapny.PaymentMethods.AddRange(companyPaymentMethods);
 
         comapny.AddDomainEvent(new NewCompanyCreatedEvent(comapny.Id, DateTime.UtcNow));

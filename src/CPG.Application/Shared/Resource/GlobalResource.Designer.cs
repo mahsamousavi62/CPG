@@ -286,6 +286,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CPGReferencePage.
+        /// </summary>
+        public static string CPGReferencePage {
+            get {
+                return ResourceManager.GetString("CPGReferencePage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create.
         /// </summary>
         public static string Create {
@@ -529,6 +538,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to IpgRedirectionMethodType.
+        /// </summary>
+        public static string IpgRedirectionMethodType {
+            get {
+                return ResourceManager.GetString("IpgRedirectionMethodType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to IPGs.
         /// </summary>
         public static string IPGs {
@@ -561,6 +579,15 @@ namespace CPG.Application.Shared.Resource {
         public static string MethodTypes {
             get {
                 return ResourceManager.GetString("MethodTypes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MinioException.
+        /// </summary>
+        public static string MinioException {
+            get {
+                return ResourceManager.GetString("MinioException", resourceCulture);
             }
         }
         
@@ -772,6 +799,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to RayanReferencePage.
+        /// </summary>
+        public static string RayanReferencePage {
+            get {
+                return ResourceManager.GetString("RayanReferencePage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ResponseApiUrl.
         /// </summary>
         public static string ResponseApiUrl {
@@ -804,6 +840,15 @@ namespace CPG.Application.Shared.Resource {
         public static string SetDeActive {
             get {
                 return ResourceManager.GetString("SetDeActive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SiteAddressCompany.
+        /// </summary>
+        public static string SiteAddressCompany {
+            get {
+                return ResourceManager.GetString("SiteAddressCompany", resourceCulture);
             }
         }
         

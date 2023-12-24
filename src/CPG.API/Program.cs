@@ -77,12 +77,12 @@ builder.Services.AddLocalization();
 
 var supportedLanguages = new List<CultureInfo>
     {
+        new("en"),
         new("fa")
     };
 
 builder.Services.Configure<RequestLocalizationOptions>(opt =>
 {
-    opt.DefaultRequestCulture = new RequestCulture("fa", "fa");
     opt.SupportedCultures = supportedLanguages;
     opt.SupportedUICultures = supportedLanguages;
 });
@@ -90,6 +90,7 @@ builder.Services.Configure<RequestLocalizationOptions>(opt =>
 var app = builder.Build();
 
 app.UseCors(DefaultCorsPolicyName);
+app.MigrateDatabase();
 
 if (Convert.ToBoolean(configuration["EnableSwagger"]))
 {
@@ -100,7 +101,6 @@ if (Convert.ToBoolean(configuration["EnableSwagger"]))
 
 app.UseRequestLocalization(new RequestLocalizationOptions
 {
-    DefaultRequestCulture = new RequestCulture("en"),
     SupportedCultures = supportedLanguages,
     SupportedUICultures = supportedLanguages
 });
@@ -113,7 +113,6 @@ app.UseInfrastructure(configuration, app.Environment);
 app.UseSerilogRequestLogging();
 app.UseExceptionHandler();
 
-app.MigrateDatabase();
 
 app.UseEndpoints(endpoints =>
 {
