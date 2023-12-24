@@ -426,4 +426,7 @@
   <data name="SiteAddressCompany" xml:space="preserve">
     <value>نشانی سایت مربوط به شرکت</value>
   </data>
+  <data name="MinioException" xml:space="preserve">
+    <value>خطای فایل سرور</value>
+  </data>
 </root>
