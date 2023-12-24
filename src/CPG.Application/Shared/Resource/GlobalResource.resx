@@ -408,4 +408,7 @@
   <data name="PaymentRequestNotFound" xml:space="preserve">
     <value>PaymentRequestNotFound</value>
   </data>
+  <data name="MinioException" xml:space="preserve">
+    <value>MinioException</value>
+  </data>
 </root>

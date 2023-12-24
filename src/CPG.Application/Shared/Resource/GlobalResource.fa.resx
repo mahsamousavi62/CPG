@@ -414,4 +414,7 @@
   <data name="PaymentRequestNotFound" xml:space="preserve">
     <value>درخواست پرداخت  با شناسه {0} یافت نشد </value>
   </data>
+  <data name="MinioException" xml:space="preserve">
+    <value>خطای فایل سرور</value>
+  </data>
 </root>

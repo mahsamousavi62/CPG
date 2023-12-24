@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
-using CPG.Application.Shared.Resource;
+﻿using CPG.Application.Shared.Resource;
 using CPG.Domain.SharedKernel.File;
 using CPG.Domain.SharedKernel.Minio;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
@@ -14,6 +6,12 @@ using Microsoft.Extensions.Configuration;
 using Minio;
 using Minio.DataModel.Args;
 using Minio.Exceptions;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace CPG.Infrastructure.Minio;
 public class MinioProvider : IMinioProvider
@@ -39,18 +37,12 @@ public class MinioProvider : IMinioProvider
 
     public async Task<string> PutObject(string uploadFromEntityType, IFile file)
     {
-
-        CultureInfo originalCulture = CultureInfo.CurrentCulture;
-        CultureInfo newCulture = new("en-US");
-        CultureInfo.CurrentCulture = newCulture;
-
-
         var bucketName = _configuration["Infrastructure:Minio:bucketName"];
         var objectName = $"{uploadFromEntityType}/{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid()}_{file.FileName}";
 
         await file.ReadFile();
 
-        file.Content.Seek(0, System.IO.SeekOrigin.Begin);
+        file.Content.Seek(0, SeekOrigin.Begin);
 
         try
         {
@@ -68,10 +60,6 @@ public class MinioProvider : IMinioProvider
         catch (MinioException e)
         {
             return e.Message;
-        }
-        finally
-        {
-            CultureInfo.CurrentCulture = originalCulture;
         }
     }
 
@@ -113,7 +101,7 @@ public class MinioProvider : IMinioProvider
         }
         catch (MinioException e)
         {
-            throw new Exception($"Download Error: {e.Message}");
+            throw new Exception($"{GlobalResource.MinioException} : {e.Message}");
         }
     }
 
@@ -123,16 +111,40 @@ public class MinioProvider : IMinioProvider
 
         try
         {
-            var presignedUrl = await _minioClient.PresignedGetObjectAsync(
-                new PresignedGetObjectArgs().WithBucket(bucketName).
-                WithObject(objectName)
-                .WithExpiry(604800));
+            string localDestinationPath = GetLocalFilePath(objectName);
+            var fileName = Path.GetFileName(objectName);
 
-            return presignedUrl;
+            if (!Directory.Exists(localDestinationPath))
+            {
+                _ = Directory.CreateDirectory(localDestinationPath);
+            }
+
+            var fullPath = Path.Combine(localDestinationPath, fileName);
+
+            if (Path.Exists(fullPath))
+            {
+                return fullPath;
+            }
+
+            var getObjectArgs = new GetObjectArgs()
+                    .WithBucket(bucketName)
+                    .WithObject(objectName)
+                    .WithFile(fullPath);
+
+            _ = await _minioClient.GetObjectAsync(getObjectArgs);
+
+            return fullPath;
         }
         catch (Exception e)
         {
-            throw new Exception($"An error occurred while generating the presigned URL: {e.Message}");
+            throw new Exception($"{GlobalResource.MinioException} : {e.Message}");
         }
+    }
+
+    private static string GetLocalFilePath(string destinationfilePath)
+    {
+        var directoryPath = Path.GetDirectoryName(destinationfilePath);
+
+        return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "\\Files\\", directoryPath.Replace('/', '\\'));
     }
 }
