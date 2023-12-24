@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Threading.Tasks;
 using CCPG.Domain.SharedKernel.Communication.Ipg;
 using CPG.Domain.SharedKernel;
@@ -21,21 +20,21 @@ namespace CPG.Infrastructure.Providers.Ipg
         private readonly IHttpProvider httpProvider = httpProvider;
         private readonly ReadDbContext context = context;
 
-        public async Task<ResultData<PaymentTokenResponse>> GetPaymentTokenAsync(PaymentTokenRequest request)
+        public async Task<PaymentTokenResponse> GetPaymentTokenAsync(PaymentTokenRequest request)
         {
             dynamic jsonObjectProviderData = JObject.Parse(request.ProviderData);
+            var configViewModel = await ApplicationSettingRepositoy.GetAllApplicationSettings();
 
             ResultData<PaymentTokenResponse> resultData = new();
             var headers = GetHeaders(jsonObjectProviderData);
-            var configViewModel = await ApplicationSettingRepositoy.GetAllApplicationSettings();
+
             var trackerId = await GetTrackerIdAsync();
+            var callBack = await CreateCallbackUrl(request.IpgRedirectionMethodType, request.SiteAddress, trackerId.ToString(), configViewModel.IPG_Callback_URL);
             var req = new AsanPardakhtTokenRequest
             {
                 serviceTypeId = 1,
                 paymentId = "0",
-                //TODO:??
-                // https://rhpayment1.br.charisma.ir/p/b/0123456789012345?pcu=https://cpg-stage.charisma.digital/subscription/ipg/result
-                callbackURL = $"{configViewModel.IPG_Callback_URL.Trim()}?track_id={trackerId}",
+                callbackURL = callBack,
                 additionalData = CreateAdditionalData(jsonObjectProviderData),
                 merchantConfigurationId = (int)jsonObjectProviderData["Merchant_Configuration_Id"],
                 amountInRials = (long)request.PaymentRequestAmount,
@@ -55,20 +54,43 @@ namespace CPG.Infrastructure.Providers.Ipg
                                                             var formattedResponse = stringResponse;
                                                             if (!stringResponse.StartsWith("{\"error"))
                                                             {
-                                                                formattedResponse = string.Format("{0} {1} {2}" ,"{\"token\":", stringResponse, "}");
+                                                                formattedResponse = string.Format("{0} {1} {2}", "{\"token\":", stringResponse, "}");
                                                             }
                                                             return System.Text.Json.JsonSerializer.Deserialize<AsanPardakhtTokenResponse>(formattedResponse);
                                                         });
 
             Params p = new Params { Token = response.Token };
-            return new ResultData<PaymentTokenResponse>
+            return new PaymentTokenResponse
             {
-                OperationResult = Enums.OperationResult.Succeeded,
-                Data = new PaymentTokenResponse { Params = p, Url = "https://asan.shaparak.ir", TrackerId = trackerId.ToString() },                
+                Params = p,
+                Url = "https://asan.shaparak.ir",
+                TrackerId = trackerId.ToString()
             };
         }
 
-        
+        public async Task<TransactionResultResponse> GetTransactionResult(TransactionResultRequest request)
+        {
+            dynamic jsonObjectProviderData = JObject.Parse(request.ProviderData);
+            ResultData<TransactionResultResponse> resultData = new();
+            var headers = GetHeaders(jsonObjectProviderData);
+            var response = await httpProvider.GetAsync<TransactionResultRequest, TransactionResultResponse,
+                                                        AsanPardakhtResponseBase, dynamic>(new HttpProviderRequest<dynamic>
+                                                        {
+                                                            Body = new
+                                                            {
+                                                                LocalInvoiceId = request.LocalInvoiceId,
+                                                                MerchantConfigurationId = (int)jsonObjectProviderData["Merchant_Configuration_Id"]
+                                                            },
+                                                            BaseAddress = "https://ipgrest.asanpardakht.ir/",
+                                                            Uri = "v1/TranResult",
+                                                            HeaderParameters = headers,
+                                                            Provider = Enums.ProviderType.AsanPardakht,
+                                                            Service = Enums.ServiceType.AsanPardakhtTransResult,
+                                                        }, request, TransactionResultErrorHandler);
+
+            return response;
+        }
+
         private string CreateAdditionalData(dynamic jsonObjectProviderData)
         {
             string hexString = Guid.NewGuid().ToString("N");
@@ -103,19 +125,23 @@ namespace CPG.Infrastructure.Providers.Ipg
             }
             catch (Exception ex)
             {
-                //logger.Value.LogError(ex.Message, ex, nameof(GetBatchIdAsync));
-                throw;
+                throw ex;
             }
         }
 
-        public async Task<ResultData<TransactionResultResponse>> GetTransactionResult(TransactionResultRequest request)
+        private async Task<string> CreateCallbackUrl(short ipgRedirectionType, string siteAddress, string trackerId, string callbackPage)
         {
-            if (request is null)
+
+            switch (ipgRedirectionType)
             {
-                throw new ArgumentNullException(nameof(request));
+                case 1:
+                    return $"{siteAddress}/{callbackPage}?track_id={trackerId}";
+                case 2:
+                    return $"{siteAddress}/p/b/{trackerId}?pcu={callbackPage.TrimEnd()}";
+                default:
+                    return string.Empty;
             }
-            //var client = ClientFactory.CreateClient("charisPayClient");
-            return await Task.FromResult(new ResultData<TransactionResultResponse>());
+            ;
         }
 
         private static async Task<TResponse?> PaymentTokenErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest? baseRequest, TResponse? response, TError? error)
@@ -133,13 +159,48 @@ namespace CPG.Infrastructure.Providers.Ipg
             }
         }
 
+        private static async Task<TResponse?> TransactionResultErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest? baseRequest, TResponse? response, TError? error)
+        where TResponse : TransactionResultResponse
+        where TError : AsanPardakhtResponseBase
+        where TBaseRequest : TransactionResultRequest
+        {
+            if (error?.ErrorResult is not null)
+            {
+                switch (error.ErrorResult.Code)
+                {
+                    case 1043:
+                        throw new Exception("InvalidOrExpiredInvoiceId");
+                    default:
+                        break;
+                }
+                throw new Exception(error.ErrorResult.Message);
+            }
+            else
+            {
+                return await Task.FromResult(BaseErrorHandler<TResponse, TError, TBaseRequest>(error));
+            }
+        }
+
         private static TResponse BaseErrorHandler<TResponse, TError, TBaseRequest>(AsanPardakhtResponseBase? error)
            where TResponse : AsanPardakhtResponseBase
            where TError : AsanPardakhtResponseBase
            where TBaseRequest : AsanPardakhtRequestBase
 
         {
-            throw new Exception(error?.ErrorResult.Message);
+            if (error is null)
+            {
+                throw new Exception("UnknownError");
+            }
+            if (error.ErrorResult is null)
+            {
+                throw new Exception("UnknownError");
+            }
+            if (!string.IsNullOrEmpty(error.ErrorResult.Message))
+            {
+                throw new Exception($"ServiceProviderError: {error.ErrorResult.Message}");
+            }
+
+            throw new Exception("ServiceProviderError");
         }
     }
 }

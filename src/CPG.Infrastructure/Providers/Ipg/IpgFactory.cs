@@ -8,11 +8,14 @@ using CPG.Domain.SharedKernel.Communication.Ipg;
 using CPG.Infrastructure.Persistence.DbContexts;
 using MassTransit;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace CPG.Infrastructure.Providers.Ipg
 {
     public class IpgFactory(IHttpProvider httpProvider, 
-        IMediator mediator,IApplicationSettingsRepository applicationSettingsRepository, ReadDbContext context) : IIpgFactory
+        IMediator mediator,
+        IApplicationSettingsRepository applicationSettingsRepository, 
+        ReadDbContext context) : IIpgFactory
     {
         private readonly IHttpProvider _httpProvider = httpProvider;
         private readonly IMediator _mediator = mediator;

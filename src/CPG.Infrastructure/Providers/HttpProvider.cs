@@ -13,6 +13,10 @@ using System.Web;
 using System.Net.Http.Json;
 using System.Text.Json;
 using Newtonsoft.Json;
+using MassTransit;
+using Microsoft.AspNetCore.WebUtilities;
+using static Azure.Core.HttpHeader;
+using System.Text.RegularExpressions;
 
 namespace CPG.Infrastructure.Providers;
 
@@ -366,5 +370,29 @@ public class HttpProvider : IHttpProvider
             .Select(t => HttpUtility.UrlEncode(GetPropertyName(t)) + "=" + HttpUtility.UrlEncode(Convert.ToString(t.GetValue(request), CultureInfo.InvariantCulture))).ToArray();
         var queryParams = string.Join("&", lst);
         return queryParams;
+    }
+
+    private void AddServiceCallLog<TBody>(HttpProviderRequest<TBody> request, HttpResponseMessage response, string resString)
+    {
+        string reqString = System.Text.Json.JsonSerializer.Serialize(request);
+       
+        var callLog = new
+        {
+            RequestBody = reqString,
+            ResponseBody = resString,
+            ServiceCallDate = DateTime.Now,
+            ServiceCallUrl = request.Uri,
+            ServiceCallStatus = response.StatusCode == System.Net.HttpStatusCode.OK,
+            ServiceType = request.Service,
+            CreationDate = DateTime.Now,
+            //ToDo: Add current user id
+            CreationUserId = 1,
+            ErrorCode = response.IsSuccessStatusCode ? null : ReasonPhrases.GetReasonPhrase((int)response.StatusCode),
+            ErrorType = response.IsSuccessStatusCode ? null : response.StatusCode.ToString(),
+            Provider = request.Provider,
+
+        };
+
+        _logger.LogInformation("CallLog: {@CallLog}", callLog);
     }
 }

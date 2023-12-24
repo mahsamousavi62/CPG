@@ -1,9 +1,10 @@
 ﻿using System.Text.Json.Serialization;
 using System;
+using CPG.Domain.SharedKernel.Communication.Ipg.AsanPardakht;
 
 namespace CPG.Domain.SharedKernel.Communication.Ipg.Models.TransactionResult
 {
-    public class TransactionResultResponse
+    public class TransactionResultResponse: AsanPardakhtResponseBase
     {
         [JsonPropertyName("cardNumber")]
         public string CardNumber { get; set; }
