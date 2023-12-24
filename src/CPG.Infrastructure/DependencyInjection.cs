@@ -32,6 +32,8 @@ using CPG.Infrastructure.Providers.Charispay;
 using CPG.Domain.SharedKernel.Communication.Ipg;
 using CPG.Infrastructure.Providers.Ipg;
 using CCPG.Domain.SharedKernel.Communication.Ipg;
+using CPG.Domain.SharedKernel.Communication;
+using CPG.Infrastructure.Providers;
 using CPG.Application.Auth;
 
 namespace CPG.Infrastructure;
@@ -45,6 +47,7 @@ public static class DependencyInjection
             .AddScoped<IIpgFactory, IpgFactory>()
             .AddScoped<IIpgProvider, AsanPardakhtProvider>()
             .AddTransient<ICurrentDateTime, CurrentDateTime>()
+            .AddTransient<IHttpProvider, HttpProvider>()
             .AddDatabase(configuration)
             .AddGraphQLQueries()
             .AddTokenAuthentication(configuration)
@@ -101,14 +104,13 @@ public static class DependencyInjection
     public static IServiceCollection AddConfigureHttpClientService(this IServiceCollection services, IConfiguration configuration)
     {
         var serviceProvider = services.BuildServiceProvider();
-        var repository = serviceProvider.GetRequiredService<IApplicationSettingsRepository>();
         var authService =  serviceProvider.GetRequiredService<IAuthService>();
         var jwtConfig = authService.GetJwtConfig();
-        var appConfig = repository.GetAllApplicationSettings().GetAwaiter().GetResult();
+        var charisPayConfig = configuration.GetSection("Infrastructure:CharisPay").Get<CharisPayConfig>();
 
         services.AddHttpClient("charisPayClient", c =>
         {
-            c.BaseAddress = new Uri(appConfig.CharisPay_BaseUrl);
+            c.BaseAddress = new Uri(charisPayConfig.BaseUrl);
             c.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         });

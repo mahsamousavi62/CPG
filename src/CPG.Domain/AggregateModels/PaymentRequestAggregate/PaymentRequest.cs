@@ -1,15 +1,13 @@
 using System;
-using System.Data;
 using CPG.Domain.AggregateModels.ApplicationAggregate;
 using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Domain.SeedWork;
-using CPG.Domain.SharedKernel.ApplicationSettings;
 
 public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
 {
     public PaymentRequest()
     {
-        
+
     }
     public PaymentRequest(long companyId, string destinationIban, long applicationId, string nationalCode,
     string description, decimal amount, string callBackUrl, string code, string trackerId, bool isVerified, short status, bool isUsed)
@@ -26,7 +24,7 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
         IsVerified = isVerified;
         Status = status;
         IsUsed = isUsed;
-            }
+    }
 
 
     public long CompanyId { get; set; }
@@ -46,7 +44,7 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
     public Application Application { get; set; }
     public Company Company { get; set; }
 
-    public static PaymentRequest Create(PaymentRequest paymentRequest, int expireTime,string clientId, string applicationEnglishName)
+    public static PaymentRequest Create(PaymentRequest paymentRequest, int expireTime, string clientId, string applicationEnglishName)
     {
         paymentRequest.UrlExpirationDateTime = DateTime.UtcNow.AddMinutes(expireTime);
         paymentRequest.IsActive = true;
@@ -60,5 +58,11 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
         return paymentRequest;
     }
 
+    public static void Update(PaymentRequest paymentRequest)
+    {
+        paymentRequest.IsUsed = true;
+        paymentRequest.Status = 3;
+        paymentRequest.ModificationDate = DateTime.UtcNow;
+    }
 
 }

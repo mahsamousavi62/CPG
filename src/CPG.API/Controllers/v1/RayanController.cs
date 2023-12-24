@@ -11,6 +11,6 @@ namespace CPG.API.Controllers.v1
         [HttpPost("p/b/{id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<CompanyIPGDataViewModel>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetDataFromRayan(string id)
-        => Ok(id);
+        => Redirect("https://cpg-stage.charisma.digital");
     }
 }
