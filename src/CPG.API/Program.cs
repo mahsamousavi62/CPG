@@ -77,12 +77,12 @@ builder.Services.AddLocalization();
 
 var supportedLanguages = new List<CultureInfo>
     {
+        new("en"),
         new("fa")
     };
 
 builder.Services.Configure<RequestLocalizationOptions>(opt =>
 {
-    opt.DefaultRequestCulture = new RequestCulture("fa", "fa");
     opt.SupportedCultures = supportedLanguages;
     opt.SupportedUICultures = supportedLanguages;
 });
@@ -101,7 +101,6 @@ if (Convert.ToBoolean(configuration["EnableSwagger"]))
 
 app.UseRequestLocalization(new RequestLocalizationOptions
 {
-    DefaultRequestCulture = new RequestCulture("en"),
     SupportedCultures = supportedLanguages,
     SupportedUICultures = supportedLanguages
 });

@@ -583,6 +583,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to MinioException.
+        /// </summary>
+        public static string MinioException {
+            get {
+                return ResourceManager.GetString("MinioException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Minute.
         /// </summary>
         public static string Minute {
