@@ -27,4 +27,5 @@ public class JwtConfigViewModel
     public string IdpGetProfileUrl { get; set; }
 
     public int ExpireTime { get; set; }
+
 }
