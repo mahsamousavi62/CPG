@@ -414,4 +414,19 @@
   <data name="PaymentRequestNotFound" xml:space="preserve">
     <value>درخواست پرداخت  با شناسه {0} یافت نشد </value>
   </data>
+  <data name="CPGReferencePage" xml:space="preserve">
+    <value>صفحه مرجع CPG</value>
+  </data>
+  <data name="IpgRedirectionMethodType" xml:space="preserve">
+    <value>نحوه انتقال کاربر به درگاه پرداخت</value>
+  </data>
+  <data name="RayanReferencePage" xml:space="preserve">
+    <value>صفحه مرجع رایان هم افزا</value>
+  </data>
+  <data name="SiteAddressCompany" xml:space="preserve">
+    <value>نشانی سایت مربوط به شرکت</value>
+  </data>
+  <data name="MinioException" xml:space="preserve">
+    <value>خطای فایل سرور</value>
+  </data>
 </root>

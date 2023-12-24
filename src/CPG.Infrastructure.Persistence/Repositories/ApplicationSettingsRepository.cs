@@ -15,6 +15,7 @@ namespace CPG.Infrastructure.Persistence.Repositories
         private readonly ILogger<ApplicationSettingsRepository> _logger;
         private readonly ReadDbContext _context;
         public const string CacheKey = "AuthenticationConfigApplicationSettings_key";
+
         public ApplicationSettingsRepository(ReadDbContext context, IRedisCaheService cacheService,
             ILogger<ApplicationSettingsRepository> logger)
         {

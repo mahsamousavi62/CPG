@@ -4,15 +4,16 @@ public class Enums
 {
     public enum ApplicationSettingEntityType
     {
-        /// <summary>IDPCredential/// </summary>
         IDPCredential = 1,
-
-        /// <summary>
-        /// Minio
-        /// </summary>
         Minio = 3,
     }
 
+    public enum IpgRedirectionMethodType
+    {
+        CPGReferencePage=1,
+        RayanReferencePage=2
+
+    }
     public enum UserRoleType
     {
         SuperAdmin = 1,

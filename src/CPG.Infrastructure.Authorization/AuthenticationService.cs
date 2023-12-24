@@ -11,21 +11,25 @@ using System.Text;
 using System.Threading.Tasks;
 using CPG.Domain.SharedKernel;
 using IAuthenticationService = CPG.Domain.SharedKernel.IAuthenticationService;
+using CPG.Application.Auth;
 namespace CPG.Infrastructure.Authorization
 {
     public class AuthenticationService : IAuthenticationService
     {
         #region [ Private Field(s) ]
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IApplicationSettingsRepository _applicationSettingsRepository; 
+        private readonly IApplicationSettingsRepository _applicationSettingsRepository;
+        private readonly IAuthService _authService;
         #endregion
 
         #region [ Public Method(s) ]
         public AuthenticationService(IHttpContextAccessor httpContextAccessor,
-                                     IApplicationSettingsRepository applicationSettingsRepository)
+                                     IApplicationSettingsRepository applicationSettingsRepository,
+                                     IAuthService authService)
         {
             _httpContextAccessor = httpContextAccessor;
             _applicationSettingsRepository = applicationSettingsRepository;
+            _authService = authService;
         }
         public async Task<IEnumerable<Claim>> GetCurrentClaims()
         {
@@ -43,7 +47,7 @@ namespace CPG.Infrastructure.Authorization
 
         public async Task<Guid> GetGuidFromClaim(string propertyName, string issuer = null)
         {
-            var applicationConfigViewModel = await _applicationSettingsRepository.GetAllApplicationSettings();
+            var applicationConfigViewModel = _authService.GetJwtConfig();
             if (string.IsNullOrEmpty(issuer))
                 issuer = applicationConfigViewModel.Authority;
 
@@ -59,11 +63,7 @@ namespace CPG.Infrastructure.Authorization
             {
                 var t = _httpContextAccessor.HttpContext.User.Claims.ToList();
                 var tt = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == propertyName);
-
-                claim = string.IsNullOrEmpty(issuer)
-                    ? _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == propertyName)
-                    : _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c =>
-                        c.Type == propertyName && c.Issuer.Equals(issuer, StringComparison.InvariantCultureIgnoreCase));
+                claim = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == propertyName);
             }
             else
             {
@@ -71,10 +71,8 @@ namespace CPG.Infrastructure.Authorization
                 if (!authenticateResult.Succeeded)
                     return default(T);
 
-                claim = string.IsNullOrEmpty(issuer)
-                   ? authenticateResult.Principal.FindFirst(c => c.Type == propertyName)
-                   : authenticateResult.Principal.FindFirst(c =>
-                       c.Type == propertyName && c.Issuer.Equals(issuer, StringComparison.InvariantCultureIgnoreCase));
+                claim = authenticateResult.Principal.FindFirst(c => c.Type == propertyName);
+                  
             }
 
             if (claim != null)
@@ -85,7 +83,7 @@ namespace CPG.Infrastructure.Authorization
 
         public async Task<Guid> GetCurrentSubject(string issuer = null)
         {
-            var applicationConfigViewModel = await _applicationSettingsRepository.GetAllApplicationSettings();
+            var applicationConfigViewModel = _authService.GetJwtConfig();
             if (string.IsNullOrEmpty(issuer))
                 issuer = applicationConfigViewModel.Authority;
 
@@ -96,7 +94,7 @@ namespace CPG.Infrastructure.Authorization
         #region [ Private Method(s) ]
         public async Task<string> GetClientId(string issuer = null)
         {
-            var applicationConfigViewModel = await _applicationSettingsRepository.GetAllApplicationSettings();
+            var applicationConfigViewModel = _authService.GetJwtConfig();;
             if (string.IsNullOrEmpty(issuer))
                 issuer = applicationConfigViewModel.Authority;
 

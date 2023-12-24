@@ -21,7 +21,6 @@ public class GetAllCompanyQueryHandler(ReadDbContext context, IMinioProvider min
     {
         var companies = await _context.CompanyReadModels
             .Include(m => m.PaymentMethods)
-            .Where(c => c.IsActive)
             .ToListAsync(cancellationToken: cancellationToken);
 
         var companyViewModels = await Task.WhenAll(companies.Select(async company => new CompanyViewModel
@@ -31,6 +30,8 @@ public class GetAllCompanyQueryHandler(ReadDbContext context, IMinioProvider min
             EnglishName = company.EnglishName,
             Logo = await _minioProvider.PresignedGetObject(company.Logo),
             NationalCodeMatchingRequied = company.NationalCodeMatchingRequied,
+            SiteAddress=company.SiteAddress,
+            IpgRedirectionMethodType=company.IpgRedirectionMethodType,
             CreationDate = company.CreationDate,
             ModificationDate = company.ModificationDate,
             IsActive = company.IsActive,
