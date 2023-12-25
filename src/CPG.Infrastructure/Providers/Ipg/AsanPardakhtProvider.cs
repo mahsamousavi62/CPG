@@ -61,7 +61,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
                                                         return System.Text.Json.JsonSerializer.Deserialize<AsanPardakhtTokenResponse>(formattedResponse);
                                                     });
 
-        Params p = new Params { Token = response.Token };
+        Params p = new Params { RefID = response.Token };
         UrlResponseModel urlResponse = new UrlResponseModel
         {
             Params = p,
@@ -70,8 +70,11 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
         return new PaymentTokenResponse
         {
             Url = $"{request.SiteAddress}/redirectToBank"
-           , TrackerId = trackerId.ToString(),
-            JsonBody = urlResponse
+           ,
+            TrackerId = trackerId.ToString(),
+            JsonBody = new JsonStrModel{
+                JsonStr = urlResponse
+            }
         };
     }
 
