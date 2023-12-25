@@ -1,4 +1,6 @@
-﻿namespace CPG.Domain.SharedKernel;
+﻿using CPG.Domain.AggregateModels.TransactionAggregate;
+
+namespace CPG.Domain.SharedKernel;
 
 public class Enums
 {
@@ -8,10 +10,10 @@ public class Enums
         Minio = 3,
     }
 
-    public enum IpgRedirectionMethodType
+    public enum IpgRedirectionMethodType:byte
     {
-        CPGReferencePage=1,
-        RayanReferencePage=2
+        CPGReferencePage = 1,
+        RayanReferencePage = 2
 
     }
     public enum UserRoleType
@@ -55,6 +57,12 @@ public class Enums
     {
         AsanPardakhtToken = 1,
         AsanPardakhtTransResult = 2,
+    }
+
+    public enum TransactionType : byte
+    {
+        IPG = 1,
+        DirectDebit = 2
     }
 }
 

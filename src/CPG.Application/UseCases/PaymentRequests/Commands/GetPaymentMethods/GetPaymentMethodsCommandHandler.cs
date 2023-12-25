@@ -43,12 +43,7 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
             throw new PaymentRequestCodeIsUsedException();
         }
 
-        if (paymentRequest.IsVerified)
-        {
-            throw new PaymentRequestCodeIsFinalizedException();
-        }
-
-        paymentRequest.Status = 1;
+         paymentRequest.Status = 1;
         await _paymentRequestRepository.UpdateAsync(paymentRequest);
 
         Company company = null;

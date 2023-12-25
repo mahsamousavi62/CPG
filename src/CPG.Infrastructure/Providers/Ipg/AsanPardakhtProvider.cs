@@ -31,7 +31,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
         var headers = GetHeaders(jsonObjectProviderData);
 
         var trackerId = await GetTrackerIdAsync();
-        var callBack = await CreateCallbackUrl(request.IpgRedirectionMethodType, request.SiteAddress, trackerId.ToString(), configViewModel.IPG_Callback_URL);
+        var callBack = await CreateCallbackUrl((short)request.IpgRedirectionMethodType, request.SiteAddress, trackerId.ToString(), configViewModel.IPG_Callback_URL);
         var req = new AsanPardakhtTokenRequest
         {
             serviceTypeId = 1,
@@ -62,11 +62,16 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
                                                     });
 
         Params p = new Params { Token = response.Token };
-        return new PaymentTokenResponse
+        UrlResponseModel urlResponse = new UrlResponseModel
         {
             Params = p,
             Url = "https://asan.shaparak.ir",
-            TrackerId = trackerId.ToString()
+        };
+        return new PaymentTokenResponse
+        {
+            Url = $"{request.SiteAddress}/redirectToBank"
+           , TrackerId = trackerId.ToString(),
+            JsonBody = urlResponse
         };
     }
 
