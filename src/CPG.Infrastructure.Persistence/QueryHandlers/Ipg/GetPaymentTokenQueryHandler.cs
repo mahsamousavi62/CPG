@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using CPG.Application.UseCases.CompanyIPGs.Exceptions;
 using CPG.Application.UseCases.Ipg.Commands;
 using CPG.Application.UseCases.PaymentRequests.Exceptions;
+using CPG.Domain.AggregateModels.PaymentRequestAggregate.Specifications;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Communication.Ipg;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentTicket;
@@ -25,8 +26,8 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
     {
         try
         {
-            var paymentRequest = await _paymentRequestRepository.GetByIdAsync(request.PaymentToken.PaymentRequestId);
-            if (paymentRequest is null) { throw new PaymentRequestNotFoundException(request.PaymentToken.PaymentRequestId); }
+            var paymentRequest = await _paymentRequestRepository.GetBySpecAsync( new PaymentRequestByCode(request.PaymentToken.PaymentRequestCode));
+            if (paymentRequest is null) { throw new PaymentRequestNotFoundException(request.PaymentToken.PaymentRequestCode); }
 
             var companyIpg = await _context.CompanyIPGReadModels.FirstOrDefaultAsync(t => t.Id == request.PaymentToken.CompanyIPGId);
             if (companyIpg is null) { throw new CompanyIPGNotFoundException(request.PaymentToken.CompanyIPGId); }
@@ -37,8 +38,8 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                 {
                     ProviderData = companyIpg.ProviderData,
                     PaymentRequestAmount = paymentRequest.Amount,
-                    IpgRedirectionMethodType = 2,
-                    SiteAddress = "https://rhpayment1.br.charisma.ir"
+                    IpgRedirectionMethodType = (Enums.IpgRedirectionMethodType)paymentRequest.Company.IpgRedirectionMethodType,
+                    SiteAddress = paymentRequest.Company.SiteAddress
                 });
 
             PaymentRequest.Update(paymentRequest);
@@ -46,6 +47,8 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
 
             await _paymentRequestRepository.SaveChangesAsync();
 
+            result.IpgRedirectionMethodType =(Enums.IpgRedirectionMethodType)paymentRequest.Company.IpgRedirectionMethodType;
+            //result.urls.Add(new UrlResponseModel { Url = $"{paymentRequest.Company.SiteAddress}/redirectToBank" });
             return new ResultData<PaymentTokenResponse>
             {
                 OperationResult = Enums.OperationResult.Succeeded,
