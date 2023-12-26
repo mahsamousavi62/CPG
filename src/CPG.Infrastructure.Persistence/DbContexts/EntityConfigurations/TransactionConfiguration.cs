@@ -23,7 +23,7 @@ public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
         entity.Property(x => x.PredictedSettlementDateTime).HasColumnName("PredictedSettlementDateTime").HasColumnType("datetime2(7)");
         entity.Property(x => x.Status).HasColumnName("Status").HasColumnType("smallint").IsRequired();
 
-       // entity.HasOne(p => p.PaymentRequest).WithOne(t => t.Transaction).HasForeignKey<Transaction>(b => b.PaymentRquestId);
-        //entity.HasOne(t => t.IPGTransaction).WithOne(t => t.Transaction).HasForeignKey<Transaction>(t => t.ReferenceTransactionId);
+        entity.HasOne(p => p.PaymentRequest).WithOne(t => t.Transaction).HasForeignKey<Transaction>(b => b.PaymentRquestId);
+        entity.HasOne(t => t.IPGTransaction).WithOne(t => t.Transaction).HasForeignKey<Transaction>(t => t.ReferenceTransactionId);
     }
 }

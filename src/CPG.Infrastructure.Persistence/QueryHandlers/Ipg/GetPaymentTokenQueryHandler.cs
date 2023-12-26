@@ -5,6 +5,7 @@ using CPG.Application.UseCases.CompanyIPGs.Exceptions;
 using CPG.Application.UseCases.Ipg.Commands;
 using CPG.Application.UseCases.PaymentRequests.Exceptions;
 using CPG.Domain.AggregateModels.PaymentRequestAggregate.Specifications;
+using CPG.Domain.AggregateModels.TransactionAggregate;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Communication.Ipg;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentTicket;
@@ -27,7 +28,7 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
     {
         try
         {
-            var paymentRequest = await _paymentRequestRepository.GetBySpecAsync( new PaymentRequestByCode(request.PaymentToken.PaymentRequestCode));
+            var paymentRequest = await _paymentRequestRepository.GetBySpecAsync(new PaymentRequestByCode(request.PaymentToken.PaymentRequestCode));
             if (paymentRequest is null) { throw new PaymentRequestNotFoundException(request.PaymentToken.PaymentRequestCode); }
 
             var companyIpg = await _context.CompanyIPGReadModels.FirstOrDefaultAsync(t => t.Id == request.PaymentToken.CompanyIPGId);
@@ -45,11 +46,29 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
 
             PaymentRequest.Update(paymentRequest);
             await _paymentRequestRepository.UpdateAsync(paymentRequest);
-
             await _paymentRequestRepository.SaveChangesAsync();
 
-            result.IpgRedirectionMethodType =(Enums.IpgRedirectionMethodType)paymentRequest.Company.IpgRedirectionMethodType;
-            
+            //Transation and IpgTransaction
+
+            var ipgTransaction = IPGTransaction.Create(result.TrackerId, 0, companyIpg.Id,
+                result.JsonBody.JsonStr.Params.RefID, companyIpg.VerificationTimeLimit);
+            int userId = 1;//Todo:
+            short status = 0;//enum
+            long destinationDepositId = 1;//todo
+            short transactionMethodType = 1;//enum
+            var tranasction = Transaction.Create(paymentRequest.Id, ipgTransaction.Id, transactionMethodType, userId, paymentRequest.CompanyId,
+            destinationDepositId, paymentRequest.Amount, paymentRequest.Application.Id, status);
+
+
+         
+
+
+
+
+
+
+            result.IpgRedirectionMethodType = (Enums.IpgRedirectionMethodType)paymentRequest.Company.IpgRedirectionMethodType;
+
             return new ResultData<PaymentTokenResponse>
             {
                 OperationResult = Enums.OperationResult.Succeeded,

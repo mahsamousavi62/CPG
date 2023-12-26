@@ -29,7 +29,11 @@ public class Transaction : AuditableEntity<long>, IAggregateRoot
     public long ApplicationId { get; set; }
     public DateTime PredictedSettlementDateTime { get; set; }
     public short Status { get; set; }
-    //public PaymentRequest PaymentRequest { get; set; }
-    //public IPGTransaction IPGTransaction { get; set; }
+    public PaymentRequest PaymentRequest { get; set; }
+    public IPGTransaction IPGTransaction { get; set; }
 
+    public static object Create(long id1, long id2, short transactionMethodType, int userId, long companyId, long destinationDepositId, decimal amount, long id3, short status)
+    {
+        throw new NotImplementedException();
+    }
 }

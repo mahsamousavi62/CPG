@@ -13,7 +13,7 @@ public class IPGTransactionConfiguration : IEntityTypeConfiguration<IPGTransacti
         entity.HasKey(x => x.Id);
 
         entity.Ignore(x => x.DomainEvents);
-        //entity.Ignore(x => x.Transaction);
+        entity.Ignore(x => x.Transaction);
         entity.Property(x => x.Id).HasColumnName("Id").UseIdentityColumn();
         entity.Property(x => x.TrackId).HasColumnName("TrackId").HasColumnType("varchar(255)").IsRequired();
         entity.Property(x => x.Status).HasColumnName("Status").HasColumnType("smallint").IsRequired();
@@ -22,7 +22,7 @@ public class IPGTransactionConfiguration : IEntityTypeConfiguration<IPGTransacti
         entity.Property(x => x.ProviderTrackerId).HasColumnName("ProviderTrackerId").HasColumnType("nvarchar(255)").IsRequired();
         entity.Property(x => x.ReferenceNumber).HasColumnName("ReferenceNumber").HasColumnType("varchar(255)").IsRequired();
         entity.Property(x => x.EncryptCardNumber).HasColumnName("EncryptCardNumber").HasColumnType("varchar(255)").IsRequired();
-        entity.Property(x => x.VerificationTimeLimit).HasColumnName("VerificationTimeLimit").HasColumnType("datetime2(7)");
+        entity.Property(x => x.VerificationTimeLimit).HasColumnName("VerificationTimeLimit").HasColumnType("int");
         entity.Property(x => x.PredicateDateTime).HasColumnName("PredicateDateTime").HasColumnType("datetime2(7)");
     }
 }
