@@ -423,4 +423,7 @@
   <data name="MinioException" xml:space="preserve">
     <value>MinioException</value>
   </data>
+  <data name="ParseCompanyIpgProviderData" xml:space="preserve">
+    <value>ParseCompanyIpgProviderData</value>
+  </data>
 </root>

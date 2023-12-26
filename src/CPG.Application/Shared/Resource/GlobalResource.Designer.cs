@@ -628,6 +628,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ParseCompanyIpgProviderData.
+        /// </summary>
+        public static string ParseCompanyIpgProviderData {
+            get {
+                return ResourceManager.GetString("ParseCompanyIpgProviderData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Pay : &quot;{0} rial&quot; | {1} tooman for company : {2}.
         /// </summary>
         public static string PaymentMessage {

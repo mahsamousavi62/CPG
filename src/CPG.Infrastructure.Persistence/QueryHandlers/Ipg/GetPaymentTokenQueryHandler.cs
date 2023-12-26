@@ -11,6 +11,7 @@ using CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentTicket;
 using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 
@@ -48,7 +49,7 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
             await _paymentRequestRepository.SaveChangesAsync();
 
             result.IpgRedirectionMethodType =(Enums.IpgRedirectionMethodType)paymentRequest.Company.IpgRedirectionMethodType;
-            //result.urls.Add(new UrlResponseModel { Url = $"{paymentRequest.Company.SiteAddress}/redirectToBank" });
+            
             return new ResultData<PaymentTokenResponse>
             {
                 OperationResult = Enums.OperationResult.Succeeded,

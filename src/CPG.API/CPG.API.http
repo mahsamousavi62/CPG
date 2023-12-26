@@ -17,22 +17,11 @@ POST {{CPG.API_HostAddress}}/api/paymentrequest/GetPaymentTicketFromAsanPardakha
 Content-Type: application/json
 
 {
-"companyIPGId": 7,
-  "paymentRequestCode": "Test_pay__daryaftyar_client_35ab4001b5494e1e",
-  "companyPaymentMethodType": 0
+companyIPGId":1,
+"companyPaymentMethodType":2,
+"paymentRequestCode":"CIP_pay__daryaftyar_client_845dc1ba6d5c4d30
 }
 
-
-{url:"http://br.charisma.ir/redirectToBank",
-method:'post',
-jsonBody:{
-        "url": "https://asan.shaparak.ir",
-        "method": "Post",
-        "params": {
-          "token": "d126f611bb8a74564"
-        }
-      }
-}
 
 ###
 
@@ -49,5 +38,12 @@ Content-Type: application/json
   "trackerId": "123456789",
   "description": "string"
 }
+
+###
+
+
+###
+
+POST {{CPG.API_HostAddress}}/IPGResult/p/b/111
 
 ###
