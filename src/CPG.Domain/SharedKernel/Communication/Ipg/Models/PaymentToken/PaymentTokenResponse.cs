@@ -24,7 +24,6 @@ public class JsonStrModel
 }
 public class UrlResponseModel
 {
-   
     public string Url { get; set; }
     public string Method => "Post";
     public Params Params { get; set; }
