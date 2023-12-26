@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using CCPG.Domain.SharedKernel.Communication.Ipg;
 using CommunityToolkit.HighPerformance;
@@ -9,7 +10,9 @@ using CPG.Domain.SharedKernel.ApplicationSettings;
 using CPG.Domain.SharedKernel.Communication;
 using CPG.Domain.SharedKernel.Communication.Ipg.AsanPardakht;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentTicket;
+using CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentToken;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.TransactionResult;
+using CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
 using CPG.Infrastructure.Persistence.DbContexts;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -93,6 +96,29 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
         return response;
     }
 
+    public async Task<VerifyTransactionResponse> Verify(VerifyTransactionRequest request)
+    {
+        dynamic jsonObjectProviderData = JObject.Parse(request.ProviderData);
+        ResultData<VerifyTransactionResponse> resultData = new();
+        var headers = GetHeaders(jsonObjectProviderData);
+        var response = await httpProvider.PostAsync<VerifyTransactionRequest, VerifyTransactionResponse,
+                                                    AsanPardakhtResponseBase, dynamic>(new HttpProviderRequest<dynamic>
+                                                    {
+                                                        Body = new VerifyRequest
+                                                        {
+                                                            PayGateTranId = request.ProviderTrackerId,
+                                                            MerchantConfigurationId = (int)jsonObjectProviderData["Merchant_Configuration_Id"]
+                                                        },
+                                                        BaseAddress = "https://ipgrest.asanpardakht.ir/",
+                                                        Uri = "v1/Verify",
+                                                        HeaderParameters = headers,
+                                                        Provider = Enums.ProviderType.AsanPardakht,
+                                                        Service = Enums.ServiceType.AsanPardakhtTransResult,
+                                                    }, request, VerifyErrorHandler);
+
+        return response;
+    }
+
     private string CreateAdditionalData(dynamic jsonObjectProviderData)
     {
         string hexString = Guid.NewGuid().ToString("N");
@@ -145,7 +171,8 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
         }
         ;
     }
-    private static async Task<TResponse?> PaymentTokenErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest? baseRequest, TResponse? response, TError? error)
+
+    private static async Task<TResponse?> PaymentTokenErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest? baseRequest, TResponse? response, TError? error, short statusCode)
       where TResponse : AsanPardakhtTokenResponse
       where TError : AsanPardakhtResponseBase
       where TBaseRequest : AsanPardakhtTokenRequest
@@ -160,41 +187,31 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
         }
     }
 
-    private static async Task<TResponse?> TransactionResultErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest? baseRequest, TResponse? response, TError? error)
+    private static async Task<TResponse?> TransactionResultErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest? baseRequest, TResponse? response, TError? error, short statusCode)
     where TResponse : TransactionResultResponse
     where TError : AsanPardakhtResponseBase
     where TBaseRequest : TransactionResultRequest
     {
-        if (error?.ErrorResult is not null)
+        return statusCode switch
         {
-            switch (error.ErrorResult.Code)
-            {
-                case 1043:
-                    throw new Exception("InvalidOrExpiredInvoiceId");
-                default:
-                    break;
-            }
-            throw new Exception(error.ErrorResult.Message);
-        }
-        else
-        {
-            return await Task.FromResult(BaseErrorHandler<TResponse, TError, TBaseRequest>(error));
-        }
+            400 or 401 or 471 or 571 or 504 => new TransactionResultResponse { Status = 1 } as TResponse,
+            472 => new TransactionResultResponse { Status = 3 } as TResponse,            
+            _ => new TransactionResultResponse { Status = 1 } as TResponse,
+        };
     }
 
-    private static async Task<TResponse?> PaymentTransactionErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest? baseRequest, TResponse? response, TError? error)
-    where TResponse : TransactionResultResponse
+    private static async Task<TResponse?> VerifyErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest? baseRequest, TResponse? response, TError? error, short statusCode)
+    where TResponse : VerifyTransactionResponse
     where TError : AsanPardakhtResponseBase
-    where TBaseRequest : TransactionResultRequest
+    where TBaseRequest : VerifyTransactionRequest
     {
-        if (error?.ErrorResult is not null)
+        return statusCode switch
         {
-            throw new Exception(error.ErrorResult.Message);
-        }
-        else
-        {
-            return await Task.FromResult(BaseErrorHandler<TResponse, TError, TBaseRequest>(error));
-        }
+            400 or 401 or 477 or 571 or 572 or 573 or 504 => new VerifyTransactionResponse { Status = 5 } as TResponse,
+            200 or 472 or 473 or 475 => new VerifyTransactionResponse { Status = 6 } as TResponse,
+            471 or 474 or 476 or 478 => new VerifyTransactionResponse { Status = 7 } as TResponse,
+            _ => new VerifyTransactionResponse { Status = 5 } as TResponse,
+        };
     }
 
     private static TResponse BaseErrorHandler<TResponse, TError, TBaseRequest>(AsanPardakhtResponseBase? error)
@@ -203,14 +220,10 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
        where TBaseRequest : AsanPardakhtRequestBase
 
     {
-        if (error is null)
+        if (error is null || error.ErrorResult is null)
         {
             throw new Exception("UnknownError");
-        }
-        if (error.ErrorResult is null)
-        {
-            throw new Exception("UnknownError");
-        }
+        }        
         if (!string.IsNullOrEmpty(error.ErrorResult.Message))
         {
             throw new Exception($"ServiceProviderError: {error.ErrorResult.Message}");
