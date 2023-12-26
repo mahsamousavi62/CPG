@@ -178,6 +178,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Before.
+        /// </summary>
+        public static string Before {
+            get {
+                return ResourceManager.GetString("Before", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to BrokerageCharisma.
         /// </summary>
         public static string BrokerageCharisma {
@@ -201,6 +210,15 @@ namespace CPG.Application.Shared.Resource {
         public static string Cancel {
             get {
                 return ResourceManager.GetString("Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ChooseMethodPayment.
+        /// </summary>
+        public static string ChooseMethodPayment {
+            get {
+                return ResourceManager.GetString("ChooseMethodPayment", resourceCulture);
             }
         }
         
@@ -403,6 +421,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DepositAmount.
+        /// </summary>
+        public static string DepositAmount {
+            get {
+                return ResourceManager.GetString("DepositAmount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Deposits.
         /// </summary>
         public static string Deposits {
@@ -489,6 +516,15 @@ namespace CPG.Application.Shared.Resource {
         public static string Filter {
             get {
                 return ResourceManager.GetString("Filter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ForCompany.
+        /// </summary>
+        public static string ForCompany {
+            get {
+                return ResourceManager.GetString("ForCompany", resourceCulture);
             }
         }
         
@@ -826,6 +862,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rial.
+        /// </summary>
+        public static string Rial {
+            get {
+                return ResourceManager.GetString("Rial", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Search.
         /// </summary>
         public static string Search {
@@ -885,6 +930,15 @@ namespace CPG.Application.Shared.Resource {
         public static string TitleMainMenu {
             get {
                 return ResourceManager.GetString("TitleMainMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tooman.
+        /// </summary>
+        public static string Tooman {
+            get {
+                return ResourceManager.GetString("Tooman", resourceCulture);
             }
         }
         

@@ -81,15 +81,19 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
                                                         return System.Text.Json.JsonSerializer.Deserialize<AsanPardakhtTokenResponse>(formattedResponse);
                                                     });
 
+        Params p = new Params { RefID = response.Token };
+        UrlResponseModel urlResponse = new UrlResponseModel
+        {
+            Params = p,
+            Url = "https://asan.shaparak.ir",
+        };
         return new PaymentTokenResponse
         {
             Url = $"{request.SiteAddress}/redirectToBank"
            ,
             TrackerId = trackerId.ToString(),
-            JsonBody = new UrlResponseModel
-            {
-                Params = new Params { Token = response.Token },
-                Url = "https://asan.shaparak.ir",
+            JsonBody = new JsonStrModel{
+                JsonStr = urlResponse
             }
         };
 }
