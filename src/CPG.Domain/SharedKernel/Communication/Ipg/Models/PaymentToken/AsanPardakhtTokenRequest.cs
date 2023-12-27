@@ -1,6 +1,7 @@
 ﻿using System;
+using CPG.Domain.SharedKernel.Communication.Ipg.AsanPardakht;
 
-namespace CPG.Domain.SharedKernel.Communication.Ipg.AsanPardakht;
+namespace CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentToken;
 
 public class AsanPardakhtTokenRequest : AsanPardakhtRequestBase
 {
