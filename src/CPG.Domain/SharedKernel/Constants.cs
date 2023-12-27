@@ -1,0 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace CPG.Domain.SharedKernel;
+
+public class Constants
+{
+    public const string Pattern = "(usr|pwd|merchantConfigurationId|key|iv)\\\"\\s*(:)\\s*\"([^\"]*)\"";
+    public const string Replaceformat = "$1$2*****";
+}
