@@ -42,7 +42,7 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
     public DateTime UrlExpirationDateTime { get; set; }
     public Application Application { get; set; }
     public Company Company { get; set; }
-   // public Transaction Transaction { get; set; }
+    public Transaction Transaction { get; set; }
     public static PaymentRequest Create(PaymentRequest paymentRequest, int expireTime, string clientId, string applicationEnglishName)
     {
         paymentRequest.UrlExpirationDateTime = DateTime.UtcNow.AddMinutes(expireTime);

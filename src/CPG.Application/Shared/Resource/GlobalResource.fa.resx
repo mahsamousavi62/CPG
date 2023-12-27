@@ -447,4 +447,7 @@
   <data name="Tooman" xml:space="preserve">
     <value>تومان</value>
   </data>
+  <data name="ParseCompanyIpgProviderData" xml:space="preserve">
+    <value>خطا در دسترسی به ProviderDate</value>
+  </data>
 </root>
