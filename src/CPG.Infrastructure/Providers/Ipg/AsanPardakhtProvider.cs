@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using CCPG.Domain.SharedKernel.Communication.Ipg;
 using CommunityToolkit.HighPerformance;
+using CPG.Application.UseCases.Ipg.Exception;
 using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.ApplicationSettings;
@@ -24,24 +25,44 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
     public IApplicationSettingsRepository ApplicationSettingRepositoy;
     private readonly IHttpProvider httpProvider = httpProvider;
     private readonly ReadDbContext context = context;
-
+    private string userName;
+    private string password;
+    private int merchantConfigurationId;
+    private string key;
+    private string iv;
+    private void GetDataFromJsonProvider(string providerData)
+    {
+        dynamic jsonObjectProviderData;
+        try
+        {
+            jsonObjectProviderData = JObject.Parse(providerData);
+            merchantConfigurationId = jsonObjectProviderData["Merchant_Configuration_Id"] is not null ? (int)jsonObjectProviderData["Merchant_Configuration_Id"] : throw new Exception("Invalid merchantConfigurationId");
+            userName = jsonObjectProviderData["User_Name"] is not null ? (string)jsonObjectProviderData["User_Name"] : throw new Exception("Invalid User_Name");
+            password = jsonObjectProviderData["Password"] is not null ? (string)jsonObjectProviderData["Password"] : throw new Exception("Invalid Password");
+            key = jsonObjectProviderData["Shaparak_Tabesh_Key"] is not null ? (string)jsonObjectProviderData["Shaparak_Tabesh_Key"] : throw new Exception("Invalid Shaparak_Tabesh_Key");
+            iv = jsonObjectProviderData["Shaparak_Tabesh_IV"] is not null ? (string)jsonObjectProviderData["Shaparak_Tabesh_IV"] : throw new Exception("Invalid Shaparak_Tabesh_IV");
+        }
+        catch
+        {
+            throw new ParseCompanyIpgProviderDataException(providerData);
+        }
+    }
     public async Task<PaymentTokenResponse> GetPaymentTokenAsync(PaymentTokenRequest request)
     {
-        dynamic jsonObjectProviderData = JObject.Parse(request.ProviderData);
+        GetDataFromJsonProvider(request.ProviderData);
         var configViewModel = await ApplicationSettingRepositoy.GetAllApplicationSettings();
 
         ResultData<PaymentTokenResponse> resultData = new();
-        var headers = GetHeaders(jsonObjectProviderData);
-
+        var headers = GetHeaders();
         var trackerId = await GetTrackerIdAsync();
-        var callBack = await CreateCallbackUrl(request.IpgRedirectionMethodType, request.SiteAddress, trackerId.ToString(), configViewModel.IPG_Callback_URL);
+        var callBack = await CreateCallbackUrl((short)request.IpgRedirectionMethodType, request.SiteAddress, trackerId.ToString(), configViewModel.CPG_BackEnd);
         var req = new AsanPardakhtTokenRequest
         {
             serviceTypeId = 1,
             paymentId = "0",
             callbackURL = callBack,
-            additionalData = CreateAdditionalData(jsonObjectProviderData),
-            merchantConfigurationId = (int)jsonObjectProviderData["Merchant_Configuration_Id"],
+            additionalData = CreateAdditionalData(),
+            merchantConfigurationId = merchantConfigurationId,
             amountInRials = (long)request.PaymentRequestAmount,
             localInvoiceId = trackerId.ToString(),
         };
@@ -58,18 +79,26 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
                                                     {
                                                         var formattedResponse = stringResponse;
                                                         if (!stringResponse.StartsWith("{\"error"))
-                                                        {
                                                             formattedResponse = string.Format("{0} {1} {2}", "{\"token\":", stringResponse, "}");
-                                                        }
+
                                                         return System.Text.Json.JsonSerializer.Deserialize<AsanPardakhtTokenResponse>(formattedResponse);
                                                     });
 
-        Params p = new Params { Token = response.Token };
-        return new PaymentTokenResponse
+        Params p = new Params { RefID = response.Token };
+        UrlResponseModel urlResponse = new UrlResponseModel
         {
             Params = p,
             Url = "https://asan.shaparak.ir",
-            TrackerId = trackerId.ToString()
+        };
+        return new PaymentTokenResponse
+        {
+            Url = $"{request.SiteAddress}/redirectToBank"
+           ,
+            TrackerId = trackerId.ToString(),
+            JsonBody = new JsonStrModel
+            {
+                JsonStr = urlResponse
+            }
         };
     }
 
@@ -77,14 +106,14 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
     {
         dynamic jsonObjectProviderData = JObject.Parse(request.ProviderData);
         ResultData<TransactionResultResponse> resultData = new();
-        var headers = GetHeaders(jsonObjectProviderData);
+        var headers = GetHeaders();
         var response = await httpProvider.GetAsync<TransactionResultRequest, TransactionResultResponse,
                                                     AsanPardakhtResponseBase, dynamic>(new HttpProviderRequest<dynamic>
                                                     {
                                                         Body = new
                                                         {
                                                             LocalInvoiceId = request.LocalInvoiceId,
-                                                            MerchantConfigurationId = (int)jsonObjectProviderData["Merchant_Configuration_Id"]
+                                                            MerchantConfigurationId = merchantConfigurationId
                                                         },
                                                         BaseAddress = "https://ipgrest.asanpardakht.ir/",
                                                         Uri = "v1/TranResult",
@@ -100,7 +129,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
     {
         dynamic jsonObjectProviderData = JObject.Parse(request.ProviderData);
         ResultData<VerifyTransactionResponse> resultData = new();
-        var headers = GetHeaders(jsonObjectProviderData);
+        var headers = GetHeaders();
         var response = await httpProvider.PostAsync<VerifyTransactionRequest, VerifyTransactionResponse,
                                                     AsanPardakhtResponseBase, dynamic>(new HttpProviderRequest<dynamic>
                                                     {
@@ -119,15 +148,13 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
         return response;
     }
 
-    private string CreateAdditionalData(dynamic jsonObjectProviderData)
+
+    private string CreateAdditionalData()
     {
         string hexString = Guid.NewGuid().ToString("N");
         string randomString = hexString.Substring(0, 7);
         //Todo:remove hardcode!
         var original = $"0|0440061423|{randomString}";
-        string key = (string)jsonObjectProviderData["Shaparak_Tabesh_Key"];
-        string iv = (string)jsonObjectProviderData["Shaparak_Tabesh_IV"];
-
         var dkey = AesHelper.Base64Decode(key);
         var div = AesHelper.Base64Decode(iv);
         var token = AesHelper.EncryptAes(original, dkey ?? string.Empty, div ?? string.Empty);
@@ -135,13 +162,9 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
         return json;
     }
 
-    private List<(string Key, string? Value)> GetHeaders(dynamic providerData)
+    private List<(string Key, string? Value)> GetHeaders()
     {
-
-        var list = new List<(string Key, string? Value)> { ("usr", (string)providerData["User_Name"]),
-                                                           ("pwd", (string)providerData["Password"]),
-                                                           ("accept", "text/plain")
-        };
+        var list = new List<(string Key, string? Value)> { ("usr", userName), ("pwd", password), ("accept", "text/plain") };
         return list;
     }
 
@@ -165,13 +188,12 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
             case 1:
                 return $"{siteAddress}/{callbackPage}?track_id={trackerId}";
             case 2:
-                return $"{siteAddress}/p/b/{trackerId}?pcu={callbackPage.TrimEnd()}";
+                return $"{siteAddress}/p/b/{trackerId}?pcu={callbackPage.TrimEnd()}/IPGResult";
             default:
                 return string.Empty;
         }
         ;
     }
-
     private static async Task<TResponse?> PaymentTokenErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest? baseRequest, TResponse? response, TError? error, short statusCode)
       where TResponse : AsanPardakhtTokenResponse
       where TError : AsanPardakhtResponseBase
@@ -195,7 +217,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
         return statusCode switch
         {
             400 or 401 or 471 or 571 or 504 => new TransactionResultResponse { Status = 1 } as TResponse,
-            472 => new TransactionResultResponse { Status = 3 } as TResponse,            
+            472 => new TransactionResultResponse { Status = 3 } as TResponse,
             _ => new TransactionResultResponse { Status = 1 } as TResponse,
         };
     }
@@ -223,7 +245,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
         if (error is null || error.ErrorResult is null)
         {
             throw new Exception("UnknownError");
-        }        
+        }
         if (!string.IsNullOrEmpty(error.ErrorResult.Message))
         {
             throw new Exception($"ServiceProviderError: {error.ErrorResult.Message}");

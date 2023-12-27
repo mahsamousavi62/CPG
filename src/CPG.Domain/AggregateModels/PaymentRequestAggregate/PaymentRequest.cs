@@ -1,6 +1,7 @@
 using System;
 using CPG.Domain.AggregateModels.ApplicationAggregate;
 using CPG.Domain.AggregateModels.CompanyAggregate;
+using CPG.Domain.AggregateModels.TransactionAggregate;
 using CPG.Domain.SeedWork;
 
 public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
@@ -10,7 +11,7 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
 
     }
     public PaymentRequest(long companyId, string destinationIban, long applicationId, string nationalCode,
-    string description, decimal amount, string callBackUrl, string code, string trackerId, bool isVerified, short status, bool isUsed)
+    string description, decimal amount, string callBackUrl, string code, string trackerId, short status, bool isUsed)
     {
         CompanyId = companyId;
         DestinationIban = destinationIban;
@@ -21,7 +22,6 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
         CallBackUrl = callBackUrl;
         Code = code;
         TrackerId = trackerId;
-        IsVerified = isVerified;
         Status = status;
         IsUsed = isUsed;
     }
@@ -36,14 +36,13 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
     public string CallBackUrl { get; set; }
     public string Code { get; set; }
     public string TrackerId { get; set; }
-    public bool IsVerified { get; set; }
     public short Status { get; set; }
     public bool IsUsed { get; set; }
     public DateTime? VerificationDateTime { get; set; }
     public DateTime UrlExpirationDateTime { get; set; }
     public Application Application { get; set; }
     public Company Company { get; set; }
-
+    public Transaction Transaction { get; set; }
     public static PaymentRequest Create(PaymentRequest paymentRequest, int expireTime, string clientId, string applicationEnglishName)
     {
         paymentRequest.UrlExpirationDateTime = DateTime.UtcNow.AddMinutes(expireTime);
@@ -52,7 +51,6 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
         string randomString = hexString.Substring(0, 16);
         paymentRequest.Code = $"{applicationEnglishName}_{clientId}_{randomString}";
         paymentRequest.Status = 0;
-        paymentRequest.IsVerified = false;
         paymentRequest.IsActive = true;
         paymentRequest.IsUsed = false;
         return paymentRequest;

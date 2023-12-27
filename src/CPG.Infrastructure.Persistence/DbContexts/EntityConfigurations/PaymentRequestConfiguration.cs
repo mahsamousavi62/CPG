@@ -27,7 +27,6 @@ public class PaymentRequestConfiguration : IEntityTypeConfiguration<PaymentReque
         entity.Property(x => x.CallBackUrl).HasColumnName("CallBackUrl").HasMaxLength(2048).HasColumnType("varchar").IsRequired();
         entity.Property(x => x.Code).HasColumnName("Code").HasMaxLength(1000).HasColumnType("varchar").IsRequired();
         entity.Property(x => x.TrackerId).HasColumnName("TrackerId").HasMaxLength(255).HasColumnType("varchar").IsRequired();
-        entity.Property(x => x.IsVerified).HasColumnName("IsVerified").HasColumnType("bit").IsRequired();
         entity.Property(x => x.Status).HasColumnName("Status").HasColumnType("tinyint").IsRequired();
         entity.Property(x => x.IsUsed).HasColumnName("IsUsed").HasColumnType("bit").IsRequired();
         entity.Property(x => x.VerificationDateTime).HasColumnName("VerificationDateTime").HasColumnType("datetime2(7)");

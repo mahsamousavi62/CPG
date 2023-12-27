@@ -429,4 +429,25 @@
   <data name="MinioException" xml:space="preserve">
     <value>خطای فایل سرور</value>
   </data>
+  <data name="Before" xml:space="preserve">
+    <value>قبلی</value>
+  </data>
+  <data name="ChooseMethodPayment" xml:space="preserve">
+    <value>یکی از روش های پرداخت را انتخاب کنید.</value>
+  </data>
+  <data name="DepositAmount" xml:space="preserve">
+    <value>واریز مبلغ</value>
+  </data>
+  <data name="ForCompany" xml:space="preserve">
+    <value>برای شرکت</value>
+  </data>
+  <data name="Rial" xml:space="preserve">
+    <value>ریال</value>
+  </data>
+  <data name="Tooman" xml:space="preserve">
+    <value>تومان</value>
+  </data>
+  <data name="ParseCompanyIpgProviderData" xml:space="preserve">
+    <value>خطا در دسترسی به ProviderDate</value>
+  </data>
 </root>

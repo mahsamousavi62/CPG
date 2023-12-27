@@ -12,13 +12,15 @@ Content-Type: application/json
 }
 
 
-
+###
 POST {{CPG.API_HostAddress}}/api/paymentrequest/GetPaymentTicketFromAsanPardakhat
 Content-Type: application/json
 
 {
-  "companyIPGId": 7,
-  "paymentRequestId": 3
+"companyIPGId":7,
+"companyPaymentMethodType":2,
+"paymentRequestCode":
+"CIP_pay__daryaftyar_client_845dc1ba6d5c4d30"
 }
 
 
@@ -37,5 +39,12 @@ Content-Type: application/json
   "trackerId": "123456789",
   "description": "string"
 }
+
+###
+
+
+###
+
+POST {{CPG.API_HostAddress}}/IPGResult/p/b/111
 
 ###

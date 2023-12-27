@@ -1,4 +1,5 @@
 ﻿using CPG.Domain.AggregateModels.CompanyAggregate;
+using CPG.Domain.AggregateModels.TransactionAggregate;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,5 +30,6 @@ namespace CPG.Infrastructure.Persistence.DbContexts.ReadModels
         public DateTime? ModificationDate { get; set; }
         public ApplicationReadModel Application { get; set; }
         public CompanyReadModel Company { get; set; }
+        public TransactionReadModel Transaction { get; set; }
     }
 }

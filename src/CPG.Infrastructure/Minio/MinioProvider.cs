@@ -108,6 +108,7 @@ public class MinioProvider : IMinioProvider
     public async Task<string> PresignedGetObject(string objectName)
     {
         var bucketName = _configuration["Infrastructure:Minio:bucketName"];
+        var serviceUrl = _configuration["ApiServerUrl"];
 
         try
         {
@@ -123,7 +124,7 @@ public class MinioProvider : IMinioProvider
 
             if (Path.Exists(fullPath))
             {
-                return fullPath;
+                return serviceUrl + "Files" + objectName;;
             }
 
             var getObjectArgs = new GetObjectArgs()
@@ -133,7 +134,7 @@ public class MinioProvider : IMinioProvider
 
             _ = await _minioClient.GetObjectAsync(getObjectArgs);
 
-            return fullPath;
+            return serviceUrl + "Files" + objectName;
         }
         catch (Exception e)
         {
@@ -145,6 +146,6 @@ public class MinioProvider : IMinioProvider
     {
         var directoryPath = Path.GetDirectoryName(destinationfilePath);
 
-        return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "\\Files\\", directoryPath.Replace('/', '\\'));
+        return Path.Combine(AppContext.BaseDirectory, "Files", directoryPath.Replace('/', '\\'));
     }
 }
