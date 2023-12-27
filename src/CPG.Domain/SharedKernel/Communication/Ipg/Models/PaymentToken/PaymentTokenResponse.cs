@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentTicket;
 
 public class Params
 {
-    public string Token { get; set; }
+    [JsonPropertyName("RefID")]
+    public string RefID { get; set; }
 }
 
 public class PaymentTokenResponse
@@ -14,9 +16,12 @@ public class PaymentTokenResponse
     public string Method => "Post";
     public string TrackerId { get; set; }
     public Enums.IpgRedirectionMethodType  IpgRedirectionMethodType { get; set; }
-    public UrlResponseModel JsonBody { get; set; }
+    public JsonStrModel JsonBody { get; set; }
 }
-
+public class JsonStrModel
+{
+    public UrlResponseModel JsonStr { get; set; }
+}
 public class UrlResponseModel
 {
     public string Url { get; set; }

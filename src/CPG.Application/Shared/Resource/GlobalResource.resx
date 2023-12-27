@@ -441,4 +441,7 @@
   <data name="Tooman" xml:space="preserve">
     <value>Tooman</value>
   </data>
+  <data name="ParseCompanyIpgProviderData" xml:space="preserve">
+    <value>ParseCompanyIpgProviderData</value>
+  </data>
 </root>
