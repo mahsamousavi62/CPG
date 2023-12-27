@@ -107,7 +107,7 @@ app.UseRequestLocalization(new RequestLocalizationOptions
 
 app.UseHttpsRedirection();
 app.UseRouting();
-
+app.UseFileServer();
 app.UseInfrastructure(configuration, app.Environment);
 
 app.UseSerilogRequestLogging();
