@@ -1,4 +1,5 @@
-﻿using CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations;
+﻿using CPG.Domain.AggregateModels.TransactionAggregate;
+using CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations;
 using CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations.ReadModelsConfiguration;
 using CPG.Infrastructure.Persistence.DbContexts.ReadModels;
 using Microsoft.Data.SqlClient;
@@ -38,6 +39,10 @@ public class ReadDbContext(DbContextOptions<ReadDbContext> options) : DbContext(
 
     public IQueryable<PaymentRequestReadModel> PaymentRequestReadModels=> Set<PaymentRequestReadModel>().AsNoTracking();
 
+    public IQueryable<IPGTransactionReadModel> IPGTransactionReadModels => Set<IPGTransactionReadModel>().AsNoTracking();
+    
+    public IQueryable<TransactionReadModel> TransactionReadModels => Set<TransactionReadModel>().AsNoTracking();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
@@ -56,8 +61,8 @@ public class ReadDbContext(DbContextOptions<ReadDbContext> options) : DbContext(
             .ApplyConfiguration(new PaymentRequestReadModelConfiguration())
             .ApplyConfiguration(new CompanyIPGReadModelConfiguration())
             .ApplyConfiguration(new CompanyIPGDepositReadModelConfiguration())
-            ;
-
+            .ApplyConfiguration(new IPGTransactionReadModelConfiguration())
+            .ApplyConfiguration(new TransactionReadModelConfiguration());
     }
 
     public async Task<long> GetNextSequenceValue()

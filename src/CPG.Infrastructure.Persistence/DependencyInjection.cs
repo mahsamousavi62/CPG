@@ -51,6 +51,7 @@ namespace CPG.Infrastructure.Persistence
                 .AddScoped(typeof(IAggregateRepository<>), typeof(AggregateRepository<>))
                 .AddScoped(typeof(IAggregateReadRepository<>), typeof(AggregateRepository<>))
                 .AddScoped(typeof(IReadRepository<>), typeof(ReadRepository<>))
+                .AddScoped(typeof(IWriteRepository<>), typeof(WriteRepository<>))
                 .AddScoped(typeof(ICommonServiceRepository<>), typeof(CommonServiceRepository<>))
                 .AddScoped(typeof(IApplicationSettingsRepository), typeof(ApplicationSettingsRepository))
                 .AddScoped<IRedisCaheService, RedisCacheService>();

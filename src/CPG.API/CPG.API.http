@@ -17,9 +17,10 @@ POST {{CPG.API_HostAddress}}/api/paymentrequest/GetPaymentTicketFromAsanPardakha
 Content-Type: application/json
 
 {
-companyIPGId":1,
+"companyIPGId":7,
 "companyPaymentMethodType":2,
-"paymentRequestCode":"CIP_pay__daryaftyar_client_845dc1ba6d5c4d30
+"paymentRequestCode":
+"CIP_pay__daryaftyar_client_845dc1ba6d5c4d30"
 }
 
 

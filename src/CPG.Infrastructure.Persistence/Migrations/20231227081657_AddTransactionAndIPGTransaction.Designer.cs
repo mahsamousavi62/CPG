@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CPG.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(WriteDbContext))]
-    [Migration("20231226095141_AddTransactionAndIPGTransaction")]
+    [Migration("20231227081657_AddTransactionAndIPGTransaction")]
     partial class AddTransactionAndIPGTransaction
     {
         /// <inheritdoc />
@@ -572,7 +572,6 @@ namespace CPG.Infrastructure.Persistence.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("EncryptCardNumber")
-                        .IsRequired()
                         .HasColumnType("varchar(255)")
                         .HasColumnName("EncryptCardNumber");
 
@@ -591,21 +590,19 @@ namespace CPG.Infrastructure.Persistence.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<DateTime>("PredicateDateTime")
-                        .HasColumnType("datetime2(7)")
+                        .HasColumnType("datetime2")
                         .HasColumnName("PredicateDateTime");
 
                     b.Property<string>("ProviderTrackerId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(255)")
                         .HasColumnName("ProviderTrackerId");
 
                     b.Property<string>("ReferenceNumber")
-                        .IsRequired()
                         .HasColumnType("varchar(255)")
                         .HasColumnName("ReferenceNumber");
 
-                    b.Property<short>("Status")
-                        .HasColumnType("smallint")
+                    b.Property<byte>("Status")
+                        .HasColumnType("tinyint")
                         .HasColumnName("Status");
 
                     b.Property<string>("TrackId")
@@ -654,8 +651,9 @@ namespace CPG.Infrastructure.Persistence.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("DestinationDepositId");
 
-                    b.Property<long?>("IPGTransactionId")
-                        .HasColumnType("bigint");
+                    b.Property<long>("IPGTransactionId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("IPGTransactionId");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -671,24 +669,21 @@ namespace CPG.Infrastructure.Persistence.Migrations
                         .HasColumnName("PaymentRquestId");
 
                     b.Property<DateTime>("PredictedSettlementDateTime")
-                        .HasColumnType("datetime2(7)")
+                        .HasColumnType("datetime2")
                         .HasColumnName("PredictedSettlementDateTime");
 
-                    b.Property<long>("ReferenceTransactionId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("ReferenceTransactionId");
-
-                    b.Property<short>("Status")
-                        .HasColumnType("smallint")
+                    b.Property<byte>("Status")
+                        .HasColumnType("tinyint")
                         .HasColumnName("Status");
 
-                    b.Property<short>("TransactionMethodType")
-                        .HasColumnType("smallint")
+                    b.Property<byte>("TransactionMethodType")
+                        .HasColumnType("tinyint")
                         .HasColumnName("TransactionMethodType");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IPGTransactionId");
+                    b.HasIndex("IPGTransactionId")
+                        .IsUnique();
 
                     b.HasIndex("PaymentRquestId")
                         .IsUnique();
@@ -1077,8 +1072,10 @@ namespace CPG.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("CPG.Domain.AggregateModels.TransactionAggregate.Transaction", b =>
                 {
                     b.HasOne("CPG.Domain.AggregateModels.TransactionAggregate.IPGTransaction", "IPGTransaction")
-                        .WithMany()
-                        .HasForeignKey("IPGTransactionId");
+                        .WithOne("Transaction")
+                        .HasForeignKey("CPG.Domain.AggregateModels.TransactionAggregate.Transaction", "IPGTransactionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("PaymentRequest", "PaymentRequest")
                         .WithOne("Transaction")
@@ -1165,6 +1162,11 @@ namespace CPG.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("CPG.Domain.AggregateModels.CompanyIPGAggregate.CompanyIPG", b =>
                 {
                     b.Navigation("IPGDeposits");
+                });
+
+            modelBuilder.Entity("CPG.Domain.AggregateModels.TransactionAggregate.IPGTransaction", b =>
+                {
+                    b.Navigation("Transaction");
                 });
 
             modelBuilder.Entity("CPG.Domain.AggregateModels.UserAggregate.User", b =>
