@@ -20,7 +20,7 @@ namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
     IAggregateRepository<PaymentRequest> paymentRequestAggregateRepository,
     IAggregateRepository<Transaction> transactionRepository,
-    IAggregateRepository<Domain.AggregateModels.CompanyIPGAggregate.CompanyIPG> companyIPGRepository, 
+    IAggregateRepository<Domain.AggregateModels.CompanyIPGAggregate.CompanyIPG> companyIPGRepository,
     ReadDbContext context) : IRequestHandler<GetPaymentTokenCommand, ResultData<PaymentTokenResponse>>
 {
     private readonly IIpgFactory _ipgFactory = ipgFactory;
@@ -37,7 +37,7 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
         {
             var paymentRequest = await _paymentRequestRepository.GetBySpecAsync(new PaymentRequestByCode(request.PaymentToken.PaymentRequestCode));
             if (paymentRequest is null) { throw new PaymentRequestNotFoundException(request.PaymentToken.PaymentRequestCode); }
-            
+
             var companyIpg = await _companyIPGRepository.GetByIdAsync(request.PaymentToken.CompanyIPGId);
             if (companyIpg is null) { throw new CompanyIPGNotFoundException(request.PaymentToken.CompanyIPGId); }
 
@@ -51,14 +51,10 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                     SiteAddress = paymentRequest.Company.SiteAddress
                 });
 
-            PaymentRequest.Update(paymentRequest);
-            await _paymentRequestRepository.UpdateAsync(paymentRequest);
-            await _paymentRequestRepository.SaveChangesAsync();
-
             //Transation and IpgTransaction
             //if(string.IsNullOrEmpty(  paymentRequest.DestinationIban))
-         //TODO:
-         long destinationDepositId = 1;//companyIpg.IPGDeposits
+            //TODO:
+            long destinationDepositId = 1;//companyIpg.IPGDeposits
 
 
             Transaction transaction = Transaction.Create(new CreateTransactionModel
@@ -67,11 +63,15 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                 DestinationDepositId = 1,
                 PaymentRequest = paymentRequest,
                 Token = result.JsonBody.JsonStr.Params.RefID,
-                TrackId=result.TrackerId=result.TrackerId,
-                TransactionMethodType=Enums.TransactionType.IPG
-            }) ;
-                        await _transactionRepository.AddAsync(transaction);
+                TrackId = result.TrackerId = result.TrackerId,
+                TransactionMethodType = Enums.TransactionType.IPG
+            });
+            await _transactionRepository.AddAsync(transaction);
             await _transactionRepository.SaveChangesAsync();
+            PaymentRequest.Update(paymentRequest);
+            await _paymentRequestRepository.UpdateAsync(paymentRequest);
+            await _paymentRequestRepository.SaveChangesAsync();
+
             result.IpgRedirectionMethodType = (Enums.IpgRedirectionMethodType)paymentRequest.Company.IpgRedirectionMethodType;
 
             return new ResultData<PaymentTokenResponse>
@@ -95,4 +95,4 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
 }
 
 
-                                                                                                                                                                                                     
+
