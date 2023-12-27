@@ -122,19 +122,17 @@ public class MinioProvider : IMinioProvider
 
             var fullPath = Path.Combine(localDestinationPath, fileName);
 
-            if (Path.Exists(fullPath))
+            if (Path.Exists(fullPath) is false)
             {
-                return serviceUrl + "Files" + objectName;;
+                var getObjectArgs = new GetObjectArgs()
+                        .WithBucket(bucketName)
+                        .WithObject(objectName)
+                        .WithFile(fullPath);
+
+                _ = await _minioClient.GetObjectAsync(getObjectArgs);
             }
 
-            var getObjectArgs = new GetObjectArgs()
-                    .WithBucket(bucketName)
-                    .WithObject(objectName)
-                    .WithFile(fullPath);
-
-            _ = await _minioClient.GetObjectAsync(getObjectArgs);
-
-            return serviceUrl + "Files" + objectName;
+            return serviceUrl + Path.Combine("Files" , objectName);
         }
         catch (Exception e)
         {
@@ -146,6 +144,6 @@ public class MinioProvider : IMinioProvider
     {
         var directoryPath = Path.GetDirectoryName(destinationfilePath);
 
-        return Path.Combine(AppContext.BaseDirectory, "Files", directoryPath.Replace('/', '\\'));
+        return Path.Combine(AppContext.BaseDirectory, "Files", directoryPath);
     }
 }
