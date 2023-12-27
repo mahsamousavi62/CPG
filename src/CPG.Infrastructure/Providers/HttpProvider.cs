@@ -17,6 +17,8 @@ using MassTransit;
 using Microsoft.AspNetCore.WebUtilities;
 using static Azure.Core.HttpHeader;
 using System.Text.RegularExpressions;
+using System.Net;
+using CPG.Domain.SharedKernel;
 
 namespace CPG.Infrastructure.Providers;
 
@@ -31,7 +33,7 @@ public class HttpProvider : IHttpProvider
         _logger = logger;
     }
 
-    public async Task<TResponse?> PostAsync<TBaseRequest, TResponse, TError, TBody>(HttpProviderRequest<TBody>? request, TBaseRequest? baseRequest, Func<TBaseRequest?, TResponse?, TError?, Task<TResponse?>>? errorHandler, Func<string, TResponse>? decoder = null)
+    public async Task<TResponse?> PostAsync<TBaseRequest, TResponse, TError, TBody>(HttpProviderRequest<TBody>? request, TBaseRequest? baseRequest, Func<TBaseRequest?, TResponse?, TError?,short, Task<TResponse?>>? errorHandler, Func<string, TResponse>? decoder = null)
         where TResponse : ResponseBase
         where TError : ResponseBase
         where TBaseRequest : RequestBase
@@ -78,7 +80,7 @@ public class HttpProvider : IHttpProvider
 
             if (response.StatusCode != System.Net.HttpStatusCode.OK && errorHandler is not null)
             {
-                return await errorHandler(baseRequest, result, errorResult);
+                return await errorHandler(baseRequest, result, errorResult, (short)response.StatusCode);
             }
 
             return result;
@@ -91,7 +93,7 @@ public class HttpProvider : IHttpProvider
         }
     }
 
-    public async Task<TResponse?> PostAsync3<TBaseRequest, TResponse, TError, TBody>(HttpProviderRequest<TBody>? request, TBaseRequest? baseRequest, Func<TBaseRequest?, TResponse?, TError?, Task<TResponse?>>? errorHandler, Func<string, TResponse>? decoder = null)
+    public async Task<TResponse?> PostAsync3<TBaseRequest, TResponse, TError, TBody>(HttpProviderRequest<TBody>? request, TBaseRequest? baseRequest, Func<TBaseRequest?, TResponse?, TError?,short, Task<TResponse?>>? errorHandler, Func<string, TResponse>? decoder = null)
         where TResponse : ResponseBase
         where TError : ResponseBase
         where TBaseRequest : RequestBase
@@ -150,7 +152,7 @@ public class HttpProvider : IHttpProvider
 
             if (response.StatusCode != System.Net.HttpStatusCode.OK && errorHandler is not null)
             {
-                return await errorHandler(baseRequest, result, errorResult);
+                return await errorHandler(baseRequest, result, errorResult, (short)response.StatusCode);
             }
 
             return result;
@@ -227,7 +229,7 @@ public class HttpProvider : IHttpProvider
     //    }
     //}
 
-    public async Task<TResponse?> PutAsync<TBaseRequest, TResponse, TError, TBody>(HttpProviderRequest<TBody>? request, TBaseRequest? baseRequest, Func<TBaseRequest?, TResponse?, TError?, Task<TResponse?>>? errorHandler, Func<string, TResponse>? decoder = null)
+    public async Task<TResponse?> PutAsync<TBaseRequest, TResponse, TError, TBody>(HttpProviderRequest<TBody>? request, TBaseRequest? baseRequest, Func<TBaseRequest?, TResponse?, TError?,short, Task<TResponse?>>? errorHandler, Func<string, TResponse>? decoder = null)
         where TResponse : ResponseBase?
         where TError : ResponseBase
         where TBaseRequest : RequestBase
@@ -270,7 +272,7 @@ public class HttpProvider : IHttpProvider
                 var result = await response.Content.ReadFromJsonAsync<TError>();
 
                 return errorHandler == null ? null :
-                    await errorHandler(baseRequest, null, result);
+                    await errorHandler(baseRequest, null, result, (short)response.StatusCode);
             }
         }
         catch (Exception exc)
@@ -281,7 +283,7 @@ public class HttpProvider : IHttpProvider
         }
     }
 
-    public async Task<TResponse?> GetAsync<TBaseRequest, TResponse, TError>(HttpProviderRequest<dynamic>? request, TBaseRequest? baseRequest, Func<TBaseRequest?, TResponse?, TError?, Task<TResponse?>>? errorHandler, Func<string, TResponse>? decoder = null)
+    public async Task<TResponse?> GetAsync<TBaseRequest, TResponse, TError>(HttpProviderRequest<dynamic>? request, TBaseRequest? baseRequest, Func<TBaseRequest?, TResponse?, TError?,short, Task<TResponse?>>? errorHandler, Func<string, TResponse>? decoder = null)
         where TResponse : class
         where TError : ResponseBase
         where TBaseRequest : RequestBase
@@ -289,7 +291,7 @@ public class HttpProvider : IHttpProvider
         return await GetAsync<TBaseRequest, TResponse, TError, dynamic>(request, baseRequest, errorHandler, decoder);
     }
 
-    public async Task<TResponse?> GetAsync<TBaseRequest, TResponse, TError, TBody>(HttpProviderRequest<TBody>? request, TBaseRequest? baseRequest, Func<TBaseRequest?, TResponse?, TError?, Task<TResponse?>>? errorHandler, Func<string, TResponse>? decoder = null)
+    public async Task<TResponse?> GetAsync<TBaseRequest, TResponse, TError, TBody>(HttpProviderRequest<TBody>? request, TBaseRequest? baseRequest, Func<TBaseRequest?, TResponse?, TError?,short, Task<TResponse?>>? errorHandler, Func<string, TResponse>? decoder = null)
         where TResponse : class
         where TError : ResponseBase
         where TBaseRequest : RequestBase
@@ -337,7 +339,7 @@ public class HttpProvider : IHttpProvider
             {
                 if (errorHandler is not null)
                 {
-                    return await errorHandler(baseRequest, result, errorResult);
+                    return await errorHandler(baseRequest, result, errorResult, (short)response.StatusCode);
                 }
             }
 
@@ -373,9 +375,16 @@ public class HttpProvider : IHttpProvider
     }
 
     private void AddServiceCallLog<TBody>(HttpProviderRequest<TBody> request, HttpResponseMessage response, string resString)
-    {
+    {   
+        if (!string.IsNullOrEmpty(resString))
+        {
+            resString = Regex.Replace(resString, Constants.Pattern, Constants.Replaceformat);
+        }
         string reqString = System.Text.Json.JsonSerializer.Serialize(request);
-       
+        if (!string.IsNullOrEmpty(reqString))
+        {
+            reqString = Regex.Replace(reqString, Constants.Pattern, Constants.Replaceformat);
+        }
         var callLog = new
         {
             RequestBody = reqString,

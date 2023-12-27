@@ -14,12 +14,14 @@ namespace CPG.Domain.AggregateModels.CompanyIPGAggregate
             CompanyIPGId = companyIpgId;
             CompanyDepositId = companyDepositId;
             IsDefault = isDefault;
+            IsActive = true;
         }
 
         public CompanyIPGDeposit(long companyDepositId, bool isDefault)
         {
             CompanyDepositId = companyDepositId;
             IsDefault = isDefault;
+            IsActive = true;
         }
 
         public long CompanyIPGId { get; set; }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using CCPG.Domain.SharedKernel.Communication.Ipg;
 using CommunityToolkit.HighPerformance;
@@ -10,7 +11,9 @@ using CPG.Domain.SharedKernel.ApplicationSettings;
 using CPG.Domain.SharedKernel.Communication;
 using CPG.Domain.SharedKernel.Communication.Ipg.AsanPardakht;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentTicket;
+using CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentToken;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.TransactionResult;
+using CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
 using CPG.Infrastructure.Persistence.DbContexts;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -33,7 +36,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
         try
         {
             jsonObjectProviderData = JObject.Parse(providerData);
-            merchantConfigurationId = jsonObjectProviderData["Merchant_Configuration_Id"] is not null? (int)jsonObjectProviderData["Merchant_Configuration_Id"] : throw new Exception("Invalid merchantConfigurationId");
+            merchantConfigurationId = jsonObjectProviderData["Merchant_Configuration_Id"] is not null ? (int)jsonObjectProviderData["Merchant_Configuration_Id"] : throw new Exception("Invalid merchantConfigurationId");
             userName = jsonObjectProviderData["User_Name"] is not null ? (string)jsonObjectProviderData["User_Name"] : throw new Exception("Invalid User_Name");
             password = jsonObjectProviderData["Password"] is not null ? (string)jsonObjectProviderData["Password"] : throw new Exception("Invalid Password");
             key = jsonObjectProviderData["Shaparak_Tabesh_Key"] is not null ? (string)jsonObjectProviderData["Shaparak_Tabesh_Key"] : throw new Exception("Invalid Shaparak_Tabesh_Key");
@@ -77,7 +80,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
                                                         var formattedResponse = stringResponse;
                                                         if (!stringResponse.StartsWith("{\"error"))
                                                             formattedResponse = string.Format("{0} {1} {2}", "{\"token\":", stringResponse, "}");
-                                                       
+
                                                         return System.Text.Json.JsonSerializer.Deserialize<AsanPardakhtTokenResponse>(formattedResponse);
                                                     });
 
@@ -92,151 +95,162 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
             Url = $"{request.SiteAddress}/redirectToBank"
            ,
             TrackerId = trackerId.ToString(),
-            JsonBody = new JsonStrModel{
+            JsonBody = new JsonStrModel
+            {
                 JsonStr = urlResponse
             }
         };
-}
+    }
 
-public async Task<TransactionResultResponse> GetTransactionResult(TransactionResultRequest request)
-{
-    dynamic jsonObjectProviderData = JObject.Parse(request.ProviderData);
-    ResultData<TransactionResultResponse> resultData = new();
-    var headers = GetHeaders();
-    var response = await httpProvider.GetAsync<TransactionResultRequest, TransactionResultResponse,
-                                                AsanPardakhtResponseBase, dynamic>(new HttpProviderRequest<dynamic>
-                                                {
-                                                    Body = new
+    public async Task<TransactionResultResponse> GetTransactionResult(TransactionResultRequest request)
+    {
+        dynamic jsonObjectProviderData = JObject.Parse(request.ProviderData);
+        ResultData<TransactionResultResponse> resultData = new();
+        var headers = GetHeaders();
+        var response = await httpProvider.GetAsync<TransactionResultRequest, TransactionResultResponse,
+                                                    AsanPardakhtResponseBase, dynamic>(new HttpProviderRequest<dynamic>
                                                     {
-                                                        LocalInvoiceId = request.LocalInvoiceId,
-                                                        MerchantConfigurationId = merchantConfigurationId
-                                                    },
-                                                    BaseAddress = "https://ipgrest.asanpardakht.ir/",
-                                                    Uri = "v1/TranResult",
-                                                    HeaderParameters = headers,
-                                                    Provider = Enums.ProviderType.AsanPardakht,
-                                                    Service = Enums.ServiceType.AsanPardakhtTransResult,
-                                                }, request, TransactionResultErrorHandler);
+                                                        Body = new
+                                                        {
+                                                            LocalInvoiceId = request.LocalInvoiceId,
+                                                            MerchantConfigurationId = merchantConfigurationId
+                                                        },
+                                                        BaseAddress = "https://ipgrest.asanpardakht.ir/",
+                                                        Uri = "v1/TranResult",
+                                                        HeaderParameters = headers,
+                                                        Provider = Enums.ProviderType.AsanPardakht,
+                                                        Service = Enums.ServiceType.AsanPardakhtTransResult,
+                                                    }, request, TransactionResultErrorHandler);
 
-    return response;
-}
-
-private string CreateAdditionalData()
-{
-    string hexString = Guid.NewGuid().ToString("N");
-    string randomString = hexString.Substring(0, 7);
-    //Todo:remove hardcode!
-    var original = $"0|0440061423|{randomString}";
-    var dkey = AesHelper.Base64Decode(key);
-    var div = AesHelper.Base64Decode(iv);
-    var token = AesHelper.EncryptAes(original, dkey ?? string.Empty, div ?? string.Empty);
-    var json = JsonConvert.SerializeObject(new { EncryptedNationalId = token });
-    return json;
-}
-
-private List<(string Key, string? Value)> GetHeaders()
-{
-    var list = new List<(string Key, string? Value)> { ("usr", userName), ("pwd", password), ("accept", "text/plain") };
-    return list;
-}
-
-private async Task<long> GetTrackerIdAsync()
-{
-    try
-    {
-        return await context.GetNextSequenceValue();
+        return response;
     }
-    catch (Exception ex)
-    {
-        throw ex;
-    }
-}
 
-private async Task<string> CreateCallbackUrl(short ipgRedirectionType, string siteAddress, string trackerId, string callbackPage)
-{
+    public async Task<VerifyTransactionResponse> Verify(VerifyTransactionRequest request)
+    {
+        dynamic jsonObjectProviderData = JObject.Parse(request.ProviderData);
+        ResultData<VerifyTransactionResponse> resultData = new();
+        var headers = GetHeaders();
+        var response = await httpProvider.PostAsync<VerifyTransactionRequest, VerifyTransactionResponse,
+                                                    AsanPardakhtResponseBase, dynamic>(new HttpProviderRequest<dynamic>
+                                                    {
+                                                        Body = new VerifyRequest
+                                                        {
+                                                            PayGateTranId = request.ProviderTrackerId,
+                                                            MerchantConfigurationId = (int)jsonObjectProviderData["Merchant_Configuration_Id"]
+                                                        },
+                                                        BaseAddress = "https://ipgrest.asanpardakht.ir/",
+                                                        Uri = "v1/Verify",
+                                                        HeaderParameters = headers,
+                                                        Provider = Enums.ProviderType.AsanPardakht,
+                                                        Service = Enums.ServiceType.AsanPardakhtTransResult,
+                                                    }, request, VerifyErrorHandler);
 
-    switch (ipgRedirectionType)
-    {
-        case 1:
-            return $"{siteAddress}/{callbackPage}?track_id={trackerId}";
-        case 2:
-            return $"{siteAddress}/p/b/{trackerId}?pcu={callbackPage.TrimEnd()}/IPGResult";
-        default:
-            return string.Empty;
+        return response;
     }
-    ;
-}
-private static async Task<TResponse?> PaymentTokenErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest? baseRequest, TResponse? response, TError? error)
-  where TResponse : AsanPardakhtTokenResponse
-  where TError : AsanPardakhtResponseBase
-  where TBaseRequest : AsanPardakhtTokenRequest
-{
-    if (error?.ErrorResult is not null)
-    {
-        throw new Exception(error.ErrorResult.Message);
-    }
-    else
-    {
-        return await Task.FromResult(BaseErrorHandler<TResponse, TError, TBaseRequest>(error));
-    }
-}
 
-private static async Task<TResponse?> TransactionResultErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest? baseRequest, TResponse? response, TError? error)
-where TResponse : TransactionResultResponse
-where TError : AsanPardakhtResponseBase
-where TBaseRequest : TransactionResultRequest
-{
-    if (error?.ErrorResult is not null)
+
+    private string CreateAdditionalData()
     {
-        switch (error.ErrorResult.Code)
+        string hexString = Guid.NewGuid().ToString("N");
+        string randomString = hexString.Substring(0, 7);
+        //Todo:remove hardcode!
+        var original = $"0|0440061423|{randomString}";
+        var dkey = AesHelper.Base64Decode(key);
+        var div = AesHelper.Base64Decode(iv);
+        var token = AesHelper.EncryptAes(original, dkey ?? string.Empty, div ?? string.Empty);
+        var json = JsonConvert.SerializeObject(new { EncryptedNationalId = token });
+        return json;
+    }
+
+    private List<(string Key, string? Value)> GetHeaders()
+    {
+        var list = new List<(string Key, string? Value)> { ("usr", userName), ("pwd", password), ("accept", "text/plain") };
+        return list;
+    }
+
+    private async Task<long> GetTrackerIdAsync()
+    {
+        try
         {
-            case 1043:
-                throw new Exception("InvalidOrExpiredInvoiceId");
-            default:
-                break;
+            return await context.GetNextSequenceValue();
         }
-        throw new Exception(error.ErrorResult.Message);
-    }
-    else
-    {
-        return await Task.FromResult(BaseErrorHandler<TResponse, TError, TBaseRequest>(error));
-    }
-}
-
-private static async Task<TResponse?> PaymentTransactionErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest? baseRequest, TResponse? response, TError? error)
-where TResponse : TransactionResultResponse
-where TError : AsanPardakhtResponseBase
-where TBaseRequest : TransactionResultRequest
-{
-    if (error?.ErrorResult is not null)
-    {
-        throw new Exception(error.ErrorResult.Message);
-    }
-    else
-    {
-        return await Task.FromResult(BaseErrorHandler<TResponse, TError, TBaseRequest>(error));
-    }
-}
-
-private static TResponse BaseErrorHandler<TResponse, TError, TBaseRequest>(AsanPardakhtResponseBase? error)
-   where TResponse : AsanPardakhtResponseBase
-   where TError : AsanPardakhtResponseBase
-   where TBaseRequest : AsanPardakhtRequestBase
-
-{
-    if (error is null)
-    {
-        throw new Exception("UnknownError");
-    }
-    if (error.ErrorResult is null)
-    {
-        throw new Exception("UnknownError");
-    }
-    if (!string.IsNullOrEmpty(error.ErrorResult.Message))
-    {
-        throw new Exception($"ServiceProviderError: {error.ErrorResult.Message}");
+        catch (Exception ex)
+        {
+            throw ex;
+        }
     }
 
-    throw new Exception("ServiceProviderError");
-}
+    private async Task<string> CreateCallbackUrl(short ipgRedirectionType, string siteAddress, string trackerId, string callbackPage)
+    {
+
+        switch (ipgRedirectionType)
+        {
+            case 1:
+                return $"{siteAddress}/{callbackPage}?track_id={trackerId}";
+            case 2:
+                return $"{siteAddress}/p/b/{trackerId}?pcu={callbackPage.TrimEnd()}/IPGResult";
+            default:
+                return string.Empty;
+        }
+        ;
+    }
+    private static async Task<TResponse?> PaymentTokenErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest? baseRequest, TResponse? response, TError? error, short statusCode)
+      where TResponse : AsanPardakhtTokenResponse
+      where TError : AsanPardakhtResponseBase
+      where TBaseRequest : AsanPardakhtTokenRequest
+    {
+        if (error?.ErrorResult is not null)
+        {
+            throw new Exception(error.ErrorResult.Message);
+        }
+        else
+        {
+            return await Task.FromResult(BaseErrorHandler<TResponse, TError, TBaseRequest>(error));
+        }
+    }
+
+    private static async Task<TResponse?> TransactionResultErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest? baseRequest, TResponse? response, TError? error, short statusCode)
+    where TResponse : TransactionResultResponse
+    where TError : AsanPardakhtResponseBase
+    where TBaseRequest : TransactionResultRequest
+    {
+        return statusCode switch
+        {
+            400 or 401 or 471 or 571 or 504 => new TransactionResultResponse { Status = 1 } as TResponse,
+            472 => new TransactionResultResponse { Status = 3 } as TResponse,
+            _ => new TransactionResultResponse { Status = 1 } as TResponse,
+        };
+    }
+
+    private static async Task<TResponse?> VerifyErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest? baseRequest, TResponse? response, TError? error, short statusCode)
+    where TResponse : VerifyTransactionResponse
+    where TError : AsanPardakhtResponseBase
+    where TBaseRequest : VerifyTransactionRequest
+    {
+        return statusCode switch
+        {
+            400 or 401 or 477 or 571 or 572 or 573 or 504 => new VerifyTransactionResponse { Status = 5 } as TResponse,
+            200 or 472 or 473 or 475 => new VerifyTransactionResponse { Status = 6 } as TResponse,
+            471 or 474 or 476 or 478 => new VerifyTransactionResponse { Status = 7 } as TResponse,
+            _ => new VerifyTransactionResponse { Status = 5 } as TResponse,
+        };
+    }
+
+    private static TResponse BaseErrorHandler<TResponse, TError, TBaseRequest>(AsanPardakhtResponseBase? error)
+       where TResponse : AsanPardakhtResponseBase
+       where TError : AsanPardakhtResponseBase
+       where TBaseRequest : AsanPardakhtRequestBase
+
+    {
+        if (error is null || error.ErrorResult is null)
+        {
+            throw new Exception("UnknownError");
+        }
+        if (!string.IsNullOrEmpty(error.ErrorResult.Message))
+        {
+            throw new Exception($"ServiceProviderError: {error.ErrorResult.Message}");
+        }
+
+        throw new Exception("ServiceProviderError");
+    }
 }
