@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection.PortableExecutable;
 using System.Threading;
 using System.Threading.Tasks;
 using CPG.Application.UseCases.CompanyIPGs.Exceptions;
@@ -18,10 +19,16 @@ namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 
 public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
     IAggregateRepository<PaymentRequest> paymentRequestAggregateRepository,
+    IAggregateRepository<Transaction> transactionRepository,
+    IAggregateRepository<Domain.AggregateModels.CompanyIPGAggregate.CompanyIPG> companyIPGRepository,
     ReadDbContext context) : IRequestHandler<GetPaymentTokenCommand, ResultData<PaymentTokenResponse>>
 {
     private readonly IIpgFactory _ipgFactory = ipgFactory;
     private readonly IAggregateRepository<PaymentRequest> _paymentRequestRepository = paymentRequestAggregateRepository;
+    private readonly IAggregateRepository<Domain.AggregateModels.CompanyIPGAggregate.CompanyIPG>
+        _companyIPGRepository = companyIPGRepository;
+
+    private readonly IAggregateRepository<Transaction> _transactionRepository = transactionRepository;
     private readonly ReadDbContext _context = context;
 
     public async Task<ResultData<PaymentTokenResponse>> Handle(GetPaymentTokenCommand request, CancellationToken cancellationToken)
@@ -31,7 +38,7 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
             var paymentRequest = await _paymentRequestRepository.GetBySpecAsync(new PaymentRequestByCode(request.PaymentToken.PaymentRequestCode));
             if (paymentRequest is null) { throw new PaymentRequestNotFoundException(request.PaymentToken.PaymentRequestCode); }
 
-            var companyIpg = await _context.CompanyIPGReadModels.FirstOrDefaultAsync(t => t.Id == request.PaymentToken.CompanyIPGId);
+            var companyIpg = await _companyIPGRepository.GetByIdAsync(request.PaymentToken.CompanyIPGId);
             if (companyIpg is null) { throw new CompanyIPGNotFoundException(request.PaymentToken.CompanyIPGId); }
 
             var ipg = _ipgFactory.GetInstance(Enums.ProviderType.AsanPardakht);
@@ -44,28 +51,26 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                     SiteAddress = paymentRequest.Company.SiteAddress
                 });
 
+            //Transation and IpgTransaction
+            //if(string.IsNullOrEmpty(  paymentRequest.DestinationIban))
+            //TODO:
+            long destinationDepositId = 1;//companyIpg.IPGDeposits
+
+
+            Transaction transaction = Transaction.Create(new CreateTransactionModel
+            {
+                CompanyIPG = companyIpg,
+                DestinationDepositId = 1,
+                PaymentRequest = paymentRequest,
+                Token = result.JsonBody.JsonStr.Params.RefID,
+                TrackId = result.TrackerId = result.TrackerId,
+                TransactionMethodType = Enums.TransactionType.IPG
+            });
+            await _transactionRepository.AddAsync(transaction);
+            await _transactionRepository.SaveChangesAsync();
             PaymentRequest.Update(paymentRequest);
             await _paymentRequestRepository.UpdateAsync(paymentRequest);
             await _paymentRequestRepository.SaveChangesAsync();
-
-            //Transation and IpgTransaction
-
-            var ipgTransaction = IPGTransaction.Create(result.TrackerId, 0, companyIpg.Id,
-                result.JsonBody.JsonStr.Params.RefID, companyIpg.VerificationTimeLimit);
-            int userId = 1;//Todo:
-            short status = 0;//enum
-            long destinationDepositId = 1;//todo
-            short transactionMethodType = 1;//enum
-            var tranasction = Transaction.Create(paymentRequest.Id, ipgTransaction.Id, transactionMethodType, userId, paymentRequest.CompanyId,
-            destinationDepositId, paymentRequest.Amount, paymentRequest.Application.Id, status);
-
-
-         
-
-
-
-
-
 
             result.IpgRedirectionMethodType = (Enums.IpgRedirectionMethodType)paymentRequest.Company.IpgRedirectionMethodType;
 
@@ -84,4 +89,10 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
             };
         }
     }
+
+
+
 }
+
+
+

@@ -1,20 +1,23 @@
 ﻿
 using System;
 using CPG.Domain.SeedWork;
+using CPG.Domain.SharedKernel;
 
 namespace CPG.Domain.AggregateModels.TransactionAggregate;
 public class IPGTransaction : AuditableEntity<long>
 {
-    public IPGTransaction( string trackId, short status, long companyIPGId, string iPGToken,int verificationTimeLimit)
+    public IPGTransaction(string trackId, Enums.IPGTransactionStatus status,
+        long companyIPGId, string iPGToken, int verificationTimeLimit)
     {
         TrackId = trackId;
         Status = status;
         CompanyIPGId = companyIPGId;
         IPGToken = iPGToken;
         VerificationTimeLimit = verificationTimeLimit;
+        IsActive = true;
     }
     public string TrackId { get; set; }
-    public short Status { get; set; }
+    public Enums.IPGTransactionStatus Status { get; set; }
     public long CompanyIPGId { get; set; }
     public string IPGToken { get; set; }
     public string ProviderTrackerId { get; set; }
@@ -24,10 +27,10 @@ public class IPGTransaction : AuditableEntity<long>
     public DateTime PredicateDateTime { get; set; }
     public Transaction Transaction { get; set; }
 
-    public static IPGTransaction Create(string trackerId, short status, long companyIpgId, string ipgToken, short verificationTimeLimit)
+    public static IPGTransaction Create(string trackerId, Enums.IPGTransactionStatus status, long companyIpgId,
+        string ipgToken, short verificationTimeLimit)
     {
-        var ipgTransaction = new IPGTransaction(trackerId, status, companyIpgId, ipgToken,verificationTimeLimit);
-        
+        var ipgTransaction = new IPGTransaction(trackerId, status, companyIpgId, ipgToken, verificationTimeLimit);
         return ipgTransaction;
     }
 }

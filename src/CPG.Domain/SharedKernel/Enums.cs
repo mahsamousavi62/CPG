@@ -10,7 +10,7 @@ public class Enums
         Minio = 3,
     }
 
-    public enum IpgRedirectionMethodType:byte
+    public enum IpgRedirectionMethodType : byte
     {
         CPGReferencePage = 1,
         RayanReferencePage = 2
@@ -63,6 +63,16 @@ public class Enums
     {
         IPG = 1,
         DirectDebit = 2
+    }
+
+    public enum IPGTransactionStatus : byte
+    {
+        WaitingResponseFromIPG = 0,
+    }
+
+    public enum TransactionStatus : byte
+    {
+        InPrgress = 0,
     }
 }
 

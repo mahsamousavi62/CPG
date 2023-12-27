@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
+using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Application.UseCases.Ipg.Commands;
 
@@ -13,11 +14,11 @@ public class ValidateTokenCommandHandler(ReadDbContext context) : IRequestHandle
 
     public async Task Handle(ValidateTokenCommand command, CancellationToken cancellationToken)
     {
-        var ipgTransaction = await _context.BankReadModels.FirstOrDefaultAsync(t => t.Name == command.ValidateToken.TrackId);
+        var ipgTransaction = await _context.TransactionReadModels.FirstOrDefaultAsync(t => t.IPGTransaction.TrackId == command.ValidateToken.TrackId);
 
         if (ipgTransaction is null)
             throw new NotFoundTrackIdException();
-        if(ipgTransaction.IsActive == false)
+        if(ipgTransaction.Status != TransactionStatus.InPrgress)
             throw new TrackIdInvalidStatusException();
     }
 }
