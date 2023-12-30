@@ -664,6 +664,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to TrackId not found.
+        /// </summary>
+        public static string NotFoundTrackIdException {
+            get {
+                return ResourceManager.GetString("NotFoundTrackIdException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ParseCompanyIpgProviderData.
         /// </summary>
         public static string ParseCompanyIpgProviderData {
@@ -939,6 +948,15 @@ namespace CPG.Application.Shared.Resource {
         public static string Tooman {
             get {
                 return ResourceManager.GetString("Tooman", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TrackId status is invalid.
+        /// </summary>
+        public static string TrackIdInvalidStatusException {
+            get {
+                return ResourceManager.GetString("TrackIdInvalidStatusException", resourceCulture);
             }
         }
         

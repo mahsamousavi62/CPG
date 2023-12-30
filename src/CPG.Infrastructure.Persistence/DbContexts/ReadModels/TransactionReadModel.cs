@@ -10,7 +10,7 @@ public class TransactionReadModel
 {
     public long Id { get; set; }
     public long PaymentRquestId { get; set; }
-    public long ReferenceTransactionId { get; set; }
+    public long IPGTransactionId { get; set; }
     public Enums.TransactionType TransactionMethodType { get; set; }
     public long CompanyId { get; set; }
     public long DestinationDepositId { get; set; }
