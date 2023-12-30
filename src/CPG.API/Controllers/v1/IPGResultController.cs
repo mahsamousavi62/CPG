@@ -1,7 +1,9 @@
 ﻿using CPG.Application.UseCases.Ipg.Commands;
+using CPG.Application.UseCases.Ipg.Queries;
 using CPG.Application.UseCases.Ipg.ViewModels;
 using CPG.Domain.SharedKernel.ApplicationSettings;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace CPG.API.Controllers.v1;
 
@@ -14,6 +16,7 @@ public class IPGResultController : ApiBaseController
     {
         _applicationSettingsRepository = applicationSettingsRepository;
     }
+
     [HttpPost("p/b/{id}")]  
     public async Task<IActionResult> GetData(string id)
     {
@@ -21,6 +24,11 @@ public class IPGResultController : ApiBaseController
 
       return  Redirect($"{appConfig.IPG_Callback_URL}?trackId={id}");
     }
+
+    [HttpPost("TransactionDetail")]
+    [ProducesResponseType(typeof(TransactionDetailResponseViewModel), 200)]
+    public async Task<IActionResult> GetTransactionDetail([Required] TransactionDetailRequestViewModel model)
+        => Ok(await Mediator.Send(new TransactionDetailQuery(model)));
 
     [HttpPost("ValidateToken/{trackId}")]
     public async Task<IActionResult> ValidateToken(string trackId)

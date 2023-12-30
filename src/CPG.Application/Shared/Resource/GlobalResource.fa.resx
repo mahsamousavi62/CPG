@@ -456,4 +456,10 @@
   <data name="TrackIdInvalidStatusException" xml:space="preserve">
     <value>کاربر گرامی، شناسه پرداخت در وضعیت غیرمجاز است</value>
   </data>
+  <data name="InvalidCodeOrTrackIdException" xml:space="preserve">
+    <value>درخواستی با اطلاعات ارائه شده یافت نشد</value>
+  </data>
+  <data name="RequiredCodeOrTrackIdException" xml:space="preserve">
+    <value>وارد نمودن کد و یا شناسه رهگیری الزامیست</value>
+  </data>
 </root>

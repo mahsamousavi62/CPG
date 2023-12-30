@@ -20,5 +20,6 @@ public class TransactionReadModel
     public Enums.TransactionStatus Status { get; set; }
     public PaymentRequestReadModel PaymentRequest { get; set; }
     public IPGTransactionReadModel IPGTransaction { get; set; }
+    public CompanyDepositReadModel DestinationDeposit { get; set; }
 
 }
