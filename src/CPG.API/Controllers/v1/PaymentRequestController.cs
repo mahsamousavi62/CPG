@@ -30,7 +30,7 @@ namespace CPG.API.Controllers.v1
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [Authorize]
+       // [Authorize]
         [HttpPost]
         [ProducesResponseType(typeof(PaymentRequestResponseViewModel), 200)]
         public async Task<ActionResult<PaymentRequestResponseViewModel>> PaymentRequest([FromBody] CreatePaymentRequestViewModel model)
@@ -42,7 +42,7 @@ namespace CPG.API.Controllers.v1
         public async Task<ActionResult<PaymentMethodsViewModel>> PaymentMethods([FromBody] GetPaymentMethodsViewModel model)
         => Ok(await Mediator.Send(new GetPaymentMethodsCommand(model)));
 
-        [HttpPost("GetPaymentTicketFromAsanPardakhat")]
+        [HttpPost("CreateIPGJsonStr")]
         [ProducesResponseType(typeof(ResultData<PaymentTokenResponse>), 200)]
         public async Task<ActionResult<ResultData<PaymentTokenResponse>>> GetAsanPardakhatPaymentTicket([FromBody] PaymentTokenViewModel paymentTicketRequest)
             => Ok(await Mediator.Send(new GetPaymentTokenCommand(paymentTicketRequest)));

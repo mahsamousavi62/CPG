@@ -444,4 +444,7 @@
   <data name="ParseCompanyIpgProviderData" xml:space="preserve">
     <value>ParseCompanyIpgProviderData</value>
   </data>
+  <data name="TransactionNotFound" xml:space="preserve">
+    <value>TransactionNotFound</value>
+  </data>
 </root>

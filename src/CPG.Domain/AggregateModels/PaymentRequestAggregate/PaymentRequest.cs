@@ -3,6 +3,7 @@ using CPG.Domain.AggregateModels.ApplicationAggregate;
 using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Domain.AggregateModels.TransactionAggregate;
 using CPG.Domain.SeedWork;
+using CPG.Domain.SharedKernel;
 
 public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
 {
@@ -59,8 +60,13 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
     public static void Update(PaymentRequest paymentRequest)
     {
         paymentRequest.IsUsed = true;
-        paymentRequest.Status = 3;
+        paymentRequest.Status = (short)Enums.PaymentStatus.InProgress;
         paymentRequest.ModificationDate = DateTime.UtcNow;
     }
 
+    public static void UpdateStatus(PaymentRequest paymentRequest, Enums.PaymentStatus status)
+    {
+        //var statusCode = status.ToEnum<Enums.PaymentStatus>();
+        paymentRequest.Status = (short)status;
+    }
 }

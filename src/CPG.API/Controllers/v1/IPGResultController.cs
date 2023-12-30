@@ -1,4 +1,8 @@
-﻿using CPG.Domain.SharedKernel.ApplicationSettings;
+﻿using CPG.Application.UseCases.CompanyIPGs.ViewModels;
+using System.Net;
+using CPG.Application.UseCases.Ipg.Queries;
+using CPG.Application.UseCases.Ipg.ViewModels;
+using CPG.Domain.SharedKernel.ApplicationSettings;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,5 +24,19 @@ namespace CPG.API.Controllers.v1
 
           return  Redirect($"{appConfig.IPG_Callback_URL}?trackId={id}");
         }
+        [HttpGet("ReturnToOriginByCode")]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> ReturnToOriginByCode([FromQuery] ReturnToOriginByCodeViewModel model) 
+        {
+            return Ok(await Mediator.Send(new ReturnToOriginByCodeQuery(model)));
+        }
+
+        [HttpGet("ReturnToOriginByTrackId")]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> ReturnToOriginByTrackId([FromQuery] ReturnToOriginByTrackIdViewModel model)
+        {
+            return Ok(await Mediator.Send(new ReturnToOriginByTrackIdQuery(model)));
+        }
+
     }
 }
