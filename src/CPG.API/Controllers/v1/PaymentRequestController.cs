@@ -30,7 +30,7 @@ namespace CPG.API.Controllers.v1
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-       // [Authorize]
+        [Authorize]
         [HttpPost]
         [ProducesResponseType(typeof(PaymentRequestResponseViewModel), 200)]
         public async Task<ActionResult<PaymentRequestResponseViewModel>> PaymentRequest([FromBody] CreatePaymentRequestViewModel model)
