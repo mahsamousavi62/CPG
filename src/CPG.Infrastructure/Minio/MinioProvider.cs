@@ -132,7 +132,7 @@ public class MinioProvider : IMinioProvider
                 _ = await _minioClient.GetObjectAsync(getObjectArgs);
             }
 
-            return serviceUrl + Path.Combine("Files" , objectName);
+            return serviceUrl + Path.Combine("wwwroot", objectName);
         }
         catch (Exception e)
         {
@@ -144,6 +144,6 @@ public class MinioProvider : IMinioProvider
     {
         var directoryPath = Path.GetDirectoryName(destinationfilePath);
 
-        return Path.Combine(AppContext.BaseDirectory, "Files", directoryPath);
+        return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot", directoryPath);
     }
 }
