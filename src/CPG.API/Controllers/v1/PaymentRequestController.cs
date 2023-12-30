@@ -47,10 +47,9 @@ namespace CPG.API.Controllers.v1
         public async Task<ActionResult<ResultData<PaymentTokenResponse>>> GetAsanPardakhatPaymentTicket([FromBody] PaymentTokenViewModel paymentTicketRequest)
             => Ok(await Mediator.Send(new GetPaymentTokenCommand(paymentTicketRequest)));
 
-        [HttpGet("GetPaymentTransactionInfo")]
+        [HttpPost("GetPaymentTransactionInfo")]
         [ProducesResponseType(typeof(string), 200)]
-        public async Task<ActionResult<ResultData<PaymentTokenResponse>>> GetPaymentTransactionInfo([FromQuery]PaymentTransactionViewModel paymentTransactionRequest)
+        public async Task<ActionResult<ResultData<PaymentTokenResponse>>> GetPaymentTransactionInfo([FromBody]PaymentTransactionViewModel paymentTransactionRequest)
         => Ok(await Mediator.Send(new GetPaymentTransactionInfoQuery(paymentTransactionRequest)));
-
     }
 }

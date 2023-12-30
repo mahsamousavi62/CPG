@@ -444,6 +444,12 @@
   <data name="ParseCompanyIpgProviderData" xml:space="preserve">
     <value>ParseCompanyIpgProviderData</value>
   </data>
+  <data name="NotFoundTrackIdException" xml:space="preserve">
+    <value>TrackId not found</value>
+  </data>
+  <data name="TrackIdInvalidStatusException" xml:space="preserve">
+    <value>TrackId status is invalid</value>
+  </data>
   <data name="TransactionNotFound" xml:space="preserve">
     <value>TransactionNotFound</value>
   </data>
