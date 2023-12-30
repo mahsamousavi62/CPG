@@ -450,4 +450,10 @@
   <data name="ParseCompanyIpgProviderData" xml:space="preserve">
     <value>خطا در دسترسی به ProviderDate</value>
   </data>
+  <data name="NotFoundTrackIdException" xml:space="preserve">
+    <value>کاربر گرامی، شناسه پرداخت نامعتبر است</value>
+  </data>
+  <data name="TrackIdInvalidStatusException" xml:space="preserve">
+    <value>کاربر گرامی، شناسه پرداخت در وضعیت غیرمجاز است</value>
+  </data>
 </root>
