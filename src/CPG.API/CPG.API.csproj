@@ -45,4 +45,8 @@
     <ProjectReference Include="..\CPG.Infrastructure\CPG.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
 </Project>
