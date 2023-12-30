@@ -101,7 +101,6 @@
     <Folder Include="AggregateModels\CompanyIPGAggregate\Events\" />
     <Folder Include="AggregateModels\CompanyIPGAggregate\Events\" />
     <Folder Include="AggregateModels\CompanyIPGAggregate\Guards\" />
-    <Folder Include="AggregateModels\CompanyIPGAggregate\Specifications\" />
     <Folder Include="AggregateModels\PaymentRequestAggregate\Events\" />
     <Folder Include="AggregateModels\ProviderAggregate\Guards\" />
     <Folder Include="AggregateModels\CompanyDepositAggregate\Guards\" />

@@ -450,4 +450,7 @@
   <data name="TrackIdInvalidStatusException" xml:space="preserve">
     <value>TrackId status is invalid</value>
   </data>
+  <data name="TransactionNotFound" xml:space="preserve">
+    <value>TransactionNotFound</value>
+  </data>
 </root>
