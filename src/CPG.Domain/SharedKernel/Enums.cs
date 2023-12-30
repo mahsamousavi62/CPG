@@ -74,6 +74,22 @@ public class Enums
     {
         InPrgress = 0,
     }
+
+    public enum PaymentStatus
+    {
+        Draft = 0,
+        RedirectedToCpg = 1,
+        CanceledByUser = 2,
+        InProgress = 3,
+        TransactionWaitingForVerification = 4,
+        TransactionFailed = 5,
+        TransactionVerifiedByApplication = 6,
+        TransactionCanceledByApplication = 7,
+        TransactionVerificationSucceeded = 8,
+        TransactionVerificationFailed = 9,
+        SettlementSucceeded = 10,
+        SettlementFailed = 11,
+    }
 }
 
 public struct ResultData<T>(Enums.OperationResult operationResult)

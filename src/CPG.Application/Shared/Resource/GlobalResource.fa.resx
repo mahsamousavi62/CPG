@@ -462,4 +462,7 @@
   <data name="RequiredCodeOrTrackIdException" xml:space="preserve">
     <value>وارد نمودن کد و یا شناسه رهگیری الزامیست</value>
   </data>
+  <data name="TransactionNotFound" xml:space="preserve">
+    <value>تراکنش با این شناسه {0}یافت نشد</value>
+  </data>
 </root>

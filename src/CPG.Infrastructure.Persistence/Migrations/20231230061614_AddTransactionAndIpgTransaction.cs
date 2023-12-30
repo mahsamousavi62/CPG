@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CPG.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class AddTransactionAndIPGTransaction : Migration
+    public partial class AddTransactionAndIpgTransaction : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -67,7 +67,12 @@ namespace CPG.Infrastructure.Persistence.Migrations
                         principalTable: "IPGTransaction",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                
+                    table.ForeignKey(
+                        name: "FK_Transaction_PaymentRequest_PaymentRquestId",
+                        column: x => x.PaymentRquestId,
+                        principalTable: "PaymentRequest",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -80,7 +85,7 @@ namespace CPG.Infrastructure.Persistence.Migrations
                 name: "IX_Transaction_PaymentRquestId",
                 table: "Transaction",
                 column: "PaymentRquestId",
-                unique: true);
+                unique: false);
         }
 
         /// <inheritdoc />

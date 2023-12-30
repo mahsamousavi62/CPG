@@ -42,9 +42,9 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
                     Code = paymentRequest.Code,
                     TrackerId = paymentRequest.TrackerId,
                     Amount = paymentRequest.Amount.ToString(),
-                    Status = paymentRequest.Status.ToString(),
+                    Status = ((short)paymentRequest.Status).ToString(),
                     StatusTitle = GetStatusTitle(paymentRequest.Status),
-                    PaymentMethodType = transaction?.TransactionMethodType.ToString(),
+                    PaymentMethodType = ((short)transaction?.TransactionMethodType).ToString(),
                     PaymentMethodTypeTitle = transaction is null ? string.Empty : GetPaymentMethodTypeTitle(transaction.TransactionMethodType),
                     ReferenceNumber = transaction is not null && transaction.TransactionMethodType == TransactionType.IPG ? transaction.IPGTransaction?.ReferenceNumber : string.Empty,
                     DestinationDepositIban = transaction?.DestinationDeposit?.Iban,
@@ -62,22 +62,22 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
         }
     }
 
-    private string GetStatusTitle(short status)
+    private string GetStatusTitle(PaymentStatus status)
     {
         return status switch
         {
-            0 => "DRAFT",
-            1 => "REDIRECTED_TO_CPG",
-            2 => "CANCELLED_BY_USER",
-            3 => "TRANSACTION_IN_PROGRESS",
-            4 => "TRANSACTION_WAITING_FOR_VERIFICATION",
-            5 => "TRANSACTION_FAILED",
-            6 => "TRANSACTION_VERIFIED_BY_APPLICATION",
-            7 => "TRANSACTION_CANCELLED_BY_APPLICATION",
-            8 => "TRANSACTION_VERIFICATION_SUCCEEDED",
-            9 => "TRANSACTION_VERIFICATION_FAILED",
-            10 => "SETTLEMENT_SUCCEEDED",
-            11 => "SETTLEMENT_FAILED",
+            PaymentStatus.Draft => "DRAFT",
+            PaymentStatus.RedirectedToCpg => "REDIRECTED_TO_CPG",
+            PaymentStatus.CanceledByUser => "CANCELLED_BY_USER",
+            PaymentStatus.InProgress => "TRANSACTION_IN_PROGRESS",
+            PaymentStatus.TransactionWaitingForVerification => "TRANSACTION_WAITING_FOR_VERIFICATION",
+            PaymentStatus.TransactionFailed => "TRANSACTION_FAILED",
+            PaymentStatus.TransactionVerifiedByApplication => "TRANSACTION_VERIFIED_BY_APPLICATION",
+            PaymentStatus.TransactionCanceledByApplication => "TRANSACTION_CANCELLED_BY_APPLICATION",
+            PaymentStatus.TransactionVerificationSucceeded => "TRANSACTION_VERIFICATION_SUCCEEDED",
+            PaymentStatus.TransactionVerificationFailed => "TRANSACTION_VERIFICATION_FAILED",
+            PaymentStatus.SettlementSucceeded => "SETTLEMENT_SUCCEEDED",
+            PaymentStatus.SettlementFailed => "SETTLEMENT_FAILED",
             _ => string.Empty
         };
     }

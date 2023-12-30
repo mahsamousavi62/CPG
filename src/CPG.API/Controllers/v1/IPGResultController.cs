@@ -1,4 +1,5 @@
-﻿using CPG.Application.UseCases.Ipg.Commands;
+﻿using System.Net;
+using CPG.Application.UseCases.Ipg.Commands;
 using CPG.Application.UseCases.Ipg.Queries;
 using CPG.Application.UseCases.Ipg.ViewModels;
 using CPG.Domain.SharedKernel.ApplicationSettings;
@@ -20,9 +21,9 @@ public class IPGResultController : ApiBaseController
     [HttpPost("p/b/{id}")]  
     public async Task<IActionResult> GetData(string id)
     {
-      var appConfig=await  _applicationSettingsRepository.GetAllApplicationSettings();
+        var appConfig = await _applicationSettingsRepository.GetAllApplicationSettings();
 
-      return  Redirect($"{appConfig.IPG_Callback_URL}?trackId={id}");
+        return Redirect($"{appConfig.IPG_Callback_URL}?trackId={id}");
     }
 
     [HttpPost("TransactionDetail")]
@@ -36,5 +37,21 @@ public class IPGResultController : ApiBaseController
         await Mediator.Send(new ValidateTokenCommand(new ValidateTokenViewModel { TrackId = trackId }));
 
         return Accepted();
+       
     }
+    [HttpGet("ReturnToOriginByCode")]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
+    public async Task<IActionResult> ReturnToOriginByCode([FromQuery] ReturnToOriginByCodeViewModel model)
+    {
+        return Ok(await Mediator.Send(new ReturnToOriginByCodeQuery(model)));
+    }
+
+    [HttpGet("ReturnToOriginByTrackId")]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
+    public async Task<IActionResult> ReturnToOriginByTrackId([FromQuery] ReturnToOriginByTrackIdViewModel model)
+    {
+        return Ok(await Mediator.Send(new ReturnToOriginByTrackIdQuery(model)));
+    }
+
 }
+
