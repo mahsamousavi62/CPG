@@ -456,4 +456,7 @@
   <data name="TrackIdInvalidStatusException" xml:space="preserve">
     <value>کاربر گرامی، شناسه پرداخت در وضعیت غیرمجاز است</value>
   </data>
+  <data name="TransactionNotFound" xml:space="preserve">
+    <value>تراکنش با این شناسه {0}یافت نشد</value>
+  </data>
 </root>

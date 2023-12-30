@@ -20,3 +20,4 @@ public class CompanyPaymentMethodsByIbanSpec : Specification<Company>, ISingleRe
              .Where(company => company.Id == companyId);       
     }
 }
+    

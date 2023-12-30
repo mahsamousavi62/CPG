@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CPG.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(WriteDbContext))]
-    [Migration("20231227081657_AddTransactionAndIPGTransaction")]
-    partial class AddTransactionAndIPGTransaction
+    [Migration("20231230061614_AddTransactionAndIpgTransaction")]
+    partial class AddTransactionAndIpgTransaction
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

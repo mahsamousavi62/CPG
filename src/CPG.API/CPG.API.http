@@ -13,21 +13,21 @@ Content-Type: application/json
 
 
 ###
-POST {{CPG.API_HostAddress}}/api/paymentrequest/GetPaymentTicketFromAsanPardakhat
+POST {{CPG.API_HostAddress}}/api/paymentrequest/CreateIPGJsonStr
 Content-Type: application/json
 
 {
 "companyIPGId":7,
 "companyPaymentMethodType":2,
 "paymentRequestCode":
-"CIP_pay__daryaftyar_client_845dc1ba6d5c4d30"
+"Test_pay__daryaftyar_client_a68e6603c7cf48d0)"
 }
 
 
 ###
 
 POST {{CPG.API_HostAddress}}/api/paymentrequest
-Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjUyMENEN0MwN0Y2NDQ3MTlDRTFFRUExMzlEN0IyQzA1IiwidHlwIjoiYXQrand0In0.eyJpc3MiOiJodHRwczovL2F1dGgtc3RhZ2UuY2hhcmlzbWEuZGlnaXRhbCIsIm5iZiI6MTcwMzMyNjc4OCwiaWF0IjoxNzAzMzI2Nzg4LCJleHAiOjE3MDMzMjg1ODgsImF1ZCI6WyJwYXlfX2RhcnlhZnR5YXJfYXBpIiwiaHR0cHM6Ly9hdXRoLXN0YWdlLmNoYXJpc21hLmRpZ2l0YWwvcmVzb3VyY2VzIl0sInNjb3BlIjpbInByb2ZpbGUiLCJvcGVuaWQiLCJwYXlfX2dhdGV3YXkiXSwiYW1yIjpbInB3ZCJdLCJjbGllbnRfaWQiOiJwYXlfX2RhcnlhZnR5YXJfY2xpZW50Iiwic3ViIjoiMzU3MzI5MzE2MjUzNTMyMTYiLCJhdXRoX3RpbWUiOjE3MDMzMjY3ODYsImlkcCI6ImxvY2FsIiwic3ViX3R5cGUiOiJzdWJqZWN0Iiwic3RhdHVzIjoiS3ljVmVyaWZpZWQiLCJyb2xlIjoibm9ybWFsIiwic2lkIjoiNzVGQTNCM0Q3MkQzODRCMDQwNDY0ODhGRTQ3NTZBODYifQ.PjMW2fi0rfw3GOc5czkPrp_g_7uQSj658cV7Vd8PCzXpZp6mPC2ZQnePTPMvPvICri5ysW3MNN-F6XqkkQLGflJQZo_CWhNNZiWF8nSe9Bn6SkWhvAOL5OT2bxqaTLME1BqWfyM99LRwt6SmUXZvzeH9zXrGqb6hUrpjZioJyYCilBG-Y5KZxNz2XVVvVp0cAEZpCTP03XVGKXZklJFEIKRerKh4oEDxkFB7nGzNZDUdeEtDFxWIu_twhHbyL5oLu8GCEJfelcP9Fj5f_viZFnvezXYg4mLndsWQNTsy9YUlztk13BeDeOhq3bLgYKNTsS9SUARr2YqtzM6WmK365Q
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjUyMENEN0MwN0Y2NDQ3MTlDRTFFRUExMzlEN0IyQzA1IiwidHlwIjoiYXQrand0In0.eyJpc3MiOiJodHRwczovL2F1dGgtc3RhZ2UuY2hhcmlzbWEuZGlnaXRhbCIsIm5iZiI6MTcwMzkyNTM2OCwiaWF0IjoxNzAzOTI1MzY4LCJleHAiOjE3MDM5MjcxNjgsImF1ZCI6WyJwYXlfX2RhcnlhZnR5YXJfYXBpIiwiaHR0cHM6Ly9hdXRoLXN0YWdlLmNoYXJpc21hLmRpZ2l0YWwvcmVzb3VyY2VzIl0sInNjb3BlIjpbInByb2ZpbGUiLCJvcGVuaWQiLCJwYXlfX2dhdGV3YXkiXSwiYW1yIjpbInB3ZCJdLCJjbGllbnRfaWQiOiJwYXlfX2RhcnlhZnR5YXJfY2xpZW50Iiwic3ViIjoiMzU3MzI5MzE2MjUzNTMyMTYiLCJhdXRoX3RpbWUiOjE3MDM5MjUzNjcsImlkcCI6ImxvY2FsIiwic3ViX3R5cGUiOiJzdWJqZWN0Iiwic3RhdHVzIjoiS3ljVmVyaWZpZWQiLCJyb2xlIjoibm9ybWFsIiwic2lkIjoiOEJERjcxMTNBMzQ3MDk4NTFCMkQ2NERDQjJGMjEyRTQifQ.MPhV5kiyDJrW1Umq4ciBt_pJugdWCD6uuKiqi9E08M84nTsDsuBRb7ZQaPTbxoGUGurexlImRzgqzaFmcLYR7lJmlgLExDvHUj8mSwVakzacW4NBWTqoCVQHNe_prlziIoP6YdlGlBdQVGwWLxBth_VK_FngyXMFow4Nkz8xrBce6eHk6nPuA95aRYttMs5kYnUYEEkdT9vSJE7_-twULu8-AsEogDZUjK1oRaXS09-30sMvk52dRU7KPPRNQnoaIpoYlkR3Bt_j2XO8GOOSVQGLbBIgEkE13MQ_HDUv5rrSfSaTwKBL683yIxsLBZ23zH0qoRaOCa05WHZcKihDcQ
 Content-Type: application/json
 
 {
@@ -36,7 +36,7 @@ Content-Type: application/json
   "callBackUrl": "https://localhost:7050/swagger/index.html",
   "destinationIban": "",
   "nationalCode": "0068426879",
-  "trackerId": "123456789",
+  "trackerId": "12345679",
   "description": "string"
 }
 
@@ -46,5 +46,13 @@ Content-Type: application/json
 ###
 
 POST {{CPG.API_HostAddress}}/IPGResult/p/b/111
+
+###
+
+GET {{CPG.API_HostAddress}}/IPGResult/ReturnToOriginByCode/"fgdxg"
+
+###
+
+GET {{CPG.API_HostAddress}}/IPGResult/ReturnToOriginByTrackId
 
 ###

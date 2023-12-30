@@ -1,10 +1,12 @@
 ﻿using System;
-using System.Reflection.PortableExecutable;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CPG.Application.UseCases.CompanyIPGs.Exceptions;
 using CPG.Application.UseCases.Ipg.Commands;
 using CPG.Application.UseCases.PaymentRequests.Exceptions;
+using CPG.Domain.AggregateModels.CompanyDepositAggregate.Specifications;
+using CPG.Domain.AggregateModels.CompanyIPGAggregate.Specifications;
 using CPG.Domain.AggregateModels.PaymentRequestAggregate.Specifications;
 using CPG.Domain.AggregateModels.TransactionAggregate;
 using CPG.Domain.SharedKernel;
@@ -12,15 +14,16 @@ using CPG.Domain.SharedKernel.Communication.Ipg;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentTicket;
 using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 
 public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
     IAggregateRepository<PaymentRequest> paymentRequestAggregateRepository,
     IAggregateRepository<Transaction> transactionRepository,
+    IAggregateRepository<CPG.Application.UseCases.CompanyDeposits.CompanyDeposit> companyDepositRepository,
+
     IAggregateRepository<Domain.AggregateModels.CompanyIPGAggregate.CompanyIPG> companyIPGRepository,
+    
     ReadDbContext context) : IRequestHandler<GetPaymentTokenCommand, ResultData<PaymentTokenResponse>>
 {
     private readonly IIpgFactory _ipgFactory = ipgFactory;
@@ -29,6 +32,7 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
         _companyIPGRepository = companyIPGRepository;
 
     private readonly IAggregateRepository<Transaction> _transactionRepository = transactionRepository;
+    private readonly IAggregateRepository<CPG.Application.UseCases.CompanyDeposits.CompanyDeposit> _companyDepositRepository = companyDepositRepository;
     private readonly ReadDbContext _context = context;
 
     public async Task<ResultData<PaymentTokenResponse>> Handle(GetPaymentTokenCommand request, CancellationToken cancellationToken)
@@ -51,16 +55,26 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                     SiteAddress = paymentRequest.Company.SiteAddress
                 });
 
-            //Transation and IpgTransaction
-            //if(string.IsNullOrEmpty(  paymentRequest.DestinationIban))
-            //TODO:
-            long destinationDepositId = 1;//companyIpg.IPGDeposits
+            long destinationDepositId;
+            if (!string.IsNullOrWhiteSpace(paymentRequest.DestinationIban)) 
+            {
+                var companyDeposit= await _companyDepositRepository.GetBySpecAsync(new CompanyDepositByIban(paymentRequest.DestinationIban));
+              if(companyDeposit is null) throw new Exception("CompanyDeposit not found!");
+                destinationDepositId = companyDeposit.Id;
+            }
+            else 
+            {
+                var tempcompanyIpg = await _companyIPGRepository.GetBySpecAsync(new CompanyIPGByIpgDeposit(companyIpg.Id));
 
+                if (tempcompanyIpg.IPGDeposits.SingleOrDefault() is null)
+                    throw new Exception("CompanyDeposit not found!");
+                destinationDepositId= tempcompanyIpg.IPGDeposits.SingleOrDefault().CompanyDepositId;
+            }
 
             Transaction transaction = Transaction.Create(new CreateTransactionModel
             {
                 CompanyIPG = companyIpg,
-                DestinationDepositId = 1,
+                DestinationDepositId = destinationDepositId,
                 PaymentRequest = paymentRequest,
                 Token = result.JsonBody.JsonStr.Params.RefID,
                 TrackId = result.TrackerId = result.TrackerId,
