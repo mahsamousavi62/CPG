@@ -10,6 +10,4 @@ public class TransactionByIPGTransactionTrackId : Specification<Transaction>, IS
         Query.Include(t => t.IPGTransaction.IsActive && t.IPGTransaction.TrackId == trackId)
             .Include(t => t.IPGTransaction).Include(t=>t.PaymentRequest);
     }
-
-
 }
