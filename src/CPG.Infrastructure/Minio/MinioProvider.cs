@@ -132,7 +132,7 @@ public class MinioProvider : IMinioProvider
                 _ = await _minioClient.GetObjectAsync(getObjectArgs);
             }
 
-            return serviceUrl + Path.Combine("wwwroot", objectName);
+            return serviceUrl + objectName; // Path.Combine("wwwroot", objectName);
         }
         catch (Exception e)
         {
