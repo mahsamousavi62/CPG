@@ -66,7 +66,6 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
 
     public static void UpdateStatus(PaymentRequest paymentRequest, Enums.PaymentStatus status)
     {
-        //var statusCode = status.ToEnum<Enums.PaymentStatus>();
         paymentRequest.Status = (short)status;
     }
 }
