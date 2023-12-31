@@ -574,6 +574,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No PaymentRequest found having this Code or TrackId.
+        /// </summary>
+        public static string InvalidCodeOrTrackIdException {
+            get {
+                return ResourceManager.GetString("InvalidCodeOrTrackIdException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to IpgRedirectionMethodType.
         /// </summary>
         public static string IpgRedirectionMethodType {
@@ -858,6 +867,15 @@ namespace CPG.Application.Shared.Resource {
         public static string RayanReferencePage {
             get {
                 return ResourceManager.GetString("RayanReferencePage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Code or TrackId is required.
+        /// </summary>
+        public static string RequiredCodeOrTrackIdException {
+            get {
+                return ResourceManager.GetString("RequiredCodeOrTrackIdException", resourceCulture);
             }
         }
         
