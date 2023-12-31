@@ -459,4 +459,10 @@
   <data name="RequiredCodeOrTrackIdException" xml:space="preserve">
     <value>Code or TrackId is required</value>
   </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="ErrorInConnection" xml:space="preserve">
+    <value>ErrorInConnection</value>
+  </data>
 </root>
