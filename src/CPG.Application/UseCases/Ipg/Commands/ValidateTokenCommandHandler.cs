@@ -19,7 +19,7 @@ public class ValidateTokenCommandHandler(IAggregateRepository<Transaction> repos
 
         if (transaction?.IPGTransaction is null)
             throw new NotFoundTrackIdException();
-        if(transaction.IPGTransaction.Status != IPGTransactionStatus.WaitingResponseFromIPG)
+        if(transaction.IPGTransaction.Status != IPGTransactionStatus.WaitingForPspResponse)
             throw new TrackIdInvalidStatusException();
     }
 }
