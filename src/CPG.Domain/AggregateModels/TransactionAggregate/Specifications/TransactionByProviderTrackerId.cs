@@ -6,6 +6,8 @@ public class TransactionByProviderTrackerId : Specification<Transaction>, ISingl
 {
     public TransactionByProviderTrackerId(string providerTrackerId)
     {
-        Query.Include(t => t.IPGTransaction.IsActive && t.IPGTransaction.ProviderTrackerId == providerTrackerId);
+        Query.Include(t => t.DestinationDeposit)
+            .Include(t => t.IPGTransaction)
+            .Where(t => t.IPGTransaction.IsActive && t.IPGTransaction.ProviderTrackerId == providerTrackerId);
     }
 }

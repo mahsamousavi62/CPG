@@ -43,7 +43,7 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
             throw new PaymentRequestCodeIsUsedException();
         }
 
-         paymentRequest.Status = 1;
+        paymentRequest.Status = Enums.PaymentStatus.RedirectedToCpg;
         await _paymentRequestRepository.UpdateAsync(paymentRequest);
 
         Company company = null;
@@ -63,14 +63,14 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
             foreach (var companyIPGItem in toBeRemoved)
             {
                 company.CompanyIPGs.Remove(companyIPGItem);
-            }            
+            }
         }
         else
         {
             company = await _companyRepository.GetBySpecAsync(new CompanyPaymentMethodsByIdSpec(paymentRequest.CompanyId), cancellationToken);
 
             var toBeRemoved = new List<CompanyIPG>();
-            foreach (var companyIPGItem in company?.CompanyIPGs) 
+            foreach (var companyIPGItem in company?.CompanyIPGs)
             {
                 var defaultDeposit = companyIPGItem.IPGDeposits.FirstOrDefault(t => t.IsDefault);
                 if (!defaultDeposit.IsActive)
@@ -78,7 +78,7 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
                     toBeRemoved.Add(companyIPGItem);
                 }
             }
-            foreach(var companyIPGItem in toBeRemoved)
+            foreach (var companyIPGItem in toBeRemoved)
             {
                 company.CompanyIPGs.Remove(companyIPGItem);
             }
