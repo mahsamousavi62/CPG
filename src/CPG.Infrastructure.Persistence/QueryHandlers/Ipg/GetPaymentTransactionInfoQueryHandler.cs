@@ -16,17 +16,17 @@ using CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentTicket;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 
-    public class GetPaymentTransactionInfoQueryHandler(IIpgFactory ipgFactory,
-        IAggregateRepository<PaymentRequest> paymentRequestAggregateRepository,
-      ReadDbContext context) : IRequestHandler<GetPaymentTransactionInfoQuery, ResultData<TransactionResultResponse>>
+public class GetPaymentTransactionInfoQueryHandler(IIpgFactory ipgFactory,
+    IAggregateRepository<PaymentRequest> paymentRequestAggregateRepository,
+  ReadDbContext context) : IRequestHandler<GetPaymentTransactionInfoQuery, ResultData<TransactionResultResponse>>
+{
+
+    private readonly IIpgFactory _ipgFactory = ipgFactory;
+    private readonly IAggregateRepository<PaymentRequest> _paymentRequestRepository = paymentRequestAggregateRepository;
+    private readonly ReadDbContext _context = context;
+
+    public async Task<ResultData<TransactionResultResponse>> Handle(GetPaymentTransactionInfoQuery request, CancellationToken cancellationToken)
     {
-
-        private readonly IIpgFactory _ipgFactory = ipgFactory;
-        private readonly IAggregateRepository<PaymentRequest> _paymentRequestRepository = paymentRequestAggregateRepository;
-        private readonly ReadDbContext _context = context;
-
-        public async Task<ResultData<TransactionResultResponse>> Handle(GetPaymentTransactionInfoQuery request, CancellationToken cancellationToken)
-        {
         try
         {
             var companyIpg = await _context.CompanyIPGReadModels.FirstOrDefaultAsync(t => t.Id == request.PaymentTransaction.CompanyIPGId);

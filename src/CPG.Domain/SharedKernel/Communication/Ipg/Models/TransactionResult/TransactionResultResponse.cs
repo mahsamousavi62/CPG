@@ -25,7 +25,7 @@ namespace CPG.Domain.SharedKernel.Communication.Ipg.Models.TransactionResult
         public string SalesOrderID { get; set; }
 
         [JsonPropertyName("hash")]
-        public object Hash { get; set; }
+        public string Hash { get; set; }
 
         [JsonPropertyName("serviceTypeId")]
         public int ServiceTypeId { get; set; }
