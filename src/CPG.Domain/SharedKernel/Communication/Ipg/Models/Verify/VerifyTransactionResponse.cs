@@ -4,5 +4,5 @@ namespace CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
 
 public class VerifyTransactionResponse : AsanPardakhtResponseBase
 {
-    public int Status { get; set; }
+    public Enums.IPGTransactionStatus Status { get; set; }
 }

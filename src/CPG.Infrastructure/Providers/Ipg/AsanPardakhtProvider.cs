@@ -229,10 +229,10 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
     {
         return statusCode switch
         {
-            400 or 401 or 477 or 571 or 572 or 573 or 504 => new VerifyTransactionResponse { Status = 5 } as TResponse,
-            200 or 472 or 473 or 475 => new VerifyTransactionResponse { Status = 6 } as TResponse,
-            471 or 474 or 476 or 478 => new VerifyTransactionResponse { Status = 7 } as TResponse,
-            _ => new VerifyTransactionResponse { Status = 5 } as TResponse,
+            400 or 401 or 477 or 571 or 572 or 573 or 504 => new VerifyTransactionResponse { Status = Enums.IPGTransactionStatus.Verifying } as TResponse,
+            200 or 472 or 473 or 475 => new VerifyTransactionResponse { Status = Enums.IPGTransactionStatus.VerificationSucceeded } as TResponse,
+            471 or 474 or 476 or 478 => new VerifyTransactionResponse { Status = Enums.IPGTransactionStatus.VerificationFailed } as TResponse,
+            _ => new VerifyTransactionResponse { Status = Enums.IPGTransactionStatus.Verifying } as TResponse,
         };
     }
 
