@@ -25,6 +25,8 @@ public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
 
         entity.HasOne(p => p.PaymentRequest).WithOne(t => t.Transaction).HasForeignKey<Transaction>(b => b.PaymentRquestId);
         entity.HasOne(t => t.IPGTransaction).WithOne(t => t.Transaction).HasForeignKey<Transaction>(t => t.IPGTransactionId);
-        entity.HasOne(t => t.DestinationDeposit).WithMany(t => t.Transactions).HasForeignKey(t => t.DestinationDepositId);
+        entity.HasOne(t => t.DestinationDeposit).WithMany(t => t.Transactions).HasForeignKey(t => t.DestinationDepositId).OnDelete(DeleteBehavior.NoAction);
+
+        
     }
 }
