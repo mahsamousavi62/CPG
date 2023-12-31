@@ -7,7 +7,8 @@ public class TransactionByIPGTransactionTrackId : Specification<Transaction>, IS
 {
     public TransactionByIPGTransactionTrackId(string trackId)
     {
-        Query.Include(t => t.IPGTransaction.IsActive && t.IPGTransaction.TrackId == trackId)
-            .Include(t => t.IPGTransaction).Include(t=>t.PaymentRequest);
+        Query//.Include(t => t.IPGTransaction.IsActive && t.IPGTransaction.TrackId == trackId)
+            .Include(t => t.IPGTransaction).Include(t=>t.PaymentRequest).
+            Where(a=> a.IPGTransaction.IsActive && a.IPGTransaction.TrackId==trackId && a.PaymentRequest.IsActive);
     }
 }

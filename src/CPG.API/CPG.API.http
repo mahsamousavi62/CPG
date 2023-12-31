@@ -17,10 +17,10 @@ POST {{CPG.API_HostAddress}}/api/paymentrequest/CreateIPGJsonStr
 Content-Type: application/json
 
 {
-"companyIPGId":7,
+"companyIPGId":1,
 "companyPaymentMethodType":2,
 "paymentRequestCode":
-"Test_pay__daryaftyar_client_a68e6603c7cf48d0)"
+"CIP_pay__daryaftyar_client_549dcc69619c4854"
 }
 
 
