@@ -9,16 +9,21 @@ using System.Threading;
 using System.Threading.Tasks;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
 using Microsoft.EntityFrameworkCore;
+using CPG.Domain.AggregateModels.TransactionAggregate;
+using CPG.Domain.AggregateModels.TransactionAggregate.Specifications;
+using CPG.Application.Shared.Resource;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 
 public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
     IAggregateRepository<PaymentRequest> paymentRequestAggregateRepository,
+    IAggregateRepository<Transaction> transactionRepository,
     ReadDbContext context) : IRequestHandler<VerifyTransactionQuery, ResultData<VerifyTransactionResponse>>
 {
 
     private readonly IIpgFactory _ipgFactory = ipgFactory;
     private readonly IAggregateRepository<PaymentRequest> _paymentRequestRepository = paymentRequestAggregateRepository;
+    private readonly IAggregateRepository<Transaction> _transactionRepository = transactionRepository;
     private readonly ReadDbContext _context = context;
 
     public async Task<ResultData<VerifyTransactionResponse>> Handle(VerifyTransactionQuery request, CancellationToken cancellationToken)
@@ -34,6 +39,49 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
                 ProviderData = companyIpg.ProviderData,
                 ProviderTrackerId = 1,
             });
+
+            var transaction = await _transactionRepository.GetBySpecAsync(new TransactionByProviderTrackerId(request.VerifyTransaction.ProviderTrackerId.ToString()));
+            var paymentRequest = await _paymentRequestRepository.GetByIdAsync(transaction.PaymentRquestId);
+
+            if (transaction is null || paymentRequest is null || transaction.IPGTransaction is null)
+            {
+                return new ResultData<VerifyTransactionResponse>
+                {
+                    OperationResult = Enums.OperationResult.Failed,
+                    Error = GlobalResource.UnexpectedError
+                };
+            }
+
+            transaction.IPGTransaction.Status = result.Status;
+            //ToDo:
+            //transaction.IPGTransaction.VerificationDateTime = ;
+
+            if (result.Status == Enums.IPGTransactionStatus.VerificationSucceeded)
+            {
+                var currentDateTime = DateTime.UtcNow.Date;
+                var timeMargin = new TimeOnly(22, 45);
+                var currentTime = new TimeOnly(currentDateTime.Hour, currentDateTime.Minute);
+                var date = DateTime.UtcNow.DayOfWeek == DayOfWeek.Thursday ?
+                    new DateTime(currentDateTime.AddDays(2).Year, currentDateTime.AddDays(2).Month, currentDateTime.AddDays(2).Day, currentTime < timeMargin ? 11 : 22, 45, 0) :
+                    new DateTime(currentDateTime.AddDays(1).Year, currentDateTime.AddDays(1).Month, currentDateTime.AddDays(1).Day, currentTime < timeMargin ? 11 : 22, 45, 0);
+
+                transaction.PredictedSettlementDateTime = date;
+                if (result.Status == Enums.IPGTransactionStatus.VerificationSucceeded)
+                {
+                    transaction.Status = Enums.TransactionStatus.TransactionSucceeded;
+                    paymentRequest.Status = 8;
+                }
+                else if(result.Status == Enums.IPGTransactionStatus.VerificationFailed)
+                {
+                    transaction.Status = Enums.TransactionStatus.TransactionFailed;
+                    paymentRequest.Status = 9;
+                }
+            }
+
+            await _transactionRepository.UpdateAsync(transaction);
+            await _transactionRepository.SaveChangesAsync();
+            await _paymentRequestRepository.UpdateAsync(paymentRequest);
+            await _paymentRequestRepository.SaveChangesAsync();
 
             return new ResultData<VerifyTransactionResponse>
             {

@@ -67,12 +67,26 @@ public class Enums
 
     public enum IPGTransactionStatus : byte
     {
-        WaitingResponseFromIPG = 0,
+        WaitingForPspResponse = 0,
+        FetchingResult = 1,
+        SucceededAndWaitingForVerification = 2,
+        Failed = 3, 
+        Expired = 4,
+        Verifying = 5,
+        VerificationSucceeded = 6,
+        VerificationFailed = 7,
+        Cancelling = 8,
+        CancellationSucceeded = 9,
+        CancellationFailed = 10,
     }
 
     public enum TransactionStatus : byte
     {
         InPrgress = 0,
+        TransactionSucceeded = 1,
+        TransactionFailed = 2,
+        SettlementSucceeded = 3,
+        SettlementFailed = 4,
     }
 
     public enum PaymentStatus
