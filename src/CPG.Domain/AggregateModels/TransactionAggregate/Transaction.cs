@@ -7,6 +7,7 @@ using CPG.Domain.SharedKernel;
 using CPG.Domain.AggregateModels.CompanyIPGAggregate;
 using CPG.Domain.SharedKernel.Communication.Idp.Models.UserProfile;
 using System.Transactions;
+using CPG.Application.UseCases.CompanyDeposits;
 
 namespace CPG.Domain.AggregateModels.TransactionAggregate;
 
@@ -36,6 +37,7 @@ public class Transaction : AuditableEntity<long>, IAggregateRoot
     public Enums.TransactionStatus Status { get; set; }
     public PaymentRequest PaymentRequest { get; set; }
     public IPGTransaction IPGTransaction { get; set; }
+    public CompanyDeposit DestinationDeposit { get; set; }
 
     public static Transaction Create(CreateTransactionModel model)
     {
@@ -44,7 +46,7 @@ public class Transaction : AuditableEntity<long>, IAggregateRoot
                                                   model.DestinationDepositId, model.PaymentRequest.Amount,
                                                   model.PaymentRequest.Application.Id, Enums.TransactionStatus.InPrgress);
 
-        var ipgTransaction = IPGTransaction.Create(model.TrackId, Enums.IPGTransactionStatus.WaitingResponseFromIPG,
+        var ipgTransaction = IPGTransaction.Create(model.TrackId, Enums.IPGTransactionStatus.WaitingForPspResponse,
                                                    model.CompanyIPG.Id, model.Token, model.CompanyIPG.VerificationTimeLimit);
 
         transaction.IPGTransaction = ipgTransaction;

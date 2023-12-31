@@ -37,7 +37,6 @@ namespace CPG.Infrastructure.Persistence.QueryHandlers.PaymentRequests
             Id=p.Id,    
             IsActive=p.IsActive,
             IsUsed=p.IsUsed,    
-            IsVerified  =p.IsVerified,
             ModificationDate=p.ModificationDate,
             NationalCode=p.NationalCode,
            // Status  = (System.Int16)p.Status,
