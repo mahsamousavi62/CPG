@@ -71,8 +71,5 @@ namespace CPG.Domain.SharedKernel.Communication.Ipg.Models.TransactionResult
 
         [JsonPropertyName("payGateTranDateEpoch")]
         public double PayGateTranDateEpoch { get; set; }
-
-        [Newtonsoft.Json.JsonIgnore]
-        public short Status { get; set; }
     }
 }

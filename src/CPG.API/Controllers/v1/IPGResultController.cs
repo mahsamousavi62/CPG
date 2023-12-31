@@ -43,7 +43,7 @@ public class IPGResultController : ApiBaseController
     public async Task<IActionResult> ValidateToken(string trackId)
     {
         var redirectUrlData = await Mediator.Send(new ValidateTokenQuery(new ValidateTokenViewModel { TrackId = trackId }));
-        return Redirect(redirectUrlData.Data);
+        return Ok(redirectUrlData.Data);
     }
 
     [HttpGet("ReturnToOriginByCode")]
