@@ -22,12 +22,12 @@ namespace CPG.Domain.SharedKernel.Communication
             where TBaseRequest : RequestBase;
                
         Task<TResponse?> GetAsync<TBaseRequest, TResponse, TError>(HttpProviderRequest<dynamic>? request, TBaseRequest? baseRequest, Func<TBaseRequest?, TResponse?, TError?, short, Task<TResponse?>>? errorHandler, Func<string, TResponse>? decoder = null)
-            where TResponse : class
+            where TResponse : ResponseBase
             where TError : ResponseBase
             where TBaseRequest : RequestBase;
 
         Task<TResponse?> GetAsync<TBaseRequest, TResponse, TError, TBody>(HttpProviderRequest<TBody>? request, TBaseRequest? baseRequest, Func<TBaseRequest?, TResponse?, TError?, short, Task<TResponse?>>? errorHandler, Func<string, TResponse>? decoder = null)
-            where TResponse : class
+            where TResponse : ResponseBase
             where TError : ResponseBase
             where TBaseRequest : RequestBase;
     }
