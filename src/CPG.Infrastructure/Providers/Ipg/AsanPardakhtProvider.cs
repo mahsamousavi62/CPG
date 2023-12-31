@@ -121,7 +121,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
                                                         Provider = Enums.ProviderType.AsanPardakht,
                                                         Service = Enums.ServiceType.AsanPardakhtTransResult,
                                                     }, request, TransactionResultErrorHandler);
-        response.Status = 2;
+        response.Status = response.Status == 200 ? (short)2 : response.Status;
         return response;
     }
 
