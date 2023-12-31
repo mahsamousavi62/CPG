@@ -493,6 +493,24 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string Error {
+            get {
+                return ResourceManager.GetString("Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ErrorInConnection.
+        /// </summary>
+        public static string ErrorInConnection {
+            get {
+                return ResourceManager.GetString("ErrorInConnection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to False.
         /// </summary>
         public static string False {
@@ -970,20 +988,20 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to TransactionNotFound.
-        /// </summary>
-        public static string TransactionNotFound {
-            get {
-                return ResourceManager.GetString("TransactionNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to TrackId status is invalid.
         /// </summary>
         public static string TrackIdInvalidStatusException {
             get {
                 return ResourceManager.GetString("TrackIdInvalidStatusException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TransactionNotFound.
+        /// </summary>
+        public static string TransactionNotFound {
+            get {
+                return ResourceManager.GetString("TransactionNotFound", resourceCulture);
             }
         }
         
