@@ -453,4 +453,10 @@
   <data name="TransactionNotFound" xml:space="preserve">
     <value>TransactionNotFound</value>
   </data>
+  <data name="InvalidCodeOrTrackIdException" xml:space="preserve">
+    <value>No PaymentRequest found having this Code or TrackId</value>
+  </data>
+  <data name="RequiredCodeOrTrackIdException" xml:space="preserve">
+    <value>Code or TrackId is required</value>
+  </data>
 </root>

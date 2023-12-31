@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CPG.Domain.AggregateModels.TransactionAggregate;
+using System;
 using System.Collections.Generic;
 
 namespace CPG.Infrastructure.Persistence.DbContexts.ReadModels;
@@ -17,4 +18,5 @@ public class CompanyDepositReadModel
     public BankReadModel Bank { get; set; }
     public CompanyReadModel Company { get; set; }
     public List<CompanyIPGDepositReadModel> CompanyIPGDeposits { get; set; }
+    public List<TransactionReadModel> Transactions { get; set; }
 }

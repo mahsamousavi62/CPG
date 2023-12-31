@@ -1,0 +1,14 @@
+﻿using Ardalis.Specification;
+using System.Linq;
+
+namespace CPG.Domain.AggregateModels.TransactionAggregate.Specifications;
+
+public class TransactionByPaymentRequestId : Specification<Transaction>, ISingleResultSpecification<Transaction>
+{
+    public TransactionByPaymentRequestId(long paymentRequestId)
+    {
+        Query.Where(c => c.PaymentRquestId == paymentRequestId)
+            .Include(t => t.IPGTransaction)
+            .Include(t => t.DestinationDeposit);
+    }
+}
