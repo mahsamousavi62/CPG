@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CPG.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(WriteDbContext))]
-    [Migration("20231225081411_removePaymentRequestIsVerified")]
-    partial class removePaymentRequestIsVerified
+    [Migration("20240101110321_AddTransactionRelations")]
+    partial class AddTransactionRelations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -552,6 +552,151 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.ToTable("Provider", (string)null);
                 });
 
+            modelBuilder.Entity("CPG.Domain.AggregateModels.TransactionAggregate.IPGTransaction", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("CompanyIPGId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("CompanyIPGId");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("CreationUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("EncryptCardNumber")
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("EncryptCardNumber");
+
+                    b.Property<string>("IPGToken")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("IPGToken");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModificationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("ModificationUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("PredicateDateTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("PredicateDateTime");
+
+                    b.Property<string>("ProviderTrackerId")
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("ProviderTrackerId");
+
+                    b.Property<string>("ReferenceNumber")
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("ReferenceNumber");
+
+                    b.Property<byte>("Status")
+                        .HasColumnType("tinyint")
+                        .HasColumnName("Status");
+
+                    b.Property<string>("TrackId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("TrackId");
+
+                    b.Property<DateTime>("VerificationDateTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("VerificationDateTime");
+
+                    b.Property<int>("VerificationTimeLimit")
+                        .HasColumnType("int")
+                        .HasColumnName("VerificationTimeLimit");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("IPGTransaction", (string)null);
+                });
+
+            modelBuilder.Entity("CPG.Domain.AggregateModels.TransactionAggregate.Transaction", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18)
+                        .HasColumnType("numeric")
+                        .HasColumnName("Amount");
+
+                    b.Property<long>("ApplicationId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("ApplicationId");
+
+                    b.Property<long>("CompanyId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("CompanyId");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("CreationUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("DestinationDepositId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("DestinationDepositId");
+
+                    b.Property<long>("IPGTransactionId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("IPGTransactionId");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModificationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("ModificationUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("PaymentRquestId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("PaymentRquestId");
+
+                    b.Property<DateTime>("PredictedSettlementDateTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("PredictedSettlementDateTime");
+
+                    b.Property<byte>("Status")
+                        .HasColumnType("tinyint")
+                        .HasColumnName("Status");
+
+                    b.Property<byte>("TransactionMethodType")
+                        .HasColumnType("tinyint")
+                        .HasColumnName("TransactionMethodType");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DestinationDepositId");
+
+                    b.HasIndex("IPGTransactionId")
+                        .IsUnique();
+
+                    b.HasIndex("PaymentRquestId")
+                        .IsUnique();
+
+                    b.ToTable("Transaction", (string)null);
+                });
+
             modelBuilder.Entity("CPG.Domain.AggregateModels.UserAggregate.User", b =>
                 {
                     b.Property<long>("Id")
@@ -930,6 +1075,33 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.Navigation("CompanyIPG");
                 });
 
+            modelBuilder.Entity("CPG.Domain.AggregateModels.TransactionAggregate.Transaction", b =>
+                {
+                    b.HasOne("CPG.Application.UseCases.CompanyDeposits.CompanyDeposit", "DestinationDeposit")
+                        .WithMany("Transactions")
+                        .HasForeignKey("DestinationDepositId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("CPG.Domain.AggregateModels.TransactionAggregate.IPGTransaction", "IPGTransaction")
+                        .WithOne("Transaction")
+                        .HasForeignKey("CPG.Domain.AggregateModels.TransactionAggregate.Transaction", "IPGTransactionId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("PaymentRequest", "PaymentRequest")
+                        .WithOne("Transaction")
+                        .HasForeignKey("CPG.Domain.AggregateModels.TransactionAggregate.Transaction", "PaymentRquestId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("DestinationDeposit");
+
+                    b.Navigation("IPGTransaction");
+
+                    b.Navigation("PaymentRequest");
+                });
+
             modelBuilder.Entity("CPG.Domain.AggregateModels.UserAggregate.User", b =>
                 {
                     b.HasOne("CPG.Domain.AggregateModels.CompanyAggregate.Company", "Company")
@@ -972,6 +1144,8 @@ namespace CPG.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("CPG.Application.UseCases.CompanyDeposits.CompanyDeposit", b =>
                 {
                     b.Navigation("CompanyIPGDeposits");
+
+                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("CPG.Domain.AggregateModels.ApplicationAggregate.Application", b =>
@@ -1006,9 +1180,19 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.Navigation("IPGDeposits");
                 });
 
+            modelBuilder.Entity("CPG.Domain.AggregateModels.TransactionAggregate.IPGTransaction", b =>
+                {
+                    b.Navigation("Transaction");
+                });
+
             modelBuilder.Entity("CPG.Domain.AggregateModels.UserAggregate.User", b =>
                 {
                     b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("PaymentRequest", b =>
+                {
+                    b.Navigation("Transaction");
                 });
 #pragma warning restore 612, 618
         }

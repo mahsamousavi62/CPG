@@ -23,5 +23,7 @@ public class IPGTransactionConfiguration : IEntityTypeConfiguration<IPGTransacti
         entity.Property(x => x.EncryptCardNumber).HasColumnName("EncryptCardNumber").HasColumnType("varchar(255)");
         entity.Property(x => x.VerificationTimeLimit).HasColumnName("VerificationTimeLimit").HasColumnType("int");
         entity.Property(x => x.PredicateDateTime).HasColumnName("PredicateDateTime").HasColumnType("datetime2");
+        entity.Property(x => x.VerificationDateTime).HasColumnName("VerificationDateTime").HasColumnType("datetime2");
+
     }
 }
