@@ -405,8 +405,8 @@
   <data name="ProviderId" xml:space="preserve">
     <value>سرویس‌دهنده</value>
   </data>
-  <data name="VerificationTimeLimit" xml:space="preserve">
-    <value>محدودیت زمانی تایید</value>
+  <data name="IpgVerificationTimeLimit" xml:space="preserve">
+    <value>محدودیت زمانی تایید درگاه</value>
   </data>
   <data name="VerificationTimeLimitIPG" xml:space="preserve">
     <value>محدودیت زمانی تایید تراکنش درگاه</value>

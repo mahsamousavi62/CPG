@@ -18,6 +18,9 @@ namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations
             entity.Property(x => x.Logo).HasColumnName("Logo").HasColumnType("nvarchar(max)").IsRequired();
             entity.Property(x => x.ProviderType).HasColumnName("ProviderType").HasColumnType("tinyint").IsRequired();
             entity.Property(x => x.ProviderData).HasColumnName("ProviderData").HasColumnType("nvarchar(max)").IsRequired();
+            entity.Property(x => x.IpgVerificationTimeLimit).HasColumnType("tinyint").IsRequired();
+            entity.Property(x => x.IpgBaseUrl).HasMaxLength(1000).HasColumnType("varchar").IsRequired();
+
         }
     }
 }

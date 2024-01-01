@@ -35,6 +35,19 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
         {   
             var paymentRequest = await _paymentRequestRepository.GetBySpecAsync(new PaymentRequestByCodeOrTrackerId(request.VerifyTransaction.Code, request.VerifyTransaction.TrackerId));
 
+            if (paymentRequest is null)
+            {
+                return new ResultData<VerifyTransactionResponseViewModel>
+                {
+                    OperationResult = OperationResult.Failed,
+                    Error = GlobalResource.UnexpectedError
+                };
+            }
+
+            paymentRequest.Status = PaymentStatus.TransactionVerifiedByApplication;
+            await _paymentRequestRepository.UpdateAsync(paymentRequest);
+            await _paymentRequestRepository.SaveChangesAsync();
+
             var transaction = await _transactionRepository.GetBySpecAsync(new TransactionByPaymentRequestId(paymentRequest.Id));
 
             var companyIpg = await _context.CompanyIPGReadModels.FirstOrDefaultAsync(t => t.Id == transaction.IPGTransaction.CompanyIPGId);
@@ -47,39 +60,35 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
                 ProviderTrackerId = 1,
             });
 
-            if (transaction is null || paymentRequest is null || transaction.IPGTransaction is null)
+            if (transaction is null || transaction.IPGTransaction is null)
             {
                 return new ResultData<VerifyTransactionResponseViewModel>
                 {
-                    OperationResult = Enums.OperationResult.Failed,
+                    OperationResult = OperationResult.Failed,
                     Error = GlobalResource.UnexpectedError
                 };
             }
 
-            transaction.IPGTransaction.Status = result.Status;
-            //ToDo:
-            //transaction.IPGTransaction.VerificationDateTime = ;
-
-            if (result.Status == Enums.IPGTransactionStatus.VerificationSucceeded)
+            transaction.IPGTransaction.Status = result.Status;            
+            
+            if (result.Status == IPGTransactionStatus.VerificationSucceeded)
             {
                 var currentDateTime = DateTime.UtcNow.Date;
-                var timeMargin = new TimeOnly(22, 45);
+                var timeMargin = new TimeOnly(23, 45);
                 var currentTime = new TimeOnly(currentDateTime.Hour, currentDateTime.Minute);
-                var date = DateTime.UtcNow.DayOfWeek == DayOfWeek.Thursday ?
-                    new DateTime(currentDateTime.AddDays(2).Year, currentDateTime.AddDays(2).Month, currentDateTime.AddDays(2).Day, currentTime < timeMargin ? 11 : 22, 45, 0) :
-                    new DateTime(currentDateTime.AddDays(1).Year, currentDateTime.AddDays(1).Month, currentDateTime.AddDays(1).Day, currentTime < timeMargin ? 11 : 22, 45, 0);
+                var date = currentTime < timeMargin ? 
+                    new DateTime(currentDateTime.AddDays(1).Year, currentDateTime.AddDays(1).Month, currentDateTime.AddDays(1).Day, 7, 0, 0) :
+                    new DateTime(currentDateTime.AddDays(2).Year, currentDateTime.AddDays(2).Month, currentDateTime.AddDays(2).Day, 7, 0, 0);
 
                 transaction.PredictedSettlementDateTime = date;
-                if (result.Status == Enums.IPGTransactionStatus.VerificationSucceeded)
-                {
-                    transaction.Status = Enums.TransactionStatus.TransactionSucceeded;
-                    paymentRequest.Status = Enums.PaymentStatus.TransactionVerificationSucceeded;
-                }
-                else if(result.Status == Enums.IPGTransactionStatus.VerificationFailed)
-                {
-                    transaction.Status = Enums.TransactionStatus.TransactionFailed;
-                    paymentRequest.Status = Enums.PaymentStatus.TransactionVerificationFailed;
-                }
+                transaction.Status = TransactionStatus.TransactionSucceeded;
+                transaction.IPGTransaction.VerificationDateTime = DateTime.UtcNow;
+                paymentRequest.Status = PaymentStatus.TransactionVerificationSucceeded;
+            }            
+            else if (result.Status == IPGTransactionStatus.VerificationFailed)
+            {
+                transaction.Status = TransactionStatus.TransactionFailed;
+                paymentRequest.Status = PaymentStatus.TransactionVerificationFailed;
             }
 
             await _transactionRepository.UpdateAsync(transaction);
@@ -89,24 +98,22 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
 
             var response = new VerifyTransactionResponseViewModel
             {
-                Amount = paymentRequest.Amount.ToString(),
+                Amount = paymentRequest.Amount,
                 Code = paymentRequest.Code,
                 TrackerId = paymentRequest.TrackerId,
                 DestinationDepositIban = transaction.DestinationDeposit.Iban,
                 ReferenceNumber = transaction.IPGTransaction.ReferenceNumber,
-                PaymentMethodType = ((short)transaction?.TransactionMethodType).ToString(),
+                PaymentMethodType = (short)transaction?.TransactionMethodType,
                 PaymentMethodTypeTitle = transaction is null ? string.Empty : GetPaymentMethodTypeTitle(transaction.TransactionMethodType),
-                Status = ((short)paymentRequest.Status).ToString(),
+                Status = (short)paymentRequest.Status,
                 StatusTitle = GetStatusTitle(paymentRequest.Status),
-                PredictedExpirationDateTime = transaction.PredictedSettlementDateTime.ToString(),
-                //ToDo:
-                //CPGVerificationDateTime = transaction.IPGTransaction.VerificationDateTime
-                CPGVerificationDateTime = string.Empty
+                PredictedExpirationDateTime = transaction.PredictedSettlementDateTime.ToString("yyyy-MM-dd HH:mm:ss zzz"),                
+                CPGVerificationDateTime = transaction.IPGTransaction.VerificationDateTime.ToString("yyyy-MM-dd HH:mm:ss zzz"),
             };
 
             return new ResultData<VerifyTransactionResponseViewModel>
             {
-                OperationResult = Enums.OperationResult.Succeeded,
+                OperationResult = OperationResult.Succeeded,
                 Data = response
             };
         }
@@ -114,7 +121,7 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
         {
             return new ResultData<VerifyTransactionResponseViewModel>
             {
-                OperationResult = Enums.OperationResult.Failed,
+                OperationResult = OperationResult.Failed,
                 Error = ex.Message
             };
         }

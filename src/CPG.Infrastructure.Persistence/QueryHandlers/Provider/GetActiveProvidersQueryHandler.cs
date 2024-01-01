@@ -2,6 +2,7 @@
 using CPG.Application.UseCases.Banks.ViewModels;
 using CPG.Application.UseCases.Providers.Queries;
 using CPG.Application.UseCases.Providers.ViewModels;
+using CPG.Domain.SeedWork;
 using CPG.Domain.SharedKernel.Minio;
 using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
@@ -32,6 +33,8 @@ public class GetActiveProvidersQueryHandler(ReadDbContext context, IMinioProvide
             Logo = await _minioProvider.PresignedGetObject(x.Logo),
             ProviderData = x.ProviderData,
             ProviderType = x.ProviderType,
+            IpgVerificationTimeLimit = x.IpgVerificationTimeLimit,
+            IpgBaseUrl = x.IpgBaseUrl,
             CreationDate = x.CreationDate,
             ModificationDate = x.ModificationDate,
         })).ConfigureAwait(false);

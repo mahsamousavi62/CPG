@@ -33,7 +33,7 @@ public class CompanyIPGController : ApiBaseController
     public async Task<IActionResult> CreateCompanyIPG(CreateCompanyIPGModel model)
     {
         var createIpgDepositViewModels = model.CompanyIPGDeposits.Select(t => new CreateCompanyIPGDepositViewModel { DepositId = t.DepositId, IsDefault = t.IsDefault }).ToList();
-        var createViewModel = new CreateCompanyIPGViewModel(model.CompanyId, model.ProviderId, model.IPGTypeId, model.ProviderData, model.VerificationTimeLimit, createIpgDepositViewModels);
+        var createViewModel = new CreateCompanyIPGViewModel(model.CompanyId, model.ProviderId, model.IPGTypeId, model.ProviderData, createIpgDepositViewModels);
 
         var companyIpgId = await Mediator.Send(new CreateCompanyIPGCommand(createViewModel));
 
