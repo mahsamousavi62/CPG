@@ -3,8 +3,8 @@ using MediatR;
 
 namespace CPG.Application.UseCases.Ipg.Commands;
 
-public class ValidateTokenCommand(ValidateTokenViewModel model) : IRequest
+public class ValidateTokenCommand(ValidateTokenRequestViewModel model) : IRequest
 {
-    public ValidateTokenViewModel ValidateToken { get; set; } = model;
+    public ValidateTokenRequestViewModel ValidateToken { get; set; } = model;
 }
 
