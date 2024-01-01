@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CPG.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(WriteDbContext))]
-    [Migration("20231230124807_AddDepositRelationToTransaction")]
-    partial class AddDepositRelationToTransaction
+    [Migration("20240101110321_AddTransactionRelations")]
+    partial class AddTransactionRelations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -610,6 +610,10 @@ namespace CPG.Infrastructure.Persistence.Migrations
                         .HasColumnType("varchar(255)")
                         .HasColumnName("TrackId");
 
+                    b.Property<DateTime>("VerificationDateTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("VerificationDateTime");
+
                     b.Property<int>("VerificationTimeLimit")
                         .HasColumnType("int")
                         .HasColumnName("VerificationTimeLimit");
@@ -1076,19 +1080,19 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.HasOne("CPG.Application.UseCases.CompanyDeposits.CompanyDeposit", "DestinationDeposit")
                         .WithMany("Transactions")
                         .HasForeignKey("DestinationDepositId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("CPG.Domain.AggregateModels.TransactionAggregate.IPGTransaction", "IPGTransaction")
                         .WithOne("Transaction")
                         .HasForeignKey("CPG.Domain.AggregateModels.TransactionAggregate.Transaction", "IPGTransactionId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("PaymentRequest", "PaymentRequest")
                         .WithOne("Transaction")
                         .HasForeignKey("CPG.Domain.AggregateModels.TransactionAggregate.Transaction", "PaymentRquestId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("DestinationDeposit");

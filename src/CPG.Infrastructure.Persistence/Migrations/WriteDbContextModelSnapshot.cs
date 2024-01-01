@@ -1083,13 +1083,13 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.HasOne("CPG.Domain.AggregateModels.TransactionAggregate.IPGTransaction", "IPGTransaction")
                         .WithOne("Transaction")
                         .HasForeignKey("CPG.Domain.AggregateModels.TransactionAggregate.Transaction", "IPGTransactionId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("PaymentRequest", "PaymentRequest")
                         .WithOne("Transaction")
                         .HasForeignKey("CPG.Domain.AggregateModels.TransactionAggregate.Transaction", "PaymentRquestId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("DestinationDeposit");
