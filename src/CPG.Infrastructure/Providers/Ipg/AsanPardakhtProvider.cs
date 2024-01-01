@@ -14,6 +14,7 @@ using CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentTicket;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentToken;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.TransactionResult;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
+using CPG.Domain.SharedKernel.Helper;
 using CPG.Infrastructure.Persistence.DbContexts;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -54,7 +55,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
 
         ResultData<PaymentTokenResponse> resultData = new();
         var headers = GetHeaders();
-        var trackerId = await GetTrackerIdAsync();
+        var trackerId = RandomGenerator.GenerateRandomDigitNumber(16);
         var callBack = await CreateCallbackUrl((short)request.IpgRedirectionMethodType, request.SiteAddress, trackerId.ToString(), configViewModel.CPG_BackEnd);
         var req = new AsanPardakhtTokenRequest
         {
@@ -121,7 +122,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
                                                         Provider = Enums.ProviderType.AsanPardakht,
                                                         Service = Enums.ServiceType.AsanPardakhtTransResult,
                                                     }, request, TransactionResultErrorHandler);
-        response.Status = 2;
+        response.Status = response.Status == 200 ? (short)2 : response.Status;
         return response;
     }
 
@@ -147,8 +148,6 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
 
         return response;
     }
-
-
     private string CreateAdditionalData()
     {
         string hexString = Guid.NewGuid().ToString("N");
@@ -194,6 +193,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
         }
         ;
     }
+   
     private static async Task<TResponse?> PaymentTokenErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest? baseRequest, TResponse? response, TError? error, short statusCode)
       where TResponse : AsanPardakhtTokenResponse
       where TError : AsanPardakhtResponseBase

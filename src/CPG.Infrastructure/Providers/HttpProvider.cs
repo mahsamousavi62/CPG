@@ -82,7 +82,7 @@ public class HttpProvider : IHttpProvider
             {
                 return await errorHandler(baseRequest, result, errorResult, (short)response.StatusCode);
             }
-
+            result.Status = (short)response.StatusCode;
             return result;
         }
         catch (Exception exc)
@@ -154,7 +154,7 @@ public class HttpProvider : IHttpProvider
             {
                 return await errorHandler(baseRequest, result, errorResult, (short)response.StatusCode);
             }
-
+            result.Status = (short)response.StatusCode;
             return result;
         }
         catch (Exception exc)
@@ -284,7 +284,7 @@ public class HttpProvider : IHttpProvider
     }
 
     public async Task<TResponse?> GetAsync<TBaseRequest, TResponse, TError>(HttpProviderRequest<dynamic>? request, TBaseRequest? baseRequest, Func<TBaseRequest?, TResponse?, TError?,short, Task<TResponse?>>? errorHandler, Func<string, TResponse>? decoder = null)
-        where TResponse : class
+        where TResponse : ResponseBase
         where TError : ResponseBase
         where TBaseRequest : RequestBase
     {
@@ -292,7 +292,7 @@ public class HttpProvider : IHttpProvider
     }
 
     public async Task<TResponse?> GetAsync<TBaseRequest, TResponse, TError, TBody>(HttpProviderRequest<TBody>? request, TBaseRequest? baseRequest, Func<TBaseRequest?, TResponse?, TError?,short, Task<TResponse?>>? errorHandler, Func<string, TResponse>? decoder = null)
-        where TResponse : class
+        where TResponse : ResponseBase
         where TError : ResponseBase
         where TBaseRequest : RequestBase
     {
@@ -342,7 +342,7 @@ public class HttpProvider : IHttpProvider
                     return await errorHandler(baseRequest, result, errorResult, (short)response.StatusCode);
                 }
             }
-
+            result.Status = (short)response.StatusCode;
             return result;
         }
         catch (Exception exc)

@@ -1,8 +1,12 @@
-﻿namespace CPG.Application.UseCases.Ipg.ViewModels;
+﻿using System.Text.Json.Serialization;
+
+namespace CPG.Application.UseCases.Ipg.ViewModels;
 
 public class VerifyTransactionViewModel
 {
-    public long CompanyIPGId { get; set; }
+    [JsonPropertyName("code")]
+    public string Code { get; set; }
 
-    public long ProviderTrackerId { get; set; }
+    [JsonPropertyName("trackerId")]
+    public string TrackerId { get; set; }
 }
