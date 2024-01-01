@@ -12,13 +12,15 @@ using Microsoft.EntityFrameworkCore;
 using CPG.Domain.AggregateModels.TransactionAggregate;
 using CPG.Domain.AggregateModels.TransactionAggregate.Specifications;
 using CPG.Application.Shared.Resource;
+using CPG.Application.UseCases.Ipg.ViewModels;
+using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 
 public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
     IAggregateRepository<PaymentRequest> paymentRequestAggregateRepository,
     IAggregateRepository<Transaction> transactionRepository,
-    ReadDbContext context) : IRequestHandler<VerifyTransactionQuery, ResultData<VerifyTransactionResponse>>
+    ReadDbContext context) : IRequestHandler<VerifyTransactionQuery, ResultData<VerifyTransactionResponseViewModel>>
 {
 
     private readonly IIpgFactory _ipgFactory = ipgFactory;
@@ -26,7 +28,7 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
     private readonly IAggregateRepository<Transaction> _transactionRepository = transactionRepository;
     private readonly ReadDbContext _context = context;
 
-    public async Task<ResultData<VerifyTransactionResponse>> Handle(VerifyTransactionQuery request, CancellationToken cancellationToken)
+    public async Task<ResultData<VerifyTransactionResponseViewModel>> Handle(VerifyTransactionQuery request, CancellationToken cancellationToken)
     {
         try
         {
@@ -45,7 +47,7 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
 
             if (transaction is null || paymentRequest is null || transaction.IPGTransaction is null)
             {
-                return new ResultData<VerifyTransactionResponse>
+                return new ResultData<VerifyTransactionResponseViewModel>
                 {
                     OperationResult = Enums.OperationResult.Failed,
                     Error = GlobalResource.UnexpectedError
@@ -69,12 +71,12 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
                 if (result.Status == Enums.IPGTransactionStatus.VerificationSucceeded)
                 {
                     transaction.Status = Enums.TransactionStatus.TransactionSucceeded;
-                    paymentRequest.Status = 8;
+                    paymentRequest.Status = Enums.PaymentStatus.TransactionVerificationSucceeded;
                 }
                 else if(result.Status == Enums.IPGTransactionStatus.VerificationFailed)
                 {
                     transaction.Status = Enums.TransactionStatus.TransactionFailed;
-                    paymentRequest.Status = 9;
+                    paymentRequest.Status = Enums.PaymentStatus.TransactionVerificationFailed;
                 }
             }
 
@@ -83,19 +85,66 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
             await _paymentRequestRepository.UpdateAsync(paymentRequest);
             await _paymentRequestRepository.SaveChangesAsync();
 
-            return new ResultData<VerifyTransactionResponse>
+            var response = new VerifyTransactionResponseViewModel
+            {
+                Amount = paymentRequest.Amount.ToString(),
+                Code = paymentRequest.Code,
+                TrackerId = paymentRequest.TrackerId,
+                DestinationDepositIban = transaction.DestinationDeposit.Iban,
+                ReferenceNumber = transaction.IPGTransaction.ReferenceNumber,
+                PaymentMethodType = ((short)transaction?.TransactionMethodType).ToString(),
+                PaymentMethodTypeTitle = transaction is null ? string.Empty : GetPaymentMethodTypeTitle(transaction.TransactionMethodType),
+                Status = ((short)paymentRequest.Status).ToString(),
+                StatusTitle = GetStatusTitle(paymentRequest.Status),
+                PredictedExpirationDateTime = transaction.PredictedSettlementDateTime.ToString(),
+                //ToDo:
+                //CPGVerificationDateTime = transaction.IPGTransaction.VerificationDateTime
+                CPGVerificationDateTime = string.Empty
+            };
+
+            return new ResultData<VerifyTransactionResponseViewModel>
             {
                 OperationResult = Enums.OperationResult.Succeeded,
-                Data = result
+                Data = response
             };
         }
         catch (Exception ex)
         {
-            return new ResultData<VerifyTransactionResponse>
+            return new ResultData<VerifyTransactionResponseViewModel>
             {
                 OperationResult = Enums.OperationResult.Failed,
                 Error = ex.Message
             };
         }
+    }
+
+    private string GetStatusTitle(PaymentStatus status)
+    {
+        return status switch
+        {
+            PaymentStatus.Draft => "DRAFT",
+            PaymentStatus.RedirectedToCpg => "REDIRECTED_TO_CPG",
+            PaymentStatus.CanceledByUser => "CANCELLED_BY_USER",
+            PaymentStatus.InProgress => "TRANSACTION_IN_PROGRESS",
+            PaymentStatus.TransactionWaitingForVerification => "TRANSACTION_WAITING_FOR_VERIFICATION",
+            PaymentStatus.TransactionFailed => "TRANSACTION_FAILED",
+            PaymentStatus.TransactionVerifiedByApplication => "TRANSACTION_VERIFIED_BY_APPLICATION",
+            PaymentStatus.TransactionCanceledByApplication => "TRANSACTION_CANCELLED_BY_APPLICATION",
+            PaymentStatus.TransactionVerificationSucceeded => "TRANSACTION_VERIFICATION_SUCCEEDED",
+            PaymentStatus.TransactionVerificationFailed => "TRANSACTION_VERIFICATION_FAILED",
+            PaymentStatus.SettlementSucceeded => "SETTLEMENT_SUCCEEDED",
+            PaymentStatus.SettlementFailed => "SETTLEMENT_FAILED",
+            _ => string.Empty
+        };
+    }
+
+    private string GetPaymentMethodTypeTitle(TransactionType type)
+    {
+        return type switch
+        {
+            TransactionType.IPG => "INTERNET_PAYMENT_GATEWAY",
+            TransactionType.DirectDebit => "DIRECT_DEBIT",
+            _ => string.Empty
+        };
     }
 }

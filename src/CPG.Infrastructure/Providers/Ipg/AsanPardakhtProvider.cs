@@ -105,7 +105,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
 
     public async Task<TransactionResultResponse> GetTransactionResult(TransactionResultRequest request)
     {
-        dynamic jsonObjectProviderData = JObject.Parse(request.ProviderData);
+        GetDataFromJsonProvider(request.ProviderData);
         ResultData<TransactionResultResponse> resultData = new();
         var headers = GetHeaders();
         var response = await httpProvider.GetAsync<TransactionResultRequest, TransactionResultResponse,
@@ -122,13 +122,13 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
                                                         Provider = Enums.ProviderType.AsanPardakht,
                                                         Service = Enums.ServiceType.AsanPardakhtTransResult,
                                                     }, request, TransactionResultErrorHandler);
-
+        response.Status = response.Status == 200 ? (short)2 : response.Status;
         return response;
     }
 
     public async Task<VerifyTransactionResponse> Verify(VerifyTransactionRequest request)
     {
-        dynamic jsonObjectProviderData = JObject.Parse(request.ProviderData);
+        GetDataFromJsonProvider(request.ProviderData);
         ResultData<VerifyTransactionResponse> resultData = new();
         var headers = GetHeaders();
         var response = await httpProvider.PostAsync<VerifyTransactionRequest, VerifyTransactionResponse,
@@ -137,7 +137,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
                                                         Body = new VerifyRequest
                                                         {
                                                             PayGateTranId = request.ProviderTrackerId,
-                                                            MerchantConfigurationId = (int)jsonObjectProviderData["Merchant_Configuration_Id"]
+                                                            MerchantConfigurationId = merchantConfigurationId
                                                         },
                                                         BaseAddress = "https://ipgrest.asanpardakht.ir/",
                                                         Uri = "v1/Verify",

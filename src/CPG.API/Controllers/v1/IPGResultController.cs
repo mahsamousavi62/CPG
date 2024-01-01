@@ -5,6 +5,8 @@ using CPG.Application.UseCases.Ipg.ViewModels;
 using CPG.Domain.SharedKernel.ApplicationSettings;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.Identity.Client;
+using CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
 
 namespace CPG.API.Controllers.v1;
 
@@ -31,27 +33,24 @@ public class IPGResultController : ApiBaseController
     public async Task<IActionResult> GetTransactionDetail([Required] TransactionDetailRequestViewModel model)
         => Ok(await Mediator.Send(new TransactionDetailQuery(model)));
 
-    [HttpPost("ValidateToken/{trackId}")]
+    [HttpPost("VerifyTransaction")]
+    [ProducesResponseType(typeof(VerifyTransactionResponseViewModel), 200)]
+    public async Task<IActionResult> VerifyTransaction([Required] VerifyTransactionViewModel model)
+        => Ok(await Mediator.Send(new VerifyTransactionQuery(model)));
+
+    [HttpPost("{trackId}")]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
     public async Task<IActionResult> ValidateToken(string trackId)
     {
-        await Mediator.Send(new ValidateTokenCommand(new ValidateTokenViewModel { TrackId = trackId }));
-
-        return Accepted();
-       
+        var redirectUrlData = await Mediator.Send(new ValidateTokenQuery(new ValidateTokenViewModel { TrackId = trackId }));
+        return Ok(redirectUrlData.Data);
     }
+
     [HttpGet("ReturnToOriginByCode")]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
     public async Task<IActionResult> ReturnToOriginByCode([FromQuery] ReturnToOriginByCodeViewModel model)
     {
         return Ok(await Mediator.Send(new ReturnToOriginByCodeQuery(model)));
     }
-
-    [HttpGet("ReturnToOriginByTrackId")]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
-    public async Task<IActionResult> ReturnToOriginByTrackId([FromQuery] ReturnToOriginByTrackIdViewModel model)
-    {
-        return Ok(await Mediator.Send(new ReturnToOriginByTrackIdQuery(model)));
-    }
-
 }
 

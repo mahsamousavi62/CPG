@@ -10,7 +10,7 @@ using static CPG.Domain.SharedKernel.Enums;
 namespace CPG.Application.UseCases.Ipg.Commands;
 
 public class ValidateTokenCommandHandler(IAggregateRepository<Transaction> repository) : IRequestHandler<ValidateTokenCommand>
-{    
+{
     private readonly IAggregateRepository<Transaction> _repository = repository;
 
     public async Task Handle(ValidateTokenCommand command, CancellationToken cancellationToken)
@@ -19,7 +19,7 @@ public class ValidateTokenCommandHandler(IAggregateRepository<Transaction> repos
 
         if (transaction?.IPGTransaction is null)
             throw new NotFoundTrackIdException();
-        if(transaction.IPGTransaction.Status != IPGTransactionStatus.WaitingForPspResponse)
+        if (transaction.IPGTransaction.Status != IPGTransactionStatus.WaitingForPspResponse)
             throw new TrackIdInvalidStatusException();
     }
 }

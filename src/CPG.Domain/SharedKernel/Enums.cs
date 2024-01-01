@@ -70,7 +70,7 @@ public class Enums
         WaitingForPspResponse = 0,
         FetchingResult = 1,
         SucceededAndWaitingForVerification = 2,
-        Failed = 3, 
+        Failed = 3,
         Expired = 4,
         Verifying = 5,
         VerificationSucceeded = 6,
@@ -101,8 +101,10 @@ public class Enums
         TransactionCanceledByApplication = 7,
         TransactionVerificationSucceeded = 8,
         TransactionVerificationFailed = 9,
-        SettlementSucceeded = 10,
-        SettlementFailed = 11,
+        TransactionCancellationSucceeded = 10,
+        TransactionCancellationFailed = 11,
+        SettlementSucceeded = 12,
+        SettlementFailed = 13,
     }
 }
 
