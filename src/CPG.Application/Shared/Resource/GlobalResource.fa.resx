@@ -1,0 +1,474 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Active" xml:space="preserve">
+    <value>فعال</value>
+  </data>
+  <data name="Active/DeActive" xml:space="preserve">
+    <value>فعال/غیرفعال</value>
+  </data>
+  <data name="ApplicationNotFound" xml:space="preserve">
+    <value>برنامه با شناسه {0} یافت نشد</value>
+  </data>
+  <data name="ApplicationSettings" xml:space="preserve">
+    <value>تنظیمات برنامه</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>اعمال</value>
+  </data>
+  <data name="Apps" xml:space="preserve">
+    <value>برنامه‌ها</value>
+  </data>
+  <data name="BankNotFound" xml:space="preserve">
+    <value>بانک با شناسه {0} یافت نشد</value>
+  </data>
+  <data name="Banks" xml:space="preserve">
+    <value>بانک‌ها</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>لغو</value>
+  </data>
+  <data name="Companies" xml:space="preserve">
+    <value>شرکت‌ها</value>
+  </data>
+  <data name="CompanyDepositNotFound" xml:space="preserve">
+    <value>حساب شرکت یافت نشد</value>
+  </data>
+  <data name="CompanyNotFound" xml:space="preserve">
+    <value>شرکت یافت نشد</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>ایجاد</value>
+  </data>
+  <data name="CreateApplication" xml:space="preserve">
+    <value>ایجاد برنامه</value>
+  </data>
+  <data name="CreateCompany" xml:space="preserve">
+    <value>ایجاد شرکت</value>
+  </data>
+  <data name="CreationDate" xml:space="preserve">
+    <value>تاریخ و زمان ایجاد</value>
+  </data>
+  <data name="DeActive" xml:space="preserve">
+    <value>غیر فعال</value>
+  </data>
+  <data name="DirectDebit" xml:space="preserve">
+    <value>برداشت مستقیم</value>
+  </data>
+  <data name="DuplicateEnglishName" xml:space="preserve">
+    <value> نام لاتین '{0}' قبلا ثبت شده است</value>
+  </data>
+  <data name="DuplicateIban" xml:space="preserve">
+    <value>شبا {0}تکراری است</value>
+  </data>
+  <data name="DuplicatePersianName" xml:space="preserve">
+    <value>نام فارسی '{0}' قبلا ثبت شده است</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>ویرایش</value>
+  </data>
+  <data name="EnglishName" xml:space="preserve">
+    <value>نام لاتین</value>
+  </data>
+  <data name="False" xml:space="preserve">
+    <value>غیر</value>
+  </data>
+  <data name="Filter" xml:space="preserve">
+    <value>فیلتر</value>
+  </data>
+  <data name="IbanPrefix" xml:space="preserve">
+    <value>شناسه شبا</value>
+  </data>
+  <data name="IdpClientIds" xml:space="preserve">
+    <value>شناسه(ها)</value>
+  </data>
+  <data name="InternetPaymentGateway" xml:space="preserve">
+    <value>درگاه پرداخت اینترنتی</value>
+  </data>
+  <data name="MethodTypes" xml:space="preserve">
+    <value>روش‌(های) برداشت</value>
+  </data>
+  <data name="ModificationDate" xml:space="preserve">
+    <value>تاریخ و زمان بروز رسانی</value>
+  </data>
+  <data name="NationalCodeMatchingRequied" xml:space="preserve">
+    <value>تطبیق کدملی</value>
+  </data>
+  <data name="NationalCodeMatchingRequiedWithCardNumber" xml:space="preserve">
+    <value>تطبیق کدملی پرداخت کننده با شماره کارت</value>
+  </data>
+  <data name="PaymentReceipt" xml:space="preserve">
+    <value>فیش واریزی</value>
+  </data>
+  <data name="PersianName" xml:space="preserve">
+    <value>نام فارسی</value>
+  </data>
+  <data name="ProviderNotFound" xml:space="preserve">
+    <value>سرویس دهنده با شناسه {0} یافت نشد</value>
+  </data>
+  <data name="Providers" xml:space="preserve">
+    <value>سرویس‌دهنده‌ها</value>
+  </data>
+  <data name="ResponseApiUrl" xml:space="preserve">
+    <value>نشانی API بازگردانی نتیجه</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>جستجو</value>
+  </data>
+  <data name="SetActive" xml:space="preserve">
+    <value>فعال کردن</value>
+  </data>
+  <data name="SetDeActive" xml:space="preserve">
+    <value>غیرفعال کردن</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>تایید</value>
+  </data>
+  <data name="Test" xml:space="preserve">
+    <value>تست</value>
+  </data>
+  <data name="TitleMainMenu" xml:space="preserve">
+    <value>تنظیمات پایه</value>
+  </data>
+  <data name="True" xml:space="preserve">
+    <value>بله</value>
+  </data>
+  <data name="ApplicationLogo" xml:space="preserve">
+    <value>لوگوی برنامه</value>
+  </data>
+  <data name="CompanyLogo" xml:space="preserve">
+    <value>لوگوی شرکت</value>
+  </data>
+  <data name="Users" xml:space="preserve">
+    <value>کاربران</value>
+  </data>
+  <data name="UsersNotFound" xml:space="preserve">
+    <value>لیست کاربران نامعتبر می باشد</value>
+  </data>
+  <data name="IPGTypeNotFound" xml:space="preserve">
+    <value>نوع درگاه با شناسه {0} یافت نشد </value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>حذف</value>
+  </data>
+  <data name="BrokerageCharisma" xml:space="preserve">
+    <value>کارگزاری کاریزما</value>
+  </data>
+  <data name="Validation_Required" xml:space="preserve">
+    <value>فیلد {0} الزامی می باشد</value>
+  </data>
+  <data name="AccountNumber" xml:space="preserve">
+    <value>شماره حساب</value>
+  </data>
+  <data name="BankName" xml:space="preserve">
+    <value>بانک</value>
+  </data>
+  <data name="CreateDeposit" xml:space="preserve">
+    <value>ایجاد حساب</value>
+  </data>
+  <data name="CreateDepositCompanyFor" xml:space="preserve">
+    <value>ایجاد حساب بانکی برای</value>
+  </data>
+  <data name="Deposits" xml:space="preserve">
+    <value>حساب‌ها</value>
+  </data>
+  <data name="Iban" xml:space="preserve">
+    <value>شبا</value>
+  </data>
+  <data name="IPGs" xml:space="preserve">
+    <value>درگاه‌های پرداخت</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>نام</value>
+  </data>
+  <data name="Validation_IBan" xml:space="preserve">
+    <value>شبا نامعتبر است</value>
+  </data>
+  <data name="CreateProvider" xml:space="preserve">
+    <value>ایجاد سرویس‌دهنده</value>
+  </data>
+  <data name="ProviderLogo" xml:space="preserve">
+    <value>لوگوی سرویس‌دهنده</value>
+  </data>
+  <data name="ProviderType" xml:space="preserve">
+    <value>نوع سرویس‌دهنده</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>نوع</value>
+  </data>
+  <data name="Vandar" xml:space="preserve">
+    <value>وندار</value>
+  </data>
+  <data name="CompanyIPGNotFound" xml:space="preserve">
+    <value>درگاه شرکت با شناسه {0} یافت نشد</value>
+  </data>
+  <data name="CallbackUrls" xml:space="preserve">
+    <value>نشانی‌های بازگشتی (Callback URL)</value>
+  </data>
+  <data name="CompanySettings" xml:space="preserve">
+    <value>تنظیمات شرکت</value>
+  </data>
+  <data name="PaymentRequestRequiredData" xml:space="preserve">
+    <value>شرکت یا شبای مقصد را وارد کنید</value>
+  </data>
+  <data name="PaymentRequestDuplicateTrackerId" xml:space="preserve">
+    <value>شناسه رهگیری تکراری است</value>
+  </data>
+  <data name="PaymentRequestIbanCompanyInActive" xml:space="preserve">
+    <value>شرکت مربوط به شبای ارائه شده غیرفعال است</value>
+  </data>
+  <data name="PaymentRequestNotDefinedCompanyDeposit" xml:space="preserve">
+    <value>به ازای شبای ارائه شده هیچ حسابی تعریف نشده است</value>
+  </data>
+  <data name="PaymentRequestNotMatchIbanAndCompany" xml:space="preserve">
+    <value>حساب ارائه شده با شرکت مورد نظر ارتباطی نداشته و برای این شرکت تعریف نشده است.</value>
+  </data>
+  <data name="CompanyDepositByCompanyIdNotFound" xml:space="preserve">
+    <value>حسابی برای شرکت{0} تعریف نشده است</value>
+  </data>
+  <data name="CompanyIsInactive" xml:space="preserve">
+    <value>کاربر گرامی، شرکت "{0}" در حال حاضر غیرفعال بوده و امکان پرداخت وجه به آن امکان پذیر نیست. لطفا با پشتیبانی تماس بگیرید یا در ساعات دیگری از روز مراجعه کنید</value>
+  </data>
+  <data name="PaymentMessage" xml:space="preserve">
+    <value>واریز مبلغ : "{0} ریال" | "{1}" تومان برای شرکت : "{2}"</value>
+  </data>
+  <data name="PaymentRequestCodeIsExpired" xml:space="preserve">
+    <value>کاربر گرامی، نشانی پرداخت منقضی شده است، در صورت نیاز مجددا عملیات را تکرار کنید</value>
+  </data>
+  <data name="PaymentRequestCodeIsFinalized" xml:space="preserve">
+    <value>کاربر گرامی، این درخواست قبلا یکبار نهایی شده است</value>
+  </data>
+  <data name="PaymentRequestCodeIsUsed" xml:space="preserve">
+    <value>کاربر گرامی، این نشانی قبلا یکبار استفاده شده است، در صورت نیاز مجددا عملیات را تکرار کنید</value>
+  </data>
+  <data name="PaymentRequestCodeNotFound" xml:space="preserve">
+    <value>کاربر گرامی، نشانی پرداخت نامعتبر است</value>
+  </data>
+  <data name="PaymentRequestStatusIsInvalid" xml:space="preserve">
+    <value>کاربر گرامی، درخواست در وضعیت غیرمجاز است</value>
+  </data>
+  <data name="UnexpectedError" xml:space="preserve">
+    <value>خطایی غیرقابل پیش بینی رخ داده است، لطفا مجددا تلاش کنید یا با پشتیبانی تماس بگیرید</value>
+  </data>
+  <data name="IdpUserProfileException" xml:space="preserve">
+    <value>{0}خطا :</value>
+  </data>
+  <data name="UserNotFound" xml:space="preserve">
+    <value>کاربر وجود ندارد</value>
+  </data>
+  <data name="FileNotFound" xml:space="preserve">
+    <value>فایل مورد نظر یافت نشد</value>
+  </data>
+  <data name="AsanPardakht" xml:space="preserve">
+    <value>آسان پرداخت</value>
+  </data>
+  <data name="BaseOnMinute" xml:space="preserve">
+    <value>بر حسب دقیقه</value>
+  </data>
+  <data name="CompanyIPGDeposits" xml:space="preserve">
+    <value>حساب (های) متصل به درگاه</value>
+  </data>
+  <data name="CreateIPG" xml:space="preserve">
+    <value>ایجاد درگاه</value>
+  </data>
+  <data name="CreateIPGCompanyFor" xml:space="preserve">
+    <value>ایجاد درگاه برای شرکت</value>
+  </data>
+  <data name="DefaultDeposit" xml:space="preserve">
+    <value>حساب پیشفرض</value>
+  </data>
+  <data name="DefaultIPGDeposit" xml:space="preserve">
+    <value>حساب پیشفرض درگاه</value>
+  </data>
+  <data name="IPGTypeId" xml:space="preserve">
+    <value>نوع درگاه پرداخت</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>دقیقه</value>
+  </data>
+  <data name="ProviderId" xml:space="preserve">
+    <value>سرویس‌دهنده</value>
+  </data>
+  <data name="VerificationTimeLimit" xml:space="preserve">
+    <value>محدودیت زمانی تایید</value>
+  </data>
+  <data name="VerificationTimeLimitIPG" xml:space="preserve">
+    <value>محدودیت زمانی تایید تراکنش درگاه</value>
+  </data>
+  <data name="PaymentRequestNotFound" xml:space="preserve">
+    <value>درخواست پرداخت  با شناسه {0} یافت نشد </value>
+  </data>
+  <data name="CPGReferencePage" xml:space="preserve">
+    <value>صفحه مرجع CPG</value>
+  </data>
+  <data name="IpgRedirectionMethodType" xml:space="preserve">
+    <value>نحوه انتقال کاربر به درگاه پرداخت</value>
+  </data>
+  <data name="RayanReferencePage" xml:space="preserve">
+    <value>صفحه مرجع رایان هم افزا</value>
+  </data>
+  <data name="SiteAddressCompany" xml:space="preserve">
+    <value>نشانی سایت مربوط به شرکت</value>
+  </data>
+  <data name="MinioException" xml:space="preserve">
+    <value>خطای فایل سرور</value>
+  </data>
+  <data name="Before" xml:space="preserve">
+    <value>قبلی</value>
+  </data>
+  <data name="ChooseMethodPayment" xml:space="preserve">
+    <value>یکی از روش های پرداخت را انتخاب کنید.</value>
+  </data>
+  <data name="DepositAmount" xml:space="preserve">
+    <value>واریز مبلغ</value>
+  </data>
+  <data name="ForCompany" xml:space="preserve">
+    <value>برای شرکت</value>
+  </data>
+  <data name="Rial" xml:space="preserve">
+    <value>ریال</value>
+  </data>
+  <data name="Tooman" xml:space="preserve">
+    <value>تومان</value>
+  </data>
+  <data name="ParseCompanyIpgProviderData" xml:space="preserve">
+    <value>خطا در دسترسی به ProviderDate</value>
+  </data>
+  <data name="NotFoundTrackIdException" xml:space="preserve">
+    <value>کاربر گرامی، شناسه پرداخت نامعتبر است</value>
+  </data>
+  <data name="TrackIdInvalidStatusException" xml:space="preserve">
+    <value>کاربر گرامی، شناسه پرداخت در وضعیت غیرمجاز است</value>
+  </data>
+  <data name="InvalidCodeOrTrackIdException" xml:space="preserve">
+    <value>درخواستی با اطلاعات ارائه شده یافت نشد</value>
+  </data>
+  <data name="RequiredCodeOrTrackIdException" xml:space="preserve">
+    <value>وارد نمودن کد و یا شناسه رهگیری الزامیست</value>
+  </data>
+  <data name="TransactionNotFound" xml:space="preserve">
+    <value>تراکنش با این شناسه {0}یافت نشد</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>خطا</value>
+  </data>
+  <data name="ErrorInConnection" xml:space="preserve">
+    <value>خطا در برقراری ارتباط</value>
+  </data>
+</root>

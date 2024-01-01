@@ -1,0 +1,468 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ApplicationSettings" xml:space="preserve">
+    <value>ApplicationSettings</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="Apps" xml:space="preserve">
+    <value>Apps</value>
+  </data>
+  <data name="Banks" xml:space="preserve">
+    <value>Banks</value>
+  </data>
+  <data name="Companies" xml:space="preserve">
+    <value>Companies</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Create</value>
+  </data>
+  <data name="DirectDebit" xml:space="preserve">
+    <value>DirectDebit</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="Filter" xml:space="preserve">
+    <value>Filter</value>
+  </data>
+  <data name="InternetPaymentGateway" xml:space="preserve">
+    <value>InternetPaymentGateway</value>
+  </data>
+  <data name="PaymentReceipt" xml:space="preserve">
+    <value>PaymentReceipt</value>
+  </data>
+  <data name="Providers" xml:space="preserve">
+    <value>Providers</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="SetActive" xml:space="preserve">
+    <value>SetActive</value>
+  </data>
+  <data name="SetDeActive" xml:space="preserve">
+    <value>SetDeActive</value>
+  </data>
+  <data name="DuplicateEnglishName" xml:space="preserve">
+    <value> EnglishName '{0}' has already been created</value>
+  </data>
+  <data name="DuplicatePersianName" xml:space="preserve">
+    <value> PersianName '{0}' has already been created</value>
+  </data>
+  <data name="Test" xml:space="preserve">
+    <value>test</value>
+  </data>
+  <data name="TitleMainMenu" xml:space="preserve">
+    <value>TitleMainMenu</value>
+  </data>
+  <data name="Users" xml:space="preserve">
+    <value>Users</value>
+  </data>
+  <data name="ApplicationNotFound" xml:space="preserve">
+    <value>Application with Id {0} has not been found.</value>
+  </data>
+  <data name="BankNotFound" xml:space="preserve">
+    <value>Bank with Id {0} has not been found.</value>
+  </data>
+  <data name="ProviderNotFound" xml:space="preserve">
+    <value>Provider with Id {0} has not been found.</value>
+  </data>
+  <data name="CompanyDepositNotFound" xml:space="preserve">
+    <value>companyDepositNotFound</value>
+  </data>
+  <data name="DuplicateIban" xml:space="preserve">
+    <value>DuplicateIban</value>
+  </data>
+  <data name="CompanyNotFound" xml:space="preserve">
+    <value>CompanyNotFound</value>
+  </data>
+  <data name="UsersNotFound" xml:space="preserve">
+    <value>UsersNotFound</value>
+  </data>
+  <data name="Active" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="Active/DeActive" xml:space="preserve">
+    <value>Active/DeActive</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="CreateCompany" xml:space="preserve">
+    <value>CreateCompany</value>
+  </data>
+  <data name="DeActive" xml:space="preserve">
+    <value>DeActive</value>
+  </data>
+  <data name="EnglishName" xml:space="preserve">
+    <value>EnglishName</value>
+  </data>
+  <data name="False" xml:space="preserve">
+    <value>False</value>
+  </data>
+  <data name="IbanPrefix" xml:space="preserve">
+    <value>IbanPrefix</value>
+  </data>
+  <data name="MethodTypes" xml:space="preserve">
+    <value>MethodTypes</value>
+  </data>
+  <data name="NationalCodeMatchingRequied" xml:space="preserve">
+    <value>NationalCodeMatchingRequied</value>
+  </data>
+  <data name="NationalCodeMatchingRequiedWithCardNumber" xml:space="preserve">
+    <value>NationalCodeMatchingRequiedWithCardNumber</value>
+  </data>
+  <data name="PersianName" xml:space="preserve">
+    <value>PersianName</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Submit</value>
+  </data>
+  <data name="True" xml:space="preserve">
+    <value>True</value>
+  </data>
+  <data name="CompanyLogo" xml:space="preserve">
+    <value>CompanyLogo</value>
+  </data>
+  <data name="CreateApplication" xml:space="preserve">
+    <value>CreateApplication</value>
+  </data>
+  <data name="IdpClientIds" xml:space="preserve">
+    <value>IdpClientIds</value>
+  </data>
+  <data name="ResponseApiUrl" xml:space="preserve">
+    <value>ResponseApiUrl</value>
+  </data>
+  <data name="ApplicationLogo" xml:space="preserve">
+    <value>ApplicationLogo</value>
+  </data>
+  <data name="IPGTypeNotFound" xml:space="preserve">
+    <value>IPGType with Id {0} has not been found</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="BrokerageCharisma" xml:space="preserve">
+    <value>BrokerageCharisma</value>
+  </data>
+  <data name="Validation_Required" xml:space="preserve">
+    <value>Validation is required</value>
+  </data>
+  <data name="AccountNumber" xml:space="preserve">
+    <value>AccountNumber</value>
+  </data>
+  <data name="BankName" xml:space="preserve">
+    <value>BankName</value>
+  </data>
+  <data name="CreateDeposit" xml:space="preserve">
+    <value>CreateDeposit</value>
+  </data>
+  <data name="CreateDepositCompanyFor" xml:space="preserve">
+    <value>CreateDepositCompanyFor</value>
+  </data>
+  <data name="Deposits" xml:space="preserve">
+    <value>Deposits</value>
+  </data>
+  <data name="Iban" xml:space="preserve">
+    <value>Iban</value>
+  </data>
+  <data name="IPGs" xml:space="preserve">
+    <value>IPGs</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Validation_IBan" xml:space="preserve">
+    <value>IBan Validation</value>
+  </data>
+  <data name="CreateProvider" xml:space="preserve">
+    <value>CreateProvider</value>
+  </data>
+  <data name="ProviderLogo" xml:space="preserve">
+    <value>ProviderLogo</value>
+  </data>
+  <data name="ProviderType" xml:space="preserve">
+    <value>ProviderType</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="Vandar" xml:space="preserve">
+    <value>Vandar</value>
+  </data>
+  <data name="CompanyIPGNotFound" xml:space="preserve">
+    <value>CompanyIPGNotFound</value>
+  </data>
+  <data name="CallbackUrls" xml:space="preserve">
+    <value>CallbackUrls</value>
+  </data>
+  <data name="CompanySettings" xml:space="preserve">
+    <value>CompanySettings</value>
+  </data>
+  <data name="PaymentRequestRequiredIbanOrCompany" xml:space="preserve">
+    <value>PaymentRequestRequiredIbanOrCompany</value>
+  </data>
+  <data name="PaymentRequestDuplicateTrackerId" xml:space="preserve">
+    <value>PaymentRequestDuplicateTrackerId</value>
+  </data>
+  <data name="PaymentRequestIbanCompanyInActive" xml:space="preserve">
+    <value>IbanCompanyInActive</value>
+  </data>
+  <data name="PaymentRequestNotDefinedCompanyDeposit" xml:space="preserve">
+    <value>NotDefinedCompanyDeposit</value>
+  </data>
+  <data name="PaymentRequestNotMatchIbanAndCompany" xml:space="preserve">
+    <value>NotMatchIbanAndCompany</value>
+  </data>
+  <data name="CompanyIsInactive" xml:space="preserve">
+    <value>Dear user, company "{0}" is inactive right now and unable for payment. Call support team or try later</value>
+  </data>
+  <data name="PaymentMessage" xml:space="preserve">
+    <value>Pay : "{0} rial" | {1} tooman for company : {2}</value>
+  </data>
+  <data name="PaymentRequestCodeIsExpired" xml:space="preserve">
+    <value>Dear user, the payment address has expired, repeat the operation if necessary</value>
+  </data>
+  <data name="PaymentRequestCodeIsFinalized" xml:space="preserve">
+    <value>Dear user, this request has already been finalized</value>
+  </data>
+  <data name="PaymentRequestCodeIsUsed" xml:space="preserve">
+    <value>Dear user, this address has already been used, repeat the operation if necessary</value>
+  </data>
+  <data name="PaymentRequestCodeNotFound" xml:space="preserve">
+    <value>Dear user, the payment address is invalid</value>
+  </data>
+  <data name="PaymentRequestStatusIsInvalid" xml:space="preserve">
+    <value>Dear user, the request status is invalid</value>
+  </data>
+  <data name="UnexpectedError" xml:space="preserve">
+    <value>An unexpected error has occurred, please try again or contact support</value>
+  </data>
+  <data name="CompanyDepositByCompanyIdNotFound" xml:space="preserve">
+    <value>CompanyDepositByCompanyIdNotFound</value>
+  </data>
+  <data name="IdpUserProfileException" xml:space="preserve">
+    <value>Error:{0}</value>
+  </data>
+  <data name="UserNotFound" xml:space="preserve">
+    <value>UserNotFound</value>
+  </data>
+  <data name="FileNotFound" xml:space="preserve">
+    <value>File Not Found</value>
+  </data>
+  <data name="AsanPardakht" xml:space="preserve">
+    <value>AsanPardakht</value>
+  </data>
+  <data name="BaseOnMinute" xml:space="preserve">
+    <value>BaseOnMinute</value>
+  </data>
+  <data name="CompanyIPGDeposits" xml:space="preserve">
+    <value>CompanyIPGDeposits</value>
+  </data>
+  <data name="CreateIPG" xml:space="preserve">
+    <value>CreateIPG</value>
+  </data>
+  <data name="CreateIPGCompanyFor" xml:space="preserve">
+    <value>CreateIPGCompanyFor</value>
+  </data>
+  <data name="DefaultDeposit" xml:space="preserve">
+    <value>DefaultDeposit</value>
+  </data>
+  <data name="DefaultIPGDeposit" xml:space="preserve">
+    <value>DefaultIPGDeposit</value>
+  </data>
+  <data name="IPGTypeId" xml:space="preserve">
+    <value>IPGTypeId</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>Minute</value>
+  </data>
+  <data name="ProviderId" xml:space="preserve">
+    <value>ProviderId</value>
+  </data>
+  <data name="VerificationTimeLimit" xml:space="preserve">
+    <value>VerificationTimeLimit</value>
+  </data>
+  <data name="VerificationTimeLimitIPG" xml:space="preserve">
+    <value>VerificationTimeLimitIPG</value>
+  </data>
+  <data name="PaymentRequestNotFound" xml:space="preserve">
+    <value>PaymentRequestNotFound</value>
+  </data>
+  <data name="CPGReferencePage" xml:space="preserve">
+    <value>CPGReferencePage</value>
+  </data>
+  <data name="IpgRedirectionMethodType" xml:space="preserve">
+    <value>IpgRedirectionMethodType</value>
+  </data>
+  <data name="RayanReferencePage" xml:space="preserve">
+    <value>RayanReferencePage</value>
+  </data>
+  <data name="SiteAddressCompany" xml:space="preserve">
+    <value>SiteAddressCompany</value>
+  </data>
+  <data name="MinioException" xml:space="preserve">
+    <value>MinioException</value>
+  </data>
+  <data name="Before" xml:space="preserve">
+    <value>Before</value>
+  </data>
+  <data name="ChooseMethodPayment" xml:space="preserve">
+    <value>ChooseMethodPayment</value>
+  </data>
+  <data name="DepositAmount" xml:space="preserve">
+    <value>DepositAmount</value>
+  </data>
+  <data name="ForCompany" xml:space="preserve">
+    <value>ForCompany</value>
+  </data>
+  <data name="Rial" xml:space="preserve">
+    <value>Rial</value>
+  </data>
+  <data name="Tooman" xml:space="preserve">
+    <value>Tooman</value>
+  </data>
+  <data name="ParseCompanyIpgProviderData" xml:space="preserve">
+    <value>ParseCompanyIpgProviderData</value>
+  </data>
+  <data name="NotFoundTrackIdException" xml:space="preserve">
+    <value>TrackId not found</value>
+  </data>
+  <data name="TrackIdInvalidStatusException" xml:space="preserve">
+    <value>TrackId status is invalid</value>
+  </data>
+  <data name="TransactionNotFound" xml:space="preserve">
+    <value>TransactionNotFound</value>
+  </data>
+  <data name="InvalidCodeOrTrackIdException" xml:space="preserve">
+    <value>No PaymentRequest found having this Code or TrackId</value>
+  </data>
+  <data name="RequiredCodeOrTrackIdException" xml:space="preserve">
+    <value>Code or TrackId is required</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="ErrorInConnection" xml:space="preserve">
+    <value>ErrorInConnection</value>
+  </data>
+</root>

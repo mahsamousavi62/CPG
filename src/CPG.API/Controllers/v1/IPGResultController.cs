@@ -1,0 +1,56 @@
+﻿using System.Net;
+using CPG.Application.UseCases.Ipg.Commands;
+using CPG.Application.UseCases.Ipg.Queries;
+using CPG.Application.UseCases.Ipg.ViewModels;
+using CPG.Domain.SharedKernel.ApplicationSettings;
+using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.Identity.Client;
+using CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
+
+namespace CPG.API.Controllers.v1;
+
+[Route("IPGResult")]
+public class IPGResultController : ApiBaseController
+{
+    private readonly IApplicationSettingsRepository _applicationSettingsRepository;
+
+    public IPGResultController(IApplicationSettingsRepository applicationSettingsRepository)
+    {
+        _applicationSettingsRepository = applicationSettingsRepository;
+    }
+
+    [HttpPost("p/b/{id}")]  
+    public async Task<IActionResult> GetData(string id)
+    {
+        var appConfig = await _applicationSettingsRepository.GetAllApplicationSettings();
+
+        return Redirect($"{appConfig.IPG_Callback_URL}?trackId={id}");
+    }
+
+    [HttpPost("TransactionDetail")]
+    [ProducesResponseType(typeof(TransactionDetailResponseViewModel), 200)]
+    public async Task<IActionResult> GetTransactionDetail([Required] TransactionDetailRequestViewModel model)
+        => Ok(await Mediator.Send(new TransactionDetailQuery(model)));
+
+    [HttpPost("VerifyTransaction")]
+    [ProducesResponseType(typeof(VerifyTransactionResponseViewModel), 200)]
+    public async Task<IActionResult> VerifyTransaction([Required] VerifyTransactionViewModel model)
+        => Ok(await Mediator.Send(new VerifyTransactionQuery(model)));
+
+    [HttpPost("{trackId}")]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
+    public async Task<IActionResult> ValidateToken(string trackId)
+    {
+        var redirectUrlData = await Mediator.Send(new ValidateTokenQuery(new ValidateTokenViewModel { TrackId = trackId }));
+        return Redirect(redirectUrlData.Data);
+    }
+
+    [HttpGet("ReturnToOriginByCode")]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
+    public async Task<IActionResult> ReturnToOriginByCode([FromQuery] ReturnToOriginByCodeViewModel model)
+    {
+        return Ok(await Mediator.Send(new ReturnToOriginByCodeQuery(model)));
+    }
+}
+
