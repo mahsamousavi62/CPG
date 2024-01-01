@@ -16,6 +16,7 @@ public class IPGTransactionReadModel
     public string EncryptCardNumber { get; set; }
     public int VerificationTimeLimit { get; set; }
     public DateTime PredicateDateTime { get; set; }
+    public DateTime VerificationDateTime { get; set; }
     public TransactionReadModel Transaction { get; set; }
 }
 
