@@ -14,36 +14,38 @@ using CPG.Domain.AggregateModels.TransactionAggregate.Specifications;
 using CPG.Application.Shared.Resource;
 using CPG.Application.UseCases.Ipg.ViewModels;
 using static CPG.Domain.SharedKernel.Enums;
+using CPG.Domain.AggregateModels.PaymentRequestAggregate.Specifications;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 
 public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
-    IAggregateRepository<PaymentRequest> paymentRequestAggregateRepository,
+    IAggregateRepository<PaymentRequest> paymentRequestRepository,
     IAggregateRepository<Transaction> transactionRepository,
     ReadDbContext context) : IRequestHandler<VerifyTransactionQuery, ResultData<VerifyTransactionResponseViewModel>>
 {
 
     private readonly IIpgFactory _ipgFactory = ipgFactory;
-    private readonly IAggregateRepository<PaymentRequest> _paymentRequestRepository = paymentRequestAggregateRepository;
+    private readonly IAggregateRepository<PaymentRequest> _paymentRequestRepository = paymentRequestRepository;
     private readonly IAggregateRepository<Transaction> _transactionRepository = transactionRepository;
     private readonly ReadDbContext _context = context;
 
     public async Task<ResultData<VerifyTransactionResponseViewModel>> Handle(VerifyTransactionQuery request, CancellationToken cancellationToken)
     {
         try
-        {
-            var companyIpg = await _context.CompanyIPGReadModels.FirstOrDefaultAsync(t => t.Id == request.VerifyTransaction.CompanyIPGId);
-            if (companyIpg is null) { throw new CompanyIPGNotFoundException(request.VerifyTransaction.CompanyIPGId); }
+        {   
+            var paymentRequest = await _paymentRequestRepository.GetBySpecAsync(new PaymentRequestByCodeOrTrackerId(request.VerifyTransaction.Code, request.VerifyTransaction.TrackerId));
 
-            var ipg = _ipgFactory.GetInstance(Enums.ProviderType.AsanPardakht);
+            var transaction = await _transactionRepository.GetBySpecAsync(new TransactionByPaymentRequestId(paymentRequest.Id));
+
+            var companyIpg = await _context.CompanyIPGReadModels.FirstOrDefaultAsync(t => t.Id == transaction.IPGTransaction.CompanyIPGId);
+            if (companyIpg is null) { throw new CompanyIPGNotFoundException(transaction.IPGTransaction.CompanyIPGId); }
+
+            var ipg = _ipgFactory.GetInstance(ProviderType.AsanPardakht);
             var result = await ipg.Verify(new VerifyTransactionRequest
             {
                 ProviderData = companyIpg.ProviderData,
                 ProviderTrackerId = 1,
             });
-
-            var transaction = await _transactionRepository.GetBySpecAsync(new TransactionByProviderTrackerId(request.VerifyTransaction.ProviderTrackerId.ToString()));
-            var paymentRequest = await _paymentRequestRepository.GetByIdAsync(transaction.PaymentRquestId);
 
             if (transaction is null || paymentRequest is null || transaction.IPGTransaction is null)
             {
@@ -132,6 +134,8 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
             PaymentStatus.TransactionCanceledByApplication => "TRANSACTION_CANCELLED_BY_APPLICATION",
             PaymentStatus.TransactionVerificationSucceeded => "TRANSACTION_VERIFICATION_SUCCEEDED",
             PaymentStatus.TransactionVerificationFailed => "TRANSACTION_VERIFICATION_FAILED",
+            PaymentStatus.TransactionCancellationSucceeded => "TRANSACTION_CANCELLATION_SUCCEEDED",
+            PaymentStatus.TransactionCancellationFailed => "TRANSACTION_CANCELLATION_FAILED",
             PaymentStatus.SettlementSucceeded => "SETTLEMENT_SUCCEEDED",
             PaymentStatus.SettlementFailed => "SETTLEMENT_FAILED",
             _ => string.Empty
