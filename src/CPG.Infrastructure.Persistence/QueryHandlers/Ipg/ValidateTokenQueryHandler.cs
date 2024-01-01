@@ -13,20 +13,21 @@ using CPG.Domain.AggregateModels.TransactionAggregate;
 using System.Threading;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using CPG.Application.UseCases.Ipg.ViewModels;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 
 public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
     IAggregateRepository<PaymentRequest> paymentRequestRepository,
     IAggregateRepository<Transaction> transactionRepository,
-    ReadDbContext context) : IRequestHandler<ValidateTokenQuery, ResultData<string>>
+    ReadDbContext context) : IRequestHandler<ValidateTokenQuery, ResultData<ValidateTokenResponseViewModel>>
 {
     private readonly IIpgFactory _ipgFactory = ipgFactory;
     private readonly IAggregateRepository<PaymentRequest> _paymentRequestRepository = paymentRequestRepository;
     private readonly IAggregateRepository<Transaction> _transactionRepository = transactionRepository;
     private readonly ReadDbContext _context = context;
 
-    public async Task<ResultData<string>> Handle(ValidateTokenQuery request, CancellationToken cancellationToken)
+    public async Task<ResultData<ValidateTokenResponseViewModel>> Handle(ValidateTokenQuery request, CancellationToken cancellationToken)
     {
         var transaction = await _transactionRepository.GetBySpecAsync(new TransactionByIPGTrackId(request.ValidateToken.TrackId));
 
@@ -82,15 +83,15 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
             await _paymentRequestRepository.UpdateAsync(paymentRequest);
             await _transactionRepository.SaveChangesAsync();
 
-            return new ResultData<string>
+            return new ResultData<ValidateTokenResponseViewModel>
             {
                 OperationResult = OperationResult.Succeeded,
-                Data = $"{paymentRequest.CallBackUrl}?code={paymentRequest.Code}&status={GetStatusTitle(paymentRequest.Status)}"
+                Data = new ValidateTokenResponseViewModel { CallbackUrl = $"{paymentRequest.CallBackUrl}/payment_result?code={paymentRequest.Code}&status={GetStatusTitle(paymentRequest.Status)}" },
             };
         }
         catch (Exception ex)
         {
-            return new ResultData<string>
+            return new ResultData<ValidateTokenResponseViewModel>
             {
                 OperationResult = OperationResult.Failed,
                 Error = ex.Message
@@ -112,6 +113,8 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
             PaymentStatus.TransactionCanceledByApplication => "TRANSACTION_CANCELLED_BY_APPLICATION",
             PaymentStatus.TransactionVerificationSucceeded => "TRANSACTION_VERIFICATION_SUCCEEDED",
             PaymentStatus.TransactionVerificationFailed => "TRANSACTION_VERIFICATION_FAILED",
+            PaymentStatus.TransactionCancellationSucceeded => "TRANSACTION_CANCELLATION_SUCCEEDED",
+            PaymentStatus.TransactionCancellationFailed => "TRANSACTION_CANCELLATION_FAILED",
             PaymentStatus.SettlementSucceeded => "SETTLEMENT_SUCCEEDED",
             PaymentStatus.SettlementFailed => "SETTLEMENT_FAILED",
             _ => string.Empty
