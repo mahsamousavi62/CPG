@@ -15,7 +15,6 @@ public class CompanyIPGConfiguration : IEntityTypeConfiguration<CompanyIPG>
         entity.Property(x => x.Id).HasColumnName("Id").UseIdentityColumn();
         entity.Property(x => x.CompanyId).IsRequired();
         entity.Property(x => x.IPGTypeId).IsRequired();
-        entity.Property(x => x.VerificationTimeLimit).HasColumnType("tinyint").IsRequired();
         entity.Property(x => x.ProviderData).HasColumnType("varchar(max)").IsRequired();
 
         entity

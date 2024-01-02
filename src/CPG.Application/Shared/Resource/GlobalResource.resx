@@ -399,8 +399,8 @@
   <data name="ProviderId" xml:space="preserve">
     <value>ProviderId</value>
   </data>
-  <data name="VerificationTimeLimit" xml:space="preserve">
-    <value>VerificationTimeLimit</value>
+  <data name="IpgVerificationTimeLimit" xml:space="preserve">
+    <value>IpgVerificationTimeLimit</value>
   </data>
   <data name="VerificationTimeLimitIPG" xml:space="preserve">
     <value>VerificationTimeLimitIPG</value>

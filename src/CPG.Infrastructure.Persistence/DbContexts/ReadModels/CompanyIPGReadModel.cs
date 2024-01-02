@@ -10,7 +10,6 @@ public class CompanyIPGReadModel
     public long ProviderId { get; set; }
     public long IPGTypeId { get; set; }
     public string ProviderData { get; set; }
-    public short VerificationTimeLimit { get; set; }
     public bool IsActive { get; set; }
     public DateTime CreationDate { get; set; }
     public DateTime? ModificationDate { get; set; }

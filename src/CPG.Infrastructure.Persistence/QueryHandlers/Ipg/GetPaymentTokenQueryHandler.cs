@@ -43,7 +43,7 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
             var paymentRequest = await _paymentRequestRepository.GetBySpecAsync(new PaymentRequestByCode(request.PaymentToken.PaymentRequestCode));
             if (paymentRequest is null) { throw new PaymentRequestNotFoundException(request.PaymentToken.PaymentRequestCode); }
 
-            var companyIpg = await _companyIPGRepository.GetByIdAsync(request.PaymentToken.CompanyIPGId);
+            var companyIpg = await _companyIPGRepository.GetBySpecAsync(new CompanyIPGIncludeProvider(request.PaymentToken.CompanyIPGId));
             if (companyIpg is null) { throw new CompanyIPGNotFoundException(request.PaymentToken.CompanyIPGId); }
 
             var ipg = _ipgFactory.GetInstance(Enums.ProviderType.AsanPardakht);
@@ -53,7 +53,8 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                     ProviderData = companyIpg.ProviderData,
                     PaymentRequestAmount = paymentRequest.Amount,
                     IpgRedirectionMethodType = (Enums.IpgRedirectionMethodType)paymentRequest.Company.IpgRedirectionMethodType,
-                    SiteAddress = paymentRequest.Company.SiteAddress
+                    SiteAddress = paymentRequest.Company.SiteAddress,
+                    IpgBaseUrl = companyIpg.Provider.IpgBaseUrl,
                 });
 
             if (status==(short)HttpStatusCode.OK)
