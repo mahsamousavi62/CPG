@@ -35,7 +35,7 @@ public class Transaction : AuditableEntity<long>, IAggregateRoot
 
     public long ApplicationId { get; set; }
 
-    public DateTime PredictedSettlementDateTime { get; set; }
+    public DateTime? PredictedSettlementDateTime { get; set; }
 
     public Enums.TransactionStatus Status { get; set; }
 
