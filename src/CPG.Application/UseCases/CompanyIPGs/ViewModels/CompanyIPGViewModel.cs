@@ -13,7 +13,6 @@ public class CompanyIPGViewModel
     public long ProviderId { get; set; }
     public long IPGTypeId { get; set; }
     public string ProviderData { get; set; }
-    public short VerificationTimeLimit { get; set; }
     public Company Company { get; set; }
     public Provider Provider { get; set; }
     public IPGType IPGType { get; set; }

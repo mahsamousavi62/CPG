@@ -40,7 +40,6 @@ public class GetActiveCompanyIPGsQueryHandler(ReadDbContext context, IMinioProvi
             IPGTypeLogo = await _minioProvider.PresignedGetObject(entity.IPGType.Logo),
             IPGTypeName = entity.IPGType.PersianName,
             ProviderName = entity.Provider.PersianName,
-            VerificationTimeLimit = entity.VerificationTimeLimit,
         })).ConfigureAwait(false);
     }
 }
