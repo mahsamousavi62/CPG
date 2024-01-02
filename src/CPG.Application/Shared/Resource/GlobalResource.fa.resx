@@ -471,4 +471,10 @@
   <data name="ErrorInConnection" xml:space="preserve">
     <value>خطا در برقراری ارتباط</value>
   </data>
+  <data name="IpgRedirectionMethodTypeNotFound" xml:space="preserve">
+    <value>نحوه انتقال کاربر به درگاه پرداخت نامعتبر می باشد</value>
+  </data>
+  <data name="DuplicateProviderType" xml:space="preserve">
+    <value>برای این نوع سرویس دهنده قبلا  سرویس دهنده ایجاد شده است</value>
+  </data>
 </root>

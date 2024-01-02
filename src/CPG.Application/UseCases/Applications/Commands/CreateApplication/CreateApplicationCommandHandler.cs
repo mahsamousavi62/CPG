@@ -39,17 +39,28 @@ internal class CreateApplicationCommandHandler(IAggregateRepository<Domain.Aggre
         {
             throw new DuplicateEnglishNameException(request.Model.EnglishName);
         }
-        //var idpClientIds = await _identifierRepository.ListAsync(new ApplicationIdentifierContainsIdpClientId(request.Model.IdpClientIds));
-        //if (idpClientIds != null || idpClientIds.Count != 0)
-        //{
-        //    throw new DuplicateIdpClientIdsException(string.Join('-', idpClientIds.Select(t => t.IdpClientId)));
-        //}
 
-        Logo logo = new(request.Model.File, Enums.UploadFromEntityType.Application.ToString(), _minioProvider);
+        var  applicationByClinetIds = await _applicationRepository.GetBySpecAsync(new ApplicationbyIdpClientId(request.Model.IdpClientIds));
+
+        
+        if (applicationByClinetIds is not null &&(applicationByClinetIds.ApplicationIdentifiers != null || applicationByClinetIds.ApplicationIdentifiers.Count != 0))
+        {
+            //throw new DuplicateIdpClientIdsException(string.Join('-', applicationByClinetIds.ApplicationIdentifiers.Select(t => t.IdpClientId)));
+            throw new DuplicateIdpClientIdsException("");
+        }
+
+        var applicationByCallBackUrls = await _applicationRepository.GetBySpecAsync(new ApplicationByCallBackUrl(request.Model.CallbackUrls));
+        if (applicationByCallBackUrls is not null && (applicationByCallBackUrls.ApplicationCallbackUrls != null
+            || applicationByCallBackUrls.ApplicationCallbackUrls.Count != 0))
+        {
+            //throw new DuplicateCallbackUrlException(string.Join('-', applicationByCallBackUrls.ApplicationCallbackUrls.Select(t => t.CallbackUrl)));
+            throw new DuplicateCallbackUrlException("");
+        }
+
         Url responseUrl = new(request.Model.ResponseApiUrl);
-
         var urls = request.Model.CallbackUrls?.Select(t => new Url(t)).ToArray();
 
+        Logo logo = new(request.Model.File, Enums.UploadFromEntityType.Application.ToString(), _minioProvider);
         var application = Domain.AggregateModels.ApplicationAggregate.Application.Create(persianName, englishName, responseUrl, logo, request.Model.IdpClientIds, urls);
 
         await _applicationRepository.AddAsync(application, cancellationToken);

@@ -60,6 +60,9 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
         if (!application.ApplicationIdentifiers.SingleOrDefault(a => a.IdpClientId == clientId).IsActive)
             throw new IdpClientIdIsNotActiveException(clientId);
 
+        var validCallBackUrl = application.ApplicationCallbackUrls.Select(a => a.CallbackUrl).Contains(request.Model.CallBackUrl);
+        if (!validCallBackUrl)
+            throw new InvalidCallbackUrlException(request.Model.CallBackUrl);
 
         paymentRequest.ApplicationId = application.Id;
         PaymentRequest.Create(paymentRequest, config.ExpireTime, clientId, application.EnglishName);

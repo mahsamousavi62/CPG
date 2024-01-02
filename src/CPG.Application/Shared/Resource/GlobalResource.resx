@@ -465,4 +465,10 @@
   <data name="ErrorInConnection" xml:space="preserve">
     <value>ErrorInConnection</value>
   </data>
+  <data name="IpgRedirectionMethodTypeNotFound" xml:space="preserve">
+    <value>IpgRedirectionMethodTypeNotFound</value>
+  </data>
+  <data name="DuplicateProviderType" xml:space="preserve">
+    <value>DuplicateProviderType</value>
+  </data>
 </root>

@@ -113,5 +113,14 @@ namespace CPG.Domain.AggregateModels.ApplicationAggregate {
                 return ResourceManager.GetString("IdpClientIdIsNotActive", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to نشانی بازگشتی موجود نمی باشد.
+        /// </summary>
+        internal static string Invalid_CallbackUrl {
+            get {
+                return ResourceManager.GetString("Invalid_CallbackUrl", resourceCulture);
+            }
+        }
     }
 }

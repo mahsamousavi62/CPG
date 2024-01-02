@@ -17,6 +17,9 @@ internal class CreateProviderCommandHandler(IAggregateRepository<Provider> provi
 
     public async Task<long> Handle(CreateProviderCommand request, CancellationToken cancellationToken)
     {
+        PersianName persianName = new(request.Model.PersianName);
+        EnglishName englishName = new(request.Model.EnglishName);
+        
         var samePersianNameProvider = await _providerRepository.GetBySpecAsync(new ProviderByPersianName(request.Model.PersianName));
         if (samePersianNameProvider != null)
         {
@@ -27,11 +30,18 @@ internal class CreateProviderCommandHandler(IAggregateRepository<Provider> provi
         {
             throw new DuplicateProviderEnglishNameException(request.Model.EnglishName);
         }
-        PersianName persianName = new(request.Model.PersianName);
-        EnglishName englishName = new(request.Model.EnglishName);
+
+        var sameProvidertype = await _providerRepository.GetBySpecAsync(new ProviderByProviderType(request.Model.ProviderType));
+        if (sameProvidertype!=null)
+        {
+            throw new DuplicateProviderTypeException(request.Model.ProviderType);
+        }
+        
         Logo logo = new(request.Model.File, Enums.UploadFromEntityType.Provider.ToString(), _minioProvider);
 
+
         var provider = Provider.Create(persianName, englishName, request.Model.ProviderType, logo, request.Model.ProviderData, request.Model.IpgVerificationTimeLimit, request.Model.IpgBaseUrl);
+
 
         await _providerRepository.AddAsync(provider, cancellationToken);
         await _providerRepository.SaveChangesAsync(cancellationToken);
