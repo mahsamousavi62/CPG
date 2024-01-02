@@ -33,7 +33,7 @@ public class CompanyController : ApiBaseController
 
 
     [HttpPost]
-    public async Task<IActionResult> CreateCompany([FromForm] CreateCompanyModel model)
+    public async Task<Result<long>> CreateCompany([FromForm] CreateCompanyModel model)
     {
         CreateCompanyViewModel createCompanyViewModel = new(
              model.PersianName, model.EnglishName, model.NationalCodeMatchingRequied,
@@ -41,6 +41,6 @@ public class CompanyController : ApiBaseController
 
         var result = await Mediator.Send(new CreateCompanyCommand(createCompanyViewModel));
 
-        return CreatedAtAction(nameof(CreateCompany), new { id = result.Data }, new { result });
+        return result;
     }
 }
