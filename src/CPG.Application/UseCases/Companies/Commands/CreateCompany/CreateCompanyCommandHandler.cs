@@ -4,6 +4,7 @@ using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Domain.AggregateModels.CompanyAggregate.Specifications;
 using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Domain.AggregateModels.UserAggregate.Specifications;
+using CPG.Domain.Exceptions;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Minio;
 using MediatR;
@@ -32,7 +33,7 @@ public class CreateCompanyCommandHandler(IAggregateRepository<Company> companyRe
 
             if (!Enum.TryParse<Enums.IpgRedirectionMethodType>
                 (request.Model.IpgRedirectionMethodType.ToString(), out Enums.IpgRedirectionMethodType methodType))
-                throw new Exception();
+                throw new IpgRedirectionMethodTypeNotFoundException(request.Model.IpgRedirectionMethodType);
 
             Logo logo = new(request.Model.File, Enums.UploadFromEntityType.Company.ToString(), _minioProvider);
             var spec = new UserByUserIdsSpec(request.Model.Users);
@@ -55,7 +56,11 @@ public class CreateCompanyCommandHandler(IAggregateRepository<Company> companyRe
         }
         catch (Exception exc)
         {
-            return Result<long>.Failure(new Error(exc.Source, exc.Message));
+            if (exc is DomainException || exc is UseCases.Exceptions.ApplicationException)
+
+                return Result<long>.Failure(new Error((exc as dynamic).Code, exc.Message));
+            else
+                return Result<long>.Failure(new Error(exc.Source, exc.Message));
         }
     }
 
