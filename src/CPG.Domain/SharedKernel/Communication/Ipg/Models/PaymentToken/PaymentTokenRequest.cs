@@ -6,4 +6,5 @@ public class PaymentTokenRequest
     public decimal PaymentRequestAmount { get; set; }
     public Enums.IpgRedirectionMethodType IpgRedirectionMethodType { get; set; }
     public string SiteAddress { get; set; }
+    public string IpgBaseUrl { get; set; }
 }

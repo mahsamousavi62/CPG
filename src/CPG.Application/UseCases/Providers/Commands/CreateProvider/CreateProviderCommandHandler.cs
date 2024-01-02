@@ -31,7 +31,7 @@ internal class CreateProviderCommandHandler(IAggregateRepository<Provider> provi
         EnglishName englishName = new(request.Model.EnglishName);
         Logo logo = new(request.Model.File, Enums.UploadFromEntityType.Provider.ToString(), _minioProvider);
 
-        var provider = Provider.Create(persianName, englishName, request.Model.ProviderType, logo, request.Model.ProviderData);
+        var provider = Provider.Create(persianName, englishName, request.Model.ProviderType, logo, request.Model.ProviderData, request.Model.IpgVerificationTimeLimit, request.Model.IpgBaseUrl);
 
         await _providerRepository.AddAsync(provider, cancellationToken);
         await _providerRepository.SaveChangesAsync(cancellationToken);

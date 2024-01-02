@@ -10,7 +10,9 @@ public class ProviderReadModel
     public string EnglishName { get; set; }
     public ProviderType ProviderType { get; set; }
     public string Logo { get; set; }
-    public string ProviderData { get; set; }    
+    public string ProviderData { get; set; }
+    public short IpgVerificationTimeLimit { get; set; }
+    public string IpgBaseUrl { get; set; }
     public bool IsActive { get; set; }
     public DateTime CreationDate { get; set; }
     public DateTime? ModificationDate { get; set; }

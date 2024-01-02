@@ -637,6 +637,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to IpgVerificationTimeLimit.
+        /// </summary>
+        public static string IpgVerificationTimeLimit {
+            get {
+                return ResourceManager.GetString("IpgVerificationTimeLimit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to MethodTypes.
         /// </summary>
         public static string MethodTypes {
@@ -1083,15 +1092,6 @@ namespace CPG.Application.Shared.Resource {
         public static string Vandar {
             get {
                 return ResourceManager.GetString("Vandar", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to VerificationTimeLimit.
-        /// </summary>
-        public static string VerificationTimeLimit {
-            get {
-                return ResourceManager.GetString("VerificationTimeLimit", resourceCulture);
             }
         }
         

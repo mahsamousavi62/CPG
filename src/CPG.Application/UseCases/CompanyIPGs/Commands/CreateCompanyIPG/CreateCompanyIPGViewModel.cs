@@ -1,5 +1,4 @@
-﻿using CPG.Application.UseCases.CompanyIPGs.ViewModels;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace CPG.Application.UseCases.CompanyIPGs.Commands.CreateCompanyIPG;
 
@@ -7,7 +6,6 @@ public class CreateCompanyIPGViewModel(long companyId,
     long providerId,
     long iPGTypeId,
     string providerData,
-    short verificationTimeLimit,
     List<CreateCompanyIPGDepositViewModel> companyIPGDeposits
     )
 {
@@ -15,6 +13,5 @@ public class CreateCompanyIPGViewModel(long companyId,
     public long ProviderId { get; set; } = providerId;
     public long IPGTypeId { get; set; } = iPGTypeId;
     public string ProviderData { get; set; } = providerData;
-    public short VerificationTimeLimit { get; set; } = verificationTimeLimit;
     public List<CreateCompanyIPGDepositViewModel> CompanyIPGDeposits { get; set; } = companyIPGDeposits;
 }
