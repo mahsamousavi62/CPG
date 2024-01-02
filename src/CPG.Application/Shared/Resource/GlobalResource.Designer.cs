@@ -475,6 +475,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DuplicateProviderType.
+        /// </summary>
+        public static string DuplicateProviderType {
+            get {
+                return ResourceManager.GetString("DuplicateProviderType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit.
         /// </summary>
         public static string Edit {
@@ -606,6 +615,15 @@ namespace CPG.Application.Shared.Resource {
         public static string IpgRedirectionMethodType {
             get {
                 return ResourceManager.GetString("IpgRedirectionMethodType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to IpgRedirectionMethodTypeNotFound.
+        /// </summary>
+        public static string IpgRedirectionMethodTypeNotFound {
+            get {
+                return ResourceManager.GetString("IpgRedirectionMethodTypeNotFound", resourceCulture);
             }
         }
         

@@ -135,4 +135,7 @@
   <data name="IdpClientIdIsNotActive" xml:space="preserve">
     <value>شناسه idp غیرفعال می باشد</value>
   </data>
+  <data name="Invalid_CallbackUrl" xml:space="preserve">
+    <value>نشانی بازگشتی موجود نمی باشد</value>
+  </data>
 </root>

@@ -4,6 +4,7 @@ using CPG.Infrastructure.Persistence.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CPG.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(WriteDbContext))]
-    partial class WriteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240101120039_nullableIpgTransactionColumn")]
+    partial class nullableIpgTransactionColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -389,6 +392,9 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.Property<long>("ProviderId")
                         .HasColumnType("bigint");
 
+                    b.Property<byte>("VerificationTimeLimit")
+                        .HasColumnType("tinyint");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
@@ -512,14 +518,6 @@ namespace CPG.Infrastructure.Persistence.Migrations
                         .HasColumnType("varchar")
                         .HasColumnName("EnglishName");
 
-                    b.Property<string>("IpgBaseUrl")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("varchar");
-
-                    b.Property<byte>("IpgVerificationTimeLimit")
-                        .HasColumnType("tinyint");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -591,9 +589,9 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.Property<long?>("ModificationUserId")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime>("PredicateExpirationDateTime")
+                    b.Property<DateTime?>("PredicateDateTime")
                         .HasColumnType("datetime2")
-                        .HasColumnName("PredicateExpirationDateTime");
+                        .HasColumnName("PredicateDateTime");
 
                     b.Property<string>("ProviderTrackerId")
                         .HasColumnType("nvarchar(255)")

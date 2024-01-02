@@ -41,6 +41,6 @@ public class CompanyController : ApiBaseController
 
         var result = await Mediator.Send(new CreateCompanyCommand(createCompanyViewModel));
 
-        return CreatedAtAction(nameof(CreateCompany), new { id = result.Data }, new { result.Data });
+        return CreatedAtAction(nameof(CreateCompany), new { id = result.Data }, new { result });
     }
 }
