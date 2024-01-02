@@ -94,7 +94,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
                 JsonStr = new()
                 {
                     Params = new Params { RefID = response.Token },
-                    Url = "https://asan.shaparak.ir",
+                    Url = request.IpgBaseUrl,
                 }
             }
         };
