@@ -41,14 +41,14 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
                 {
                     Code = paymentRequest.Code,
                     TrackerId = paymentRequest.TrackerId,
-                    Amount = paymentRequest.Amount.ToString(),
-                    Status = ((short)paymentRequest.Status).ToString(),
+                    Amount = paymentRequest.Amount,
+                    Status = (short)paymentRequest.Status,
                     StatusTitle = GetStatusTitle(paymentRequest.Status),
-                    PaymentMethodType = ((short)transaction?.TransactionMethodType).ToString(),
+                    PaymentMethodType = (short)transaction?.TransactionMethodType,
                     PaymentMethodTypeTitle = transaction is null ? string.Empty : GetPaymentMethodTypeTitle(transaction.TransactionMethodType),
                     ReferenceNumber = transaction is not null && transaction.TransactionMethodType == TransactionType.IPG ? transaction.IPGTransaction?.ReferenceNumber : string.Empty,
                     DestinationDepositIban = transaction?.DestinationDeposit?.Iban,
-                    PredictedExpirationDateTime = transaction is not null && transaction.TransactionMethodType == TransactionType.IPG ? transaction.IPGTransaction?.PredicateDateTime.ToString() : string.Empty,
+                    PredictedExpirationDateTime = transaction is not null && transaction.TransactionMethodType == TransactionType.IPG ? transaction.IPGTransaction?.PredicateDateTime.ToString("yyyy-MM-dd HH:mm:ss zzz") : string.Empty,
                 },
             };
         }

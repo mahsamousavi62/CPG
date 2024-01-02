@@ -20,4 +20,10 @@ public class CreateProviderModel
 
     [Required]
     public required IFormFile File { get; set; }
+
+    [Required]
+    public short IpgVerificationTimeLimit { get; set; }
+
+    [Required]
+    public string IpgBaseUrl { get; set; }
 }

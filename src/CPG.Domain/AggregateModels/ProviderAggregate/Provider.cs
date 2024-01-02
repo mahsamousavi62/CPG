@@ -13,13 +13,15 @@ public class Provider : AuditableEntity<long>, IAggregateRoot
     {
 
     }
-    public Provider(PersianName persianName, EnglishName englishName, ProviderType providerType, Logo logo, string providerData)
+    public Provider(PersianName persianName, EnglishName englishName, ProviderType providerType, Logo logo, string providerData, short verificationTimeLimit, Url ipgBaseUrl)
     {
         _persianName = persianName.Value;
         _englishName = englishName.Value;
         _providerType = providerType;
         _logo = logo.Value;
         _providerData = providerData;
+        _ipgVerificationTimeLimit = verificationTimeLimit;
+        _ipgBaseUrl = ipgBaseUrl.Value;
     }
 
     private string _persianName;
@@ -27,26 +29,32 @@ public class Provider : AuditableEntity<long>, IAggregateRoot
     private ProviderType _providerType;
     private string _logo;
     private string _providerData;
+    private short _ipgVerificationTimeLimit;
+    public string _ipgBaseUrl;
     public string PersianName => _persianName;
     public string EnglishName => _englishName;
     public ProviderType ProviderType => _providerType;
     public string Logo => _logo;
     public string ProviderData => _providerData;
+    public short IpgVerificationTimeLimit => _ipgVerificationTimeLimit;
+    public string IpgBaseUrl => _ipgBaseUrl;
 
-    public static Provider Create(PersianName persianName, EnglishName englishName, ProviderType providerType, Logo logo, string providerData)
+    public static Provider Create(PersianName persianName, EnglishName englishName, ProviderType providerType, Logo logo, string providerData, short verificationTimeLimit, Url ipgBaseUrl)
     {
-        var provider = new Provider(persianName, englishName, providerType, logo, providerData);
+        var provider = new Provider(persianName, englishName, providerType, logo, providerData, verificationTimeLimit, ipgBaseUrl);
         provider.IsActive = true;
         return provider;
     }
 
-    public void Update(string persianName, string englishName, ProviderType providerType, string providerData, Logo logo)
+    public void Update(string persianName, string englishName, ProviderType providerType, string providerData, Logo logo, short verificationTimeLimit, Url ipgBaseUrl)
     {
         _persianName = persianName;
         _englishName = englishName;
         _providerType = providerType;
         _providerData = providerData;
         _logo = logo.Value;
+        _ipgVerificationTimeLimit = verificationTimeLimit;
+        _ipgBaseUrl = ipgBaseUrl;
     }
 
     public void SetAsActive(long userId)

@@ -14,19 +14,19 @@ public class VerifyTransactionResponseViewModel
     public string DestinationDepositIban { get; set; }
 
     [JsonPropertyName("amount")]
-    public string Amount { get; set; }
+    public decimal Amount { get; set; }
 
     [JsonPropertyName("reference_number")]
     public string ReferenceNumber { get; set; }
 
     [JsonPropertyName("payment_method_type")]
-    public string PaymentMethodType { get; set; }
+    public short PaymentMethodType { get; set; }
 
     [JsonPropertyName("payment_method_type_title")]
     public string PaymentMethodTypeTitle { get; set; }
 
     [JsonPropertyName("status")]
-    public string Status { get; set; }
+    public short Status { get; set; }
 
     [JsonPropertyName("status_title")]
     public string StatusTitle { get; set; }

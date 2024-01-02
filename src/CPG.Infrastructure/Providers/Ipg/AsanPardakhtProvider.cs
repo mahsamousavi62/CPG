@@ -89,7 +89,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
         UrlResponseModel urlResponse = new UrlResponseModel
         {
             Params = p,
-            Url = "https://asan.shaparak.ir",
+            Url = request.IpgBaseUrl,
         };
         return new PaymentTokenResponse
         {
