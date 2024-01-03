@@ -1,7 +1,7 @@
 ﻿using System;
 using static CPG.Domain.SharedKernel.Enums;
 
-namespace CPG.Domain.SharedKernel.Helper.ServiceLog;
+namespace CPG.Domain.SharedKernel.Logging;
 
 public class CallLogModel
 {

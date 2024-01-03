@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CPG.Domain.AggregateModels.IPGTypeAggregate;
 using static CPG.Domain.SharedKernel.Enums;
 
-namespace CPG.Domain.SharedKernel.Helper.CallLog
+namespace CPG.Domain.SharedKernel.Logging
 {
     public class RequestResponseLogModel
     {
+        public string UserAgent { get; set; }
+        public string IP { get; set; }
         public DateTime RequestTime { get; set; }
 
         public string? RequestMethod { get; set; }

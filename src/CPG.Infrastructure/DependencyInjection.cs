@@ -35,8 +35,8 @@ using CCPG.Domain.SharedKernel.Communication.Ipg;
 using CPG.Domain.SharedKernel.Communication;
 using CPG.Infrastructure.Providers;
 using CPG.Application.Auth;
-using CPG.Infrastructure.Middlewares;
-using CPG.Domain.SharedKernel.Helper.CallLog;
+using CPG.Infrastructure.Logging;
+using CPG.Domain.SharedKernel.Logging;
 
 namespace CPG.Infrastructure;
 

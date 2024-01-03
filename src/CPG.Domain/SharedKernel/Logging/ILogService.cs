@@ -1,7 +1,7 @@
 ﻿using System.Net.Http;
 using CPG.Domain.SharedKernel.Communication;
 
-namespace CPG.Domain.SharedKernel.Helper.CallLog;
+namespace CPG.Domain.SharedKernel.Logging;
 
 public interface ILogService
 {

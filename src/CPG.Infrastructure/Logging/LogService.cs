@@ -7,15 +7,14 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Communication;
-using CPG.Domain.SharedKernel.Helper.CallLog;
-using CPG.Domain.SharedKernel.Helper.ServiceLog;
+using CPG.Domain.SharedKernel.Logging;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Context;
 //using Microsoft.Extensions.Logging;
 
-namespace CPG.Infrastructure.Middlewares;
+namespace CPG.Infrastructure.Logging;
 
 public class LogService(ILogger<LogService> logger) : ILogService
 {
@@ -46,7 +45,8 @@ public class LogService(ILogger<LogService> logger) : ILogService
             CreationUserId = 1,
             ErrorCode = response.IsSuccessStatusCode ? null : ReasonPhrases.GetReasonPhrase((int)response.StatusCode),
             ErrorType = response.IsSuccessStatusCode ? null : response.StatusCode.ToString(),
-            ProviderType = request.Provider
+            ProviderType = request.Provider,
+            AuditType=Enums.AuditType.Provider
         };
 
         using (LogContext.PushProperty("CallLog", callLog, true))

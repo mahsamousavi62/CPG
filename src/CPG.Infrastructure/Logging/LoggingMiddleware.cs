@@ -5,11 +5,13 @@ using System.IO;
 using System.Threading.Tasks;
 using System;
 using Microsoft.IO;
-using CPG.Domain.SharedKernel.Helper.CallLog;
+using CPG.Domain.SharedKernel.Logging;
 using CPG.Domain.SharedKernel;
 using Serilog.Context;
+using Microsoft.Extensions.Primitives;
+using System.Linq;
 
-namespace CPG.Infrastructure.Middlewares;
+namespace CPG.Infrastructure. Logging;
 
 public class LoggingMiddleware
 {
@@ -23,6 +25,7 @@ public class LoggingMiddleware
         recyclableMemoryStreamManager = new RecyclableMemoryStreamManager();
         logger = loggerFactory.CreateLogger<LoggingMiddleware>();
     }
+    
 
     public async Task InvokeAsync([NotNull] HttpContext httpContext)
     {
@@ -39,7 +42,8 @@ public class LoggingMiddleware
         using (var requestStream = recyclableMemoryStreamManager.GetStream())
         {
             await httpContext.Request.Body.CopyToAsync(requestStream);
-
+            log.UserAgent = httpContext.Request.Headers["User-Agent"].ToString();
+            log.IP = httpContext.Request.GetClientIpAddress();
             log.AuditType = Enums.AuditType.User ;
             log.RequestTime = DateTime.Now;
             log.RequestMethod = httpContext.Request.Method;

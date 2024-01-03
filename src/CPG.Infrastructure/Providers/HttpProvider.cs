@@ -2,24 +2,19 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Net.Http.Json;
-using System.Text.Json;
 using Newtonsoft.Json;
 using MassTransit;
 using Microsoft.AspNetCore.WebUtilities;
-using static Azure.Core.HttpHeader;
 using System.Text.RegularExpressions;
-using System.Net;
 using CPG.Domain.SharedKernel;
-using CPG.Domain.SharedKernel.Helper.CallLog;
+using CPG.Domain.SharedKernel.Logging;
 
 namespace CPG.Infrastructure.Providers;
 
