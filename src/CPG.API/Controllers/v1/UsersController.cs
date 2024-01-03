@@ -4,6 +4,7 @@ using CPG.Application.UseCases.Users;
 using CPG.Application.UseCases.Users.Commands;
 using CPG.Application.UseCases.Users.Queries;
 using CPG.Application.UseCases.Users.ViewModel;
+using CPG.Domain.SharedKernel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -15,22 +16,18 @@ namespace CPG.API.Controllers;
 /// </summary>
 public class UsersController : ApiBaseController
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="command"></param>
-    /// <returns></returns>
+    [Authorize]
     [HttpPost("CreateUserProfile")]
-    public async Task<IActionResult> CreateUserProfile(CreateUserCommnad command)
+    public async Task<IActionResult> CreateUserProfile()
     {
-        await Mediator.Send(command);
+        await Mediator.Send(new CreateUserCommnad());
         return Ok();
     }
 
-    [HttpGet("{idpId}")]
-    [ProducesResponseType(typeof(UserViewModel), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<CompanyDepositViewModel>> Get(string idpId)
-              => Ok(await Mediator.Send(new GetUserQuery(idpId)));
+    [HttpGet("GetUserProfile")]
+    [ProducesResponseType(typeof(Result<UserViewModel>), (int)HttpStatusCode.OK)]
+    public async Task<ActionResult<CompanyDepositViewModel>> Get()
+              => Ok(await Mediator.Send(new GetUserQuery()));
 
     /// <summary>
     /// 
