@@ -106,6 +106,16 @@ public class Enums
         SettlementSucceeded = 12,
         SettlementFailed = 13,
     }
+
+    public enum AuditType
+    {
+        Client = 1,
+        Provider = 2,
+        User = 3,
+    }
+  
+
+    public enum ProviderLogType { }
 }
 
 public struct ResultData<T>(Enums.OperationResult operationResult)

@@ -35,6 +35,8 @@ using CCPG.Domain.SharedKernel.Communication.Ipg;
 using CPG.Domain.SharedKernel.Communication;
 using CPG.Infrastructure.Providers;
 using CPG.Application.Auth;
+using CPG.Infrastructure.Middlewares;
+using CPG.Domain.SharedKernel.Helper.CallLog;
 
 namespace CPG.Infrastructure;
 
@@ -46,6 +48,7 @@ public static class DependencyInjection
             .AddScoped<IIdpProvider, IdpProvider>()
             .AddScoped<IIpgFactory, IpgFactory>()
             .AddScoped<IIpgProvider, AsanPardakhtProvider>()
+            .AddScoped<ILogService, LogService>()
             .AddTransient<ICurrentDateTime, CurrentDateTime>()
             .AddTransient<IHttpProvider, HttpProvider>()
             .AddDatabase(configuration)
@@ -59,7 +62,7 @@ public static class DependencyInjection
 
     public static IServiceCollection AddMinio(this IServiceCollection services, IConfiguration configuration)
     {
-        var applicationConfigViewModel = configuration.GetSection("Infrastructure:Minio").Get<MinioConfigViewModel>();;
+        var applicationConfigViewModel = configuration.GetSection("Infrastructure:Minio").Get<MinioConfigViewModel>(); ;
 
         services.AddMinio(configureClient => configureClient
           .WithEndpoint(applicationConfigViewModel.EndPoint)
@@ -104,7 +107,7 @@ public static class DependencyInjection
     public static IServiceCollection AddConfigureHttpClientService(this IServiceCollection services, IConfiguration configuration)
     {
         var serviceProvider = services.BuildServiceProvider();
-        var authService =  serviceProvider.GetRequiredService<IAuthService>();
+        var authService = serviceProvider.GetRequiredService<IAuthService>();
         var jwtConfig = authService.GetJwtConfig();
         var charisPayConfig = configuration.GetSection("Infrastructure:CharisPay").Get<CharisPayConfig>();
 
@@ -125,7 +128,7 @@ public static class DependencyInjection
         services.AddHttpClient("asanpardakhtClient", c =>
         {
             c.BaseAddress = new Uri("https://ipgrest.asanpardakht.ir/");
-            c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/plain"));  
+            c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/plain"));
         });
 
         return services;
@@ -139,6 +142,7 @@ public static class DependencyInjection
             .UseHttpsRedirection()
             .UseRouting()
             .UseMiddleware<ErrorHandlingMiddleware>()
+            .UseMiddleware<LoggingMiddleware>()
             .UseTokenAuthentication()
             .UseTokenAuthorization()
             .UseAuthenticationMiddleware()

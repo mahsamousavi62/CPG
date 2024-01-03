@@ -19,6 +19,7 @@ using static Azure.Core.HttpHeader;
 using System.Text.RegularExpressions;
 using System.Net;
 using CPG.Domain.SharedKernel;
+using CPG.Domain.SharedKernel.Helper.CallLog;
 
 namespace CPG.Infrastructure.Providers;
 
@@ -26,11 +27,13 @@ public class HttpProvider : IHttpProvider
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<HttpProvider> _logger;
+    private readonly ILogService _logService;
 
-    public HttpProvider(IHttpClientFactory httpClientFactory, ILogger<HttpProvider> logger)
+    public HttpProvider(IHttpClientFactory httpClientFactory, ILogger<HttpProvider> logger,ILogService logService)
     {
         _httpClientFactory = httpClientFactory;
         _logger = logger;
+        _logService = logService;
     }
 
     public async Task<TResponse?> PostAsync<TBaseRequest, TResponse, TError, TBody>(HttpProviderRequest<TBody>? request, TBaseRequest? baseRequest, Func<TBaseRequest?, TResponse?, TError?,short, Task<TResponse?>>? errorHandler, Func<string, TResponse>? decoder = null)
@@ -65,7 +68,7 @@ public class HttpProvider : IHttpProvider
             var response = await client.PostAsJsonAsync(request.Uri, request.Body);
 
             var resString = await response.Content.ReadAsStringAsync();
-            //infraHelper.Value.AddServiceCallLog(request, response, resString);
+            _logService.AddServiceCallLog(request, response, resString);
 
             var result = await response.Content.ReadFromJsonAsync<TResponse>();
             TError? errorResult = result as TError;
@@ -127,7 +130,7 @@ public class HttpProvider : IHttpProvider
             var response = await client.PostAsync(request.Uri, content);
 
             var resString = await response.Content.ReadAsStringAsync();
-            //infraHelper.Value.AddServiceCallLog(request, response, resString);
+            _logService.AddServiceCallLog(request, response, resString);
 
             TResponse result = null;
             if (decoder != null)
@@ -261,7 +264,7 @@ public class HttpProvider : IHttpProvider
             var response = await client.PutAsJsonAsync(request.Uri, request.Body);
 
             var resString = await response.Content.ReadAsStringAsync();
-            //infraHelper.Value.AddServiceCallLog(request, response, resString);
+            _logService.AddServiceCallLog(request, response, resString);
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
