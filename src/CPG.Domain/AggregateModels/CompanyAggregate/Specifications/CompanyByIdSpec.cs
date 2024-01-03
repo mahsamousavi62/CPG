@@ -6,7 +6,7 @@ public sealed class CompanyByIdSpec : Specification<Company>, ISingleResultSpeci
 {
     public CompanyByIdSpec(long companyId)
     {
-        Query.Include(c=>c.CompanyDeposits)
+        Query.Include(c => c.CompanyDeposits)
             .Where(company => company.Id == companyId);
     }
 }

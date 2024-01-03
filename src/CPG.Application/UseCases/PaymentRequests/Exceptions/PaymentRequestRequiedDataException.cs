@@ -1,13 +1,9 @@
 ﻿using CPG.Application.Shared.Resource;
 using CPG.Application.UseCases.Exceptions;
 
-namespace CPG.Application.UseCases.PaymentRequests.Exceptions
+namespace CPG.Application.UseCases.PaymentRequests.Exceptions;
+
+public class PaymentRequestRequiredDataException() : ApplicationException(string.Format(GlobalResource.PaymentRequestRequiredIbanOrCompany))
 {
-    public class PaymentRequestRequiredDataException() :
-        ApplicationException(string.Format(GlobalResource.PaymentRequestRequiredIbanOrCompany))
-    {
-        public override string Code => "paymentRequest_required_IbanOrCompany";
-    }
-
-
+    public override string Code => "1001014";
 }

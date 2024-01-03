@@ -754,6 +754,33 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Application {0}-{1} is inactive.
+        /// </summary>
+        public static string PaymentRequestApplicationIsInactive {
+            get {
+                return ResourceManager.GetString("PaymentRequestApplicationIsInactive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This application is not defined.
+        /// </summary>
+        public static string PaymentRequestApplicationNotFound {
+            get {
+                return ResourceManager.GetString("PaymentRequestApplicationNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bank is inactive.
+        /// </summary>
+        public static string PaymentRequestBankInactive {
+            get {
+                return ResourceManager.GetString("PaymentRequestBankInactive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dear user, the payment address has expired, repeat the operation if necessary.
         /// </summary>
         public static string PaymentRequestCodeIsExpired {
@@ -790,7 +817,25 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PaymentRequestDuplicateTrackerId.
+        ///   Looks up a localized string similar to Company is inactive.
+        /// </summary>
+        public static string PaymentRequestCompanyInactive {
+            get {
+                return ResourceManager.GetString("PaymentRequestCompanyInactive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All company payment methods are inactive.
+        /// </summary>
+        public static string PaymentRequestCompanyPaymentMethodAreInactive {
+            get {
+                return ResourceManager.GetString("PaymentRequestCompanyPaymentMethodAreInactive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TrackerId {0} is used before.
         /// </summary>
         public static string PaymentRequestDuplicateTrackerId {
             get {
@@ -804,6 +849,33 @@ namespace CPG.Application.Shared.Resource {
         public static string PaymentRequestIbanCompanyInActive {
             get {
                 return ResourceManager.GetString("PaymentRequestIbanCompanyInActive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Callback url {0} is invalid.
+        /// </summary>
+        public static string PaymentRequestInvalidCallbackUrl {
+            get {
+                return ResourceManager.GetString("PaymentRequestInvalidCallbackUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No company found.
+        /// </summary>
+        public static string PaymentRequestNoCompanyFound {
+            get {
+                return ResourceManager.GetString("PaymentRequestNoCompanyFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No company payment method found.
+        /// </summary>
+        public static string PaymentRequestNoCompanyPaymentMethodFound {
+            get {
+                return ResourceManager.GetString("PaymentRequestNoCompanyPaymentMethodFound", resourceCulture);
             }
         }
         
