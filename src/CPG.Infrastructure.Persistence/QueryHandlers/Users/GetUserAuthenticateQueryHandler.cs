@@ -40,7 +40,7 @@ namespace CPG.Infrastructure.Persistence.QueryHandlers.Users
                 LastName = user.LastName,
                 Id = user.Id,
                 NationalCode = user.NationalCode,
-                IDPId = user.IDPId,
+                IDPId = clientId,
                 PhoneNumber = user.PhoneNumber,
                 UserRoles = user.UserRoles.ToDictionary(p => p.RoleType, p => ((Enums.UserRoleType)p.RoleType).ToString()),
                 CompanyId = user.CompanyId,

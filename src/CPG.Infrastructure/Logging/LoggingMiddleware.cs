@@ -52,6 +52,7 @@ public class LoggingMiddleware
             log.RequestTime = DateTime.Now;
             log.RequestMethod = httpContext.Request.Method;
             log.RequestQueryString = httpContext.Request.QueryString.ToString();
+            
             if (httpContext.User.Claims.Count() != 0)
             {
                 long companyId, applicationId, UserId;
@@ -64,6 +65,7 @@ public class LoggingMiddleware
                 _ = long.TryParse(httpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value, out UserId);
                 log.UserId = UserId;
 
+                log.ClientId = httpContext.User.Claims.FirstOrDefault(c => c.Type == "ClientId")?.Value;
             }
             requestStream.Position = 0;
             using StreamReader streamReader = new(requestStream);
