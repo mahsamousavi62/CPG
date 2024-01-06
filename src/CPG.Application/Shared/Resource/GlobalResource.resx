@@ -361,7 +361,7 @@
     <value>CompanyDepositByCompanyIdNotFound</value>
   </data>
   <data name="IdpUserProfileException" xml:space="preserve">
-    <value>Error:{0}</value>
+    <value>{0}</value>
   </data>
   <data name="UserNotFound" xml:space="preserve">
     <value>UserNotFound</value>
