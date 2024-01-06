@@ -33,7 +33,7 @@ public class IPGResultController : ApiBaseController
     public async Task<IActionResult> GetTransactionDetail([Required] TransactionDetailRequestViewModel model)
         => Ok(await Mediator.Send(new TransactionDetailQuery(model)));
 
-    [HttpPost("VerifyTransaction")]
+    [HttpPost("TransactionVerify")]
     [ProducesResponseType(typeof(VerifyTransactionResponseViewModel), 200)]
     public async Task<IActionResult> VerifyTransaction([Required] VerifyTransactionViewModel model)
         => Ok(await Mediator.Send(new VerifyTransactionQuery(model)));
