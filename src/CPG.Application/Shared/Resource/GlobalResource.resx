@@ -322,7 +322,7 @@
     <value>PaymentRequestRequiredIbanOrCompany</value>
   </data>
   <data name="PaymentRequestDuplicateTrackerId" xml:space="preserve">
-    <value>PaymentRequestDuplicateTrackerId</value>
+    <value>TrackerId {0} is used before</value>
   </data>
   <data name="PaymentRequestIbanCompanyInActive" xml:space="preserve">
     <value>IbanCompanyInActive</value>
@@ -470,5 +470,29 @@
   </data>
   <data name="DuplicateProviderType" xml:space="preserve">
     <value>DuplicateProviderType</value>
+  </data>
+  <data name="PaymentRequestCompanyInactive" xml:space="preserve">
+    <value>Company is inactive</value>
+  </data>
+  <data name="PaymentRequestApplicationIsInactive" xml:space="preserve">
+    <value>Application {0}-{1} is inactive</value>
+  </data>
+  <data name="PaymentRequestApplicationNotFound" xml:space="preserve">
+    <value>This application is not defined</value>
+  </data>
+  <data name="PaymentRequestBankInactive" xml:space="preserve">
+    <value>Bank is inactive</value>
+  </data>
+  <data name="PaymentRequestCompanyPaymentMethodAreInactive" xml:space="preserve">
+    <value>All company payment methods are inactive</value>
+  </data>
+  <data name="PaymentRequestInvalidCallbackUrl" xml:space="preserve">
+    <value>Callback url {0} is invalid</value>
+  </data>
+  <data name="PaymentRequestNoCompanyFound" xml:space="preserve">
+    <value>No company found</value>
+  </data>
+  <data name="PaymentRequestNoCompanyPaymentMethodFound" xml:space="preserve">
+    <value>No company payment method found</value>
   </data>
 </root>

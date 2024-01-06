@@ -6,6 +6,6 @@ namespace CPG.Application.UseCases.PaymentRequests.Exceptions
     public class PaymentRequestNotDefinedCompanyDepositException():ApplicationException
         (string.Format(GlobalResource.PaymentRequestNotDefinedCompanyDeposit))
     {
-        public override string Code => "PaymentRequest_NotDefinedCompanyDeposit";
+        public override string Code => "1001004";
     }
 }
