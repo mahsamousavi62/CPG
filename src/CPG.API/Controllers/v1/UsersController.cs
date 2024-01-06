@@ -24,6 +24,7 @@ public class UsersController : ApiBaseController
         return Ok();
     }
 
+    [Authorize]
     [HttpGet("GetUserProfile")]
     [ProducesResponseType(typeof(Result<UserViewModel>), (int)HttpStatusCode.OK)]
     public async Task<ActionResult<CompanyDepositViewModel>> Get()

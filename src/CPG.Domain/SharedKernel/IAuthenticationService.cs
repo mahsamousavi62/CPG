@@ -7,8 +7,6 @@ namespace CPG.Domain.SharedKernel;
 
 public interface IAuthenticationService
 {
-    void SignIn();
-    void SignIn(CPG.Domain.AggregateModels.UserAggregate.User user);
     Task<IEnumerable<Claim>> GetCurrentClaims();
     Task<ClaimsPrincipal> GetCurrentClaimsPrincipal();
     Task<Guid> GetCurrentSubject(string issuer = null);

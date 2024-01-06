@@ -24,69 +24,7 @@ namespace CPG.Infrastructure.Authorization
         #endregion
 
         #region [ Public Method(s) ]
-        public async void SignIn()
-        {
-            var claims = new List<Claim>();
-
-            claims.Add(new Claim(ClaimTypes.Name, $"mahsa", ClaimValueTypes.String));
-
-            claims.Add(new Claim(ClaimTypes.Surname, "mousavi", ClaimValueTypes.String));
-
-            claims.Add(new Claim(ClaimTypes.Sid, "123", ClaimValueTypes.String));
-
-            claims.Add(new Claim(ClaimTypes.MobilePhone, "091222222", ClaimValueTypes.String));
-
-            claims.Add(new Claim(type: "companyId", value: "1"));
-
-            //create principal for the current authentication scheme
-            var userIdentity = new ClaimsIdentity(claims, "Authentication");
-            var userPrincipal = new ClaimsPrincipal(userIdentity);
-
-            //set value indicating whether session is persisted and the time at which the authentication was issued
-            var authenticationProperties = new AuthenticationProperties
-            {
-                IsPersistent = true,
-                IssuedUtc = DateTime.UtcNow
-            };
-
-            //sign in
-            await _httpContextAccessor.HttpContext.SignInAsync("Authentication", userPrincipal, authenticationProperties);
-
-            //cache authenticated customer
-
-        }
-
-        public async void SignIn(CPG.Domain.AggregateModels.UserAggregate.User user)
-        {
-            var claims = new List<Claim>();
-
-            claims.Add(new Claim(ClaimTypes.Name, $"{user?.FirstName}", ClaimValueTypes.String));
-
-            claims.Add(new Claim(ClaimTypes.Surname, user.LastName, ClaimValueTypes.String));
-
-            claims.Add(new Claim(ClaimTypes.Sid, user.IdpId, ClaimValueTypes.String));
-
-            claims.Add(new Claim(ClaimTypes.MobilePhone, user.PhoneNumber, ClaimValueTypes.String));
-
-            claims.Add(new Claim(type: "companyId", value: "1"));
-
-            //create principal for the current authentication scheme
-            var userIdentity = new ClaimsIdentity(claims, "Authentication");
-            var userPrincipal = new ClaimsPrincipal(userIdentity);
-
-            //set value indicating whether session is persisted and the time at which the authentication was issued
-            var authenticationProperties = new AuthenticationProperties
-            {
-                IsPersistent = true,
-                IssuedUtc = DateTime.UtcNow
-            };
-
-            //sign in
-            await _httpContextAccessor.HttpContext.SignInAsync("Authentication", userPrincipal, authenticationProperties);
-
-            //cache authenticated customer
-
-        }
+       
         public AuthenticationService(IHttpContextAccessor httpContextAccessor,
                                      IApplicationSettingsRepository applicationSettingsRepository,
                                      IAuthService authService)
@@ -125,8 +63,6 @@ namespace CPG.Infrastructure.Authorization
             Claim claim;
             if (_httpContextAccessor.HttpContext.User != null)
             {
-                var t = _httpContextAccessor.HttpContext.User.Claims.ToList();
-                var tt = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == propertyName);
                 claim = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == propertyName);
             }
             else
@@ -136,7 +72,6 @@ namespace CPG.Infrastructure.Authorization
                     return default(T);
 
                 claim = authenticateResult.Principal.FindFirst(c => c.Type == propertyName);
-                  
             }
 
             if (claim != null)

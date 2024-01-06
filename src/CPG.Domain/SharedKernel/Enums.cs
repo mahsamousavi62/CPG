@@ -112,6 +112,7 @@ public class Enums
         Client = 1,
         Provider = 2,
         User = 3,
+        Develop = 4,
     }
   
 

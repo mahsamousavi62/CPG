@@ -10,8 +10,9 @@ using CPG.Domain.SharedKernel;
 using Serilog.Context;
 using Microsoft.Extensions.Primitives;
 using System.Linq;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
-namespace CPG.Infrastructure. Logging;
+namespace CPG.Infrastructure.Logging;
 
 public class LoggingMiddleware
 {
@@ -25,9 +26,9 @@ public class LoggingMiddleware
         recyclableMemoryStreamManager = new RecyclableMemoryStreamManager();
         logger = loggerFactory.CreateLogger<LoggingMiddleware>();
     }
-    
 
-    public async Task InvokeAsync([NotNull] HttpContext httpContext)
+
+    public async Task InvokeAsync([NotNull] HttpContext httpContext, IAuthenticationService authenticationService)
     {
         ArgumentNullException.ThrowIfNull(httpContext);
 
@@ -39,16 +40,31 @@ public class LoggingMiddleware
 
         httpContext.Request.EnableBuffering();
         var log = new RequestResponseLogModel();
+
         using (var requestStream = recyclableMemoryStreamManager.GetStream())
         {
             await httpContext.Request.Body.CopyToAsync(requestStream);
             log.UserAgent = httpContext.Request.Headers["User-Agent"].ToString();
             log.IP = httpContext.Request.GetClientIpAddress();
-            log.AuditType = Enums.AuditType.User ;
+            log.Host = httpContext.Request.Headers["Host"].ToString();
+            log.ServiceName = httpContext.Request.Path;
+            log.AuditType = httpContext.User.FindFirst("AuditType")?.Value ?? Enums.AuditType.User.ToString();
             log.RequestTime = DateTime.Now;
             log.RequestMethod = httpContext.Request.Method;
             log.RequestQueryString = httpContext.Request.QueryString.ToString();
+            if (httpContext.User.Claims.Count() != 0)
+            {
+                long companyId, applicationId, UserId;
+                long.TryParse(httpContext.User.Claims.FirstOrDefault(c => c.Type == "CompanyId")?.Value, out companyId);
+                log.CompanyId = companyId;
 
+                long.TryParse(httpContext.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out applicationId);
+                log.ApplicationId = applicationId;
+
+                _ = long.TryParse(httpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value, out UserId);
+                log.UserId = UserId;
+
+            }
             requestStream.Position = 0;
             using StreamReader streamReader = new(requestStream);
             log.RequestBody = httpContext.Request.Path == "/api/" ? "" : await streamReader.ReadToEndAsync();
