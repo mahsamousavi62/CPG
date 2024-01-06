@@ -265,7 +265,7 @@
     <value>BrokerageCharisma</value>
   </data>
   <data name="Validation_Required" xml:space="preserve">
-    <value>Validation is required</value>
+    <value>{0} is required</value>
   </data>
   <data name="AccountNumber" xml:space="preserve">
     <value>AccountNumber</value>
@@ -464,5 +464,17 @@
   </data>
   <data name="ErrorInConnection" xml:space="preserve">
     <value>ErrorInConnection</value>
+  </data>
+  <data name="IpgBaseUrl" xml:space="preserve">
+    <value>IpgBaseUrl</value>
+  </data>
+  <data name="Validation_MaxLength" xml:space="preserve">
+    <value>{0} cant be more than {1} charachter</value>
+  </data>
+  <data name="Validation_MinLength" xml:space="preserve">
+    <value>{0} cant be less than {1} charachter</value>
+  </data>
+  <data name="VerificationTimeLimit" xml:space="preserve">
+    <value>VerificationTimeLimit</value>
   </data>
 </root>

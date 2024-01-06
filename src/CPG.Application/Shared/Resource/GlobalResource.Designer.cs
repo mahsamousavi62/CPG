@@ -601,6 +601,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to IpgBaseUrl.
+        /// </summary>
+        public static string IpgBaseUrl {
+            get {
+                return ResourceManager.GetString("IpgBaseUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to IpgRedirectionMethodType.
         /// </summary>
         public static string IpgRedirectionMethodType {
@@ -1078,7 +1087,25 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Validation is required.
+        ///   Looks up a localized string similar to {0} cant be more than {1} charachter.
+        /// </summary>
+        public static string Validation_MaxLength {
+            get {
+                return ResourceManager.GetString("Validation_MaxLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} cant be less than {1} charachter.
+        /// </summary>
+        public static string Validation_MinLength {
+            get {
+                return ResourceManager.GetString("Validation_MinLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} is required.
         /// </summary>
         public static string Validation_Required {
             get {
@@ -1092,6 +1119,15 @@ namespace CPG.Application.Shared.Resource {
         public static string Vandar {
             get {
                 return ResourceManager.GetString("Vandar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VerificationTimeLimit.
+        /// </summary>
+        public static string VerificationTimeLimit {
+            get {
+                return ResourceManager.GetString("VerificationTimeLimit", resourceCulture);
             }
         }
         

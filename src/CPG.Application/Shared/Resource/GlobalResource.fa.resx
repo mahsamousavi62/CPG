@@ -271,7 +271,7 @@
     <value>کارگزاری کاریزما</value>
   </data>
   <data name="Validation_Required" xml:space="preserve">
-    <value>فیلد {0} الزامی می باشد</value>
+    <value>{0} الزامی می باشد</value>
   </data>
   <data name="AccountNumber" xml:space="preserve">
     <value>شماره حساب</value>
@@ -470,5 +470,17 @@
   </data>
   <data name="ErrorInConnection" xml:space="preserve">
     <value>خطا در برقراری ارتباط</value>
+  </data>
+  <data name="IpgBaseUrl" xml:space="preserve">
+    <value>نشانی صفحه درگاه پرداخت</value>
+  </data>
+  <data name="Validation_MaxLength" xml:space="preserve">
+    <value>{0} نمی‌تواند بیشتر از {1} کاراکتر باشد</value>
+  </data>
+  <data name="Validation_MinLength" xml:space="preserve">
+    <value>{0} نمی‌تواند کمتر از {1} کاراکتر باشد</value>
+  </data>
+  <data name="VerificationTimeLimit" xml:space="preserve">
+    <value>محدودیت زمانی تایید</value>
   </data>
 </root>
