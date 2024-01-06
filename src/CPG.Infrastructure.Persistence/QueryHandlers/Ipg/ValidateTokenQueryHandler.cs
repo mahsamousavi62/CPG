@@ -59,7 +59,7 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
                 case 2:
                     {
                         transaction.IPGTransaction.Status = IPGTransactionStatus.SucceededAndWaitingForVerification;
-                        transaction.IPGTransaction.PredicateDateTime = result.PayGateTranDate.AddMinutes(transaction.IPGTransaction.VerificationTimeLimit);
+                        transaction.IPGTransaction.PredicateExpirationDateTime = result.PayGateTranDate.AddMinutes(transaction.IPGTransaction.VerificationTimeLimit);
                         paymentRequest.Status = PaymentStatus.TransactionWaitingForVerification;
                         break;
                     }

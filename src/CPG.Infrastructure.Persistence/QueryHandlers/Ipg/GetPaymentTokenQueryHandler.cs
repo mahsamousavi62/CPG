@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using CPG.Application.UseCases.CompanyIPGs.Exceptions;
@@ -46,7 +47,7 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
             if (companyIpg is null) { throw new CompanyIPGNotFoundException(request.PaymentToken.CompanyIPGId); }
 
             var ipg = _ipgFactory.GetInstance(Enums.ProviderType.AsanPardakht);
-            var result = await ipg.GetPaymentTokenAsync(
+            var (status,result) = await ipg.GetPaymentTokenAsync(
                 new PaymentTokenRequest
                 {
                     ProviderData = companyIpg.ProviderData,
@@ -56,44 +57,55 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                     IpgBaseUrl = companyIpg.Provider.IpgBaseUrl,
                 });
 
-            long destinationDepositId;
-            if (!string.IsNullOrWhiteSpace(paymentRequest.DestinationIban)) 
+            if (status==(short)HttpStatusCode.OK)
             {
-                var companyDeposit= await _companyDepositRepository.GetBySpecAsync(new CompanyDepositByIban(paymentRequest.DestinationIban));
-              if(companyDeposit is null) throw new Exception("CompanyDeposit not found!");
-                destinationDepositId = companyDeposit.Id;
+                long destinationDepositId;
+                if (!string.IsNullOrWhiteSpace(paymentRequest.DestinationIban))
+                {
+                    var companyDeposit = await _companyDepositRepository.GetBySpecAsync(new CompanyDepositByIban(paymentRequest.DestinationIban));
+                    if (companyDeposit is null) throw new Exception("CompanyDeposit not found!");
+                    destinationDepositId = companyDeposit.Id;
+                }
+                else
+                {
+                    var tempcompanyIpg = await _companyIPGRepository.GetBySpecAsync(new CompanyIPGByIpgDeposit(companyIpg.Id));
+
+                    if (tempcompanyIpg.IPGDeposits.SingleOrDefault() is null)
+                        throw new Exception("CompanyDeposit not found!");
+                    destinationDepositId = tempcompanyIpg.IPGDeposits.SingleOrDefault().CompanyDepositId;
+                }
+
+                Transaction transaction = Transaction.Create(new CreateTransactionModel
+                {
+                    CompanyIPG = companyIpg,
+                    DestinationDepositId = destinationDepositId,
+                    PaymentRequest = paymentRequest,
+                    Token = result.JsonBody.JsonStr.Params.RefID,
+                    TrackId = result.TrackerId = result.TrackerId,
+                    TransactionMethodType = Enums.TransactionType.IPG
+                });
+                await _transactionRepository.AddAsync(transaction);
+                await _transactionRepository.SaveChangesAsync();
+                PaymentRequest.Update(paymentRequest);
+                await _paymentRequestRepository.UpdateAsync(paymentRequest);
+                await _paymentRequestRepository.SaveChangesAsync();
+
+                result.IpgRedirectionMethodType = (Enums.IpgRedirectionMethodType)paymentRequest.Company.IpgRedirectionMethodType;
+
+                return new ResultData<PaymentTokenResponse>
+                {
+                    OperationResult = Enums.OperationResult.Succeeded,
+                    Data = result,
+                };
             }
-            else 
+            else
             {
-                var tempcompanyIpg = await _companyIPGRepository.GetBySpecAsync(new CompanyIPGByIpgDeposit(companyIpg.Id));
-
-                if (tempcompanyIpg.IPGDeposits.SingleOrDefault() is null)
-                    throw new Exception("CompanyDeposit not found!");
-                destinationDepositId= tempcompanyIpg.IPGDeposits.SingleOrDefault().CompanyDepositId;
+                return new ResultData<PaymentTokenResponse>
+                {
+                    OperationResult = Enums.OperationResult.Failed,
+                    Data = result,
+                };
             }
-
-            Transaction transaction = Transaction.Create(new CreateTransactionModel
-            {
-                CompanyIPG = companyIpg,
-                DestinationDepositId = destinationDepositId,
-                PaymentRequest = paymentRequest,
-                Token = result.JsonBody.JsonStr.Params.RefID,
-                TrackId = result.TrackerId = result.TrackerId,
-                TransactionMethodType = Enums.TransactionType.IPG
-            });
-            await _transactionRepository.AddAsync(transaction);
-            await _transactionRepository.SaveChangesAsync();
-            PaymentRequest.Update(paymentRequest);
-            await _paymentRequestRepository.UpdateAsync(paymentRequest);
-            await _paymentRequestRepository.SaveChangesAsync();
-
-            result.IpgRedirectionMethodType = (Enums.IpgRedirectionMethodType)paymentRequest.Company.IpgRedirectionMethodType;
-
-            return new ResultData<PaymentTokenResponse>
-            {
-                OperationResult = Enums.OperationResult.Succeeded,
-                Data = result,
-            };
         }
         catch (Exception ex)
         {

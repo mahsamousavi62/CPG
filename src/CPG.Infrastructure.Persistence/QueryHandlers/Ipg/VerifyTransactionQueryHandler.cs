@@ -107,8 +107,8 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
                 PaymentMethodTypeTitle = transaction is null ? string.Empty : GetPaymentMethodTypeTitle(transaction.TransactionMethodType),
                 Status = (short)paymentRequest.Status,
                 StatusTitle = GetStatusTitle(paymentRequest.Status),
-                PredictedExpirationDateTime = transaction.PredictedSettlementDateTime.ToString("yyyy-MM-dd HH:mm:ss zzz"),                
-                CPGVerificationDateTime = transaction.IPGTransaction.VerificationDateTime.ToString("yyyy-MM-dd HH:mm:ss zzz"),
+                PredictedExpirationDateTime = transaction.PredictedSettlementDateTime?.ToString("yyyy-MM-dd HH:mm:ss zzz"),                
+                CPGVerificationDateTime = transaction.IPGTransaction.VerificationDateTime?.ToString("yyyy-MM-dd HH:mm:ss zzz"),
             };
 
             return new ResultData<VerifyTransactionResponseViewModel>

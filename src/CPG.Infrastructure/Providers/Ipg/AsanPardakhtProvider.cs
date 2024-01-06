@@ -48,7 +48,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
             throw new ParseCompanyIpgProviderDataException(providerData);
         }
     }
-    public async Task<PaymentTokenResponse> GetPaymentTokenAsync(PaymentTokenRequest request)
+    public async Task<(short , PaymentTokenResponse)> GetPaymentTokenAsync(PaymentTokenRequest request)
     {
         GetDataFromJsonProvider(request.ProviderData);
         var configViewModel = await ApplicationSettingRepositoy.GetAllApplicationSettings();
@@ -85,22 +85,21 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
                                                         return System.Text.Json.JsonSerializer.Deserialize<AsanPardakhtTokenResponse>(formattedResponse);
                                                     });
 
-        Params p = new Params { RefID = response.Token };
-        UrlResponseModel urlResponse = new UrlResponseModel
+        var paymentToken= new PaymentTokenResponse
         {
-            Params = p,
-            Url = request.IpgBaseUrl,
-        };
-        return new PaymentTokenResponse
-        {
-            Url = $"{request.SiteAddress}/redirectToBank"
-           ,
+            Url = $"{request.SiteAddress}/redirectToBank",
             TrackerId = trackerId.ToString(),
             JsonBody = new JsonStrModel
             {
-                JsonStr = urlResponse
+                JsonStr = new()
+                {
+                    Params = new Params { RefID = response.Token },
+                    Url = request.IpgBaseUrl,
+                }
             }
         };
+
+        return (response.Status, paymentToken);
     }
 
     public async Task<TransactionResultResponse> GetTransactionResult(TransactionResultRequest request)
@@ -167,19 +166,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
         return list;
     }
 
-    private async Task<long> GetTrackerIdAsync()
-    {
-        try
-        {
-            return await context.GetNextSequenceValue();
-        }
-        catch (Exception ex)
-        {
-            throw ex;
-        }
-    }
-
-    private async Task<string> CreateCallbackUrl(short ipgRedirectionType, string siteAddress, string trackerId, string callbackPage)
+   private async Task<string> CreateCallbackUrl(short ipgRedirectionType, string siteAddress, string trackerId, string callbackPage)
     {
 
         switch (ipgRedirectionType)
@@ -193,7 +180,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
         }
         ;
     }
-   
+
     private static async Task<TResponse?> PaymentTokenErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest? baseRequest, TResponse? response, TError? error, short statusCode)
       where TResponse : AsanPardakhtTokenResponse
       where TError : AsanPardakhtResponseBase
