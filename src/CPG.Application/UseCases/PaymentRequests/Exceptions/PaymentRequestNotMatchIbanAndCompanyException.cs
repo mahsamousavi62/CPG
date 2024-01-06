@@ -6,6 +6,6 @@ namespace CPG.Application.UseCases.PaymentRequests.Exceptions
     public class PaymentRequestNotMatchIbanAndCompanyException() : ApplicationException
         (string.Format(GlobalResource.PaymentRequestNotMatchIbanAndCompany))
     {
-        public override string Code => "PaymentRequest_NotMatchIbanAndCompany";
+        public override string Code => "1001005";
     }
 }
