@@ -59,7 +59,7 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
                 case 2:
                     {
                         transaction.IPGTransaction.Status = IPGTransactionStatus.SucceededAndWaitingForVerification;
-                        transaction.IPGTransaction.PredicateDateTime = result.PayGateTranDate.AddMinutes(transaction.IPGTransaction.VerificationTimeLimit);
+                        transaction.IPGTransaction.PredicateExpirationDateTime = result.PayGateTranDate.AddMinutes(transaction.IPGTransaction.VerificationTimeLimit);
                         paymentRequest.Status = PaymentStatus.TransactionWaitingForVerification;
                         break;
                     }
@@ -86,7 +86,7 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
             return new ResultData<ValidateTokenResponseViewModel>
             {
                 OperationResult = OperationResult.Succeeded,
-                Data = new ValidateTokenResponseViewModel { CallbackUrl = $"{paymentRequest.CallBackUrl}/payment_result?code={paymentRequest.Code}&status={GetStatusTitle(paymentRequest.Status)}" },
+                Data = new ValidateTokenResponseViewModel { CallbackUrl = $"{paymentRequest.CallBackUrl}/payment_result?payment_code={paymentRequest.PaymentCode}&status={GetStatusTitle(paymentRequest.Status)}" },
             };
         }
         catch (Exception ex)

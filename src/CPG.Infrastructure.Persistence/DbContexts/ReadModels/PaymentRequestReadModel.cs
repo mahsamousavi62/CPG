@@ -19,7 +19,7 @@ namespace CPG.Infrastructure.Persistence.DbContexts.ReadModels
         public string Description { get; set; }
         public decimal Amount { get; set; }
         public string CallBackUrl { get; set; }
-        public string Code { get; set; }
+        public string PaymentCode { get; set; }
         public string TrackerId { get; set; }
         public Enums.PaymentStatus Status { get; set; }
         public bool IsUsed { get; set; }

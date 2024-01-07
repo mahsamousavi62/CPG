@@ -33,4 +33,6 @@ public class CommonController : ApiBaseController
         var entityTypeEnum = (Enums.ApplicationSettingEntityType)entityType;
         return Ok(await Mediator.Send(new GetApplicationSettingsQuery(entityTypeEnum)));
     }
+
+   
 }

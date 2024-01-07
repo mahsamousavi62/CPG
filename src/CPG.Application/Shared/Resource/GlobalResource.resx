@@ -265,7 +265,7 @@
     <value>BrokerageCharisma</value>
   </data>
   <data name="Validation_Required" xml:space="preserve">
-    <value>Validation is required</value>
+    <value>{0} is required</value>
   </data>
   <data name="AccountNumber" xml:space="preserve">
     <value>AccountNumber</value>
@@ -322,7 +322,7 @@
     <value>PaymentRequestRequiredIbanOrCompany</value>
   </data>
   <data name="PaymentRequestDuplicateTrackerId" xml:space="preserve">
-    <value>PaymentRequestDuplicateTrackerId</value>
+    <value>TrackerId {0} is used before</value>
   </data>
   <data name="PaymentRequestIbanCompanyInActive" xml:space="preserve">
     <value>IbanCompanyInActive</value>
@@ -360,8 +360,8 @@
   <data name="CompanyDepositByCompanyIdNotFound" xml:space="preserve">
     <value>CompanyDepositByCompanyIdNotFound</value>
   </data>
-  <data name="IdpUserProfileException" xml:space="preserve">
-    <value>Error:{0}</value>
+  <data name="ErrorTitle" xml:space="preserve">
+    <value>Error :{0}</value>
   </data>
   <data name="UserNotFound" xml:space="preserve">
     <value>UserNotFound</value>
@@ -470,5 +470,41 @@
   </data>
   <data name="DuplicateProviderType" xml:space="preserve">
     <value>DuplicateProviderType</value>
+  </data>
+  <data name="PaymentRequestCompanyInactive" xml:space="preserve">
+    <value>Company is inactive</value>
+  </data>
+  <data name="PaymentRequestApplicationIsInactive" xml:space="preserve">
+    <value>Application {0}-{1} is inactive</value>
+  </data>
+  <data name="PaymentRequestApplicationNotFound" xml:space="preserve">
+    <value>This application is not defined</value>
+  </data>
+  <data name="PaymentRequestBankInactive" xml:space="preserve">
+    <value>Bank is inactive</value>
+  </data>
+  <data name="PaymentRequestCompanyPaymentMethodAreInactive" xml:space="preserve">
+    <value>All company payment methods are inactive</value>
+  </data>
+  <data name="PaymentRequestInvalidCallbackUrl" xml:space="preserve">
+    <value>Callback url {0} is invalid</value>
+  </data>
+  <data name="PaymentRequestNoCompanyFound" xml:space="preserve">
+    <value>No company found</value>
+  </data>
+  <data name="PaymentRequestNoCompanyPaymentMethodFound" xml:space="preserve">
+    <value>No company payment method found</value>
+  </data>
+  <data name="IpgBaseUrl" xml:space="preserve">
+    <value>IpgBaseUrl</value>
+  </data>
+  <data name="Validation_MaxLength" xml:space="preserve">
+    <value>{0} cant be more than {1} charachter</value>
+  </data>
+  <data name="Validation_MinLength" xml:space="preserve">
+    <value>{0} cant be less than {1} charachter</value>
+  </data>
+  <data name="VerificationTimeLimit" xml:space="preserve">
+    <value>VerificationTimeLimit</value>
   </data>
 </root>

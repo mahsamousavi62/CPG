@@ -54,15 +54,13 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
 
         var application = await _applicationRepository.GetBySpecAsync(new ApplicationByIdpClientId(clientId), cancellationToken);
         if (application == null)
-            throw new ApplicationNotFoundException(application.Id);
+            throw new PaymentRequestApplicationNotFoundException();
         if (!application.IsActive)
-            throw new ApplicationIsNotActiveException(application.Id);
-        if (!application.ApplicationIdentifiers.SingleOrDefault(a => a.IdpClientId == clientId).IsActive)
-            throw new IdpClientIdIsNotActiveException(clientId);
-
+            throw new PaymentRequestApplicationIsInactiveException(application.PersianName, application.EnglishName);
+        
         var validCallBackUrl = application.ApplicationCallbackUrls.Select(a => a.CallbackUrl).Contains(request.Model.CallBackUrl);
         if (!validCallBackUrl)
-            throw new InvalidCallbackUrlException(request.Model.CallBackUrl);
+            throw new PaymentRequestInvalidCallbackUrlException(request.Model.CallBackUrl);
 
         paymentRequest.ApplicationId = application.Id;
         PaymentRequest.Create(paymentRequest, config.ExpireTime, clientId, application.EnglishName);
@@ -72,9 +70,9 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
 
         return new PaymentRequestResponseViewModel
         {
-            ExpirationDateTime = paymentRequest.UrlExpirationDateTime,
-            Code = paymentRequest.Code,
-            PageUrl = $"{appConfig.Payment_Gateway_URL_Prefix.TrimEnd('/')}?code={paymentRequest.Code}",
+            ExpirationDateTime = paymentRequest.UrlExpirationDateTime.ToString("yyyy-MM-dd HH:mm:ss zzz"),
+            PaymentCode = paymentRequest.PaymentCode,
+            PageUrl = $"{appConfig.Payment_Gateway_URL_Prefix.TrimEnd('/')}?code={paymentRequest.PaymentCode}",
             Status = paymentRequest.Status
         };
     }
@@ -98,10 +96,10 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
             var company = await _companyRepository.GetBySpecAsync(new CompanyByIdSpec(model.CompanyId.Value));
 
             if (company is null)
-                throw new CompanyNotFoundException(model.CompanyId.Value);
+                throw new PaymentRequestNoCompanyFoundException(model.CompanyId.Value);
 
             if (!company.IsActive)
-                throw new CompanyIsNotActiveException(model.CompanyId.Value);
+                throw new PamentRequestInactiveCompanyException(model.CompanyId.Value);
 
             if (company.CompanyDeposits.Count == 0)
                 throw new CompanyHasNotCompanyDepositException(model.CompanyId.Value);
@@ -117,10 +115,12 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
             var companyDeposit = await _companyDepositRepository.GetBySpecAsync(new CompanyDepositByIban(model.DestinationIban));
             if (companyDeposit is null)
                 throw new PaymentRequestNotDefinedCompanyDepositException();
+
             if (!companyDeposit.IsActive)
                 throw new CompanyDepositIsNotActiveException(companyDeposit.Id);
+
             if (!companyDeposit.Bank.IsActive)
-                throw new BankIsNotActiveException(companyDeposit.Bank.Id);
+                throw new PaymentRequestBankInactiveException();
 
             if ((model.CompanyId.HasValue && model.CompanyId != 0) && !string.IsNullOrEmpty(iban))
                 if (companyDeposit.CompanyId != model.CompanyId)

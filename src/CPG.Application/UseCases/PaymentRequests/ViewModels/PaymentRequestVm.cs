@@ -1,4 +1,5 @@
 ﻿using System;
+using CPG.Domain.SharedKernel;
 
 namespace CPG.Application.UseCases.PaymentRequests.ViewModels
 {
@@ -14,10 +15,10 @@ namespace CPG.Application.UseCases.PaymentRequests.ViewModels
         public string Description { get; set; }
         public decimal Amount { get; set; }
         public string CallBackUrl { get; set; }
-        public string Code { get; set; }
+        public string PaymentCode { get; set; }
         public string TrackerId { get; set; }
         public bool IsVerified { get; set; }
-        public short Status { get; set; }
+        public Enums.PaymentStatus Status { get; set; }
         public bool IsUsed { get; set; }
         public DateTime? VerificationDateTime { get; set; }
         public DateTime UrlExpirationDateTime { get; set; }

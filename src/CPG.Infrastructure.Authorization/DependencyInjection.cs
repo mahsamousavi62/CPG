@@ -33,6 +33,7 @@ namespace CPG.Infrastructure.Authorization
                       configureOption.RequireHttpsMetadata = false;
                       configureOption.Authority = JwtConfig.Authority;
                       configureOption.Audience = JwtConfig.ClientApiKey;
+                      configureOption.MapInboundClaims = false;
                       configureOption.TokenValidationParameters = new TokenValidationParameters
                       {
                           ValidIssuer = JwtConfig.Authority,
@@ -41,7 +42,7 @@ namespace CPG.Infrastructure.Authorization
                           ValidateAudience = JwtConfig.ValidateAudience,
                           ValidateLifetime = JwtConfig.ValidateLifetime,
                           ClockSkew = TimeSpan.FromSeconds(Convert.ToInt32(JwtConfig.ClockSkew)),
-                      };
+                  };
                   });
 
                 return services;

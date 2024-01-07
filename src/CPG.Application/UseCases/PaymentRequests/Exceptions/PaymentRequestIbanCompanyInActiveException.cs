@@ -6,7 +6,7 @@ namespace CPG.Application.UseCases.PaymentRequests.Exceptions
     public class PaymentRequestIbanCompanyInActiveException() : ApplicationException(
         string.Format(GlobalResource.PaymentRequestIbanCompanyInActive))
     {
-        public override string Code => "PaymentRequest_IbanCompanyInActive";
+        public override string Code => "1001003";
     }
 
 }

@@ -15,6 +15,7 @@ using CPG.Domain.SharedKernel.Communication.Ipg;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentTicket;
 using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 
@@ -22,24 +23,22 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
     IAggregateRepository<PaymentRequest> paymentRequestAggregateRepository,
     IAggregateRepository<Transaction> transactionRepository,
     IAggregateRepository<CPG.Application.UseCases.CompanyDeposits.CompanyDeposit> companyDepositRepository,
-
-    IAggregateRepository<Domain.AggregateModels.CompanyIPGAggregate.CompanyIPG> companyIPGRepository,
-    
-    ReadDbContext context) : IRequestHandler<GetPaymentTokenCommand, ResultData<PaymentTokenResponse>>
+    IAuthenticationService authenticationService,
+    IAggregateRepository<Domain.AggregateModels.CompanyIPGAggregate.CompanyIPG> companyIPGRepository) : IRequestHandler<GetPaymentTokenCommand, ResultData<PaymentTokenResponse>>
 {
     private readonly IIpgFactory _ipgFactory = ipgFactory;
     private readonly IAggregateRepository<PaymentRequest> _paymentRequestRepository = paymentRequestAggregateRepository;
-    private readonly IAggregateRepository<Domain.AggregateModels.CompanyIPGAggregate.CompanyIPG>
-        _companyIPGRepository = companyIPGRepository;
-
+    private readonly IAggregateRepository<Domain.AggregateModels.CompanyIPGAggregate.CompanyIPG> _companyIPGRepository = companyIPGRepository;
     private readonly IAggregateRepository<Transaction> _transactionRepository = transactionRepository;
     private readonly IAggregateRepository<CPG.Application.UseCases.CompanyDeposits.CompanyDeposit> _companyDepositRepository = companyDepositRepository;
-    private readonly ReadDbContext _context = context;
+    private readonly IAuthenticationService _authenticationService = authenticationService;
 
     public async Task<ResultData<PaymentTokenResponse>> Handle(GetPaymentTokenCommand request, CancellationToken cancellationToken)
     {
         try
         {
+            var nationalCode = await _authenticationService.GetDataFromClaim<string>("NationalCode")?? throw new Exception("nationalCode is empty");
+
             var paymentRequest = await _paymentRequestRepository.GetBySpecAsync(new PaymentRequestByCode(request.PaymentToken.PaymentRequestCode));
             if (paymentRequest is null) { throw new PaymentRequestNotFoundException(request.PaymentToken.PaymentRequestCode); }
 
@@ -47,7 +46,7 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
             if (companyIpg is null) { throw new CompanyIPGNotFoundException(request.PaymentToken.CompanyIPGId); }
 
             var ipg = _ipgFactory.GetInstance(Enums.ProviderType.AsanPardakht);
-            var (status,result) = await ipg.GetPaymentTokenAsync(
+            var (status, result) = await ipg.GetPaymentTokenAsync(
                 new PaymentTokenRequest
                 {
                     ProviderData = companyIpg.ProviderData,
@@ -55,9 +54,10 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                     IpgRedirectionMethodType = (Enums.IpgRedirectionMethodType)paymentRequest.Company.IpgRedirectionMethodType,
                     SiteAddress = paymentRequest.Company.SiteAddress,
                     IpgBaseUrl = companyIpg.Provider.IpgBaseUrl,
+                    NationalCode = nationalCode
                 });
 
-            if (status==(short)HttpStatusCode.OK)
+            if (status == (short)HttpStatusCode.OK)
             {
                 long destinationDepositId;
                 if (!string.IsNullOrWhiteSpace(paymentRequest.DestinationIban))

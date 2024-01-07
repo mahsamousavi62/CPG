@@ -591,9 +591,9 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.Property<long?>("ModificationUserId")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime?>("PredicateDateTime")
+                    b.Property<DateTime?>("PredicateExpirationDateTime")
                         .HasColumnType("datetime2")
-                        .HasColumnName("PredicateDateTime");
+                        .HasColumnName("PredicateExpirationDateTime");
 
                     b.Property<string>("ProviderTrackerId")
                         .HasColumnType("nvarchar(255)")
@@ -674,7 +674,7 @@ namespace CPG.Infrastructure.Persistence.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("PaymentRquestId");
 
-                    b.Property<DateTime>("PredictedSettlementDateTime")
+                    b.Property<DateTime?>("PredictedSettlementDateTime")
                         .HasColumnType("datetime2")
                         .HasColumnName("PredictedSettlementDateTime");
 
@@ -882,12 +882,6 @@ namespace CPG.Infrastructure.Persistence.Migrations
                         .HasColumnType("varchar")
                         .HasColumnName("CallBackUrl");
 
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("varchar")
-                        .HasColumnName("Code");
-
                     b.Property<long>("CompanyId")
                         .HasColumnType("bigint")
                         .HasColumnName("CompanyId");
@@ -927,6 +921,12 @@ namespace CPG.Infrastructure.Persistence.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("varchar")
                         .HasColumnName("NationalCode");
+
+                    b.Property<string>("PaymentCode")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar")
+                        .HasColumnName("Code");
 
                     b.Property<byte>("Status")
                         .HasColumnType("tinyint")

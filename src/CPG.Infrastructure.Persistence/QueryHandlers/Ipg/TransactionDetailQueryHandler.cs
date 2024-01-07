@@ -27,7 +27,7 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
             {
                 throw new RequiredCodeOrTrackIdException(string.Empty);
             }
-            var paymentRequest = await _context.PaymentRequestReadModels.FirstOrDefaultAsync(t => t.Code == request.RequestViewModel.Code ||
+            var paymentRequest = await _context.PaymentRequestReadModels.FirstOrDefaultAsync(t => t.PaymentCode == request.RequestViewModel.Code ||
                                                                                                   t.TrackerId == request.RequestViewModel.TrackerId);
 
             if (paymentRequest is null) { throw new InvalidCodeOrTrackIdException(string.Empty); }
@@ -39,7 +39,7 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
                 OperationResult = OperationResult.Succeeded,
                 Data = new TransactionDetailResponseViewModel
                 {
-                    Code = paymentRequest.Code,
+                    Code = paymentRequest.PaymentCode,
                     TrackerId = paymentRequest.TrackerId,
                     Amount = paymentRequest.Amount,
                     Status = (short)paymentRequest.Status,
@@ -48,7 +48,7 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
                     PaymentMethodTypeTitle = transaction is null ? string.Empty : GetPaymentMethodTypeTitle(transaction.TransactionMethodType),
                     ReferenceNumber = transaction is not null && transaction.TransactionMethodType == TransactionType.IPG ? transaction.IPGTransaction?.ReferenceNumber : string.Empty,
                     DestinationDepositIban = transaction?.DestinationDeposit?.Iban,
-                    PredictedExpirationDateTime = transaction is not null && transaction.TransactionMethodType == TransactionType.IPG ? transaction.IPGTransaction?.PredicateDateTime.Value.ToString("yyyy-MM-dd HH:mm:ss zzz") : string.Empty,
+                    PredictedExpirationDateTime = transaction is not null && transaction.TransactionMethodType == TransactionType.IPG ? transaction.IPGTransaction?.PredicateExpirationDateTime?.ToString("yyyy-MM-dd HH:mm:ss zzz") : string.Empty,
                 },
             };
         }

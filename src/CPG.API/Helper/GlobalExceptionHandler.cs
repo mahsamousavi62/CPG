@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+﻿using CPG.Domain.SharedKernel;
+using CPG.Domain.SharedKernel.Logging;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CPG.API.Helper;
@@ -12,8 +14,15 @@ internal sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> log
         Exception exception,
         CancellationToken cancellationToken)
     {
-        _logger.LogError(
-            exception, "Exception occurred: {Message}", exception.Message);
+        RequestResponseLogModel log = new ()
+        {
+            AuditType = Enums.AuditType.Develop.ToString(),
+            StackTrace = exception.StackTrace,
+            ResponseBody = exception.Message,
+            IsSuccess = false,
+            ErrorCode = (exception as dynamic)?.Code
+        };
+        _logger.LogError(exception, "Exception occurred: {log}", log);
 
         var problemDetails = new ProblemDetails
         {

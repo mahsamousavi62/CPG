@@ -99,7 +99,7 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
             var response = new VerifyTransactionResponseViewModel
             {
                 Amount = paymentRequest.Amount,
-                Code = paymentRequest.Code,
+                Code = paymentRequest.PaymentCode,
                 TrackerId = paymentRequest.TrackerId,
                 DestinationDepositIban = transaction.DestinationDeposit.Iban,
                 ReferenceNumber = transaction.IPGTransaction.ReferenceNumber,
@@ -107,8 +107,8 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
                 PaymentMethodTypeTitle = transaction is null ? string.Empty : GetPaymentMethodTypeTitle(transaction.TransactionMethodType),
                 Status = (short)paymentRequest.Status,
                 StatusTitle = GetStatusTitle(paymentRequest.Status),
-                PredictedExpirationDateTime = transaction.PredictedSettlementDateTime.ToString("yyyy-MM-dd HH:mm:ss zzz"),                
-                CPGVerificationDateTime = transaction.IPGTransaction.VerificationDateTime.Value.ToString("yyyy-MM-dd HH:mm:ss zzz"),
+                PredictedExpirationDateTime = transaction.PredictedSettlementDateTime?.ToString("yyyy-MM-dd HH:mm:ss zzz"),                
+                CPGVerificationDateTime = transaction.IPGTransaction.VerificationDateTime?.ToString("yyyy-MM-dd HH:mm:ss zzz"),
             };
 
             return new ResultData<VerifyTransactionResponseViewModel>
