@@ -520,6 +520,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error :{0}.
+        /// </summary>
+        public static string ErrorTitle {
+            get {
+                return ResourceManager.GetString("ErrorTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to False.
         /// </summary>
         public static string False {
@@ -579,15 +588,6 @@ namespace CPG.Application.Shared.Resource {
         public static string IdpClientIds {
             get {
                 return ResourceManager.GetString("IdpClientIds", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ErrorTitle:{0}.
-        /// </summary>
-        public static string IdpUserProfileException {
-            get {
-                return ResourceManager.GetString("IdpUserProfileException", resourceCulture);
             }
         }
         
