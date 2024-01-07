@@ -1186,6 +1186,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to the application is unable to fetch this transaction detail.
+        /// </summary>
+        public static string TransactionDetailInvalidApplication {
+            get {
+                return ResourceManager.GetString("TransactionDetailInvalidApplication", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An unexpected error has occurred, please try again or contact support.
         /// </summary>
         public static string TransactionDetailUnexpectedError {
@@ -1317,6 +1326,15 @@ namespace CPG.Application.Shared.Resource {
         public static string VerificationTimeLimitIPG {
             get {
                 return ResourceManager.GetString("VerificationTimeLimitIPG", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the application is unable to verify this transaction.
+        /// </summary>
+        public static string VerifyInvalidApplication {
+            get {
+                return ResourceManager.GetString("VerifyInvalidApplication", resourceCulture);
             }
         }
         

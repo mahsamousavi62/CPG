@@ -17,19 +17,23 @@ using static CPG.Domain.SharedKernel.Enums;
 using CPG.Domain.AggregateModels.PaymentRequestAggregate.Specifications;
 using CPG.Application.UseCases.Ipg.Exceptions;
 using CPG.Domain.Exceptions;
+using Microsoft.AspNetCore.Http;
+using System.Linq;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 
 public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
     IAggregateRepository<PaymentRequest> paymentRequestRepository,
     IAggregateRepository<Transaction> transactionRepository,
-    ReadDbContext context) : IRequestHandler<VerifyTransactionQuery, Result<VerifyTransactionResponseViewModel>>
+    ReadDbContext context,
+    HttpContext httpContext) : IRequestHandler<VerifyTransactionQuery, Result<VerifyTransactionResponseViewModel>>
 {
 
     private readonly IIpgFactory _ipgFactory = ipgFactory;
     private readonly IAggregateRepository<PaymentRequest> _paymentRequestRepository = paymentRequestRepository;
     private readonly IAggregateRepository<Transaction> _transactionRepository = transactionRepository;
     private readonly ReadDbContext _context = context;
+    private readonly HttpContext _httpContext = httpContext;
 
     public async Task<Result<VerifyTransactionResponseViewModel>> Handle(VerifyTransactionQuery request, CancellationToken cancellationToken)
     {
@@ -43,6 +47,11 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
             var paymentRequest = await _paymentRequestRepository.GetBySpecAsync(new PaymentRequestByCodeOrTrackerId(request.VerifyTransaction.Code, request.VerifyTransaction.TrackerId));
 
             if (paymentRequest is null) { throw new VerifyInvalidCodeOrTrackIdException(); }
+
+            long applicationId;
+            long.TryParse(_httpContext.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out applicationId);
+
+            if (paymentRequest.ApplicationId != applicationId) { throw new VerifyInvalidApplicationException(); }
 
             if (paymentRequest.Status != PaymentStatus.TransactionWaitingForVerification) { throw new VerifyInvalidStatusException(); }
 

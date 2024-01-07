@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.Identity.Client;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
+using HotChocolate.Authorization;
 
 namespace CPG.API.Controllers.v1;
 
@@ -28,11 +29,13 @@ public class IPGResultController : ApiBaseController
         return Redirect($"{appConfig.IPG_Callback_URL}?trackId={id}");
     }
 
+    [Authorize]
     [HttpPost("TransactionDetail")]
     [ProducesResponseType(typeof(TransactionDetailResponseViewModel), 200)]
     public async Task<IActionResult> GetTransactionDetail([Required] TransactionDetailRequestViewModel model)
         => Ok(await Mediator.Send(new TransactionDetailQuery(model)));
 
+    [Authorize]
     [HttpPost("TransactionVerify")]
     [ProducesResponseType(typeof(VerifyTransactionResponseViewModel), 200)]
     public async Task<IActionResult> VerifyTransaction([Required] VerifyTransactionViewModel model)

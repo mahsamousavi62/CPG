@@ -13,13 +13,16 @@ using CPG.Domain.AggregateModels.TransactionAggregate.Specifications;
 using static CPG.Domain.SharedKernel.Enums;
 using CPG.Application.Shared.Resource;
 using CPG.Domain.Exceptions;
+using Microsoft.AspNetCore.Http;
+using System.Linq;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 
-public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> transactionRepository, ReadDbContext context) : IRequestHandler<TransactionDetailQuery, Result<TransactionDetailResponseViewModel>>
+public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> transactionRepository, ReadDbContext context, HttpContext httpContext) : IRequestHandler<TransactionDetailQuery, Result<TransactionDetailResponseViewModel>>
 {
     private readonly IAggregateRepository<Transaction> _transactionRepository = transactionRepository;
     private readonly ReadDbContext _context = context;
+    private readonly HttpContext _httpContext = httpContext;
 
     public async Task<Result<TransactionDetailResponseViewModel>> Handle(TransactionDetailQuery request, CancellationToken cancellationToken)
     {
@@ -33,6 +36,11 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
                                                                                                   t.TrackerId == request.RequestViewModel.TrackerId);
 
             if (paymentRequest is null) { throw new InvalidCodeOrTrackIdException(); }
+
+            long applicationId;
+            long.TryParse(_httpContext.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out applicationId);
+            
+            if(paymentRequest.ApplicationId != applicationId) { throw new TransactionDetailInvalidApplicationException(); }
 
             var transaction = await _transactionRepository.GetBySpecAsync(new TransactionByPaymentRequestId(paymentRequest.Id));
 
