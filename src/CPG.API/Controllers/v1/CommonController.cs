@@ -34,10 +34,5 @@ public class CommonController : ApiBaseController
         return Ok(await Mediator.Send(new GetApplicationSettingsQuery(entityTypeEnum)));
     }
 
-    [Authorize]
-    [HttpGet("test")]
-    public IActionResult Test()
-    {
-        return Ok();
-    }
+   
 }
