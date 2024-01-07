@@ -1,12 +1,9 @@
 ﻿using System.Net;
-using CPG.Application.UseCases.Ipg.Commands;
 using CPG.Application.UseCases.Ipg.Queries;
 using CPG.Application.UseCases.Ipg.ViewModels;
 using CPG.Domain.SharedKernel.ApplicationSettings;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.Identity.Client;
-using CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
 using HotChocolate.Authorization;
 
 namespace CPG.API.Controllers.v1;
