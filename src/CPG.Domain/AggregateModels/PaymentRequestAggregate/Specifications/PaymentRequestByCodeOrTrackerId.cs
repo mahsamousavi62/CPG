@@ -7,6 +7,6 @@ public class PaymentRequestByCodeOrTrackerId : Specification<PaymentRequest>, IS
 {
     public PaymentRequestByCodeOrTrackerId(string code, string trackerId)
     {
-        Query.Where(t => t.Code == code || t.TrackerId == trackerId);
+        Query.Where(t => t.PaymentCode == code || t.TrackerId == trackerId);
     }
 }

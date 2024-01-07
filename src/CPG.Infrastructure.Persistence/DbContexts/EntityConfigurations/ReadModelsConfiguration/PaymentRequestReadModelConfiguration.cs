@@ -17,7 +17,7 @@ public class PaymentRequestReadModelConfiguration : IEntityTypeConfiguration<Pay
         reader.Property(x => x.Description);
         reader.Property(x => x.Amount);
         reader.Property(x => x.CallBackUrl);
-        reader.Property(x => x.Code);
+        reader.Property(x => x.PaymentCode);
         reader.Property(x => x.TrackerId);
         reader.Property(x => x.Status).HasColumnName("Status").HasColumnType("tinyint");
         reader.Property(x => x.IsUsed);
