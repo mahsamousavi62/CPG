@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CPG.Application.UseCases.Users
+namespace CPG.Application.UseCases.Users.Queries
 {
-    public class GetCompanyUsersQuery:IRequest<IReadOnlyCollection<UserCompanyViewModel>>
+    public class GetCompanyUsersQuery : IRequest<IReadOnlyCollection<UserCompanyViewModel>>
     {
     }
 }
