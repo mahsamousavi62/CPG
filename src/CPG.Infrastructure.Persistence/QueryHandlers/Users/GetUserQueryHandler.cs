@@ -31,7 +31,7 @@ public class GetUserQueryHandler(ReadDbContext context, IAuthenticationService a
 
             var user = await _context.UserReadModels.Include(u => u.UserRoles).
                        SingleOrDefaultAsync(u => u.IsActive && u.IDPId == sub);
-
+            var applicationId = (await _context.ApplicationIdentifierReadModels.SingleOrDefaultAsync(a => a.IdpClientId == sub))?.ApplicationId;
             if (user == null)
                 throw new UserNotFoundException(sub);
 

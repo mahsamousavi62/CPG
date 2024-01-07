@@ -10,8 +10,9 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using CPG.Domain.SharedKernel;
-using IAuthenticationService = CPG.Domain.SharedKernel.IAuthenticationService;
+
 using CPG.Application.Auth;
+using IAuthenticationService = CPG.Domain.SharedKernel.IAuthenticationService;
 namespace CPG.Infrastructure.Authorization
 {
     public class AuthenticationService : IAuthenticationService
@@ -23,6 +24,7 @@ namespace CPG.Infrastructure.Authorization
         #endregion
 
         #region [ Public Method(s) ]
+       
         public AuthenticationService(IHttpContextAccessor httpContextAccessor,
                                      IApplicationSettingsRepository applicationSettingsRepository,
                                      IAuthService authService)
@@ -61,8 +63,6 @@ namespace CPG.Infrastructure.Authorization
             Claim claim;
             if (_httpContextAccessor.HttpContext.User != null)
             {
-                var t = _httpContextAccessor.HttpContext.User.Claims.ToList();
-                var tt = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == propertyName);
                 claim = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == propertyName);
             }
             else
@@ -72,7 +72,6 @@ namespace CPG.Infrastructure.Authorization
                     return default(T);
 
                 claim = authenticateResult.Principal.FindFirst(c => c.Type == propertyName);
-                  
             }
 
             if (claim != null)
