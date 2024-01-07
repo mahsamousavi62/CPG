@@ -22,7 +22,8 @@ public class UsersController : ApiBaseController
     [ProducesResponseType(typeof(Result<long>), (int)HttpStatusCode.OK)]
     public async Task<ActionResult<Result<long>>> CreateUserProfile()
         => Ok(await Mediator.Send(new CreateUserCommnad()));
-    
+
+    [Authorize]
     [HttpGet("GetUserProfile")]
     [ProducesResponseType(typeof(Result<UserViewModel>), (int)HttpStatusCode.OK)]
     public async Task<ActionResult<CompanyDepositViewModel>> Get()

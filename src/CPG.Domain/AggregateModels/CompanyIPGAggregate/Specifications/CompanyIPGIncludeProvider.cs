@@ -7,7 +7,8 @@ public class CompanyIPGIncludeProvider : Specification<CompanyIPG>, ISingleResul
 {
     public CompanyIPGIncludeProvider(long id)
     {
-        Query.Where(c => c.IsActive & c.Id == id)
-         .Include(c => c.Provider);
+        Query.Where(c => c.Id == id)
+         .Include(c => c.Provider)
+         .Include(c => c.IPGType);
     }
 }

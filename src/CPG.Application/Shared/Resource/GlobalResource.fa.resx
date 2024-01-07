@@ -457,10 +457,10 @@
     <value>کاربر گرامی، شناسه پرداخت در وضعیت غیرمجاز است</value>
   </data>
   <data name="InvalidCodeOrTrackIdException" xml:space="preserve">
-    <value>درخواستی با اطلاعات ارائه شده یافت نشد</value>
+    <value>کد درخواست یا شناسه رهگیری اشتباه است</value>
   </data>
   <data name="RequiredCodeOrTrackIdException" xml:space="preserve">
-    <value>وارد نمودن کد و یا شناسه رهگیری الزامیست</value>
+    <value>هر 2 پارامتر کد درخواست پرداخت و شناسه رهگیری نمیتواند به صورت همزمان خالی باشد</value>
   </data>
   <data name="TransactionNotFound" xml:space="preserve">
     <value>تراکنش با این شناسه {0}یافت نشد</value>
@@ -503,6 +503,39 @@
   </data>
   <data name="PaymentRequestRequiredIbanOrCompany" xml:space="preserve">
     <value>هر 2 پارامتر شناسه شرکت و شبای مقصد نمیتواند به صورت همزمان خالی باشد</value>
+  </data>
+  <data name="GetPaymentTicketUnexpectedError" xml:space="preserve">
+    <value>خطایی غیرقابل پیش بینی رخ داده است، لطفا مجددا تلاش کنید یا با پشتیبانی تماس بگیرید</value>
+  </data>
+  <data name="PaymentMethodsUnexpectedError" xml:space="preserve">
+    <value>خطایی غیرقابل پیش بینی رخ داده است، لطفا مجددا تلاش کنید یا با پشتیبانی تماس بگیرید</value>
+  </data>
+  <data name="PaymentRequestCodeExpired" xml:space="preserve">
+    <value>کاربر گرامی، نشانی پرداخت منقضی شده است، در صورت نیاز مجددا عملیات را تکرار کنید</value>
+  </data>
+  <data name="PaymentRequestCodeInvalidStatus" xml:space="preserve">
+    <value>کاربر گرامی، درخواست در وضعیت غیرمجاز است</value>
+  </data>
+  <data name="PaymentRequestCodeIsUsedBefore" xml:space="preserve">
+    <value>کاربر گرامی، این نشانی قبلا یکبار استفاده شده است، در صورت نیاز مجددا عملیات را تکرار کنید</value>
+  </data>
+  <data name="PaymentRequestNotFoundByCode" xml:space="preserve">
+    <value>کاربر گرامی، نشانی پرداخت نامعتبر است</value>
+  </data>
+  <data name="PaymentRequestUnexpectedError" xml:space="preserve">
+    <value>خطایی غیرقابل پیش بینی رخ داده است، لطفا مجددا تلاش کنید یا با پشتیبانی تماس بگیرید</value>
+  </data>
+  <data name="PaymentTokenUnexpectedError" xml:space="preserve">
+    <value>خطایی غیرقابل پیش بینی رخ داده است، لطفا مجددا تلاش کنید یا با پشتیبانی تماس بگیرید</value>
+  </data>
+  <data name="ProviderUnexpectedError" xml:space="preserve">
+    <value>خطایی غیرقابل پیش بینی رخ داده است، لطفا مجددا تلاش کنید یا با پشتیبانی تماس بگیرید</value>
+  </data>
+  <data name="TransactionDetailUnexpectedError" xml:space="preserve">
+    <value>خطایی غیرقابل پیش بینی رخ داده است، لطفا مجددا تلاش کنید یا با پشتیبانی تماس بگیرید</value>
+  </data>
+  <data name="VerifyInvalidStatus" xml:space="preserve">
+    <value>درخواست پرداخت مورد نظر در وضعیت مجاز برای تایید قرار ندارد</value>
   </data>
   <data name="IpgBaseUrl" xml:space="preserve">
     <value>نشانی صفحه درگاه پرداخت</value>
