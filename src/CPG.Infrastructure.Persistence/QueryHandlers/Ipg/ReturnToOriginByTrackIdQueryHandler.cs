@@ -28,7 +28,7 @@ public class ReturnToOriginByTrackIdQueryHandler(
       var transaction= await _transactionRepository.GetBySpecAsync(new TransactionByIPGTransactionTrackId(request.model.TrackId));
         if (transaction is  null) throw new TransactionNotFoundException(request.model.TrackId); 
         var paymentRequest = transaction.PaymentRequest;
-        return $"{paymentRequest.CallBackUrl}?code={paymentRequest.Code}&status={(Enums.PaymentStatus)paymentRequest.Status}";
+        return $"{paymentRequest.CallBackUrl}?code={paymentRequest.PaymentCode}&status={(Enums.PaymentStatus)paymentRequest.Status}";
     }
 }
 

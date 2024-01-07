@@ -9,4 +9,5 @@ public class PaymentTokenRequest : AsanPardakhtRequestBase
     public Enums.IpgRedirectionMethodType IpgRedirectionMethodType { get; set; }
     public string SiteAddress { get; set; }
     public string IpgBaseUrl { get; set; }
+    public string NationalCode { get; set; }
 }

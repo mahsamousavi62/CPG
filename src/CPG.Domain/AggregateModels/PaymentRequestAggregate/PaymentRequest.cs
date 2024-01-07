@@ -21,7 +21,7 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
         Description = description;
         Amount = amount;
         CallBackUrl = callBackUrl;
-        Code = code;
+        PaymentCode = code;
         TrackerId = trackerId;
         Status = status;
         IsUsed = isUsed;
@@ -35,7 +35,7 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
     public string Description { get; set; }
     public decimal Amount { get; set; }
     public string CallBackUrl { get; set; }
-    public string Code { get; set; }
+    public string PaymentCode { get; set; }
     public string TrackerId { get; set; }
     public Enums.PaymentStatus Status { get; set; }
     public bool IsUsed { get; set; }
@@ -50,7 +50,7 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
         paymentRequest.IsActive = true;
         string hexString = Guid.NewGuid().ToString("N");
         string randomString = hexString.Substring(0, 16);
-        paymentRequest.Code = $"{applicationEnglishName}_{clientId}_{randomString}";
+        paymentRequest.PaymentCode = $"{applicationEnglishName}_{clientId}_{randomString}";
         paymentRequest.Status = 0;
         paymentRequest.IsActive = true;
         paymentRequest.IsUsed = false;

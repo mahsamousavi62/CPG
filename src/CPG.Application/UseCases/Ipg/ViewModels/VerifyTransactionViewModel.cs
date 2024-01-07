@@ -4,7 +4,7 @@ namespace CPG.Application.UseCases.Ipg.ViewModels;
 
 public class VerifyTransactionViewModel
 {
-    [JsonPropertyName("code")]
+    [JsonPropertyName("paymentCode")]
     public string Code { get; set; }
 
     [JsonPropertyName("trackerId")]

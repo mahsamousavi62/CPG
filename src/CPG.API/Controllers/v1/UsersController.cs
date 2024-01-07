@@ -6,6 +6,7 @@ using CPG.Application.UseCases.Users.Queries;
 using CPG.Application.UseCases.Users.ViewModel;
 using CPG.Domain.SharedKernel;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -18,12 +19,11 @@ public class UsersController : ApiBaseController
 {
     [Authorize]
     [HttpPost("CreateUserProfile")]
-    public async Task<IActionResult> CreateUserProfile()
-    {
-        await Mediator.Send(new CreateUserCommnad());
-        return Ok();
-    }
+    [ProducesResponseType(typeof(Result<long>), (int)HttpStatusCode.OK)]
+    public async Task<ActionResult<Result<long>>> CreateUserProfile()
+        => Ok(await Mediator.Send(new CreateUserCommnad()));
 
+    [Authorize]
     [HttpGet("GetUserProfile")]
     [ProducesResponseType(typeof(Result<UserViewModel>), (int)HttpStatusCode.OK)]
     public async Task<ActionResult<CompanyDepositViewModel>> Get()

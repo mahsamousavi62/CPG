@@ -70,9 +70,9 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
 
             return Result<PaymentRequestResponseViewModel>.SuccessResult(new PaymentRequestResponseViewModel
             {
-                ExpirationDateTime = paymentRequest.UrlExpirationDateTime,
-                Code = paymentRequest.Code,
-                PageUrl = $"{appConfig.Payment_Gateway_URL_Prefix.TrimEnd('/')}?code={paymentRequest.Code}",
+                ExpirationDateTime = paymentRequest.UrlExpirationDateTime.ToString("yyyy-MM-dd HH:mm:ss zzz"),
+                PaymentCode = paymentRequest.PaymentCode,
+                PageUrl = $"{appConfig.Payment_Gateway_URL_Prefix.TrimEnd('/')}?payment_code={paymentRequest.PaymentCode}",
                 Status = paymentRequest.Status
             });
         }

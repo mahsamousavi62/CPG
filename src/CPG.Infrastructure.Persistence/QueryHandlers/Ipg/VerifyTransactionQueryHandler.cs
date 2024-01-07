@@ -97,7 +97,7 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
             var response = new VerifyTransactionResponseViewModel
             {
                 Amount = paymentRequest.Amount,
-                Code = paymentRequest.Code,
+                Code = paymentRequest.PaymentCode,
                 TrackerId = paymentRequest.TrackerId,
                 DestinationDepositIban = transaction.DestinationDeposit.Iban,
                 ReferenceNumber = transaction.IPGTransaction.ReferenceNumber,

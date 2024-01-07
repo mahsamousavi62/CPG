@@ -29,7 +29,7 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
     {
         try
         {
-            var paymentRequest = await _paymentRequestRepository.FirstOrDefaultAsync(new PaymentRequestByCode(request.ViewModel.Code));
+            var paymentRequest = await _paymentRequestRepository.FirstOrDefaultAsync(new PaymentRequestByCode(request.ViewModel.PaymentCode));
 
             if (paymentRequest is null)
             {

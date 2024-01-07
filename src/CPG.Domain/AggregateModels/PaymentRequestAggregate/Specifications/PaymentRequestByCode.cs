@@ -7,7 +7,7 @@ public class PaymentRequestByCode : Specification<PaymentRequest>, ISingleResult
 {
     public PaymentRequestByCode(string code)
     {
-        Query.Where(t => t.Code == code)
+        Query.Where(t => t.PaymentCode == code)
             .Include(p => p.Company)
             .Include(p => p.Application);
     }

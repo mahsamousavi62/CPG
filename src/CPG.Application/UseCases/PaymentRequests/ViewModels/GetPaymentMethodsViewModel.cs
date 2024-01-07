@@ -5,5 +5,5 @@ namespace CPG.Application.UseCases.PaymentRequests.ViewModels;
 public class GetPaymentMethodsViewModel
 {
     [Required]
-    public string Code { get; set; }
+    public string PaymentCode { get; set; }
 }

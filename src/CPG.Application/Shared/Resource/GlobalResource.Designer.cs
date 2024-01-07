@@ -520,6 +520,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error :{0}.
+        /// </summary>
+        public static string ErrorTitle {
+            get {
+                return ResourceManager.GetString("ErrorTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to False.
         /// </summary>
         public static string False {
@@ -592,15 +601,6 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error:{0}.
-        /// </summary>
-        public static string IdpUserProfileException {
-            get {
-                return ResourceManager.GetString("IdpUserProfileException", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to InternetPaymentGateway.
         /// </summary>
         public static string InternetPaymentGateway {
@@ -615,6 +615,15 @@ namespace CPG.Application.Shared.Resource {
         public static string InvalidCodeOrTrackIdException {
             get {
                 return ResourceManager.GetString("InvalidCodeOrTrackIdException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to IpgBaseUrl.
+        /// </summary>
+        public static string IpgBaseUrl {
+            get {
+                return ResourceManager.GetString("IpgBaseUrl", resourceCulture);
             }
         }
         
@@ -1258,7 +1267,25 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Validation is required.
+        ///   Looks up a localized string similar to {0} cant be more than {1} charachter.
+        /// </summary>
+        public static string Validation_MaxLength {
+            get {
+                return ResourceManager.GetString("Validation_MaxLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} cant be less than {1} charachter.
+        /// </summary>
+        public static string Validation_MinLength {
+            get {
+                return ResourceManager.GetString("Validation_MinLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} is required.
         /// </summary>
         public static string Validation_Required {
             get {
@@ -1272,6 +1299,15 @@ namespace CPG.Application.Shared.Resource {
         public static string Vandar {
             get {
                 return ResourceManager.GetString("Vandar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VerificationTimeLimit.
+        /// </summary>
+        public static string VerificationTimeLimit {
+            get {
+                return ResourceManager.GetString("VerificationTimeLimit", resourceCulture);
             }
         }
         
