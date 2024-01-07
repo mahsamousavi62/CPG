@@ -29,7 +29,7 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
             {
                 throw new RequiredCodeOrTrackIdException();
             }
-            var paymentRequest = await _context.PaymentRequestReadModels.FirstOrDefaultAsync(t => t.Code == request.RequestViewModel.Code ||
+            var paymentRequest = await _context.PaymentRequestReadModels.FirstOrDefaultAsync(t => t.PaymentCode == request.RequestViewModel.Code ||
                                                                                                   t.TrackerId == request.RequestViewModel.TrackerId);
 
             if (paymentRequest is null) { throw new InvalidCodeOrTrackIdException(); }
@@ -39,7 +39,7 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
             return Result<TransactionDetailResponseViewModel>.SuccessResult(
                 new TransactionDetailResponseViewModel
                 {
-                    Code = paymentRequest.Code,
+                    Code = paymentRequest.PaymentCode,
                     TrackerId = paymentRequest.TrackerId,
                     Amount = paymentRequest.Amount,
                     Status = (short)paymentRequest.Status,

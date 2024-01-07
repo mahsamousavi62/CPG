@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Threading.Tasks;
 using CCPG.Domain.SharedKernel.Communication.Ipg;
-using CommunityToolkit.HighPerformance;
 using CPG.Application.Shared.Resource;
 using CPG.Application.UseCases.Ipg.Exception;
-using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.ApplicationSettings;
 using CPG.Domain.SharedKernel.Communication;
@@ -76,7 +73,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
                                                             serviceTypeId = 1,
                                                             paymentId = "0",
                                                             callbackURL = callBack,
-                                                            additionalData = CreateAdditionalData(),
+                                                            additionalData = CreateAdditionalData(request.NationalCode),
                                                             merchantConfigurationId = merchantConfigurationId,
                                                             amountInRials = (long)request.PaymentRequestAmount,
                                                             localInvoiceId = trackerId.ToString(),
@@ -155,12 +152,12 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
         return response;
     }
 
-    private string CreateAdditionalData()
+    private string CreateAdditionalData(string nationalCode)
     {
+        
         string hexString = Guid.NewGuid().ToString("N");
         string randomString = hexString.Substring(0, 7);
-        //Todo:remove hardcode!
-        var original = $"0|0440061423|{randomString}";
+        var original = $"0|{nationalCode}|{randomString}";
         var dkey = AesHelper.Base64Decode(key);
         var div = AesHelper.Base64Decode(iv);
         var token = AesHelper.EncryptAes(original, dkey ?? string.Empty, div ?? string.Empty);

@@ -2,7 +2,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 using CPG.Domain.AggregateModels.UserAggregate;
+using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Interfaces;
+using CPG.Domain.SharedKernel.Logging;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -31,14 +33,19 @@ public class PerformanceBehaviour<TRequest, TResponse>(
             var requestName = typeof(TRequest).Name;
             var userId = _user.UserId;
             var userName = string.Empty;
-
-            if (userId != 0)
-            {
+            if (userId != 0) 
                 userName = await User.GetUserName(userId);
-            }
 
-            _logger.LogWarning("Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@UserId} {@UserName} {@Request}",
-                requestName, elapsedMilliseconds, userId, userName, request);
+            RequestResponseLogModel log = new()
+            {
+                RequestMethod = requestName,
+                UserId = userId,
+                ElapsedMilliseconds = elapsedMilliseconds,
+                AuditType = Enums.AuditType.Develop.ToString()
+            };
+
+            _logger.LogWarning("Long Running Request {@log}", log);
+
         }
 
         return response;
