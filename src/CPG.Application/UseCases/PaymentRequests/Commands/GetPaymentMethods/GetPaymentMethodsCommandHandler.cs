@@ -50,14 +50,15 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
             await _paymentRequestRepository.UpdateAsync(paymentRequest);
 
             Company company = null;
-            if (!string.IsNullOrEmpty(paymentRequest.DestinationIban))
+            if (!string.IsNullOrEmpty(paymentRequest.DestinationDepositIban))
             {
-                company = await _companyRepository.GetBySpecAsync(new CompanyPaymentMethodsByIbanSpec(paymentRequest.CompanyId, paymentRequest.DestinationIban), cancellationToken);
+                company = await _companyRepository.GetBySpecAsync(new CompanyPaymentMethodsByIbanSpec(paymentRequest.CompanyId,
+                    paymentRequest.DestinationDepositIban), cancellationToken);
 
                 var toBeRemoved = new List<CompanyIPG>();
                 foreach (var companyIPGItem in company?.CompanyIPGs)
                 {
-                    var found = companyIPGItem.IPGDeposits.Any(t => t.CompanyDeposit.Iban == paymentRequest.DestinationIban);
+                    var found = companyIPGItem.IPGDeposits.Any(t => t.CompanyDeposit.Iban == paymentRequest.DestinationDepositIban);
                     if (!found)
                     {
                         toBeRemoved.Add(companyIPGItem);
