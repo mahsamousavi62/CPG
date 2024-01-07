@@ -565,6 +565,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An unexpected error has occurred, please try again or contact support.
+        /// </summary>
+        public static string GetPaymentTicketUnexpectedError {
+            get {
+                return ResourceManager.GetString("GetPaymentTicketUnexpectedError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Iban.
         /// </summary>
         public static string Iban {
@@ -754,6 +763,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An unexpected error has occurred, please try again or contact support.
+        /// </summary>
+        public static string PaymentMethodsUnexpectedError {
+            get {
+                return ResourceManager.GetString("PaymentMethodsUnexpectedError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to PaymentReceipt.
         /// </summary>
         public static string PaymentReceipt {
@@ -792,6 +810,24 @@ namespace CPG.Application.Shared.Resource {
         /// <summary>
         ///   Looks up a localized string similar to Dear user, the payment address has expired, repeat the operation if necessary.
         /// </summary>
+        public static string PaymentRequestCodeExpired {
+            get {
+                return ResourceManager.GetString("PaymentRequestCodeExpired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dear user, the request status is invalid.
+        /// </summary>
+        public static string PaymentRequestCodeInvalidStatus {
+            get {
+                return ResourceManager.GetString("PaymentRequestCodeInvalidStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dear user, the payment address has expired, repeat the operation if necessary.
+        /// </summary>
         public static string PaymentRequestCodeIsExpired {
             get {
                 return ResourceManager.GetString("PaymentRequestCodeIsExpired", resourceCulture);
@@ -813,6 +849,15 @@ namespace CPG.Application.Shared.Resource {
         public static string PaymentRequestCodeIsUsed {
             get {
                 return ResourceManager.GetString("PaymentRequestCodeIsUsed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dear user, this address has already been used, repeat the operation if necessary.
+        /// </summary>
+        public static string PaymentRequestCodeIsUsedBefore {
+            get {
+                return ResourceManager.GetString("PaymentRequestCodeIsUsedBefore", resourceCulture);
             }
         }
         
@@ -907,6 +952,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dear user, the payment address is invalid.
+        /// </summary>
+        public static string PaymentRequestNotFoundByCode {
+            get {
+                return ResourceManager.GetString("PaymentRequestNotFoundByCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to NotMatchIbanAndCompany.
         /// </summary>
         public static string PaymentRequestNotMatchIbanAndCompany {
@@ -930,6 +984,24 @@ namespace CPG.Application.Shared.Resource {
         public static string PaymentRequestStatusIsInvalid {
             get {
                 return ResourceManager.GetString("PaymentRequestStatusIsInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An unexpected error has occurred, please try again or contact support.
+        /// </summary>
+        public static string PaymentRequestUnexpectedError {
+            get {
+                return ResourceManager.GetString("PaymentRequestUnexpectedError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An unexpected error has occurred, please try again or contact support.
+        /// </summary>
+        public static string PaymentTokenUnexpectedError {
+            get {
+                return ResourceManager.GetString("PaymentTokenUnexpectedError", resourceCulture);
             }
         }
         
@@ -984,6 +1056,15 @@ namespace CPG.Application.Shared.Resource {
         public static string ProviderType {
             get {
                 return ResourceManager.GetString("ProviderType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An unexpected error has occurred, please try again or contact support.
+        /// </summary>
+        public static string ProviderUnexpectedError {
+            get {
+                return ResourceManager.GetString("ProviderUnexpectedError", resourceCulture);
             }
         }
         
@@ -1101,6 +1182,24 @@ namespace CPG.Application.Shared.Resource {
         public static string TrackIdInvalidStatusException {
             get {
                 return ResourceManager.GetString("TrackIdInvalidStatusException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the application is unable to fetch this transaction detail.
+        /// </summary>
+        public static string TransactionDetailInvalidApplication {
+            get {
+                return ResourceManager.GetString("TransactionDetailInvalidApplication", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An unexpected error has occurred, please try again or contact support.
+        /// </summary>
+        public static string TransactionDetailUnexpectedError {
+            get {
+                return ResourceManager.GetString("TransactionDetailUnexpectedError", resourceCulture);
             }
         }
         
@@ -1227,6 +1326,24 @@ namespace CPG.Application.Shared.Resource {
         public static string VerificationTimeLimitIPG {
             get {
                 return ResourceManager.GetString("VerificationTimeLimitIPG", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the application is unable to verify this transaction.
+        /// </summary>
+        public static string VerifyInvalidApplication {
+            get {
+                return ResourceManager.GetString("VerifyInvalidApplication", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The payment request status is invalid.
+        /// </summary>
+        public static string VerifyInvalidStatus {
+            get {
+                return ResourceManager.GetString("VerifyInvalidStatus", resourceCulture);
             }
         }
     }

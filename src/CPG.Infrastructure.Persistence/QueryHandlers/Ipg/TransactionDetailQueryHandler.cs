@@ -11,33 +11,41 @@ using CPG.Application.UseCases.Ipg.Exceptions;
 using CPG.Domain.AggregateModels.TransactionAggregate;
 using CPG.Domain.AggregateModels.TransactionAggregate.Specifications;
 using static CPG.Domain.SharedKernel.Enums;
+using CPG.Application.Shared.Resource;
+using CPG.Domain.Exceptions;
+using Microsoft.AspNetCore.Http;
+using System.Linq;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 
-public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> transactionRepository, ReadDbContext context) : IRequestHandler<TransactionDetailQuery, ResultData<TransactionDetailResponseViewModel>>
+public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> transactionRepository, ReadDbContext context, IHttpContextAccessor httpContext) : IRequestHandler<TransactionDetailQuery, Result<TransactionDetailResponseViewModel>>
 {
     private readonly IAggregateRepository<Transaction> _transactionRepository = transactionRepository;
     private readonly ReadDbContext _context = context;
+    private readonly IHttpContextAccessor _httpContext = httpContext;
 
-    public async Task<ResultData<TransactionDetailResponseViewModel>> Handle(TransactionDetailQuery request, CancellationToken cancellationToken)
+    public async Task<Result<TransactionDetailResponseViewModel>> Handle(TransactionDetailQuery request, CancellationToken cancellationToken)
     {
         try
         {
             if (string.IsNullOrEmpty(request.RequestViewModel.Code) && string.IsNullOrEmpty(request.RequestViewModel.TrackerId))
             {
-                throw new RequiredCodeOrTrackIdException(string.Empty);
+                throw new RequiredCodeOrTrackIdException();
             }
             var paymentRequest = await _context.PaymentRequestReadModels.FirstOrDefaultAsync(t => t.PaymentCode == request.RequestViewModel.Code ||
                                                                                                   t.TrackerId == request.RequestViewModel.TrackerId);
 
-            if (paymentRequest is null) { throw new InvalidCodeOrTrackIdException(string.Empty); }
+            if (paymentRequest is null) { throw new InvalidCodeOrTrackIdException(); }
+
+            long applicationId;
+            long.TryParse(_httpContext.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out applicationId);
+            
+            if(paymentRequest.ApplicationId != applicationId) { throw new TransactionDetailInvalidApplicationException(); }
 
             var transaction = await _transactionRepository.GetBySpecAsync(new TransactionByPaymentRequestId(paymentRequest.Id));
 
-            return new ResultData<TransactionDetailResponseViewModel>
-            {
-                OperationResult = OperationResult.Succeeded,
-                Data = new TransactionDetailResponseViewModel
+            return Result<TransactionDetailResponseViewModel>.SuccessResult(
+                new TransactionDetailResponseViewModel
                 {
                     Code = paymentRequest.PaymentCode,
                     TrackerId = paymentRequest.TrackerId,
@@ -49,16 +57,14 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
                     ReferenceNumber = transaction is not null && transaction.TransactionMethodType == TransactionType.IPG ? transaction.IPGTransaction?.ReferenceNumber : string.Empty,
                     DestinationDepositIban = transaction?.DestinationDeposit?.Iban,
                     PredictedExpirationDateTime = transaction is not null && transaction.TransactionMethodType == TransactionType.IPG ? transaction.IPGTransaction?.PredicateExpirationDateTime?.ToString("yyyy-MM-dd HH:mm:ss zzz") : string.Empty,
-                },
-            };
+                });
         }
-        catch (Exception ex)
+        catch (Exception exc)
         {
-            return new ResultData<TransactionDetailResponseViewModel>
-            {
-                OperationResult = OperationResult.Failed,
-                Error = ex.Message
-            };
+            if (exc is DomainException || exc is CPG.Application.UseCases.Exceptions.ApplicationException)
+                return Result<TransactionDetailResponseViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
+            else
+                return Result<TransactionDetailResponseViewModel>.Failure(new Error("1002000", GlobalResource.TransactionDetailUnexpectedError));
         }
     }
 

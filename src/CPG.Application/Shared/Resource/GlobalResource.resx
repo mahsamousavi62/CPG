@@ -495,6 +495,39 @@
   <data name="PaymentRequestNoCompanyPaymentMethodFound" xml:space="preserve">
     <value>No company payment method found</value>
   </data>
+  <data name="PaymentRequestCodeExpired" xml:space="preserve">
+    <value>Dear user, the payment address has expired, repeat the operation if necessary</value>
+  </data>
+  <data name="PaymentRequestNotFoundByCode" xml:space="preserve">
+    <value>Dear user, the payment address is invalid</value>
+  </data>
+  <data name="GetPaymentTicketUnexpectedError" xml:space="preserve">
+    <value>An unexpected error has occurred, please try again or contact support</value>
+  </data>
+  <data name="PaymentMethodsUnexpectedError" xml:space="preserve">
+    <value>An unexpected error has occurred, please try again or contact support</value>
+  </data>
+  <data name="PaymentRequestCodeInvalidStatus" xml:space="preserve">
+    <value>Dear user, the request status is invalid</value>
+  </data>
+  <data name="PaymentRequestCodeIsUsedBefore" xml:space="preserve">
+    <value>Dear user, this address has already been used, repeat the operation if necessary</value>
+  </data>
+  <data name="PaymentRequestUnexpectedError" xml:space="preserve">
+    <value>An unexpected error has occurred, please try again or contact support</value>
+  </data>
+  <data name="PaymentTokenUnexpectedError" xml:space="preserve">
+    <value>An unexpected error has occurred, please try again or contact support</value>
+  </data>
+  <data name="ProviderUnexpectedError" xml:space="preserve">
+    <value>An unexpected error has occurred, please try again or contact support</value>
+  </data>
+  <data name="TransactionDetailUnexpectedError" xml:space="preserve">
+    <value>An unexpected error has occurred, please try again or contact support</value>
+  </data>
+  <data name="VerifyInvalidStatus" xml:space="preserve">
+    <value>The payment request status is invalid</value>
+  </data>
   <data name="IpgBaseUrl" xml:space="preserve">
     <value>IpgBaseUrl</value>
   </data>
@@ -506,5 +539,11 @@
   </data>
   <data name="VerificationTimeLimit" xml:space="preserve">
     <value>VerificationTimeLimit</value>
+  </data>
+  <data name="TransactionDetailInvalidApplication" xml:space="preserve">
+    <value>the application is unable to fetch this transaction detail</value>
+  </data>
+  <data name="VerifyInvalidApplication" xml:space="preserve">
+    <value>the application is unable to verify this transaction</value>
   </data>
 </root>

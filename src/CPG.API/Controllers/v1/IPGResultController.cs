@@ -1,15 +1,14 @@
 ﻿using System.Net;
-using CPG.Application.UseCases.Ipg.Commands;
 using CPG.Application.UseCases.Ipg.Queries;
 using CPG.Application.UseCases.Ipg.ViewModels;
 using CPG.Domain.SharedKernel.ApplicationSettings;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.Identity.Client;
-using CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
+using HotChocolate.Authorization;
 
 namespace CPG.API.Controllers.v1;
 
+[Authorize]
 [Route("IPGResult")]
 public class IPGResultController : ApiBaseController
 {
@@ -20,6 +19,7 @@ public class IPGResultController : ApiBaseController
         _applicationSettingsRepository = applicationSettingsRepository;
     }
 
+    [AllowAnonymous]
     [HttpPost("p/b/{id}")]  
     public async Task<IActionResult> GetData(string id)
     {
@@ -33,7 +33,7 @@ public class IPGResultController : ApiBaseController
     public async Task<IActionResult> GetTransactionDetail([Required] TransactionDetailRequestViewModel model)
         => Ok(await Mediator.Send(new TransactionDetailQuery(model)));
 
-    [HttpPost("VerifyTransaction")]
+    [HttpPost("TransactionVerify")]
     [ProducesResponseType(typeof(VerifyTransactionResponseViewModel), 200)]
     public async Task<IActionResult> VerifyTransaction([Required] VerifyTransactionViewModel model)
         => Ok(await Mediator.Send(new VerifyTransactionQuery(model)));
@@ -44,13 +44,6 @@ public class IPGResultController : ApiBaseController
     {
         var redirectUrlData = await Mediator.Send(new ValidateTokenQuery(new ValidateTokenRequestViewModel { TrackId = trackId }));
         return Ok(redirectUrlData.Data);
-    }
-
-    [HttpGet("ReturnToOriginByCode")]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
-    public async Task<IActionResult> ReturnToOriginByCode([FromQuery] ReturnToOriginByCodeViewModel model)
-    {
-        return Ok(await Mediator.Send(new ReturnToOriginByCodeQuery(model)));
     }
 }
 

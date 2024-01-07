@@ -5,7 +5,7 @@ using CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
 
 namespace CPG.Application.UseCases.Ipg.Queries;
 
-public class VerifyTransactionQuery(VerifyTransactionViewModel model) : IRequest<ResultData<VerifyTransactionResponseViewModel>>
+public class VerifyTransactionQuery(VerifyTransactionViewModel model) : IRequest<Result<VerifyTransactionResponseViewModel>>
 {
     public VerifyTransactionViewModel VerifyTransaction { get; set; } = model;
 }

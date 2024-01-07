@@ -5,7 +5,7 @@ using CPG.Application.UseCases.Ipg.ViewModels;
 
 namespace CPG.Application.UseCases.Ipg.Commands;
 
-public class GetPaymentTokenCommand(PaymentTokenViewModel model) : IRequest<ResultData<PaymentTokenResponse>>
+public class GetPaymentTokenCommand(PaymentTokenViewModel model) : IRequest<Result<PaymentTokenResponse>>
 {
     public PaymentTokenViewModel PaymentToken { get; set; } = model;
 }

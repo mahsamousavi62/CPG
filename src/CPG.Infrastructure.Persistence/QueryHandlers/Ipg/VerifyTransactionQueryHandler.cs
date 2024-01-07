@@ -15,34 +15,45 @@ using CPG.Application.Shared.Resource;
 using CPG.Application.UseCases.Ipg.ViewModels;
 using static CPG.Domain.SharedKernel.Enums;
 using CPG.Domain.AggregateModels.PaymentRequestAggregate.Specifications;
+using CPG.Application.UseCases.Ipg.Exceptions;
+using CPG.Domain.Exceptions;
+using Microsoft.AspNetCore.Http;
+using System.Linq;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 
 public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
     IAggregateRepository<PaymentRequest> paymentRequestRepository,
     IAggregateRepository<Transaction> transactionRepository,
-    ReadDbContext context) : IRequestHandler<VerifyTransactionQuery, ResultData<VerifyTransactionResponseViewModel>>
+    ReadDbContext context,
+    IHttpContextAccessor httpContext) : IRequestHandler<VerifyTransactionQuery, Result<VerifyTransactionResponseViewModel>>
 {
 
     private readonly IIpgFactory _ipgFactory = ipgFactory;
     private readonly IAggregateRepository<PaymentRequest> _paymentRequestRepository = paymentRequestRepository;
     private readonly IAggregateRepository<Transaction> _transactionRepository = transactionRepository;
     private readonly ReadDbContext _context = context;
+    private readonly IHttpContextAccessor _httpContext = httpContext;
 
-    public async Task<ResultData<VerifyTransactionResponseViewModel>> Handle(VerifyTransactionQuery request, CancellationToken cancellationToken)
+    public async Task<Result<VerifyTransactionResponseViewModel>> Handle(VerifyTransactionQuery request, CancellationToken cancellationToken)
     {
         try
-        {   
+        {
+            if (string.IsNullOrEmpty(request.VerifyTransaction.Code) && string.IsNullOrEmpty(request.VerifyTransaction.TrackerId))
+            {
+                throw new VerifyRequiredCodeOrTrackIdException();
+            }
+
             var paymentRequest = await _paymentRequestRepository.GetBySpecAsync(new PaymentRequestByCodeOrTrackerId(request.VerifyTransaction.Code, request.VerifyTransaction.TrackerId));
 
-            if (paymentRequest is null)
-            {
-                return new ResultData<VerifyTransactionResponseViewModel>
-                {
-                    OperationResult = OperationResult.Failed,
-                    Error = GlobalResource.UnexpectedError
-                };
-            }
+            if (paymentRequest is null) { throw new VerifyInvalidCodeOrTrackIdException(); }
+
+            long applicationId;
+            long.TryParse(_httpContext.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out applicationId);
+
+            if (paymentRequest.ApplicationId != applicationId) { throw new VerifyInvalidApplicationException(); }
+
+            if (paymentRequest.Status != PaymentStatus.TransactionWaitingForVerification) { throw new VerifyInvalidStatusException(); }
 
             paymentRequest.Status = PaymentStatus.TransactionVerifiedByApplication;
             await _paymentRequestRepository.UpdateAsync(paymentRequest);
@@ -62,21 +73,17 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
 
             if (transaction is null || transaction.IPGTransaction is null)
             {
-                return new ResultData<VerifyTransactionResponseViewModel>
-                {
-                    OperationResult = OperationResult.Failed,
-                    Error = GlobalResource.UnexpectedError
-                };
+                throw new Exception("transaction or ipgTransaction not found");
             }
 
-            transaction.IPGTransaction.Status = result.Status;            
-            
+            transaction.IPGTransaction.Status = result.Status;
+
             if (result.Status == IPGTransactionStatus.VerificationSucceeded)
             {
                 var currentDateTime = DateTime.UtcNow.Date;
                 var timeMargin = new TimeOnly(23, 45);
                 var currentTime = new TimeOnly(currentDateTime.Hour, currentDateTime.Minute);
-                var date = currentTime < timeMargin ? 
+                var date = currentTime < timeMargin ?
                     new DateTime(currentDateTime.AddDays(1).Year, currentDateTime.AddDays(1).Month, currentDateTime.AddDays(1).Day, 7, 0, 0) :
                     new DateTime(currentDateTime.AddDays(2).Year, currentDateTime.AddDays(2).Month, currentDateTime.AddDays(2).Day, 7, 0, 0);
 
@@ -84,7 +91,7 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
                 transaction.Status = TransactionStatus.TransactionSucceeded;
                 transaction.IPGTransaction.VerificationDateTime = DateTime.UtcNow;
                 paymentRequest.Status = PaymentStatus.TransactionVerificationSucceeded;
-            }            
+            }
             else if (result.Status == IPGTransactionStatus.VerificationFailed)
             {
                 transaction.Status = TransactionStatus.TransactionFailed;
@@ -107,23 +114,18 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
                 PaymentMethodTypeTitle = transaction is null ? string.Empty : GetPaymentMethodTypeTitle(transaction.TransactionMethodType),
                 Status = (short)paymentRequest.Status,
                 StatusTitle = GetStatusTitle(paymentRequest.Status),
-                PredictedExpirationDateTime = transaction.PredictedSettlementDateTime?.ToString("yyyy-MM-dd HH:mm:ss zzz"),                
+                PredictedExpirationDateTime = transaction.PredictedSettlementDateTime?.ToString("yyyy-MM-dd HH:mm:ss zzz"),
                 CPGVerificationDateTime = transaction.IPGTransaction.VerificationDateTime?.ToString("yyyy-MM-dd HH:mm:ss zzz"),
             };
 
-            return new ResultData<VerifyTransactionResponseViewModel>
-            {
-                OperationResult = OperationResult.Succeeded,
-                Data = response
-            };
+            return Result<VerifyTransactionResponseViewModel>.SuccessResult(response);
         }
-        catch (Exception ex)
+        catch (Exception exc)
         {
-            return new ResultData<VerifyTransactionResponseViewModel>
-            {
-                OperationResult = OperationResult.Failed,
-                Error = ex.Message
-            };
+            if (exc is DomainException || exc is CPG.Application.UseCases.Exceptions.ApplicationException)
+                return Result<VerifyTransactionResponseViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
+            else
+                return Result<VerifyTransactionResponseViewModel>.Failure(new Error("1005000", GlobalResource.TransactionDetailUnexpectedError));
         }
     }
 
