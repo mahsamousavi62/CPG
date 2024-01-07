@@ -10,7 +10,7 @@ namespace CPG.Application.UseCases.PaymentRequests.ViewModels
         public decimal Amount { get; set; }
         [Required]
         public string CallBackUrl { get; set; }
-        public string DestinationIban { get; set; }
+        public string DestinationDepositIban { get; set; }
         [Required]
         public string NationalCode { get; set; }
         [Required]

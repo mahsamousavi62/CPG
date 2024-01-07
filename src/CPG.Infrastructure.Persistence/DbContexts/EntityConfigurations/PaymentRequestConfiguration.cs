@@ -20,7 +20,7 @@ public class PaymentRequestConfiguration : IEntityTypeConfiguration<PaymentReque
         entity.Property(x => x.Id).HasColumnName("Id").UseIdentityColumn();
         entity.Property(x => x.CompanyId).HasColumnName("CompanyId").HasColumnType("bigint").IsRequired();
         entity.Property(x => x.ApplicationId).HasColumnName("ApplicationId").HasColumnType("bigint").IsRequired();
-        entity.Property(x => x.DestinationIban).HasColumnName("DestinationIban").HasMaxLength(26).HasColumnType("nvarchar").IsRequired();
+        entity.Property(x => x.DestinationDepositIban).HasColumnName("DestinationDepositIban").HasMaxLength(26).HasColumnType("nvarchar");
         entity.Property(x => x.NationalCode).HasColumnName("NationalCode").HasMaxLength(10).HasColumnType("varchar").IsRequired();
         entity.Property(x => x.Description).HasColumnName("Description").HasMaxLength(1000).HasColumnType("nvarchar");
         entity.Property(x => x.Amount).HasColumnName("Amount").HasColumnType("numeric").HasPrecision(18, 0).IsRequired();
