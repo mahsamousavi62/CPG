@@ -57,7 +57,7 @@ namespace CPG.Infrastructure.Authorization
             newIdentity.AddClaim(new Claim(ClaimTypes.Sid, user?.IDPId, ClaimValueTypes.String));
             newIdentity.AddClaim(new Claim(ClaimTypes.MobilePhone, user?.PhoneNumber, ClaimValueTypes.String));
             newIdentity.AddClaim(new Claim(type: "NationalCode", value: user?.NationalCode));
-            newIdentity.AddClaim(new Claim(type: "CompanyId", value: user?.CompanyId?.ToString()));
+            newIdentity.AddClaim(new Claim(type: "CompanyId", value: user?.CompanyId.ToString()));
             newIdentity.AddClaim(new Claim(type: "UserId", value: user?.Id.ToString()));
             newIdentity.AddClaim(new Claim(type: "AuditType", value: user?.AuditType.ToString()));
             newIdentity.AddClaim(new Claim(type: "ApplicationId", value: user?.ApplicationId.ToString()));
