@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.Identity.Client;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
+using HotChocolate.Authorization;
 
 namespace CPG.API.Controllers.v1;
 
+[Authorize]
 [Route("IPGResult")]
 public class IPGResultController : ApiBaseController
 {
@@ -20,6 +22,7 @@ public class IPGResultController : ApiBaseController
         _applicationSettingsRepository = applicationSettingsRepository;
     }
 
+    [AllowAnonymous]
     [HttpPost("p/b/{id}")]  
     public async Task<IActionResult> GetData(string id)
     {
@@ -44,13 +47,6 @@ public class IPGResultController : ApiBaseController
     {
         var redirectUrlData = await Mediator.Send(new ValidateTokenQuery(new ValidateTokenRequestViewModel { TrackId = trackId }));
         return Ok(redirectUrlData.Data);
-    }
-
-    [HttpGet("ReturnToOriginByCode")]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
-    public async Task<IActionResult> ReturnToOriginByCode([FromQuery] ReturnToOriginByCodeViewModel model)
-    {
-        return Ok(await Mediator.Send(new ReturnToOriginByCodeQuery(model)));
     }
 }
 
