@@ -72,9 +72,9 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
             if (status == (short)HttpStatusCode.OK)
             {
                 long destinationDepositId;
-                if (!string.IsNullOrWhiteSpace(paymentRequest.DestinationIban))
+                if (!string.IsNullOrWhiteSpace(paymentRequest.DestinationDepositIban))
                 {
-                    var companyDeposit = await _companyDepositRepository.GetBySpecAsync(new CompanyDepositByIban(paymentRequest.DestinationIban));
+                    var companyDeposit = await _companyDepositRepository.GetBySpecAsync(new CompanyDepositByIban(paymentRequest.DestinationDepositIban));
                     if (companyDeposit is null) throw new Exception("CompanyDeposit not found!");
                     if (companyDeposit.CompanyId != paymentRequest.CompanyId) { throw new PaymentTokenDepositNotBelongsCompanyException(); }
                     if (!companyDeposit.IsActive) { throw new PaymentTokenInactiveDepositException(); }

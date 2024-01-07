@@ -87,7 +87,7 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
 
     private async Task Validate(CreatePaymentRequestViewModel model)
     {
-        if ((!model.CompanyId.HasValue || model.CompanyId == 0) && string.IsNullOrEmpty(model.DestinationIban))
+        if ((!model.CompanyId.HasValue || model.CompanyId == 0) && string.IsNullOrEmpty(model.DestinationDepositIban))
             throw new PaymentRequestRequiredDataException();
 
         var amount = new Amount(model.Amount);
@@ -111,11 +111,11 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
                 throw new AllCompanyDepositsIsInActiveException(model.CompanyId.Value);
         }
 
-        if (!string.IsNullOrEmpty(model.DestinationIban))
+        if (!string.IsNullOrEmpty(model.DestinationDepositIban))
         {
-            var iban = new Iban(model.DestinationIban);
+            var iban = new Iban(model.DestinationDepositIban);
 
-            var companyDeposit = await _companyDepositRepository.GetBySpecAsync(new CompanyDepositByIban(model.DestinationIban));
+            var companyDeposit = await _companyDepositRepository.GetBySpecAsync(new CompanyDepositByIban(model.DestinationDepositIban));
             if (companyDeposit is null)
                 throw new PaymentRequestNotDefinedCompanyDepositException();
 
