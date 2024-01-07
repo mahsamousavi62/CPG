@@ -366,8 +366,8 @@
   <data name="UnexpectedError" xml:space="preserve">
     <value>خطایی غیرقابل پیش بینی رخ داده است، لطفا مجددا تلاش کنید یا با پشتیبانی تماس بگیرید</value>
   </data>
-  <data name="IdpUserProfileException" xml:space="preserve">
-    <value>{0}خطا :</value>
+  <data name="ErrorTitle" xml:space="preserve">
+    <value>{0} :خطا</value>
   </data>
   <data name="UserNotFound" xml:space="preserve">
     <value>کاربر وجود ندارد</value>

@@ -19,13 +19,13 @@ using System.Threading.Tasks;
 namespace CPG.Application.UseCases.Users.Commands
 {
     public class CreateUserCommandHandler(IIdpProvider idpClient, IAggregateRepository<User> repository, IAuthenticationService authenticationService)
-            : IRequestHandler<CreateUserCommnad, Result<Unit>>
+            : IRequestHandler<CreateUserCommnad, Result<long>>
     {
         private readonly IAggregateRepository<User> _repository = repository;
         private readonly IAuthenticationService _authenticationService = authenticationService;
         private readonly IIdpProvider _idpClient = idpClient;
 
-        public async Task<Result<Unit>> Handle(CreateUserCommnad request, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(CreateUserCommnad request, CancellationToken cancellationToken)
         {
             try
             {
@@ -43,7 +43,6 @@ namespace CPG.Application.UseCases.Users.Commands
                 var spec = new UserByIDPIdSpec(sub);
                 var existingUser = await _repository.GetBySpecAsync(spec, cancellationToken);
                 var userToUpdate = existingUser;
-
                 if (userToUpdate == null)
                 {
                     var nationalCodeSpec = new UserByNationalCodeSpec(idpUserProfile.Result.UniqueIdentifier);
@@ -61,16 +60,15 @@ namespace CPG.Application.UseCases.Users.Commands
                     await _repository.UpdateAsync(userToUpdate, cancellationToken);
                 }
                 await _repository.SaveChangesAsync(cancellationToken);
-                return Result<Unit>.SuccessResult(Unit.Value);
-
+                return Result<long>.SuccessResult(userToUpdate.Id);
             }
             catch (Exception exc)
             {
-                if (exc is DomainException)
+                if (exc is DomainException ||  exc is CPG.Application.UseCases.Exceptions.ApplicationException)
 
-                    return Result<Unit>.Failure(new Error((exc as dynamic).Code, exc.Message));
+                    return Result<long>.Failure(new Error((exc as dynamic).Code, exc.Message));
                 else
-                    return Result<Unit>.Failure(new Error(exc.Source, exc.Message));
+                    return Result<long>.Failure(new Error(exc.Source, exc.Message));
             }
         }
     }
