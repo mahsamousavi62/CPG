@@ -71,8 +71,8 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
         return new PaymentRequestResponseViewModel
         {
             ExpirationDateTime = paymentRequest.UrlExpirationDateTime.ToString("yyyy-MM-dd HH:mm:ss zzz"),
-            Code = paymentRequest.Code,
-            PageUrl = $"{appConfig.Payment_Gateway_URL_Prefix.TrimEnd('/')}?code={paymentRequest.Code}",
+            PaymentCode = paymentRequest.PaymentCode,
+            PageUrl = $"{appConfig.Payment_Gateway_URL_Prefix.TrimEnd('/')}?code={paymentRequest.PaymentCode}",
             Status = paymentRequest.Status
         };
     }

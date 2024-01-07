@@ -24,7 +24,7 @@ namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg
         {
             var paymentRequest = await _paymentRequestRepository.GetBySpecAsync(new PaymentRequestByCode(request.model.Code));
             if (paymentRequest is null) throw new PaymentRequestCodeNotFoundException();
-            return $"{paymentRequest.CallBackUrl}?code={paymentRequest.Code}&status={(Enums.PaymentStatus)paymentRequest.Status}";
+            return $"{paymentRequest.CallBackUrl}?code={paymentRequest.PaymentCode}&status={(Enums.PaymentStatus)paymentRequest.Status}";
         }
     }
 }

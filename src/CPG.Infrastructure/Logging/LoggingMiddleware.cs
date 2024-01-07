@@ -39,12 +39,12 @@ public class LoggingMiddleware
         }
 
         httpContext.Request.EnableBuffering();
-
+        RequestResponseLogModel log;
         using (var requestStream = recyclableMemoryStreamManager.GetStream())
         {
             await httpContext.Request.Body.CopyToAsync(requestStream);
 
-            RequestResponseLogModel log = new()
+             log = new()
             {
                 UserAgent = httpContext.Request.Headers["User-Agent"].ToString(),
                 IP = httpContext.Request.GetClientIpAddress(),
