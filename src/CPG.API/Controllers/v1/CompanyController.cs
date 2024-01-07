@@ -39,8 +39,6 @@ public class CompanyController : ApiBaseController
              model.PersianName, model.EnglishName, model.NationalCodeMatchingRequied,
              new FormFileProxy(model.File), model.MethodTypes, model.Users,model.SiteAddress,model.IpgRedirectionMethodType);
 
-        var result = await Mediator.Send(new CreateCompanyCommand(createCompanyViewModel));
-
-        return result;
+        return await Mediator.Send(new CreateCompanyCommand(createCompanyViewModel));
     }
 }
