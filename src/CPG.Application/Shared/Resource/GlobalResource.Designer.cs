@@ -1051,6 +1051,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An unexpected error has occurred, please try again or contact support.
+        /// </summary>
+        public static string ProviderUnexpectedError {
+            get {
+                return ResourceManager.GetString("ProviderUnexpectedError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to RayanReferencePage.
         /// </summary>
         public static string RayanReferencePage {

@@ -528,6 +528,9 @@
   <data name="PaymentTokenUnexpectedError" xml:space="preserve">
     <value>خطایی غیرقابل پیش بینی رخ داده است، لطفا مجددا تلاش کنید یا با پشتیبانی تماس بگیرید</value>
   </data>
+  <data name="ProviderUnexpectedError" xml:space="preserve">
+    <value>خطایی غیرقابل پیش بینی رخ داده است، لطفا مجددا تلاش کنید یا با پشتیبانی تماس بگیرید</value>
+  </data>
   <data name="TransactionDetailUnexpectedError" xml:space="preserve">
     <value>خطایی غیرقابل پیش بینی رخ داده است، لطفا مجددا تلاش کنید یا با پشتیبانی تماس بگیرید</value>
   </data>
