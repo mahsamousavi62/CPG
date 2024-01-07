@@ -42,7 +42,7 @@ public class PerformanceBehaviour<TRequest, TResponse>(
             log.ElapsedMilliseconds = elapsedMilliseconds;
             log.AuditType = Enums.AuditType.Develop.ToString();
                    
-            _logger.LogWarning("LogDetail", log);
+            _logger.LogWarning("Long Running Request {@log}", log);
 
         }
 

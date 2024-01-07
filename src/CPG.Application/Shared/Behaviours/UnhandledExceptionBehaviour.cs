@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using CPG.Domain.SharedKernel.Logging;
+using CPG.Domain.SharedKernel;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
@@ -19,8 +21,15 @@ public class UnhandledExceptionBehaviour<TRequest, TResponse>(ILogger<TRequest> 
         catch (Exception ex)
         {
             var requestName = typeof(TRequest).Name;
+            var log = new RequestResponseLogModel();
+            log.AuditType = Enums.AuditType.Develop.ToString();
+            log.ServiceName = requestName;
+            log.StackTrace = ex.StackTrace;
+            log.ResponseBody = ex.Message;
+            log.IsSuccess = false;
+            log.ErrorCode = (ex as dynamic)?.Code;
 
-            _logger.LogError(ex, "Request: Unhandled Exception for Request {Name} {@Request}", requestName, request);
+            _logger.LogError(ex, "Request: Unhandled Exception for Request {Name} {@log}", requestName, log);
 
             throw;
         }

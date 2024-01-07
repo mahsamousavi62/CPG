@@ -2,6 +2,8 @@
 using System.Net;
 using System.Threading.Tasks;
 using CPG.Domain.Exceptions;
+using CPG.Domain.SharedKernel.Logging;
+using CPG.Domain.SharedKernel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -22,7 +24,14 @@ public class ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandling
         }
         catch (Exception ex)
         {
-            _logger.LogError("Error details: {@ex}", ex);
+            var log = new RequestResponseLogModel();
+            log.AuditType = Enums.AuditType.Develop.ToString();
+            log.StackTrace = ex.StackTrace;
+            log.ResponseBody = ex.Message;
+            log.IsSuccess = false;
+            log.ErrorCode = (ex as dynamic)?.Code;
+
+            _logger.LogError("Error details: {@log}", log);
             await HandleExceptionAsync(context, ex);
         }
     }

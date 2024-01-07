@@ -22,5 +22,8 @@ namespace CPG.Domain.SharedKernel.Logging
         public long? UserId { get; set; }
         public long? ElapsedMilliseconds { get; set; }
         public string ClientId { get; set; }
+        public string StackTrace { get; set; }
+        public bool IsSuccess { get; set; }
+        public string ErrorCode { get; set; }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using CPG.Domain.SharedKernel.Logging;
+using CPG.Domain.SharedKernel;
 using MediatR.Pipeline;
 using Microsoft.Extensions.Logging;
 
@@ -12,8 +14,11 @@ namespace CPG.Application.MediatorRequestPipelines;
     public Task Process(TRequest request, CancellationToken cancellationToken = default)
     {
         var requestName = typeof(TRequest).Name;
-
-        _logger.LogInformation("Request started: {requestName}", requestName);
+        var log = new RequestResponseLogModel();
+        log.AuditType = Enums.AuditType.Develop.ToString();
+        log.ServiceName = requestName;
+        
+        _logger.LogInformation("Request started: {log}", log);
 
         return Task.CompletedTask;
     }
