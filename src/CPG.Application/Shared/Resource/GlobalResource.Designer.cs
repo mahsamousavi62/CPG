@@ -583,7 +583,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0}.
+        ///   Looks up a localized string similar to ErrorTitle:{0}.
         /// </summary>
         public static string IdpUserProfileException {
             get {
