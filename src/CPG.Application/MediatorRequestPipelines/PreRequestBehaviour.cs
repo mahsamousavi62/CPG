@@ -14,10 +14,12 @@ namespace CPG.Application.MediatorRequestPipelines;
     public Task Process(TRequest request, CancellationToken cancellationToken = default)
     {
         var requestName = typeof(TRequest).Name;
-        var log = new RequestResponseLogModel();
-        log.AuditType = Enums.AuditType.Develop.ToString();
-        log.ServiceName = requestName;
-        
+        var log = new RequestResponseLogModel
+        {
+            AuditType = Enums.AuditType.Develop.ToString(),
+            ServiceName = requestName
+        };
+
         _logger.LogInformation("Request started: {log}", log);
 
         return Task.CompletedTask;

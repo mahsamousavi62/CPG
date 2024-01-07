@@ -24,12 +24,14 @@ public class ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandling
         }
         catch (Exception ex)
         {
-            var log = new RequestResponseLogModel();
-            log.AuditType = Enums.AuditType.Develop.ToString();
-            log.StackTrace = ex.StackTrace;
-            log.ResponseBody = ex.Message;
-            log.IsSuccess = false;
-            log.ErrorCode = (ex as dynamic)?.Code;
+            var log = new RequestResponseLogModel
+            {
+                AuditType = Enums.AuditType.Develop.ToString(),
+                StackTrace = ex.StackTrace,
+                ResponseBody = ex.Message,
+                IsSuccess = false,
+                ErrorCode = (ex as dynamic)?.Code
+            };
 
             _logger.LogError("Error details: {@log}", log);
             await HandleExceptionAsync(context, ex);

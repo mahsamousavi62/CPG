@@ -36,12 +36,14 @@ public class PerformanceBehaviour<TRequest, TResponse>(
             if (userId != 0) 
                 userName = await User.GetUserName(userId);
 
-            var log = new RequestResponseLogModel();
-            log.RequestMethod = requestName;
-            log.UserId= userId;
-            log.ElapsedMilliseconds = elapsedMilliseconds;
-            log.AuditType = Enums.AuditType.Develop.ToString();
-                   
+            var log = new RequestResponseLogModel
+            {
+                RequestMethod = requestName,
+                UserId = userId,
+                ElapsedMilliseconds = elapsedMilliseconds,
+                AuditType = Enums.AuditType.Develop.ToString()
+            };
+
             _logger.LogWarning("Long Running Request {@log}", log);
 
         }
