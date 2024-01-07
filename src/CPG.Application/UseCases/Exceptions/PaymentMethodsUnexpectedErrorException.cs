@@ -2,7 +2,7 @@
 
 namespace CPG.Application.UseCases.Exceptions;
 
-internal class UnexpectedErrorException() : ApplicationException(GlobalResource.UnexpectedError)
+internal class PaymentMethodsUnexpectedErrorException() : ApplicationException(GlobalResource.UnexpectedError)
 {
     public override string Code => "1006000";
 }

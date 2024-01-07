@@ -13,7 +13,7 @@ namespace CPG.Domain.AggregateModels.ApplicationAggregate.Specifications
         public ApplicationByIdpClientId(string idpClientId)
         {
             Query
-                .Include(app => app.ApplicationIdentifiers).
+                .Include(app => app.ApplicationIdentifiers).Include(app => app.ApplicationCallbackUrls).
                 Where(app => app.ApplicationIdentifiers.
                 Select(t=> t.IdpClientId).Contains(idpClientId));
         }

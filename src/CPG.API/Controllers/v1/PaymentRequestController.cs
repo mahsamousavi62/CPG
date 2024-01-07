@@ -43,6 +43,7 @@ namespace CPG.API.Controllers.v1
         => Ok(await Mediator.Send(new GetPaymentMethodsCommand(model)));
 
         [HttpPost("CreateIPGJsonStr")]
+        [Authorize]
         [ProducesResponseType(typeof(ResultData<PaymentTokenResponse>), 200)]
         public async Task<ActionResult<ResultData<PaymentTokenResponse>>> GetAsanPardakhatPaymentTicket([FromBody] PaymentTokenViewModel paymentTicketRequest)
             => Ok(await Mediator.Send(new GetPaymentTokenCommand(paymentTicketRequest)));

@@ -4,7 +4,7 @@ using MediatR;
 
 namespace CPG.Application.UseCases.Ipg.Queries;
 
-public class ValidateTokenQuery(ValidateTokenViewModel model) : IRequest<ResultData<string>>
+public class ValidateTokenQuery(ValidateTokenRequestViewModel model) : IRequest<Result<ValidateTokenResponseViewModel>>
 {
-    public ValidateTokenViewModel ValidateToken { get; set; } = model;
+    public ValidateTokenRequestViewModel ValidateToken { get; set; } = model;
 }

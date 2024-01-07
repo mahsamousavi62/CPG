@@ -5,7 +5,7 @@ using ApplicationException = CPG.Application.UseCases.Exceptions.ApplicationExce
 
 namespace CPG.Application.UseCases.Users.Exceptions
 {
-    public class IdpUserProfileException(string error) : ApplicationException(string.Format(GlobalResource.IdpUserProfileException, error))
+    public class IdpUserProfileException(string error) : ApplicationException( error)
     {
         public override string Code => "IdpUserProfile_Exception";
         public string Error { get; } = error;

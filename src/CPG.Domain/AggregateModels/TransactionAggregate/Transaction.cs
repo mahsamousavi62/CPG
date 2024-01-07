@@ -1,13 +1,8 @@
 ﻿
-using System;
-using CPG.Domain.AggregateModels.PaymentRequestAggregate;
-using System.Net.NetworkInformation;
+using CPG.Application.UseCases.CompanyDeposits;
 using CPG.Domain.SeedWork;
 using CPG.Domain.SharedKernel;
-using CPG.Domain.AggregateModels.CompanyIPGAggregate;
-using CPG.Domain.SharedKernel.Communication.Idp.Models.UserProfile;
-using System.Transactions;
-using CPG.Application.UseCases.CompanyDeposits;
+using System;
 
 namespace CPG.Domain.AggregateModels.TransactionAggregate;
 
@@ -27,27 +22,38 @@ public class Transaction : AuditableEntity<long>, IAggregateRoot
     }
 
     public long PaymentRquestId { get; set; }
+
     public long IPGTransactionId { get; set; }
+
     public Enums.TransactionType TransactionMethodType { get; set; }
+
     public long CompanyId { get; set; }
+
     public long DestinationDepositId { get; set; }
+
     public decimal Amount { get; set; }
+
     public long ApplicationId { get; set; }
-    public DateTime PredictedSettlementDateTime { get; set; }
+
+    public DateTime? PredictedSettlementDateTime { get; set; }
+
     public Enums.TransactionStatus Status { get; set; }
+
     public PaymentRequest PaymentRequest { get; set; }
+
     public IPGTransaction IPGTransaction { get; set; }
+
     public CompanyDeposit DestinationDeposit { get; set; }
 
     public static Transaction Create(CreateTransactionModel model)
     {
-        Transaction transaction = new Transaction(model.PaymentRequest.Id,
+        Transaction transaction = new(model.PaymentRequest.Id,
                                                   model.TransactionMethodType, model.PaymentRequest.Company.Id,
                                                   model.DestinationDepositId, model.PaymentRequest.Amount,
                                                   model.PaymentRequest.Application.Id, Enums.TransactionStatus.InPrgress);
 
         var ipgTransaction = IPGTransaction.Create(model.TrackId, Enums.IPGTransactionStatus.WaitingForPspResponse,
-                                                   model.CompanyIPG.Id, model.Token, model.CompanyIPG.VerificationTimeLimit);
+                                                   model.CompanyIPG.Id, model.Token, model.CompanyIPG.Provider.IpgVerificationTimeLimit);
 
         transaction.IPGTransaction = ipgTransaction;
 

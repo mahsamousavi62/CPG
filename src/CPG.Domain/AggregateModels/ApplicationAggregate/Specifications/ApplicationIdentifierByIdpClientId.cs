@@ -3,11 +3,11 @@ using System.Linq;
 
 namespace CPG.Domain.AggregateModels.ApplicationAggregate.Specifications;
 
-public class ApplicationIdentifierContainsIdpClientId : Specification<ApplicationIdentifier>, ISingleResultSpecification<ApplicationIdentifier>
+public class ApplicationbyIdpClientId : Specification<Application>, ISingleResultSpecification<Application>
 {
-    public ApplicationIdentifierContainsIdpClientId(string[] idpClientIds)
+    public ApplicationbyIdpClientId(string[] idpClientIds)
     {
-        Query
-            .Where(app => idpClientIds.Contains(app.IdpClientId));
+        Query.Include(a => a.ApplicationIdentifiers)
+             .Where(app => app.ApplicationIdentifiers.Any(a => idpClientIds.Contains(a.IdpClientId)));
     }
 }

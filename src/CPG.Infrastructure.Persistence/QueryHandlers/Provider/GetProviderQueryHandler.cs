@@ -33,6 +33,8 @@ public class GetProviderQueryHandler(ReadDbContext context, IMinioProvider minio
             Logo = await _minioProvider.PresignedGetObject(provider.Logo),
             ProviderData = provider.ProviderData,
             ProviderType = provider.ProviderType,
+            IpgVerificationTimeLimit = provider.IpgVerificationTimeLimit,
+            IpgBaseUrl = provider.IpgBaseUrl,
         };
 
         return providerModel;

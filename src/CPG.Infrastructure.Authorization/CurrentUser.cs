@@ -11,20 +11,18 @@ namespace CPG.Infrastructure.Authorization;
 public class CurrentUser(IHttpContextAccessor httpContextAccessor, IAuthenticationService authenticationService) : ICurrentUser
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-    private readonly IAuthenticationService _authenticationService = authenticationService;
 
     public long UserId => GetUserId();
 
     private long GetUserId()
     {
        // var subid = await _authenticationService.GetDataFromClaim<string>("sub");
-        return 1;
+      
         //TODO: select userid from user where idpuserid=sub
         var claims = _httpContextAccessor.HttpContext?.User.Claims
                      ?? throw new ArgumentException("Cannot obtain UserId value from JWT token.");
 
-        var userId = claims.SingleOrDefault(x => x.Type == ClaimTypes.Sid)?.Value
-               ?? throw new ArgumentException("Cannot obtain UserId value from JWT token.");
+        var userId = claims.SingleOrDefault(x => x.Type == "UserId")?.Value?? "1";
 
         return long.Parse(userId);
     }

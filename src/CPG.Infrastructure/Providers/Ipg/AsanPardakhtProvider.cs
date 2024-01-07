@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Threading.Tasks;
 using CCPG.Domain.SharedKernel.Communication.Ipg;
-using CommunityToolkit.HighPerformance;
+using CPG.Application.Shared.Resource;
 using CPG.Application.UseCases.Ipg.Exception;
-using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.ApplicationSettings;
 using CPG.Domain.SharedKernel.Communication;
@@ -14,6 +12,7 @@ using CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentTicket;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentToken;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.TransactionResult;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
+using CPG.Domain.SharedKernel.Helper;
 using CPG.Infrastructure.Persistence.DbContexts;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -25,11 +24,16 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
     public IApplicationSettingsRepository ApplicationSettingRepositoy;
     private readonly IHttpProvider httpProvider = httpProvider;
     private readonly ReadDbContext context = context;
+    private readonly byte serviceCallMaxTryCounter = 5;
+    private byte tokenFailCounter = 0;
+    private byte verifyFailCounter = 0;
+    private byte transactionResultFailCounter = 0;
     private string userName;
     private string password;
     private int merchantConfigurationId;
     private string key;
     private string iv;
+
     private void GetDataFromJsonProvider(string providerData)
     {
         dynamic jsonObjectProviderData;
@@ -47,35 +51,36 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
             throw new ParseCompanyIpgProviderDataException(providerData);
         }
     }
-    public async Task<PaymentTokenResponse> GetPaymentTokenAsync(PaymentTokenRequest request)
+
+    public async Task<(short, PaymentTokenResponse)> GetPaymentTokenAsync(PaymentTokenRequest request)
     {
         GetDataFromJsonProvider(request.ProviderData);
         var configViewModel = await ApplicationSettingRepositoy.GetAllApplicationSettings();
 
         ResultData<PaymentTokenResponse> resultData = new();
         var headers = GetHeaders();
-        var trackerId = await GetTrackerIdAsync();
+        var trackerId = RandomGenerator.GenerateRandomDigitNumber(16);
         var callBack = await CreateCallbackUrl((short)request.IpgRedirectionMethodType, request.SiteAddress, trackerId.ToString(), configViewModel.CPG_BackEnd);
-        var req = new AsanPardakhtTokenRequest
-        {
-            serviceTypeId = 1,
-            paymentId = "0",
-            callbackURL = callBack,
-            additionalData = CreateAdditionalData(),
-            merchantConfigurationId = merchantConfigurationId,
-            amountInRials = (long)request.PaymentRequestAmount,
-            localInvoiceId = trackerId.ToString(),
-        };
-        var response = await httpProvider.PostAsync3<AsanPardakhtTokenRequest, AsanPardakhtTokenResponse,
+       
+        var response = await httpProvider.PostAsync3<PaymentTokenRequest, AsanPardakhtTokenResponse,
                                                     AsanPardakhtResponseBase, dynamic>(new HttpProviderRequest<dynamic>
                                                     {
                                                         BaseAddress = "https://ipgrest.asanpardakht.ir/",
                                                         Uri = "v1/Token",
                                                         HeaderParameters = headers,
-                                                        Body = req,
+                                                        Body = new AsanPardakhtTokenRequest
+                                                        {
+                                                            serviceTypeId = 1,
+                                                            paymentId = "0",
+                                                            callbackURL = callBack,
+                                                            additionalData = CreateAdditionalData(request.NationalCode),
+                                                            merchantConfigurationId = merchantConfigurationId,
+                                                            amountInRials = (long)request.PaymentRequestAmount,
+                                                            localInvoiceId = trackerId.ToString(),
+                                                        },
                                                         Provider = Enums.ProviderType.AsanPardakht,
                                                         Service = Enums.ServiceType.AsanPardakhtToken,
-                                                    }, req, PaymentTokenErrorHandler, (string stringResponse) =>
+                                                    }, request, PaymentTokenErrorHandler, (string stringResponse) =>
                                                     {
                                                         var formattedResponse = stringResponse;
                                                         if (!stringResponse.StartsWith("{\"error"))
@@ -84,22 +89,21 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
                                                         return System.Text.Json.JsonSerializer.Deserialize<AsanPardakhtTokenResponse>(formattedResponse);
                                                     });
 
-        Params p = new Params { RefID = response.Token };
-        UrlResponseModel urlResponse = new UrlResponseModel
+        var paymentToken = new PaymentTokenResponse
         {
-            Params = p,
-            Url = "https://asan.shaparak.ir",
-        };
-        return new PaymentTokenResponse
-        {
-            Url = $"{request.SiteAddress}/redirectToBank"
-           ,
+            Url = $"{request.SiteAddress}/redirectToBank",
             TrackerId = trackerId.ToString(),
             JsonBody = new JsonStrModel
             {
-                JsonStr = urlResponse
+                JsonStr = new()
+                {
+                    Params = new Params { RefID = response.Token },
+                    Url = request.IpgBaseUrl,
+                }
             }
         };
+
+        return (response.Status, paymentToken);
     }
 
     public async Task<TransactionResultResponse> GetTransactionResult(TransactionResultRequest request)
@@ -121,7 +125,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
                                                         Provider = Enums.ProviderType.AsanPardakht,
                                                         Service = Enums.ServiceType.AsanPardakhtTransResult,
                                                     }, request, TransactionResultErrorHandler);
-        response.Status = 2;
+        response.Status = response.Status == 200 ? (short)2 : response.Status;
         return response;
     }
 
@@ -148,13 +152,12 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
         return response;
     }
 
-
-    private string CreateAdditionalData()
+    private string CreateAdditionalData(string nationalCode)
     {
+        
         string hexString = Guid.NewGuid().ToString("N");
         string randomString = hexString.Substring(0, 7);
-        //Todo:remove hardcode!
-        var original = $"0|0440061423|{randomString}";
+        var original = $"0|{nationalCode}|{randomString}";
         var dkey = AesHelper.Base64Decode(key);
         var div = AesHelper.Base64Decode(iv);
         var token = AesHelper.EncryptAes(original, dkey ?? string.Empty, div ?? string.Empty);
@@ -166,18 +169,6 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
     {
         var list = new List<(string Key, string? Value)> { ("usr", userName), ("pwd", password), ("accept", "text/plain") };
         return list;
-    }
-
-    private async Task<long> GetTrackerIdAsync()
-    {
-        try
-        {
-            return await context.GetNextSequenceValue();
-        }
-        catch (Exception ex)
-        {
-            throw ex;
-        }
     }
 
     private async Task<string> CreateCallbackUrl(short ipgRedirectionType, string siteAddress, string trackerId, string callbackPage)
@@ -194,49 +185,60 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
         }
         ;
     }
-    private static async Task<TResponse?> PaymentTokenErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest? baseRequest, TResponse? response, TError? error, short statusCode)
+
+    private async Task<TResponse?> PaymentTokenErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest? baseRequest, TResponse? response, TError? error, short statusCode)
       where TResponse : AsanPardakhtTokenResponse
       where TError : AsanPardakhtResponseBase
-      where TBaseRequest : AsanPardakhtTokenRequest
+      where TBaseRequest : PaymentTokenRequest
     {
-        if (error?.ErrorResult is not null)
+        if (tokenFailCounter < serviceCallMaxTryCounter)
         {
-            throw new Exception(error.ErrorResult.Message);
+            tokenFailCounter++;
+            return await GetPaymentTokenAsync(baseRequest) as TResponse;
         }
-        else
-        {
-            return await Task.FromResult(BaseErrorHandler<TResponse, TError, TBaseRequest>(error));
-        }
+        return await Task.FromResult(BaseErrorHandler<TResponse, TError, TBaseRequest>(error));
     }
 
-    private static async Task<TResponse?> TransactionResultErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest? baseRequest, TResponse? response, TError? error, short statusCode)
+    private async Task<TResponse?> TransactionResultErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest? baseRequest, TResponse? response, TError? error, short statusCode)
     where TResponse : TransactionResultResponse
     where TError : AsanPardakhtResponseBase
     where TBaseRequest : TransactionResultRequest
     {
         return statusCode switch
         {
-            400 or 401 or 471 or 571 or 504 => new TransactionResultResponse { Status = 1 } as TResponse,
+            400 or 401 or 471 or 571 or 504 => transactionResultFailCounter < serviceCallMaxTryCounter ? await Retry() : new TransactionResultResponse { Status = 1 } as TResponse,
             472 => new TransactionResultResponse { Status = 3 } as TResponse,
             _ => new TransactionResultResponse { Status = 1 } as TResponse,
         };
+
+        async Task<TResponse> Retry()
+        {
+            transactionResultFailCounter++;
+            return await GetTransactionResult(baseRequest) as TResponse;
+        }
     }
 
-    private static async Task<TResponse?> VerifyErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest? baseRequest, TResponse? response, TError? error, short statusCode)
+    private async Task<TResponse?> VerifyErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest? baseRequest, TResponse? response, TError? error, short statusCode)
     where TResponse : VerifyTransactionResponse
     where TError : AsanPardakhtResponseBase
     where TBaseRequest : VerifyTransactionRequest
     {
         return statusCode switch
         {
-            400 or 401 or 477 or 571 or 572 or 573 or 504 => new VerifyTransactionResponse { Status = Enums.IPGTransactionStatus.Verifying } as TResponse,
+            400 or 401 or 477 or 571 or 572 or 573 or 504 => verifyFailCounter < serviceCallMaxTryCounter ? await Retry() : new VerifyTransactionResponse { Status = Enums.IPGTransactionStatus.Verifying } as TResponse,
             200 or 472 or 473 or 475 => new VerifyTransactionResponse { Status = Enums.IPGTransactionStatus.VerificationSucceeded } as TResponse,
             471 or 474 or 476 or 478 => new VerifyTransactionResponse { Status = Enums.IPGTransactionStatus.VerificationFailed } as TResponse,
             _ => new VerifyTransactionResponse { Status = Enums.IPGTransactionStatus.Verifying } as TResponse,
         };
+
+        async Task<TResponse> Retry()
+        {
+            verifyFailCounter++;
+            return await Verify(baseRequest) as TResponse;
+        }
     }
 
-    private static TResponse BaseErrorHandler<TResponse, TError, TBaseRequest>(AsanPardakhtResponseBase? error)
+    private TResponse BaseErrorHandler<TResponse, TError, TBaseRequest>(AsanPardakhtResponseBase? error)
        where TResponse : AsanPardakhtResponseBase
        where TError : AsanPardakhtResponseBase
        where TBaseRequest : AsanPardakhtRequestBase
@@ -244,13 +246,13 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
     {
         if (error is null || error.ErrorResult is null)
         {
-            throw new Exception("UnknownError");
+            throw new Exception(GlobalResource.ProviderUnexpectedError);
         }
         if (!string.IsNullOrEmpty(error.ErrorResult.Message))
         {
             throw new Exception($"ServiceProviderError: {error.ErrorResult.Message}");
         }
 
-        throw new Exception("ServiceProviderError");
+        throw new Exception(GlobalResource.ProviderUnexpectedError);
     }
 }

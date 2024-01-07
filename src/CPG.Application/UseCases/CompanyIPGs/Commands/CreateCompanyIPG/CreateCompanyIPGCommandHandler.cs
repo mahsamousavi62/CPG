@@ -35,7 +35,6 @@ public class CreateCompanyIPGCommandHandler(IAggregateRepository<CompanyIPG> com
         var companyIPG = CompanyIPG.Create(request.Model.CompanyId,
                                            request.Model.ProviderId,
                                            request.Model.IPGTypeId,
-                                           request.Model.VerificationTimeLimit,
                                            request.Model.ProviderData,
                                            companyIPGDeposits);
 

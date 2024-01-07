@@ -271,7 +271,7 @@
     <value>کارگزاری کاریزما</value>
   </data>
   <data name="Validation_Required" xml:space="preserve">
-    <value>فیلد {0} الزامی می باشد</value>
+    <value>{0} الزامی می باشد</value>
   </data>
   <data name="AccountNumber" xml:space="preserve">
     <value>شماره حساب</value>
@@ -328,7 +328,7 @@
     <value>شرکت یا شبای مقصد را وارد کنید</value>
   </data>
   <data name="PaymentRequestDuplicateTrackerId" xml:space="preserve">
-    <value>شناسه رهگیری تکراری است</value>
+    <value>شناسه رهگیری {0} تکراری است</value>
   </data>
   <data name="PaymentRequestIbanCompanyInActive" xml:space="preserve">
     <value>شرکت مربوط به شبای ارائه شده غیرفعال است</value>
@@ -366,8 +366,8 @@
   <data name="UnexpectedError" xml:space="preserve">
     <value>خطایی غیرقابل پیش بینی رخ داده است، لطفا مجددا تلاش کنید یا با پشتیبانی تماس بگیرید</value>
   </data>
-  <data name="IdpUserProfileException" xml:space="preserve">
-    <value>{0}خطا :</value>
+  <data name="ErrorTitle" xml:space="preserve">
+    <value>{0} :خطا</value>
   </data>
   <data name="UserNotFound" xml:space="preserve">
     <value>کاربر وجود ندارد</value>
@@ -405,8 +405,8 @@
   <data name="ProviderId" xml:space="preserve">
     <value>سرویس‌دهنده</value>
   </data>
-  <data name="VerificationTimeLimit" xml:space="preserve">
-    <value>محدودیت زمانی تایید</value>
+  <data name="IpgVerificationTimeLimit" xml:space="preserve">
+    <value>محدودیت زمانی تایید درگاه</value>
   </data>
   <data name="VerificationTimeLimitIPG" xml:space="preserve">
     <value>محدودیت زمانی تایید تراکنش درگاه</value>
@@ -457,10 +457,10 @@
     <value>کاربر گرامی، شناسه پرداخت در وضعیت غیرمجاز است</value>
   </data>
   <data name="InvalidCodeOrTrackIdException" xml:space="preserve">
-    <value>درخواستی با اطلاعات ارائه شده یافت نشد</value>
+    <value>کد درخواست یا شناسه رهگیری اشتباه است</value>
   </data>
   <data name="RequiredCodeOrTrackIdException" xml:space="preserve">
-    <value>وارد نمودن کد و یا شناسه رهگیری الزامیست</value>
+    <value>هر 2 پارامتر کد درخواست پرداخت و شناسه رهگیری نمیتواند به صورت همزمان خالی باشد</value>
   </data>
   <data name="TransactionNotFound" xml:space="preserve">
     <value>تراکنش با این شناسه {0}یافت نشد</value>
@@ -470,5 +470,89 @@
   </data>
   <data name="ErrorInConnection" xml:space="preserve">
     <value>خطا در برقراری ارتباط</value>
+  </data>
+  <data name="IpgRedirectionMethodTypeNotFound" xml:space="preserve">
+    <value>نحوه انتقال کاربر به درگاه پرداخت نامعتبر می باشد</value>
+  </data>
+  <data name="DuplicateProviderType" xml:space="preserve">
+    <value>برای این نوع سرویس دهنده قبلا  سرویس دهنده ایجاد شده است</value>
+  </data>
+  <data name="PaymentRequestApplicationIsInactive" xml:space="preserve">
+    <value>برنامه کاربردی {0}-{1} غیرفعال است</value>
+  </data>
+  <data name="PaymentRequestApplicationNotFound" xml:space="preserve">
+    <value>این برنامه تعریف نشده است</value>
+  </data>
+  <data name="PaymentRequestBankInactive" xml:space="preserve">
+    <value>بانک حساب مورد نظر غیرفعال است</value>
+  </data>
+  <data name="PaymentRequestCompanyInactive" xml:space="preserve">
+    <value>شرکت مورد نظر غیرفعال است</value>
+  </data>
+  <data name="PaymentRequestCompanyPaymentMethodAreInactive" xml:space="preserve">
+    <value>تمامی روش های پرداخت شرکت مورد نظر غیرفعال هستند</value>
+  </data>
+  <data name="PaymentRequestInvalidCallbackUrl" xml:space="preserve">
+    <value>نشانی بازگشتی ارائه شده {0} مجاز نیست</value>
+  </data>
+  <data name="PaymentRequestNoCompanyFound" xml:space="preserve">
+    <value>با شناسه ارائه شده هیچ شرکتی یافت نشد</value>
+  </data>
+  <data name="PaymentRequestNoCompanyPaymentMethodFound" xml:space="preserve">
+    <value>شرکت مورد نظر هیچ روش پرداختی ندارد</value>
+  </data>
+  <data name="PaymentRequestRequiredIbanOrCompany" xml:space="preserve">
+    <value>هر 2 پارامتر شناسه شرکت و شبای مقصد نمیتواند به صورت همزمان خالی باشد</value>
+  </data>
+  <data name="GetPaymentTicketUnexpectedError" xml:space="preserve">
+    <value>خطایی غیرقابل پیش بینی رخ داده است، لطفا مجددا تلاش کنید یا با پشتیبانی تماس بگیرید</value>
+  </data>
+  <data name="PaymentMethodsUnexpectedError" xml:space="preserve">
+    <value>خطایی غیرقابل پیش بینی رخ داده است، لطفا مجددا تلاش کنید یا با پشتیبانی تماس بگیرید</value>
+  </data>
+  <data name="PaymentRequestCodeExpired" xml:space="preserve">
+    <value>کاربر گرامی، نشانی پرداخت منقضی شده است، در صورت نیاز مجددا عملیات را تکرار کنید</value>
+  </data>
+  <data name="PaymentRequestCodeInvalidStatus" xml:space="preserve">
+    <value>کاربر گرامی، درخواست در وضعیت غیرمجاز است</value>
+  </data>
+  <data name="PaymentRequestCodeIsUsedBefore" xml:space="preserve">
+    <value>کاربر گرامی، این نشانی قبلا یکبار استفاده شده است، در صورت نیاز مجددا عملیات را تکرار کنید</value>
+  </data>
+  <data name="PaymentRequestNotFoundByCode" xml:space="preserve">
+    <value>کاربر گرامی، نشانی پرداخت نامعتبر است</value>
+  </data>
+  <data name="PaymentRequestUnexpectedError" xml:space="preserve">
+    <value>خطایی غیرقابل پیش بینی رخ داده است، لطفا مجددا تلاش کنید یا با پشتیبانی تماس بگیرید</value>
+  </data>
+  <data name="PaymentTokenUnexpectedError" xml:space="preserve">
+    <value>خطایی غیرقابل پیش بینی رخ داده است، لطفا مجددا تلاش کنید یا با پشتیبانی تماس بگیرید</value>
+  </data>
+  <data name="ProviderUnexpectedError" xml:space="preserve">
+    <value>خطایی غیرقابل پیش بینی رخ داده است، لطفا مجددا تلاش کنید یا با پشتیبانی تماس بگیرید</value>
+  </data>
+  <data name="TransactionDetailUnexpectedError" xml:space="preserve">
+    <value>خطایی غیرقابل پیش بینی رخ داده است، لطفا مجددا تلاش کنید یا با پشتیبانی تماس بگیرید</value>
+  </data>
+  <data name="VerifyInvalidStatus" xml:space="preserve">
+    <value>درخواست پرداخت مورد نظر در وضعیت مجاز برای تایید قرار ندارد</value>
+  </data>
+  <data name="IpgBaseUrl" xml:space="preserve">
+    <value>نشانی صفحه درگاه پرداخت</value>
+  </data>
+  <data name="Validation_MaxLength" xml:space="preserve">
+    <value>{0} نمی‌تواند بیشتر از {1} کاراکتر باشد</value>
+  </data>
+  <data name="Validation_MinLength" xml:space="preserve">
+    <value>{0} نمی‌تواند کمتر از {1} کاراکتر باشد</value>
+  </data>
+  <data name="VerificationTimeLimit" xml:space="preserve">
+    <value>محدودیت زمانی تایید</value>
+  </data>
+  <data name="TransactionDetailInvalidApplication" xml:space="preserve">
+    <value>امکان مشاهده جزئیات تراکنش برای این Application مجاز نیست</value>
+  </data>
+  <data name="VerifyInvalidApplication" xml:space="preserve">
+    <value>امکان تایید تراکنش برای این Application مجاز نیست</value>
   </data>
 </root>

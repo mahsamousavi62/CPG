@@ -11,6 +11,8 @@ public class ProviderViewModel
     public string Logo { get; set; }
     public string ProviderData { get; set; }
     public ProviderType ProviderType { get; set; }
+    public short IpgVerificationTimeLimit { get; set; }
+    public string IpgBaseUrl { get; set; }
     public DateTime CreationDate { get; set; }
     public DateTime? ModificationDate { get; set; }
 }

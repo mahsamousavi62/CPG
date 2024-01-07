@@ -19,8 +19,5 @@ public class CreateCompanyIPGModel
     public string ProviderData { get; set; }
 
     [Required]
-    public short VerificationTimeLimit { get; set; }
-
-    [Required]
     public CreateCompanyIPGDepositModel[] CompanyIPGDeposits { get; set; }
 }

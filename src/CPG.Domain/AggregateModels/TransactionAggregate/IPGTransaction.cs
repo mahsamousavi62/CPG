@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using CPG.Domain.SeedWork;
 using CPG.Domain.SharedKernel;
 
@@ -24,7 +23,8 @@ public class IPGTransaction : AuditableEntity<long>
     public string ReferenceNumber { get; set; }
     public string EncryptCardNumber { get; set; }
     public int VerificationTimeLimit { get; set; }
-    public DateTime PredicateDateTime { get; set; }
+    public DateTime? VerificationDateTime { get; set; }
+    public DateTime? PredicateExpirationDateTime { get; set; }
     public Transaction Transaction { get; set; }
 
     public static IPGTransaction Create(string trackerId, Enums.IPGTransactionStatus status, long companyIpgId,

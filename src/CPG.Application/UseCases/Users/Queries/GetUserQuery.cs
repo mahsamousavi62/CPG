@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CPG.Application.UseCases.Users.ViewModel;
+using CPG.Domain.SharedKernel;
 using MediatR;
 
 namespace CPG.Application.UseCases.Users.Queries
 {
-    public class GetUserQuery(string idpId) : IRequest<UserViewModel>
+    public class GetUserQuery : IRequest<Result<UserViewModel>>
     {
-        public string IdpId { get; set; } = idpId;
      
 
     }

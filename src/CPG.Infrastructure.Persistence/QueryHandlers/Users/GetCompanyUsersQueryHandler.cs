@@ -1,4 +1,4 @@
-﻿using CPG.Application.UseCases.Users;
+﻿using CPG.Application.UseCases.Users.Queries;
 using CPG.Application.UseCases.Users.ViewModel;
 using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Infrastructure.Persistence.DbContexts;

@@ -1,13 +1,10 @@
 ﻿using CPG.Application.Auth;
-using CPG.Application.UseCases.Application.Exceptions;
-using CPG.Application.UseCases.Companies.Exceptions;
+using CPG.Application.Shared.Resource;
 using CPG.Application.UseCases.CompanyDeposits;
 using CPG.Application.UseCases.PaymentRequests.Exceptions;
 using CPG.Application.UseCases.PaymentRequests.ViewModels;
-using CPG.Domain.AggregateModels.ApplicationAggregate.Exceptions;
 using CPG.Domain.AggregateModels.ApplicationAggregate.Specifications;
 using CPG.Domain.AggregateModels.BankAggregate;
-using CPG.Domain.AggregateModels.BankAggregate.Exceptions;
 using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Domain.AggregateModels.CompanyAggregate.Exceptions;
 using CPG.Domain.AggregateModels.CompanyAggregate.Specifications;
@@ -16,10 +13,12 @@ using CPG.Domain.AggregateModels.CompanyDepositAggregate.Specifications;
 using CPG.Domain.AggregateModels.PaymentRequestAggregate;
 using CPG.Domain.AggregateModels.PaymentRequestAggregate.Specifications;
 using CPG.Domain.AggregateModels.UserAggregate;
+using CPG.Domain.Exceptions;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.ApplicationSettings;
 using Mapster;
 using MediatR;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,9 +30,8 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
    IApplicationSettingsRepository applicationSettingsRepository, IAuthenticationService authenticationService,
     IAggregateRepository<CPG.Domain.AggregateModels.ApplicationAggregate.Application> applicationRepository,
     IAuthService authService
-    ) : IRequestHandler<CreatePaymentRequestCommand, PaymentRequestResponseViewModel>
+    ) : IRequestHandler<CreatePaymentRequestCommand, Result<PaymentRequestResponseViewModel>>
 {
-
     private readonly IAggregateRepository<PaymentRequest> _paymentRequestRepository = paymentRequestRepository;
     private readonly IAggregateRepository<CompanyDeposit> _companyDepositRepository = companyDepositRepository;
     private readonly IAggregateRepository<Company> _companyRepository = companyRepository;
@@ -42,49 +40,55 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
     private readonly IAggregateRepository<Domain.AggregateModels.ApplicationAggregate.Application> _applicationRepository = applicationRepository;
     private readonly IAuthService _authService = authService;
 
-    public async Task<PaymentRequestResponseViewModel> Handle(CreatePaymentRequestCommand request, CancellationToken cancellationToken)
+    public async Task<Result<PaymentRequestResponseViewModel>> Handle(CreatePaymentRequestCommand request, CancellationToken cancellationToken)
     {
-        await Validate(request.Model);
-
-        PaymentRequest paymentRequest = request.Model.Adapt<PaymentRequest>();
-
-        var config = _authService.GetJwtConfig();
-        var appConfig = await _applicationSettingsRepository.GetAllApplicationSettings();
-        var clientId = await _authenticationService.GetClientId(config.Authority);
-
-        var application = await _applicationRepository.GetBySpecAsync(new ApplicationByIdpClientId(clientId), cancellationToken);
-        if (application == null)
-            throw new ApplicationNotFoundException(application.Id);
-        if (!application.IsActive)
-            throw new ApplicationIsNotActiveException(application.Id);
-        if (!application.ApplicationIdentifiers.SingleOrDefault(a => a.IdpClientId == clientId).IsActive)
-            throw new IdpClientIdIsNotActiveException(clientId);
-
-
-        paymentRequest.ApplicationId = application.Id;
-        PaymentRequest.Create(paymentRequest, config.ExpireTime, clientId, application.EnglishName);
-
-        await _paymentRequestRepository.AddAsync(paymentRequest, cancellationToken);
-        await _paymentRequestRepository.SaveChangesAsync(cancellationToken);
-
-        return new PaymentRequestResponseViewModel
+        try
         {
-            ExpirationDateTime = paymentRequest.UrlExpirationDateTime,
-            Code = paymentRequest.Code,
-            PageUrl = $"{appConfig.Payment_Gateway_URL_Prefix.TrimEnd('/')}?code={paymentRequest.Code}",
-            Status = paymentRequest.Status
-        };
+            await Validate(request.Model);
+
+            PaymentRequest paymentRequest = request.Model.Adapt<PaymentRequest>();
+
+            var config = _authService.GetJwtConfig();
+            var appConfig = await _applicationSettingsRepository.GetAllApplicationSettings();
+            var clientId = await _authenticationService.GetClientId(config.Authority);
+
+            var application = await _applicationRepository.GetBySpecAsync(new ApplicationByIdpClientId(clientId), cancellationToken);
+            if (application == null)
+                throw new PaymentRequestApplicationNotFoundException();
+            if (!application.IsActive)
+                throw new PaymentRequestApplicationIsInactiveException(application.PersianName, application.EnglishName);
+
+            var validCallBackUrl = application.ApplicationCallbackUrls.Select(a => a.CallbackUrl).Contains(request.Model.CallBackUrl);
+            if (!validCallBackUrl)
+                throw new PaymentRequestInvalidCallbackUrlException(request.Model.CallBackUrl);
+
+            paymentRequest.ApplicationId = application.Id;
+            PaymentRequest.Create(paymentRequest, config.ExpireTime, clientId, application.EnglishName);
+
+            await _paymentRequestRepository.AddAsync(paymentRequest, cancellationToken);
+            await _paymentRequestRepository.SaveChangesAsync(cancellationToken);
+
+            return Result<PaymentRequestResponseViewModel>.SuccessResult(new PaymentRequestResponseViewModel
+            {
+                ExpirationDateTime = paymentRequest.UrlExpirationDateTime.ToString("yyyy-MM-dd HH:mm:ss zzz"),
+                PaymentCode = paymentRequest.PaymentCode,
+                PageUrl = $"{appConfig.Payment_Gateway_URL_Prefix.TrimEnd('/')}?payment_code={paymentRequest.PaymentCode}",
+                Status = paymentRequest.Status
+            });
+        }
+        catch (Exception exc)
+        {
+            if (exc is DomainException || exc is CPG.Application.UseCases.Exceptions.ApplicationException)
+                return Result<PaymentRequestResponseViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
+            else
+                return Result<PaymentRequestResponseViewModel>.Failure(new Error("1001000", GlobalResource.GetPaymentTicketUnexpectedError));
+        }
     }
 
     private async Task Validate(CreatePaymentRequestViewModel model)
     {
         if ((!model.CompanyId.HasValue || model.CompanyId == 0) && string.IsNullOrEmpty(model.DestinationIban))
             throw new PaymentRequestRequiredDataException();
-
-        //TODO: check applicationcallbackurl exsist
-
-        //TODO:check callbackUrl
-        //نحوه تشخیص تمامی روش های پرداختی مربوط به شرکتTODO:
 
         var amount = new Amount(model.Amount);
         var callBackUrl = new Url(model.CallBackUrl);
@@ -95,10 +99,10 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
             var company = await _companyRepository.GetBySpecAsync(new CompanyByIdSpec(model.CompanyId.Value));
 
             if (company is null)
-                throw new CompanyNotFoundException(model.CompanyId.Value);
+                throw new PaymentRequestNoCompanyFoundException(model.CompanyId.Value);
 
             if (!company.IsActive)
-                throw new CompanyIsNotActiveException(model.CompanyId.Value);
+                throw new PamentRequestInactiveCompanyException(model.CompanyId.Value);
 
             if (company.CompanyDeposits.Count == 0)
                 throw new CompanyHasNotCompanyDepositException(model.CompanyId.Value);
@@ -114,10 +118,12 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
             var companyDeposit = await _companyDepositRepository.GetBySpecAsync(new CompanyDepositByIban(model.DestinationIban));
             if (companyDeposit is null)
                 throw new PaymentRequestNotDefinedCompanyDepositException();
+
             if (!companyDeposit.IsActive)
                 throw new CompanyDepositIsNotActiveException(companyDeposit.Id);
+
             if (!companyDeposit.Bank.IsActive)
-                throw new BankIsNotActiveException(companyDeposit.Bank.Id);
+                throw new PaymentRequestBankInactiveException();
 
             if ((model.CompanyId.HasValue && model.CompanyId != 0) && !string.IsNullOrEmpty(iban))
                 if (companyDeposit.CompanyId != model.CompanyId)
@@ -132,6 +138,5 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
         var sameTrackerId = await _paymentRequestRepository.GetBySpecAsync(new PaymentRequestByTrackerId(model.TrackerId));
         if (sameTrackerId != null)
             throw new PaymentRequestDuplicateTrackerIdException(sameTrackerId.TrackerId);
-
     }
 }

@@ -13,31 +13,35 @@ using CPG.Domain.AggregateModels.TransactionAggregate;
 using System.Threading;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using CPG.Application.UseCases.Ipg.ViewModels;
+using CPG.Application.Shared.Resource;
+using CPG.Domain.Exceptions;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 
 public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
     IAggregateRepository<PaymentRequest> paymentRequestRepository,
     IAggregateRepository<Transaction> transactionRepository,
-    ReadDbContext context) : IRequestHandler<ValidateTokenQuery, ResultData<string>>
+    ReadDbContext context) : IRequestHandler<ValidateTokenQuery, Result<ValidateTokenResponseViewModel>>
 {
     private readonly IIpgFactory _ipgFactory = ipgFactory;
     private readonly IAggregateRepository<PaymentRequest> _paymentRequestRepository = paymentRequestRepository;
     private readonly IAggregateRepository<Transaction> _transactionRepository = transactionRepository;
     private readonly ReadDbContext _context = context;
 
-    public async Task<ResultData<string>> Handle(ValidateTokenQuery request, CancellationToken cancellationToken)
+    public async Task<Result<ValidateTokenResponseViewModel>> Handle(ValidateTokenQuery request, CancellationToken cancellationToken)
     {
-        var transaction = await _transactionRepository.GetBySpecAsync(new TransactionByIPGTrackId(request.ValidateToken.TrackId));
-
-        if (transaction?.IPGTransaction is null)
-            throw new NotFoundTrackIdException();
-        if (transaction.IPGTransaction.Status != IPGTransactionStatus.WaitingForPspResponse)
-            throw new TrackIdInvalidStatusException();
-
-        var paymentRequest = await _paymentRequestRepository.GetByIdAsync(transaction.PaymentRquestId);
         try
         {
+            var transaction = await _transactionRepository.GetBySpecAsync(new TransactionByIPGTrackId(request.ValidateToken.TrackId));
+
+            if (transaction?.IPGTransaction is null)
+                throw new NotFoundTrackIdException();
+            if (transaction.IPGTransaction.Status != IPGTransactionStatus.WaitingForPspResponse)
+                throw new TrackIdInvalidStatusException();
+
+            var paymentRequest = await _paymentRequestRepository.GetByIdAsync(transaction.PaymentRquestId);
+
             var companyIpg = await _context.CompanyIPGReadModels.FirstOrDefaultAsync(t => t.Id == transaction.IPGTransaction.CompanyIPGId);
             if (companyIpg is null) { throw new CompanyIPGNotFoundException(companyIpg.Id); }
 
@@ -58,7 +62,7 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
                 case 2:
                     {
                         transaction.IPGTransaction.Status = IPGTransactionStatus.SucceededAndWaitingForVerification;
-                        transaction.IPGTransaction.PredicateDateTime = result.PayGateTranDate.AddMinutes(transaction.IPGTransaction.VerificationTimeLimit);
+                        transaction.IPGTransaction.PredicateExpirationDateTime = result.PayGateTranDate.AddMinutes(transaction.IPGTransaction.VerificationTimeLimit);
                         paymentRequest.Status = PaymentStatus.TransactionWaitingForVerification;
                         break;
                     }
@@ -82,19 +86,17 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
             await _paymentRequestRepository.UpdateAsync(paymentRequest);
             await _transactionRepository.SaveChangesAsync();
 
-            return new ResultData<string>
+            return Result<ValidateTokenResponseViewModel>.SuccessResult(new ValidateTokenResponseViewModel
             {
-                OperationResult = OperationResult.Succeeded,
-                Data = $"{paymentRequest.CallBackUrl}?code={paymentRequest.Code}&status={GetStatusTitle(paymentRequest.Status)}"
-            };
+                CallbackUrl = $"{paymentRequest.CallBackUrl}/payment_result?payment-code={paymentRequest.PaymentCode}&status={GetStatusTitle(paymentRequest.Status)}"
+            });
         }
-        catch (Exception ex)
+        catch (Exception exc)
         {
-            return new ResultData<string>
-            {
-                OperationResult = OperationResult.Failed,
-                Error = ex.Message
-            };
+            if (exc is DomainException || exc is CPG.Application.UseCases.Exceptions.ApplicationException)
+                return Result<ValidateTokenResponseViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
+            else
+                return Result<ValidateTokenResponseViewModel>.Failure(new Error("1008000", GlobalResource.GetPaymentTicketUnexpectedError));
         }
     }
 
@@ -112,6 +114,8 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
             PaymentStatus.TransactionCanceledByApplication => "TRANSACTION_CANCELLED_BY_APPLICATION",
             PaymentStatus.TransactionVerificationSucceeded => "TRANSACTION_VERIFICATION_SUCCEEDED",
             PaymentStatus.TransactionVerificationFailed => "TRANSACTION_VERIFICATION_FAILED",
+            PaymentStatus.TransactionCancellationSucceeded => "TRANSACTION_CANCELLATION_SUCCEEDED",
+            PaymentStatus.TransactionCancellationFailed => "TRANSACTION_CANCELLATION_FAILED",
             PaymentStatus.SettlementSucceeded => "SETTLEMENT_SUCCEEDED",
             PaymentStatus.SettlementFailed => "SETTLEMENT_FAILED",
             _ => string.Empty

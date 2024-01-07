@@ -1,5 +1,4 @@
 ﻿using CPG.Domain.AggregateModels.TransactionAggregate;
-using CPG.Domain.SeedWork;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -22,6 +21,8 @@ public class IPGTransactionReadModelConfiguration : IEntityTypeConfiguration<IPG
         entity.Property(x => x.ReferenceNumber).HasColumnName("ReferenceNumber");
         entity.Property(x => x.EncryptCardNumber).HasColumnName("EncryptCardNumber");
         entity.Property(x => x.VerificationTimeLimit).HasColumnName("VerificationTimeLimit");
-        entity.Property(x => x.PredicateDateTime).HasColumnName("PredicateDateTime");
+        entity.Property(x => x.PredicateExpirationDateTime).HasColumnName("PredicateExpirationDateTime");
+        entity.Property(x => x.VerificationDateTime).HasColumnName("VerificationDateTime");
+
     }
 }
