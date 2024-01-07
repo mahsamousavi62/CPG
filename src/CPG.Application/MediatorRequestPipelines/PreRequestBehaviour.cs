@@ -7,14 +7,14 @@ using Microsoft.Extensions.Logging;
 
 namespace CPG.Application.MediatorRequestPipelines;
 
-	public class PreRequestLogger<TRequest>(ILogger<TRequest> logger) : IRequestPreProcessor<TRequest>
+public class PreRequestLogger<TRequest>(ILogger<TRequest> logger) : IRequestPreProcessor<TRequest>
 {
     private readonly ILogger<TRequest> _logger = logger;
 
     public Task Process(TRequest request, CancellationToken cancellationToken = default)
     {
         var requestName = typeof(TRequest).Name;
-        var log = new RequestResponseLogModel
+        RequestResponseLogModel log = new()
         {
             AuditType = Enums.AuditType.Develop.ToString(),
             ServiceName = requestName

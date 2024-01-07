@@ -21,7 +21,7 @@ public class UnhandledExceptionBehaviour<TRequest, TResponse>(ILogger<TRequest> 
         catch (Exception ex)
         {
             var requestName = typeof(TRequest).Name;
-            RequestResponseLogModel log = new RequestResponseLogModel
+            RequestResponseLogModel log = new()
             {
                 AuditType = Enums.AuditType.Develop.ToString(),
                 ServiceName = requestName,

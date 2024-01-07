@@ -14,12 +14,14 @@ internal sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> log
         Exception exception,
         CancellationToken cancellationToken)
     {
-        var log = new RequestResponseLogModel();
-        log.AuditType = Enums.AuditType.Develop.ToString();
-        log.StackTrace = exception.StackTrace;
-        log.ResponseBody = exception.Message;
-        log.IsSuccess = false;
-        log.ErrorCode = (exception as dynamic)?.Code;
+        RequestResponseLogModel log = new ()
+        {
+            AuditType = Enums.AuditType.Develop.ToString(),
+            StackTrace = exception.StackTrace,
+            ResponseBody = exception.Message,
+            IsSuccess = false,
+            ErrorCode = (exception as dynamic)?.Code
+        };
         _logger.LogError(exception, "Exception occurred: {log}", log);
 
         var problemDetails = new ProblemDetails

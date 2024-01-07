@@ -14,10 +14,12 @@ public class PostRequestLogger<TRequest, TResponse>(ILogger<TRequest> logger) : 
     public Task Process(TRequest request, TResponse response, CancellationToken cancellationToken)
     {
         var requestName = typeof(TRequest).Name;
-        var log = new RequestResponseLogModel();
-        log.AuditType = Enums.AuditType.Develop.ToString();
-        log.ServiceName = requestName;
-        log.ResponseBody = response;    
+        RequestResponseLogModel log = new ()
+        {
+            AuditType = Enums.AuditType.Develop.ToString(),
+            ServiceName = requestName,
+            ResponseBody = response
+        };
         _logger.LogInformation("Request completed:{@log}", log);
 
         return Task.CompletedTask;

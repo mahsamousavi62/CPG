@@ -24,7 +24,7 @@ public class ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandling
         }
         catch (Exception ex)
         {
-            var log = new RequestResponseLogModel
+            RequestResponseLogModel log = new ()
             {
                 AuditType = Enums.AuditType.Develop.ToString(),
                 StackTrace = ex.StackTrace,

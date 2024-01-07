@@ -36,7 +36,7 @@ public class PerformanceBehaviour<TRequest, TResponse>(
             if (userId != 0) 
                 userName = await User.GetUserName(userId);
 
-            var log = new RequestResponseLogModel
+            RequestResponseLogModel log = new()
             {
                 RequestMethod = requestName,
                 UserId = userId,

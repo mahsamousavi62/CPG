@@ -39,20 +39,23 @@ public class LoggingMiddleware
         }
 
         httpContext.Request.EnableBuffering();
-        var log = new RequestResponseLogModel();
 
         using (var requestStream = recyclableMemoryStreamManager.GetStream())
         {
             await httpContext.Request.Body.CopyToAsync(requestStream);
-            log.UserAgent = httpContext.Request.Headers["User-Agent"].ToString();
-            log.IP = httpContext.Request.GetClientIpAddress();
-            log.Host = httpContext.Request.Headers["Host"].ToString();
-            log.ServiceName = httpContext.Request.Path;
-            log.AuditType = httpContext.User.FindFirst("AuditType")?.Value ?? Enums.AuditType.User.ToString();
-            log.RequestTime = DateTime.Now;
-            log.RequestMethod = httpContext.Request.Method;
-            log.RequestQueryString = httpContext.Request.QueryString.ToString();
-            
+
+            RequestResponseLogModel log = new()
+            {
+                UserAgent = httpContext.Request.Headers["User-Agent"].ToString(),
+                IP = httpContext.Request.GetClientIpAddress(),
+                Host = httpContext.Request.Headers["Host"].ToString(),
+                ServiceName = httpContext.Request.Path,
+                AuditType = httpContext.User.FindFirst("AuditType")?.Value ?? Enums.AuditType.User.ToString(),
+                RequestTime = DateTime.Now,
+                RequestMethod = httpContext.Request.Method,
+                RequestQueryString = httpContext.Request.QueryString.ToString()
+            };
+
             if (httpContext.User.Claims.Count() != 0)
             {
                 long companyId, applicationId, UserId;
