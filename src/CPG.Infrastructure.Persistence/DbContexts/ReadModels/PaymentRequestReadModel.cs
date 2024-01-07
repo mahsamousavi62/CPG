@@ -14,7 +14,7 @@ namespace CPG.Infrastructure.Persistence.DbContexts.ReadModels
         public long Id { get; set; }
         public long CompanyId { get; set; }
         public long ApplicationId { get; set; }
-        public string DestinationIban { get; set; }
+        public string DestinationDepositIban { get; set; }
         public string NationalCode { get; set; }
         public string Description { get; set; }
         public decimal Amount { get; set; }

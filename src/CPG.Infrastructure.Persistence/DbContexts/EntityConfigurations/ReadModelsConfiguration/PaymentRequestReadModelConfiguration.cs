@@ -12,7 +12,7 @@ public class PaymentRequestReadModelConfiguration : IEntityTypeConfiguration<Pay
         reader.Property(x => x.Id);
         reader.Property(x => x.CompanyId);
         reader.Property(x => x.ApplicationId);
-        reader.Property(x => x.DestinationIban);
+        reader.Property(x => x.DestinationDepositIban).HasColumnName("DestinationDepositIban");
         reader.Property(x => x.NationalCode);
         reader.Property(x => x.Description);
         reader.Property(x => x.Amount);
