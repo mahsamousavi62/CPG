@@ -26,7 +26,7 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
 
     public async Task<PaymentMethodsViewModel> Handle(GetPaymentMethodsCommand request, CancellationToken cancellationToken)
     {
-        var paymentRequest = await _paymentRequestRepository.FirstOrDefaultAsync(new PaymentRequestByCode(request.ViewModel.Code));
+        var paymentRequest = await _paymentRequestRepository.FirstOrDefaultAsync(new PaymentRequestByCode(request.ViewModel.PaymentCode));
 
         if (paymentRequest is null)
         {

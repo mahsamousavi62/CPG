@@ -55,7 +55,7 @@ public class FinancialInfo
 
 public class JobInfo
 {
-    public DateTime EmploymentDate { get; set; }
+    public DateTime? EmploymentDate { get; set; }
     public string CompanyName { get; set; }
     public string CompanyAddress { get; set; }
     public string CompanyPostalCode { get; set; }
@@ -80,7 +80,7 @@ public class PrivatePerson
     public string SeriSh { get; set; }
     public string Serial { get; set; }
     public string ShNumber { get; set; }
-    public DateTime BirthDate { get; set; }
+    public DateTime? BirthDate { get; set; }
     public string PlaceOfIssue { get; set; }
     public string PlaceOfBirth { get; set; }
     public string FullName { get; set; }
