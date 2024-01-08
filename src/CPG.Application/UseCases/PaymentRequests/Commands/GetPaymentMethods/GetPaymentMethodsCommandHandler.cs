@@ -1,4 +1,5 @@
 ﻿using CPG.Application.Shared.Resource;
+using CPG.Application.UseCases.Exceptions;
 using CPG.Application.UseCases.PaymentRequests.Exceptions;
 using CPG.Application.UseCases.PaymentRequests.ViewModels;
 using CPG.Domain.AggregateModels.CompanyAggregate;
@@ -112,12 +113,17 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
                 CompanyName = company.PersianName,
             });
         }
-        catch (Exception exc)
+        catch (DomainException exc)
+        { 
+            return Result<PaymentMethodsViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
+        }
+        catch (AppException exc)
+        { 
+            return Result<PaymentMethodsViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
+        }
+        catch (Exception)
         {
-            if (exc is DomainException || exc is CPG.Application.UseCases.Exceptions.ApplicationException)
-                return Result<PaymentMethodsViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
-            else
-                return Result<PaymentMethodsViewModel>.Failure(new Error("1006000", GlobalResource.PaymentMethodsUnexpectedError));
+            return Result<PaymentMethodsViewModel>.Failure(new Error("1006000", GlobalResource.PaymentMethodsUnexpectedError));
         }
     }
 }

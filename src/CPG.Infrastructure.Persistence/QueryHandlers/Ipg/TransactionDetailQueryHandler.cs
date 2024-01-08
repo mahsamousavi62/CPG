@@ -15,6 +15,7 @@ using CPG.Application.Shared.Resource;
 using CPG.Domain.Exceptions;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
+using CPG.Application.UseCases.Exceptions;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 
@@ -39,8 +40,8 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
 
             long applicationId;
             long.TryParse(_httpContext.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out applicationId);
-            
-            if(paymentRequest.ApplicationId != applicationId) { throw new TransactionDetailInvalidApplicationException(); }
+
+            if (paymentRequest.ApplicationId != applicationId) { throw new TransactionDetailInvalidApplicationException(); }
 
             var transaction = await _transactionRepository.GetBySpecAsync(new TransactionByPaymentRequestId(paymentRequest.Id));
 
@@ -59,12 +60,17 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
                     PredictedExpirationDateTime = transaction is not null && transaction.TransactionMethodType == TransactionType.IPG ? transaction.IPGTransaction?.PredicateExpirationDateTime?.ToString("yyyy-MM-dd HH:mm:ss zzz") : string.Empty,
                 });
         }
-        catch (Exception exc)
+        catch (DomainException exc)
         {
-            if (exc is DomainException || exc is CPG.Application.UseCases.Exceptions.ApplicationException)
-                return Result<TransactionDetailResponseViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
-            else
-                return Result<TransactionDetailResponseViewModel>.Failure(new Error("1002000", GlobalResource.TransactionDetailUnexpectedError));
+            return Result<TransactionDetailResponseViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
+        }
+        catch (AppException exc)
+        {
+            return Result<TransactionDetailResponseViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
+        }
+        catch (Exception)
+        {
+            return Result<TransactionDetailResponseViewModel>.Failure(new Error("1002000", GlobalResource.TransactionDetailUnexpectedError));
         }
     }
 
