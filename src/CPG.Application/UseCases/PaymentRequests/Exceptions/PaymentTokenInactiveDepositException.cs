@@ -3,7 +3,7 @@ using CPG.Application.UseCases.Exceptions;
 
 namespace CPG.Application.UseCases.PaymentRequests.Exceptions;
 
-public class PaymentTokenInactiveDepositException() : ApplicationException(string.Format(GlobalResource.PaymentTokenUnexpectedError))
+public class PaymentTokenInactiveDepositException() : AppException(string.Format(GlobalResource.PaymentTokenUnexpectedError))
 {
     public override string Code => "1003003";
 }

@@ -2,12 +2,10 @@
 using System.Net;
 using System.Threading.Tasks;
 using CPG.Domain.Exceptions;
-using CPG.Domain.SharedKernel.Logging;
-using CPG.Domain.SharedKernel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using ApplicationException = CPG.Application.UseCases.Exceptions.ApplicationException;
+using AppException = CPG.Application.UseCases.Exceptions.AppException;
 
 namespace CPG.Infrastructure.ErrorHandling;
 
@@ -24,16 +22,7 @@ public class ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandling
         }
         catch (Exception ex)
         {
-            RequestResponseLogModel log = new ()
-            {
-                AuditType = Enums.AuditType.Develop.ToString(),
-                StackTrace = ex.StackTrace,
-                ResponseBody = ex.Message,
-                IsSuccess = false,
-                ErrorCode = (ex as dynamic)?.Code
-            };
-
-            _logger.LogError("Error details: {@log}", log);
+            _logger.LogError("Error details: {@ex}", ex);
             await HandleExceptionAsync(context, ex);
         }
     }
@@ -43,7 +32,7 @@ public class ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandling
         var response = ex switch
         {
             DomainException exception => new ExceptionResponse(exception.Code, exception.Message, HttpStatusCode.BadRequest),
-            ApplicationException exception => new ExceptionResponse(exception.Code, exception.Message, HttpStatusCode.BadRequest),
+            AppException exception => new ExceptionResponse(exception.Code, exception.Message, HttpStatusCode.BadRequest),
             _ => new ExceptionResponse("unexpected_error", ex.Message, HttpStatusCode.InternalServerError)
         };
 
