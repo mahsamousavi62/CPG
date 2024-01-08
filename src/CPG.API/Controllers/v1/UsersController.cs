@@ -20,8 +20,10 @@ public class UsersController : ApiBaseController
     [Authorize]
     [HttpPost("CreateUserProfile")]
     [ProducesResponseType(typeof(Result<long>), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<Result<long>>> CreateUserProfile()
-        => Ok(await Mediator.Send(new CreateUserCommnad()));
+    public async Task<Result<long>> CreateUserProfile()
+    {
+        return await Mediator.Send(new CreateUserCommnad());
+    }
 
     [Authorize]
     [HttpGet("GetUserProfile")]

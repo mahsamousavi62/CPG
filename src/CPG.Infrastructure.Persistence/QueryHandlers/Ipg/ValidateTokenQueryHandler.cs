@@ -88,7 +88,7 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
 
             return Result<ValidateTokenResponseViewModel>.SuccessResult(new ValidateTokenResponseViewModel
             {
-                CallbackUrl = $"{paymentRequest.CallBackUrl}/payment_result?payment-code={paymentRequest.PaymentCode}&status={GetStatusTitle(paymentRequest.Status)}"
+                CallbackUrl = $"{paymentRequest.CallBackUrl}/paymentResult?paymentCode={paymentRequest.PaymentCode}&paymentStatus={GetStatusTitle(paymentRequest.Status)}"
             });
         }
         catch (Exception exc)

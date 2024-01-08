@@ -113,7 +113,7 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
         }
         catch (Exception exc)
         {
-            if (exc is DomainException || exc is CPG.Application.UseCases.Exceptions.ApplicationException)
+            if (exc is DomainException || exc is UseCases.Exceptions.ApplicationException)
                 return Result<PaymentMethodsViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
             else
                 return Result<PaymentMethodsViewModel>.Failure(new Error("1006000", GlobalResource.PaymentMethodsUnexpectedError));
