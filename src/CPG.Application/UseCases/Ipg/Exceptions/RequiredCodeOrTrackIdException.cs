@@ -3,7 +3,7 @@ using CPG.Application.UseCases.Exceptions;
 
 namespace CPG.Application.UseCases.Ipg.Exceptions;
 
-public class RequiredCodeOrTrackIdException() : ApplicationException(string.Format(GlobalResource.RequiredCodeOrTrackIdException))
+public class RequiredCodeOrTrackIdException(string message) : AppException(string.Format(GlobalResource.RequiredCodeOrTrackIdException, message))
 {
-    public override string Code => "1002001";
+    public override string Code => "Required_CodeOrTrackId_Exception";
 }

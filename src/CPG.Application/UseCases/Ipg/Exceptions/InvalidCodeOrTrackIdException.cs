@@ -4,7 +4,7 @@ using CPG.Application.UseCases.Exceptions;
 
 namespace CPG.Application.UseCases.Ipg.Exceptions;
 
-public class InvalidCodeOrTrackIdException() : ApplicationException(string.Format(GlobalResource.InvalidCodeOrTrackIdException))
+public class InvalidCodeOrTrackIdException(string message) : AppException(string.Format(GlobalResource.InvalidCodeOrTrackIdException, message))
 {
-    public override string Code => "1002002";
+    public override string Code => "Invalid_CodeOrTrackId_Exception";
 }
