@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
+using CPG.Application.UseCases.Exceptions;
 using CPG.Domain.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using AppException = CPG.Application.UseCases.Exceptions.AppException;
 
 namespace CPG.Infrastructure.ErrorHandling;
 
