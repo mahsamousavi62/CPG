@@ -2,6 +2,7 @@
 using CPG.Application.UseCases.Providers.Commands.CreateProvider;
 using CPG.Application.UseCases.Providers.Queries;
 using CPG.Application.UseCases.Providers.ViewModels;
+using CPG.Domain.SharedKernel;
 using CPG.Infrastructure.File;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,19 +11,25 @@ namespace CPG.API.Controllers.v1;
 public class ProviderController : ApiBaseController
 {
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<ProviderViewModel>> GetProvider(long id)
-        => Ok(await Mediator.Send(new GetProviderQuery(id)));
+    public async Task<Result<ProviderViewModel>> GetProvider(long id)
+    {
+        return await Mediator.Send(new GetProviderQuery(id));
+    }
 
     [HttpGet("all")]
-    public async Task<ActionResult<IReadOnlyCollection<ProviderViewModel>>> GetAllProviders()
-        => Ok(await Mediator.Send(new GetAllProvidersQuery()));
+    public async Task<Result<IReadOnlyCollection<ProviderViewModel>>> GetAllProviders()
+    { 
+        return await Mediator.Send(new GetAllProvidersQuery());
+    }
 
     [HttpGet("active")]
-    public async Task<ActionResult<IReadOnlyCollection<ProviderViewModel>>> GetActiveProviders()
-        => Ok(await Mediator.Send(new GetActiveProvidersQuery()));
+    public async Task<Result<IReadOnlyCollection<ProviderViewModel>>> GetActiveProviders()
+    { 
+        return await Mediator.Send(new GetActiveProvidersQuery());
+    }
 
     [HttpPost]
-    public async Task<IActionResult> CreateProvider([FromForm] CreateProviderModel model)
+    public async Task<Result<long>> CreateProvider([FromForm] CreateProviderModel model)
     {
         CreateProviderViewModel createProviderViewModel = new(model.PersianName, model.EnglishName,
                                                              model.ProviderType, model.ProviderData,
@@ -30,16 +37,12 @@ public class ProviderController : ApiBaseController
                                                              model.IpgVerificationTimeLimit,
                                                              model.IpgBaseUrl);
 
-        var providerId = await Mediator.Send(new CreateProviderCommand(createProviderViewModel));
-
-        return CreatedAtAction(nameof(CreateProvider), new { id = providerId }, new { providerId });
+        return await Mediator.Send(new CreateProviderCommand(createProviderViewModel));
     }
 
     [HttpPost("activate/{providerId:long}/{isActive:bool}")]
-    public async Task<IActionResult> ActivateProvider(int providerId, bool isActive)
+    public async Task<Result<bool>> ActivateProvider(int providerId, bool isActive)
     {
-        await Mediator.Send(new ActivateProviderCommand(providerId, isActive));
-
-        return Accepted();
+        return await Mediator.Send(new ActivateProviderCommand(providerId, isActive));
     }
 }

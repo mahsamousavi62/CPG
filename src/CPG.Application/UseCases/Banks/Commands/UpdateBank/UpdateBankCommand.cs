@@ -1,5 +1,6 @@
-﻿using MediatR;
+﻿using CPG.Domain.SharedKernel;
+using MediatR;
 
 namespace CPG.Application.UseCases.Banks.Commands.UpdateBank;
 
-public record UpdateBankCommand(int BankId, string IbanPrefix) : IRequest;
+public record UpdateBankCommand(int BankId, string IbanPrefix) : IRequest<Result<bool>>;

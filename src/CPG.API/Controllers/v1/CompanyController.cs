@@ -12,14 +12,18 @@ namespace CPG.API.Controllers;
 public class CompanyController : ApiBaseController
 {
     [HttpGet("GetAll")]
-    [ProducesResponseType(typeof(IReadOnlyCollection<CompanyViewModel>), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<IReadOnlyCollection<CompanyViewModel>>> GetAll()
-     => Ok(await Mediator.Send(new GetAllCompanyQuery()));
+    [ProducesResponseType(typeof(Result<IReadOnlyCollection<CompanyViewModel>>), (int)HttpStatusCode.OK)]
+    public async Task<Result<IReadOnlyCollection<CompanyViewModel>>> GetAll()
+    {
+        return await Mediator.Send(new GetAllCompanyQuery());
+    }
 
     [HttpGet("{id:long}")]
-    [ProducesResponseType(typeof(CompanyViewModel), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<CompanyViewModel>> GetCompany(long id)
-        => Ok(await Mediator.Send(new GetCompanyQuery(id)));
+    [ProducesResponseType(typeof(Result<CompanyViewModel>), (int)HttpStatusCode.OK)]
+    public async Task<Result<CompanyViewModel>> GetCompany(long id)
+    { 
+        return await Mediator.Send(new GetCompanyQuery(id));
+    }
 
     [HttpGet("GetCompanyPaymentMethodsType")]
     [EnumDataType(typeof(Enums.CompanyPaymentMethodType))]
@@ -37,7 +41,7 @@ public class CompanyController : ApiBaseController
     {
         CreateCompanyViewModel createCompanyViewModel = new(
              model.PersianName, model.EnglishName, model.NationalCodeMatchingRequied,
-             new FormFileProxy(model.File), model.MethodTypes, model.Users,model.SiteAddress,model.IpgRedirectionMethodType);
+             new FormFileProxy(model.File), model.MethodTypes, model.Users, model.SiteAddress, model.IpgRedirectionMethodType);
 
         return await Mediator.Send(new CreateCompanyCommand(createCompanyViewModel));
     }

@@ -1,12 +1,8 @@
-﻿using CPG.Application.UseCases.CompanyDeposits.Queries;
-using CPG.Application.UseCases.CompanyDeposits.ViewModels;
-using CPG.Application.UseCases.Users;
-using CPG.Application.UseCases.Users.Commands;
+﻿using CPG.Application.UseCases.Users.Commands;
 using CPG.Application.UseCases.Users.Queries;
 using CPG.Application.UseCases.Users.ViewModel;
 using CPG.Domain.SharedKernel;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -28,14 +24,19 @@ public class UsersController : ApiBaseController
     [Authorize]
     [HttpGet("GetUserProfile")]
     [ProducesResponseType(typeof(Result<UserViewModel>), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<CompanyDepositViewModel>> Get()
-              => Ok(await Mediator.Send(new GetUserQuery()));
+    public async Task<Result<UserViewModel>> Get()
+    {
+        return await Mediator.Send(new GetUserQuery());
+    }
 
     /// <summary>
     /// 
     /// </summary>
     /// <returns></returns>
     [HttpGet("CompanyUsers")]
-    [ProducesResponseType(typeof(IReadOnlyCollection<UserCompanyViewModel>), (int)HttpStatusCode.OK)]
-    public async Task<IActionResult> GetCompanyUsers() => Ok(await Mediator.Send(new GetCompanyUsersQuery()));
+    [ProducesResponseType(typeof(Result<IReadOnlyCollection<UserCompanyViewModel>>), (int)HttpStatusCode.OK)]
+    public async Task<Result<IReadOnlyCollection<UserCompanyViewModel>>> GetCompanyUsers()
+    {
+        return await Mediator.Send(new GetCompanyUsersQuery());
+    }
 }

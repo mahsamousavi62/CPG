@@ -1,4 +1,5 @@
 ﻿using CPG.Application.UseCases.Auth.Commands.Login;
+using CPG.Domain.SharedKernel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,6 +9,8 @@ public class AuthController : ApiBaseController
 {
     [AllowAnonymous]
     [HttpPost]
-    public async Task<ActionResult<string>> Login(LoginCommand command)
-        => Ok(await Mediator.Send(command));
+    public async Task<Result<LoginCommandResponse>> Login(LoginCommand command)
+    { 
+        return await Mediator.Send(command);
+    }
 }

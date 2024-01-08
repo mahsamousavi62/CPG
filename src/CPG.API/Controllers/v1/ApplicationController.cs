@@ -40,10 +40,8 @@ public class ApplicationController : ApiBaseController
     }
 
     [HttpPost("activate/{ApplicationId:long}/{isActive:bool}")]
-    public async Task<IActionResult> ActivateApplication(int ApplicationId, bool isActive)
+    public async Task<Result<bool>> ActivateApplication(int ApplicationId, bool isActive)
     {
-        await Mediator.Send(new ActivateApplicationCommand(ApplicationId, isActive));
-
-        return Accepted();
+        return await Mediator.Send(new ActivateApplicationCommand(ApplicationId, isActive));
     }
 }

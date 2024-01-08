@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using CPG.Domain.SharedKernel;
+using System.Collections;
 using System.Collections.Generic;
 using System.Resources;
 
@@ -15,7 +16,7 @@ namespace CPG.Application.Shared.Resource
             resourceManager = new ResourceManager(resourceFullyQualifiedName, typeof(GlobalResource).Assembly);
         }
 
-        public Dictionary<string, string> GetResources()
+        public Result<Dictionary<string, string>> GetResources()
         {
             var resourceDictionary = new Dictionary<string, string>();
 
@@ -38,7 +39,7 @@ namespace CPG.Application.Shared.Resource
                 resourceDictionary[key ?? string.Empty] = value ?? string.Empty;
             }
 
-            return resourceDictionary;
+            return Result<Dictionary<string, string>>.SuccessResult(resourceDictionary);
         }
     }
 }

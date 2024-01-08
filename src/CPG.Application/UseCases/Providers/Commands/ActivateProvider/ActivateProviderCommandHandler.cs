@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace CPG.Application.UseCases.Providers.Commands.ActivateProvider;
 
-public class ActivateProviderCommandHandler(IAggregateRepository<Provider> providerRepository, ICurrentUser currentUser) : IRequestHandler<ActivateProviderCommand>
+public class ActivateProviderCommandHandler(IAggregateRepository<Provider> providerRepository, ICurrentUser currentUser) : IRequestHandler<ActivateProviderCommand, Result<bool>>
 {
     private readonly IAggregateRepository<Provider> _providerRepository = providerRepository;
     private readonly ICurrentUser _currentUser = currentUser;
 
-    public async Task Handle(ActivateProviderCommand command, CancellationToken cancellationToken)
+    public async Task<Result<bool>> Handle(ActivateProviderCommand command, CancellationToken cancellationToken)
     {
         var bank = await _providerRepository.GetByIdAsync(command.ProviderId, cancellationToken)
                    ?? throw new ProviderNotFoundException(command.ProviderId);
@@ -24,5 +24,7 @@ public class ActivateProviderCommandHandler(IAggregateRepository<Provider> provi
             bank.SetAsInactive(_currentUser.UserId);
 
         await _providerRepository.SaveChangesAsync(cancellationToken);
+
+        return Result<bool>.SuccessResult(true);
     }
 }

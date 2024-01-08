@@ -14,14 +14,14 @@ namespace CPG.Application.UseCases.CompanyDeposits.Commands.CreateCompanyDeposit
 
 public class CreateCompanyDepositCommandHandler(IAggregateRepository<CompanyDeposit> companyDepositRepository,
     IAggregateRepository<Company> companyRepository,
-    IAggregateRepository<Bank> bankRepository) : IRequestHandler<CreateCompanyDepositCommand, long>
+    IAggregateRepository<Bank> bankRepository) : IRequestHandler<CreateCompanyDepositCommand, Result<long>>
 {
     private readonly IAggregateRepository<CompanyDeposit> _companyDepositRepository = companyDepositRepository;
     private readonly IAggregateRepository<Company> _companyRepository = companyRepository;
     private readonly IAggregateRepository<Bank> _bankRepository = bankRepository;
 
 
-    public async Task<long> Handle(CreateCompanyDepositCommand request, CancellationToken cancellationToken)
+    public async Task<Result<long>> Handle(CreateCompanyDepositCommand request, CancellationToken cancellationToken)
     {
         var (persianName, iban) = await Validate(request.Model);
         var bankId = await GetBankId(iban);
@@ -31,7 +31,7 @@ public class CreateCompanyDepositCommandHandler(IAggregateRepository<CompanyDepo
         await _companyDepositRepository.AddAsync(companyDeposit, cancellationToken);
         await _companyDepositRepository.SaveChangesAsync(cancellationToken);
 
-        return companyDeposit.Id;
+        return Result<long>.SuccessResult(companyDeposit.Id);
     }
 
     private async Task<(PersianName, Iban)> Validate(CreateCompanyDepositViewModel companyDeposit)

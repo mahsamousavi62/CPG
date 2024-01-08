@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using CPG.Domain.SharedKernel;
 using MediatR;
 
-namespace CPG.Application.UseCases.Companies.Queries
-{
-    public class GetIpgRedirectionMethodTypeQuery:IRequest<Dictionary<int, string>>
-    {
-    }
-}
+namespace CPG.Application.UseCases.Companies.Queries;
+
+public record GetIpgRedirectionMethodTypeQuery : IRequest<Result<Dictionary<int, string>>>;
