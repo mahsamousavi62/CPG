@@ -15,7 +15,7 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
     string description, decimal amount, string callBackUrl, string code, string trackerId, Enums.PaymentStatus status, bool isUsed)
     {
         CompanyId = companyId;
-        DestinationIban = destinationIban;
+        DestinationDepositIban = destinationIban;
         ApplicationId = applicationId;
         NationalCode = nationalCode;
         Description = description;
@@ -30,7 +30,7 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
 
     public long CompanyId { get; set; }
     public long ApplicationId { get; set; }
-    public string DestinationIban { get; set; }
+    public string DestinationDepositIban { get; set; }
     public string NationalCode { get; set; }
     public string Description { get; set; }
     public decimal Amount { get; set; }
@@ -44,6 +44,7 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
     public Application Application { get; set; }
     public Company Company { get; set; }
     public Transaction Transaction { get; set; }
+
     public static PaymentRequest Create(PaymentRequest paymentRequest, int expireTime, string clientId, string applicationEnglishName)
     {
         paymentRequest.UrlExpirationDateTime = DateTime.UtcNow.AddMinutes(expireTime);

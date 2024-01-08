@@ -3,7 +3,7 @@ using CPG.Application.UseCases.Exceptions;
 
 namespace CPG.Application.UseCases.PaymentRequests.Exceptions;
 
-public class PaymentRequestCodeIsUsedException() : ApplicationException(GlobalResource.PaymentRequestCodeIsUsed)
+public class PaymentRequestCodeIsUsedException() : AppException(GlobalResource.PaymentRequestCodeIsUsed)
 {
     public override string Code => "1006003";
 }

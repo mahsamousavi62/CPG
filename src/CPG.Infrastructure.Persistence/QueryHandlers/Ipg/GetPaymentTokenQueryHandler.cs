@@ -1,10 +1,6 @@
-﻿using System;
-using System.Linq;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
-using CPG.Application.Shared.Resource;
+﻿using CPG.Application.Shared.Resource;
 using CPG.Application.UseCases.CompanyIPGs.Exceptions;
+using CPG.Application.UseCases.Exceptions;
 using CPG.Application.UseCases.Ipg.Commands;
 using CPG.Application.UseCases.PaymentRequests.Exceptions;
 using CPG.Domain.AggregateModels.CompanyDepositAggregate.Specifications;
@@ -17,7 +13,11 @@ using CPG.Domain.SharedKernel.Communication.Ipg;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentTicket;
 using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
-using Microsoft.AspNetCore.Http;
+using System;
+using System.Linq;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 
@@ -72,9 +72,9 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
             if (status == (short)HttpStatusCode.OK)
             {
                 long destinationDepositId;
-                if (!string.IsNullOrWhiteSpace(paymentRequest.DestinationIban))
+                if (!string.IsNullOrWhiteSpace(paymentRequest.DestinationDepositIban))
                 {
-                    var companyDeposit = await _companyDepositRepository.GetBySpecAsync(new CompanyDepositByIban(paymentRequest.DestinationIban));
+                    var companyDeposit = await _companyDepositRepository.GetBySpecAsync(new CompanyDepositByIban(paymentRequest.DestinationDepositIban));
                     if (companyDeposit is null) throw new Exception("CompanyDeposit not found!");
                     if (companyDeposit.CompanyId != paymentRequest.CompanyId) { throw new PaymentTokenDepositNotBelongsCompanyException(); }
                     if (!companyDeposit.IsActive) { throw new PaymentTokenInactiveDepositException(); }
@@ -114,12 +114,17 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                 return Result<PaymentTokenResponse>.FailureResult(result, null);
             }
         }
-        catch (Exception exc)
+        catch (DomainException exc)
         {
-            if (exc is DomainException || exc is CPG.Application.UseCases.Exceptions.ApplicationException)
-                return Result<PaymentTokenResponse>.Failure(new Error((exc as dynamic).Code, exc.Message));
-            else
-                return Result<PaymentTokenResponse>.Failure(new Error("1007000", GlobalResource.GetPaymentTicketUnexpectedError));
+            return Result<PaymentTokenResponse>.Failure(new Error((exc as dynamic).Code, exc.Message));
+        }
+        catch (AppException exc)
+        {
+            return Result<PaymentTokenResponse>.Failure(new Error((exc as dynamic).Code, exc.Message));
+        }
+        catch (Exception)
+        {
+            return Result<PaymentTokenResponse>.Failure(new Error("1007000", GlobalResource.GetPaymentTicketUnexpectedError));
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using CPG.Application.Shared.Resource;
+using CPG.Application.UseCases.Exceptions;
 using CPG.Application.UseCases.PaymentRequests.Exceptions;
 using CPG.Application.UseCases.PaymentRequests.ViewModels;
 using CPG.Domain.AggregateModels.CompanyAggregate;
@@ -50,14 +51,15 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
             await _paymentRequestRepository.UpdateAsync(paymentRequest);
 
             Company company = null;
-            if (!string.IsNullOrEmpty(paymentRequest.DestinationIban))
+            if (!string.IsNullOrEmpty(paymentRequest.DestinationDepositIban))
             {
-                company = await _companyRepository.GetBySpecAsync(new CompanyPaymentMethodsByIbanSpec(paymentRequest.CompanyId, paymentRequest.DestinationIban), cancellationToken);
+                company = await _companyRepository.GetBySpecAsync(new CompanyPaymentMethodsByIbanSpec(paymentRequest.CompanyId,
+                    paymentRequest.DestinationDepositIban), cancellationToken);
 
                 var toBeRemoved = new List<CompanyIPG>();
                 foreach (var companyIPGItem in company?.CompanyIPGs)
                 {
-                    var found = companyIPGItem.IPGDeposits.Any(t => t.CompanyDeposit.Iban == paymentRequest.DestinationIban);
+                    var found = companyIPGItem.IPGDeposits.Any(t => t.CompanyDeposit.Iban == paymentRequest.DestinationDepositIban);
                     if (!found)
                     {
                         toBeRemoved.Add(companyIPGItem);
@@ -111,12 +113,17 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
                 CompanyName = company.PersianName,
             });
         }
-        catch (Exception exc)
+        catch (DomainException exc)
+        { 
+            return Result<PaymentMethodsViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
+        }
+        catch (AppException exc)
+        { 
+            return Result<PaymentMethodsViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
+        }
+        catch (Exception)
         {
-            if (exc is DomainException || exc is UseCases.Exceptions.ApplicationException)
-                return Result<PaymentMethodsViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
-            else
-                return Result<PaymentMethodsViewModel>.Failure(new Error("1006000", GlobalResource.PaymentMethodsUnexpectedError));
+            return Result<PaymentMethodsViewModel>.Failure(new Error("1006000", GlobalResource.PaymentMethodsUnexpectedError));
         }
     }
 }

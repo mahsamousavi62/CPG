@@ -1,4 +1,7 @@
-﻿using CPG.Application.UseCases.Users.Exceptions;
+﻿using CPG.Application.Shared;
+using CPG.Application.UseCases.Common.Queries;
+using CPG.Application.UseCases.Exceptions;
+using CPG.Application.UseCases.Users.Exceptions;
 using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Domain.AggregateModels.UserAggregate.Specifications;
 using CPG.Domain.Exceptions;
@@ -35,8 +38,8 @@ public class CreateUserCommandHandler(IIdpProvider idpClient, IAggregateReposito
             var nationalCode = new NationalCode(idpUserProfile.Result.UniqueIdentifier);
 
             var spec = new UserByIDPIdSpec(sub);
-            var existingUser = await _repository.GetBySpecAsync(spec, cancellationToken);
-            var userToUpdate = existingUser;
+            var userToUpdate = await _repository.GetBySpecAsync(spec, cancellationToken);
+
             if (userToUpdate == null)
             {
                 var nationalCodeSpec = new UserByNationalCodeSpec(idpUserProfile.Result.UniqueIdentifier);
@@ -47,6 +50,11 @@ public class CreateUserCommandHandler(IIdpProvider idpClient, IAggregateReposito
                     userToUpdate = User.Create(sub, nationalCode, name, phoneNumber, Enums.UserRoleType.CustomerUser);
                     await _repository.AddAsync(userToUpdate, cancellationToken);
                 }
+                else
+                {
+                    User.Update(userToUpdate, name, phoneNumber);
+                    await _repository.UpdateAsync(userToUpdate, cancellationToken);
+                }
             }
             else
             {
@@ -56,12 +64,17 @@ public class CreateUserCommandHandler(IIdpProvider idpClient, IAggregateReposito
             await _repository.SaveChangesAsync(cancellationToken);
             return Result<long>.SuccessResult(userToUpdate.Id);
         }
+        catch (DomainException exc)
+        {
+            return Result<long>.Failure(new Error((exc as dynamic).Code, exc.Message));
+        }
+        catch (AppException exc)
+        {
+            return Result<long>.Failure(new Error((exc as dynamic).Code, exc.Message));
+        }
         catch (Exception exc)
         {
-            if (exc is DomainException || exc is UseCases.Exceptions.ApplicationException)
-                return Result<long>.Failure(new Error((exc as dynamic).Code, exc.Message));
-            else
-                return Result<long>.Failure(new Error(exc.Source, exc.Message));
+            return Result<long>.Failure(new Error(exc.Source, exc.Message));
         }
     }
 }

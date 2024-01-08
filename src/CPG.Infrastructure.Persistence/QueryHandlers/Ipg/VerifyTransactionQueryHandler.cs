@@ -19,6 +19,7 @@ using CPG.Application.UseCases.Ipg.Exceptions;
 using CPG.Domain.Exceptions;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
+using CPG.Application.UseCases.Exceptions;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 
@@ -120,12 +121,17 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
 
             return Result<VerifyTransactionResponseViewModel>.SuccessResult(response);
         }
-        catch (Exception exc)
+        catch (DomainException exc)
         {
-            if (exc is DomainException || exc is CPG.Application.UseCases.Exceptions.ApplicationException)
-                return Result<VerifyTransactionResponseViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
-            else
-                return Result<VerifyTransactionResponseViewModel>.Failure(new Error("1005000", GlobalResource.TransactionDetailUnexpectedError));
+            return Result<VerifyTransactionResponseViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
+        }
+        catch (AppException exc)
+        {
+            return Result<VerifyTransactionResponseViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
+        }
+        catch (Exception)
+        {
+            return Result<VerifyTransactionResponseViewModel>.Failure(new Error("1005000", GlobalResource.TransactionDetailUnexpectedError));
         }
     }
 

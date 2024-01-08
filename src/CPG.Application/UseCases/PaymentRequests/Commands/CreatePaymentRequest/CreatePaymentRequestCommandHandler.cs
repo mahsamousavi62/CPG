@@ -1,6 +1,7 @@
 ﻿using CPG.Application.Auth;
 using CPG.Application.Shared.Resource;
 using CPG.Application.UseCases.CompanyDeposits;
+using CPG.Application.UseCases.Exceptions;
 using CPG.Application.UseCases.PaymentRequests.Exceptions;
 using CPG.Application.UseCases.PaymentRequests.ViewModels;
 using CPG.Domain.AggregateModels.ApplicationAggregate.Specifications;
@@ -76,18 +77,23 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
                 Status = paymentRequest.Status
             });
         }
-        catch (Exception exc)
+        catch (DomainException exc)
         {
-            if (exc is DomainException || exc is CPG.Application.UseCases.Exceptions.ApplicationException)
-                return Result<PaymentRequestResponseViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
-            else
-                return Result<PaymentRequestResponseViewModel>.Failure(new Error("1001000", GlobalResource.GetPaymentTicketUnexpectedError));
+            return Result<PaymentRequestResponseViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
+        }
+        catch (AppException exc)
+        {
+            return Result<PaymentRequestResponseViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
+        }
+        catch (Exception)
+        {
+            return Result<PaymentRequestResponseViewModel>.Failure(new Error("1001000", GlobalResource.GetPaymentTicketUnexpectedError));
         }
     }
 
     private async Task Validate(CreatePaymentRequestViewModel model)
     {
-        if ((!model.CompanyId.HasValue || model.CompanyId == 0) && string.IsNullOrEmpty(model.DestinationIban))
+        if ((!model.CompanyId.HasValue || model.CompanyId == 0) && string.IsNullOrEmpty(model.DestinationDepositIban))
             throw new PaymentRequestRequiredDataException();
 
         var amount = new Amount(model.Amount);
@@ -111,11 +117,11 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
                 throw new AllCompanyDepositsIsInActiveException(model.CompanyId.Value);
         }
 
-        if (!string.IsNullOrEmpty(model.DestinationIban))
+        if (!string.IsNullOrEmpty(model.DestinationDepositIban))
         {
-            var iban = new Iban(model.DestinationIban);
+            var iban = new Iban(model.DestinationDepositIban);
 
-            var companyDeposit = await _companyDepositRepository.GetBySpecAsync(new CompanyDepositByIban(model.DestinationIban));
+            var companyDeposit = await _companyDepositRepository.GetBySpecAsync(new CompanyDepositByIban(model.DestinationDepositIban));
             if (companyDeposit is null)
                 throw new PaymentRequestNotDefinedCompanyDepositException();
 

@@ -31,7 +31,7 @@ public class GetPaymentRequestQueryHandler(ReadDbContext context) : IRequestHand
             CompanyName = p.Company.PersianName,
             CreationDate = p.CreationDate,
             Description = p.Description,
-            DestinationIban = p.DestinationIban,
+            DestinationIban = p.DestinationDepositIban,
             Id = p.Id,
             IsActive = p.IsActive,
             IsUsed = p.IsUsed,

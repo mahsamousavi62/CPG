@@ -4,6 +4,7 @@ using CPG.Infrastructure.Persistence.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CPG.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(WriteDbContext))]
-    partial class WriteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240107122213_renamePaymentIbanColumn")]
+    partial class renamePaymentIbanColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -898,9 +901,10 @@ namespace CPG.Infrastructure.Persistence.Migrations
                         .HasColumnName("Description");
 
                     b.Property<string>("DestinationDepositIban")
+                        .IsRequired()
                         .HasMaxLength(26)
                         .HasColumnType("nvarchar")
-                        .HasColumnName("DestinationDepositIban");
+                        .HasColumnName("DestinationIban");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
