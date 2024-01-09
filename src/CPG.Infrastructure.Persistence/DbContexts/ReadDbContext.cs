@@ -43,6 +43,8 @@ public class ReadDbContext(DbContextOptions<ReadDbContext> options) : DbContext(
     
     public IQueryable<TransactionReadModel> TransactionReadModels => Set<TransactionReadModel>().AsNoTracking();
 
+    public IQueryable<CompanyShaparakSettingReadModel> ShaparakSettingReadModels => Set<CompanyShaparakSettingReadModel>().AsNoTracking();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
@@ -62,7 +64,8 @@ public class ReadDbContext(DbContextOptions<ReadDbContext> options) : DbContext(
             .ApplyConfiguration(new CompanyIPGReadModelConfiguration())
             .ApplyConfiguration(new CompanyIPGDepositReadModelConfiguration())
             .ApplyConfiguration(new IPGTransactionReadModelConfiguration())
-            .ApplyConfiguration(new TransactionReadModelConfiguration());
+            .ApplyConfiguration(new TransactionReadModelConfiguration())
+            .ApplyConfiguration(new CompanyShaparakSettingReadModelConfiguration());
     }
 
     public async Task<long> GetNextSequenceValue()

@@ -555,4 +555,7 @@
   <data name="VerifyInvalidApplication" xml:space="preserve">
     <value>امکان تایید تراکنش برای این Application مجاز نیست</value>
   </data>
+  <data name="RequiredShaparakSettings" xml:space="preserve">
+    <value>وارد نمودن تنظیمات شاپرک الزامیست</value>
+  </data>
 </root>
