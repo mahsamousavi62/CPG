@@ -56,13 +56,13 @@ namespace CPG.Application.UseCases.Users.Commands
                     }
                     else
                     {
-                        User.Update(userToUpdate, name, phoneNumber);
+                        userToUpdate = User.Update(userToUpdate, name, phoneNumber);
                         await _repository.UpdateAsync(userToUpdate, cancellationToken);
                     }
                 }
                 else
                 {
-                    User.Update(userToUpdate, name, phoneNumber);
+                    userToUpdate = User.Update(userToUpdate, name, phoneNumber);
                     await _repository.UpdateAsync(userToUpdate, cancellationToken);
                 }
                 await _repository.SaveChangesAsync(cancellationToken);
