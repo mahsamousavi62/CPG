@@ -4,7 +4,7 @@ using CPG.Application.UseCases.Exceptions;
 
 namespace CPG.Application.UseCases.PaymentRequests.Exceptions;
 
-public class PaymentRequestApplicationNotFoundException() : ApplicationException(string.Format(GlobalResource.PaymentRequestApplicationNotFound))
+public class PaymentRequestApplicationNotFoundException() : AppException(string.Format(GlobalResource.PaymentRequestApplicationNotFound))
 {
     public override string Code => "1001013";    
 }

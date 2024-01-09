@@ -1,5 +1,6 @@
 ﻿using CPG.Application.Shared.Exceptions;
 using CPG.Application.UseCases.Companies.Exceptions;
+using CPG.Application.UseCases.Exceptions;
 using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Domain.AggregateModels.CompanyAggregate.Specifications;
 using CPG.Domain.AggregateModels.UserAggregate;
@@ -54,13 +55,17 @@ public class CreateCompanyCommandHandler(IAggregateRepository<Company> companyRe
 
             return Result<long>.SuccessResult(company.Id);
         }
+        catch (DomainException exc)
+        {
+            return Result<long>.Failure(new Error((exc as dynamic).Code, exc.Message));
+        }
+        catch (AppException exc)
+        {
+            return Result<long>.Failure(new Error((exc as dynamic).Code, exc.Message));
+        }
         catch (Exception exc)
         {
-            if (exc is DomainException || exc is UseCases.Exceptions.ApplicationException)
-
-                return Result<long>.Failure(new Error((exc as dynamic).Code, exc.Message));
-            else
-                return Result<long>.Failure(new Error(exc.Source, exc.Message));
+            return Result<long>.Failure(new Error(exc.Source, exc.Message));
         }
     }
 

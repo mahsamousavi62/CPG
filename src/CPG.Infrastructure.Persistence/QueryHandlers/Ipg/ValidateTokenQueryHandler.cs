@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using CPG.Application.UseCases.Ipg.ViewModels;
 using CPG.Application.Shared.Resource;
 using CPG.Domain.Exceptions;
+using CPG.Application.UseCases.Exceptions;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 
@@ -88,15 +89,20 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
 
             return Result<ValidateTokenResponseViewModel>.SuccessResult(new ValidateTokenResponseViewModel
             {
-                CallbackUrl = $"{paymentRequest.CallBackUrl}/payment_result?payment-code={paymentRequest.PaymentCode}&status={GetStatusTitle(paymentRequest.Status)}"
+                CallbackUrl = $"{paymentRequest.CallBackUrl}/paymentResult?paymentCode={paymentRequest.PaymentCode}&paymentStatus={GetStatusTitle(paymentRequest.Status)}"
             });
         }
-        catch (Exception exc)
+        catch (DomainException exc)
         {
-            if (exc is DomainException || exc is CPG.Application.UseCases.Exceptions.ApplicationException)
-                return Result<ValidateTokenResponseViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
-            else
-                return Result<ValidateTokenResponseViewModel>.Failure(new Error("1008000", GlobalResource.GetPaymentTicketUnexpectedError));
+            return Result<ValidateTokenResponseViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
+        }
+        catch (AppException exc)
+        {
+            return Result<ValidateTokenResponseViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
+        }
+        catch (Exception)
+        {
+            return Result<ValidateTokenResponseViewModel>.Failure(new Error("1008000", GlobalResource.GetPaymentTicketUnexpectedError));
         }
     }
 

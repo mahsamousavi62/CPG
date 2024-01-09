@@ -1,6 +1,7 @@
 ﻿using CPG.Application.Auth;
 using CPG.Application.Shared.Resource;
 using CPG.Application.UseCases.CompanyDeposits;
+using CPG.Application.UseCases.Exceptions;
 using CPG.Application.UseCases.PaymentRequests.Exceptions;
 using CPG.Application.UseCases.PaymentRequests.ViewModels;
 using CPG.Domain.AggregateModels.ApplicationAggregate.Specifications;
@@ -72,16 +73,21 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
             {
                 ExpirationDateTime = paymentRequest.UrlExpirationDateTime.ToString("yyyy-MM-dd HH:mm:ss zzz"),
                 PaymentCode = paymentRequest.PaymentCode,
-                PageUrl = $"{appConfig.Payment_Gateway_URL_Prefix.TrimEnd('/')}?payment_code={paymentRequest.PaymentCode}",
+                PageUrl = $"{appConfig.Payment_Gateway_URL_Prefix.TrimEnd('/')}?paymentCode={paymentRequest.PaymentCode}",
                 Status = paymentRequest.Status
             });
         }
-        catch (Exception exc)
+        catch (DomainException exc)
         {
-            if (exc is DomainException || exc is CPG.Application.UseCases.Exceptions.ApplicationException)
-                return Result<PaymentRequestResponseViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
-            else
-                return Result<PaymentRequestResponseViewModel>.Failure(new Error("1001000", GlobalResource.GetPaymentTicketUnexpectedError));
+            return Result<PaymentRequestResponseViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
+        }
+        catch (AppException exc)
+        {
+            return Result<PaymentRequestResponseViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
+        }
+        catch (Exception)
+        {
+            return Result<PaymentRequestResponseViewModel>.Failure(new Error("1001000", GlobalResource.GetPaymentTicketUnexpectedError));
         }
     }
 
