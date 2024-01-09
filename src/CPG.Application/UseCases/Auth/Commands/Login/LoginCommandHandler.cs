@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace CPG.Application.UseCases.Auth.Commands.Login;
 
-public class LoginCommandHandler(IAggregateRepository<User> repository, IAuthService authService) : IRequestHandler<LoginCommand, LoginCommandResponse>
+public class LoginCommandHandler(IAggregateRepository<User> repository, IAuthService authService) : IRequestHandler<LoginCommand, Result<LoginCommandResponse>>
 {
     private readonly IAggregateRepository<User> _repository = repository;
     private readonly IAuthService _authService = authService;
 
-    public async Task<LoginCommandResponse> Handle(LoginCommand query, CancellationToken cancellationToken)
+    public async Task<Result<LoginCommandResponse>> Handle(LoginCommand query, CancellationToken cancellationToken)
     {
         //var spec = new UserByLoginSpec(query.Login);
         //var user = await _repository.GetBySpecAsync(spec, cancellationToken)
@@ -28,6 +28,6 @@ public class LoginCommandHandler(IAggregateRepository<User> repository, IAuthSer
         //var token = _authService.GenerateSecurityToken(user.Id, user.Email, $"{user.FirstName} {user.LastName}");
 
         //return new LoginCommandResponse(token);
-        return new LoginCommandResponse(null);
+        return Result<LoginCommandResponse>.SuccessResult(new LoginCommandResponse(null));
     }
 }

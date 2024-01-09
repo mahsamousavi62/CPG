@@ -10,12 +10,12 @@ using CPG.Application.UseCases.Providers.Exceptions;
 namespace CPG.Application.UseCases.Providers.Commands.CreateProvider;
 
 internal class CreateProviderCommandHandler(IAggregateRepository<Provider> providerRepository, IMinioProvider minioProvider) 
-    : IRequestHandler<CreateProviderCommand, long>
+    : IRequestHandler<CreateProviderCommand, Result<long>>
 {
     private readonly IAggregateRepository<Provider> _providerRepository = providerRepository;
     private readonly IMinioProvider _minioProvider = minioProvider;
 
-    public async Task<long> Handle(CreateProviderCommand request, CancellationToken cancellationToken)
+    public async Task<Result<long>> Handle(CreateProviderCommand request, CancellationToken cancellationToken)
     {
         PersianName persianName = new(request.Model.PersianName);
         EnglishName englishName = new(request.Model.EnglishName);
@@ -46,6 +46,6 @@ internal class CreateProviderCommandHandler(IAggregateRepository<Provider> provi
         await _providerRepository.AddAsync(provider, cancellationToken);
         await _providerRepository.SaveChangesAsync(cancellationToken);
 
-        return provider.Id;
+        return Result<long>.SuccessResult(provider.Id);
     }
 }

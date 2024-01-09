@@ -2,6 +2,7 @@
 using CPG.Application.UseCases.Providers.Exceptions;
 using CPG.Application.UseCases.Providers.Queries;
 using CPG.Application.UseCases.Providers.ViewModels;
+using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Minio;
 using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
@@ -11,12 +12,12 @@ using System.Threading.Tasks;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Provider;
 
-public class GetProviderQueryHandler(ReadDbContext context, IMinioProvider minioProvider) : IRequestHandler<GetProviderQuery, ProviderViewModel>
+public class GetProviderQueryHandler(ReadDbContext context, IMinioProvider minioProvider) : IRequestHandler<GetProviderQuery, Result<ProviderViewModel>>
 {
     private readonly ReadDbContext _context = context;
     private readonly IMinioProvider _minioProvider = minioProvider;
 
-    public async Task<ProviderViewModel> Handle(GetProviderQuery request, CancellationToken cancellationToken)
+    public async Task<Result<ProviderViewModel>> Handle(GetProviderQuery request, CancellationToken cancellationToken)
     {
         Guard.Against.NegativeOrZero(request.ProviderId, nameof(request.ProviderId));
 
@@ -37,6 +38,6 @@ public class GetProviderQueryHandler(ReadDbContext context, IMinioProvider minio
             IpgBaseUrl = provider.IpgBaseUrl,
         };
 
-        return providerModel;
+        return Result<ProviderViewModel>.SuccessResult(providerModel);
     }
 }

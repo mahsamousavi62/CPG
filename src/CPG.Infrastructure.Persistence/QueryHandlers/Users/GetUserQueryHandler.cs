@@ -1,22 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using CPG.Application.UseCases.Companies.Exceptions;
 using CPG.Application.UseCases.Users.Exceptions;
 using CPG.Application.UseCases.Users.Queries;
 using CPG.Application.UseCases.Users.ViewModel;
-using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Domain.Exceptions;
 using CPG.Domain.SharedKernel;
 using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Users;
+
 public class GetUserQueryHandler(ReadDbContext context, IAuthenticationService authenticationService) : IRequestHandler<GetUserQuery, Result<UserViewModel>>
 {
     private readonly ReadDbContext _context = context;
@@ -24,13 +20,12 @@ public class GetUserQueryHandler(ReadDbContext context, IAuthenticationService a
 
     public async Task<Result<UserViewModel>> Handle(GetUserQuery request, CancellationToken cancellationToken)
     {
-
 		try
 		{
             var sub = await _authenticationService.GetDataFromClaim<string>("sub", string.Empty);
 
-            var user = await _context.UserReadModels.Include(u => u.UserRoles).
-                       SingleOrDefaultAsync(u => u.IsActive && u.IDPId == sub);
+            var user = await _context.UserReadModels.Include(u => u.UserRoles)
+                .SingleOrDefaultAsync(u => u.IsActive && u.IDPId == sub);
             var applicationId = (await _context.ApplicationIdentifierReadModels.SingleOrDefaultAsync(a => a.IdpClientId == sub))?.ApplicationId;
             if (user == null)
                 throw new UserNotFoundException(sub);
@@ -51,7 +46,6 @@ public class GetUserQueryHandler(ReadDbContext context, IAuthenticationService a
         catch (Exception exc)
         {
             if (exc is DomainException )
-
                 return Result<UserViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
             else
                 return Result<UserViewModel>.Failure(new Error(exc.Source, exc.Message));

@@ -1,5 +1,6 @@
 ﻿using CPG.Application.UseCases.CompanyIPGs.Queries;
 using CPG.Application.UseCases.CompanyIPGs.ViewModels;
+using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Minio;
 using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
@@ -11,12 +12,12 @@ using System.Threading.Tasks;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.CompanyIPG;
 
-public class GetActiveCompanyIPGsQueryHandler(ReadDbContext context, IMinioProvider minioProvider) : IRequestHandler<GetActiveCompanyIPGsQuery, IReadOnlyCollection<CompanyIPGDataViewModel>>
+public class GetActiveCompanyIPGsQueryHandler(ReadDbContext context, IMinioProvider minioProvider) : IRequestHandler<GetActiveCompanyIPGsQuery, Result<IReadOnlyCollection<CompanyIPGDataViewModel>>>
 {
     private readonly ReadDbContext _context = context;
     private readonly IMinioProvider _minioProvider = minioProvider;
 
-    public async Task<IReadOnlyCollection<CompanyIPGDataViewModel>> Handle(GetActiveCompanyIPGsQuery request, CancellationToken cancellationToken)
+    public async Task<Result<IReadOnlyCollection<CompanyIPGDataViewModel>>> Handle(GetActiveCompanyIPGsQuery request, CancellationToken cancellationToken)
     {
         var data = await _context.CompanyIPGReadModels
             .Include(t => t.CompanyIPGDeposits)
@@ -25,7 +26,7 @@ public class GetActiveCompanyIPGsQueryHandler(ReadDbContext context, IMinioProvi
             .Include(t => t.Provider)
             .Where(t => t.CompanyId == request.CompanyId && t.IsActive).ToListAsync();
 
-        return await Task.WhenAll(data.Select(async entity => new CompanyIPGDataViewModel
+        var viewModels = await Task.WhenAll(data.Select(async entity => new CompanyIPGDataViewModel
         {
             Id = entity.Id,
             CompanyId = entity.CompanyId,
@@ -41,5 +42,7 @@ public class GetActiveCompanyIPGsQueryHandler(ReadDbContext context, IMinioProvi
             IPGTypeName = entity.IPGType.PersianName,
             ProviderName = entity.Provider.PersianName,
         })).ConfigureAwait(false);
+
+        return Result<IReadOnlyCollection<CompanyIPGDataViewModel>>.SuccessResult(viewModels);
     }
 }

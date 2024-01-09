@@ -12,12 +12,12 @@ using System;
 namespace CPG.Application.UseCases.CompanyIPGs.Commands.CreateCompanyIPG;
 
 public class CreateCompanyIPGCommandHandler(IAggregateRepository<CompanyIPG> companyIPGRepository,
-    IAggregateRepository<CompanyDeposit> depositRepository) : IRequestHandler<CreateCompanyIPGCommand, long>
+    IAggregateRepository<CompanyDeposit> depositRepository) : IRequestHandler<CreateCompanyIPGCommand, Result<long>>
 {
     private readonly IAggregateRepository<CompanyIPG> _aggregateRepository = companyIPGRepository;
     private readonly IAggregateRepository<CompanyDeposit> _depositRepository = depositRepository;
 
-    public async Task<long> Handle(CreateCompanyIPGCommand request, CancellationToken cancellationToken)
+    public async Task<Result<long>> Handle(CreateCompanyIPGCommand request, CancellationToken cancellationToken)
     {
         var depositsIds = request.Model.CompanyIPGDeposits.Select(t => t.DepositId).ToList();
         var deposits = await _depositRepository.ListAsync(new CompanyDepositsByIdList(depositsIds));
@@ -41,6 +41,6 @@ public class CreateCompanyIPGCommandHandler(IAggregateRepository<CompanyIPG> com
         await _aggregateRepository.AddAsync(companyIPG, cancellationToken);
         await _aggregateRepository.SaveChangesAsync(cancellationToken);
 
-        return companyIPG.Id;
+        return Result<long>.SuccessResult(companyIPG.Id);
     }
 }
