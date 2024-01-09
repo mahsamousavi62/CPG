@@ -8,12 +8,12 @@ using CPG.Domain.SharedKernel.Interfaces;
 
 namespace CPG.Application.UseCases.Banks.Commands.UpdateBank;
 
-public class UpdateBankCommandHandler(IAggregateRepository<Bank> bankRepository, ICurrentUser currentUser) : IRequestHandler<UpdateBankCommand>
+public class UpdateBankCommandHandler(IAggregateRepository<Bank> bankRepository, ICurrentUser currentUser) : IRequestHandler<UpdateBankCommand, Result<bool>>
 {
     private readonly IAggregateRepository<Bank> _bankRepository = bankRepository;
     private readonly ICurrentUser _currentUser = currentUser;
 
-    public async Task Handle(UpdateBankCommand command, CancellationToken cancellationToken)
+    public async Task<Result<bool>> Handle(UpdateBankCommand command, CancellationToken cancellationToken)
     {
         var bank = await _bankRepository.GetByIdAsync(command.BankId, cancellationToken)
                    ?? throw new BankNotFoundException(command.BankId);
@@ -21,5 +21,7 @@ public class UpdateBankCommandHandler(IAggregateRepository<Bank> bankRepository,
         bank.Update(command.IbanPrefix);
 
         await _bankRepository.SaveChangesAsync(cancellationToken);
+
+        return Result<bool>.Success();
     }
 }

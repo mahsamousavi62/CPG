@@ -5,6 +5,7 @@ using CPG.Domain.SharedKernel.ApplicationSettings;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using HotChocolate.Authorization;
+using CPG.Domain.SharedKernel;
 
 namespace CPG.API.Controllers.v1;
 
@@ -29,21 +30,24 @@ public class IPGResultController : ApiBaseController
     }
 
     [HttpPost("TransactionDetail")]
-    [ProducesResponseType(typeof(TransactionDetailResponseViewModel), 200)]
-    public async Task<IActionResult> GetTransactionDetail([Required] TransactionDetailRequestViewModel model)
-        => Ok(await Mediator.Send(new TransactionDetailQuery(model)));
+    [ProducesResponseType(typeof(Result<TransactionDetailResponseViewModel>), 200)]
+    public async Task<Result<TransactionDetailResponseViewModel>> GetTransactionDetail([Required] TransactionDetailRequestViewModel model)
+    {
+        return await Mediator.Send(new TransactionDetailQuery(model));
+    }
 
     [HttpPost("TransactionVerify")]
-    [ProducesResponseType(typeof(VerifyTransactionResponseViewModel), 200)]
-    public async Task<IActionResult> VerifyTransaction([Required] VerifyTransactionViewModel model)
-        => Ok(await Mediator.Send(new VerifyTransactionQuery(model)));
+    [ProducesResponseType(typeof(Result<VerifyTransactionResponseViewModel>), 200)]
+    public async Task<Result<VerifyTransactionResponseViewModel>> VerifyTransaction([Required] VerifyTransactionViewModel model) {
+        return await Mediator.Send(new VerifyTransactionQuery(model));
+    }
 
     [HttpPost("{trackId}")]
-    [ProducesResponseType(typeof(ValidateTokenResponseViewModel), (int)HttpStatusCode.OK)]
-    public async Task<IActionResult> ValidateToken(string trackId)
+    [ProducesResponseType(typeof(Result<ValidateTokenResponseViewModel>), (int)HttpStatusCode.OK)]
+    public async Task<Result<ValidateTokenResponseViewModel>> ValidateToken(string trackId)
     {
         var redirectUrlData = await Mediator.Send(new ValidateTokenQuery(new ValidateTokenRequestViewModel { TrackId = trackId }));
-        return Ok(redirectUrlData.Data);
+        return redirectUrlData;
     }
 }
 

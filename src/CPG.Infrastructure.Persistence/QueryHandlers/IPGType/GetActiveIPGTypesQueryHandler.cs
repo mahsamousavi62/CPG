@@ -1,5 +1,6 @@
 ﻿using CPG.Application.UseCases.IPGTypes.Queries;
 using CPG.Application.UseCases.IPGTypes.ViewModels;
+using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Minio;
 using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
@@ -11,16 +12,16 @@ using System.Threading.Tasks;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.IPGType;
 
-public class GetActiveIPGTypesQueryHandler(ReadDbContext context, IMinioProvider minioProvider) : IRequestHandler<GetActiveIPGTypesQuery, IReadOnlyCollection<IPGTypeViewModel>>
+public class GetActiveIPGTypesQueryHandler(ReadDbContext context, IMinioProvider minioProvider) : IRequestHandler<GetActiveIPGTypesQuery, Result<IReadOnlyCollection<IPGTypeViewModel>>>
 {
     private readonly ReadDbContext _context = context;
     private readonly IMinioProvider _minioProvider = minioProvider;
 
-    public async Task<IReadOnlyCollection<IPGTypeViewModel>> Handle(GetActiveIPGTypesQuery request, CancellationToken cancellationToken)
+    public async Task<Result<IReadOnlyCollection<IPGTypeViewModel>>> Handle(GetActiveIPGTypesQuery request, CancellationToken cancellationToken)
     {
         var ipgTypes = await _context.IPGTypeReadModels.Where(t => t.IsActive).ToListAsync(cancellationToken: cancellationToken);
 
-        return await Task.WhenAll(ipgTypes.Select(async x => new IPGTypeViewModel
+        var viewModels = await Task.WhenAll(ipgTypes.Select(async x => new IPGTypeViewModel
         {
             Id = x.Id,
             PersianName = x.PersianName,
@@ -29,6 +30,8 @@ public class GetActiveIPGTypesQueryHandler(ReadDbContext context, IMinioProvider
             CreationDate = x.CreationDate,
             ModificationDate = x.ModificationDate,
         })).ConfigureAwait(false);
+
+        return Result<IReadOnlyCollection<IPGTypeViewModel>>.SuccessResult(viewModels);
     }
 }
 

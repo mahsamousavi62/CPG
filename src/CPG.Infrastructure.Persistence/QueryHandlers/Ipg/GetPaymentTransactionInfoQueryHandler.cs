@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using CPG.Application.UseCases.Ipg.Queries;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.TransactionResult;
@@ -12,20 +9,19 @@ using CPG.Domain.SharedKernel.Communication.Ipg;
 using CPG.Infrastructure.Persistence.DbContexts;
 using CPG.Application.UseCases.CompanyIPGs.Exceptions;
 using Microsoft.EntityFrameworkCore;
-using CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentTicket;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 
 public class GetPaymentTransactionInfoQueryHandler(IIpgFactory ipgFactory,
     IAggregateRepository<PaymentRequest> paymentRequestAggregateRepository,
-  ReadDbContext context) : IRequestHandler<GetPaymentTransactionInfoQuery, ResultData<TransactionResultResponse>>
+    ReadDbContext context) : IRequestHandler<GetPaymentTransactionInfoQuery, Result<TransactionResultResponse>>
 {
 
     private readonly IIpgFactory _ipgFactory = ipgFactory;
     private readonly IAggregateRepository<PaymentRequest> _paymentRequestRepository = paymentRequestAggregateRepository;
     private readonly ReadDbContext _context = context;
 
-    public async Task<ResultData<TransactionResultResponse>> Handle(GetPaymentTransactionInfoQuery request, CancellationToken cancellationToken)
+    public async Task<Result<TransactionResultResponse>> Handle(GetPaymentTransactionInfoQuery request, CancellationToken cancellationToken)
     {
         try
         {
@@ -39,19 +35,11 @@ public class GetPaymentTransactionInfoQueryHandler(IIpgFactory ipgFactory,
                 LocalInvoiceId = request.PaymentTransaction.LocalInvoiceId
             });
 
-            return new ResultData<TransactionResultResponse>
-            {
-                OperationResult = Enums.OperationResult.Succeeded,
-                Data = result
-            };
+            return Result<TransactionResultResponse>.SuccessResult(result);
         }
         catch (Exception ex)
         {
-            return new ResultData<TransactionResultResponse>
-            {
-                OperationResult = Enums.OperationResult.Failed,
-                Error = ex.Message
-            };
+            return Result<TransactionResultResponse>.Failure(new Error(ex.Source, ex.Message));
         }
     }
 }

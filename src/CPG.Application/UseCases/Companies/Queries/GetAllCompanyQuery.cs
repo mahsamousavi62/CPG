@@ -1,9 +1,8 @@
 ﻿using CPG.Application.UseCases.Companies.ViewModels;
+using CPG.Domain.SharedKernel;
 using MediatR;
 using System.Collections.Generic;
 
 namespace CPG.Application.UseCases.Companies.Queries;
 
-public class GetAllCompanyQuery:IRequest<IReadOnlyCollection<CompanyViewModel>>
-{
-}
+public record GetAllCompanyQuery : IRequest<Result<IReadOnlyCollection<CompanyViewModel>>>;

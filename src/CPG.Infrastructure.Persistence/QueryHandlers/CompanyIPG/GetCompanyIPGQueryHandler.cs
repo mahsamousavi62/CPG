@@ -2,6 +2,7 @@
 using CPG.Application.UseCases.CompanyIPGs.Exceptions;
 using CPG.Application.UseCases.CompanyIPGs.Queries;
 using CPG.Application.UseCases.CompanyIPGs.ViewModels;
+using CPG.Domain.SharedKernel;
 using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -11,11 +12,11 @@ using System.Threading.Tasks;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.CompanyIPG;
 
-public class GetCompanyIPGQueryHandler(ReadDbContext context) : IRequestHandler<GetCompanyIPGQuery, CompanyIPGViewModel>
+public class GetCompanyIPGQueryHandler(ReadDbContext context) : IRequestHandler<GetCompanyIPGQuery, Result<CompanyIPGViewModel>>
 {
     private readonly ReadDbContext _context = context;
     
-    public async Task<CompanyIPGViewModel> Handle(GetCompanyIPGQuery request, CancellationToken cancellationToken)
+    public async Task<Result<CompanyIPGViewModel>> Handle(GetCompanyIPGQuery request, CancellationToken cancellationToken)
     {
         Guard.Against.NegativeOrZero(request.CompanyIPGId, nameof(request.CompanyIPGId));
 
@@ -24,7 +25,7 @@ public class GetCompanyIPGQueryHandler(ReadDbContext context) : IRequestHandler<
         if (entity == null)
             throw new CompanyIPGNotFoundException(request.CompanyIPGId);
 
-        return new CompanyIPGViewModel
+        return Result<CompanyIPGViewModel>.SuccessResult(new CompanyIPGViewModel
         {
             Id = entity.Id,
             CompanyId = entity.CompanyId,
@@ -35,6 +36,6 @@ public class GetCompanyIPGQueryHandler(ReadDbContext context) : IRequestHandler<
             CreationDate = entity.CreationDate,
             ModificationDate = entity.ModificationDate,
             IsActive = entity.IsActive,
-        };
+        });
     }
 }

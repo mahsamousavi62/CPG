@@ -2,23 +2,23 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CPG.Application.UseCases.Companies.Exceptions;
-using CPG.Application.UseCases.CompanyDeposits;
 using CPG.Application.UseCases.CompanyDeposits.Exceptions;
 using CPG.Application.UseCases.CompanyDeposits.Queries;
 using CPG.Application.UseCases.CompanyDeposits.ViewModels;
+using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Minio;
 using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.CompanyDeposit;
-public class GetCompanyDepositsByCompanyIdQueryHandler(ReadDbContext context, IMinioProvider minioProvider) : IRequestHandler<GetCompanyDepositsByCompanyIdQuery, IReadOnlyList<CompanyDepositViewModel>>
+
+public class GetCompanyDepositsByCompanyIdQueryHandler(ReadDbContext context, IMinioProvider minioProvider) : IRequestHandler<GetCompanyDepositsByCompanyIdQuery, Result<IReadOnlyCollection<CompanyDepositViewModel>>>
 {
     private readonly ReadDbContext _context = context;
     private readonly IMinioProvider _minioProvider = minioProvider;
 
-    public async Task<IReadOnlyList<CompanyDepositViewModel>> Handle(GetCompanyDepositsByCompanyIdQuery request, CancellationToken cancellationToken)
+    public async Task<Result<IReadOnlyCollection<CompanyDepositViewModel>>> Handle(GetCompanyDepositsByCompanyIdQuery request, CancellationToken cancellationToken)
     {
         var companyDeposits = await _context.CompanyDepositReadModels.
             Include(c => c.Bank).Include(c => c.Company)
@@ -45,7 +45,7 @@ public class GetCompanyDepositsByCompanyIdQueryHandler(ReadDbContext context, IM
            }))
            .ConfigureAwait(false);
 
-        return companyViewModels.ToList();
+        return Result<IReadOnlyCollection<CompanyDepositViewModel>>.SuccessResult(companyViewModels);
     }
 }
 

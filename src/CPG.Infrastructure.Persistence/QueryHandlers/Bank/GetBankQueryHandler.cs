@@ -2,7 +2,7 @@
 using CPG.Application.UseCases.Banks.Exceptions;
 using CPG.Application.UseCases.Banks.Queries;
 using CPG.Application.UseCases.Banks.ViewModels;
-using CPG.Domain.AggregateModels.CompanyAggregate;
+using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Minio;
 using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
@@ -12,12 +12,12 @@ using System.Threading.Tasks;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Bank;
 
-public class GetBankQueryHandler(ReadDbContext context, IMinioProvider minioProvider) : IRequestHandler<GetBankQuery, BankViewModel>
+public class GetBankQueryHandler(ReadDbContext context, IMinioProvider minioProvider) : IRequestHandler<GetBankQuery, Result<BankViewModel>>
 {
     private readonly ReadDbContext _context = context;
     private readonly IMinioProvider _minioProvider = minioProvider;
 
-    public async Task<BankViewModel> Handle(GetBankQuery request, CancellationToken cancellationToken)
+    public async Task<Result<BankViewModel>> Handle(GetBankQuery request, CancellationToken cancellationToken)
     {
         Guard.Against.NegativeOrZero(request.BankId, nameof(request.BankId));
 
@@ -32,9 +32,9 @@ public class GetBankQueryHandler(ReadDbContext context, IMinioProvider minioProv
             Name = bank.Name,
             IbanPrefix = bank.IbanPrefix,
             Logo = !string.IsNullOrEmpty(bank.LogoAddress) ? await _minioProvider.PresignedGetObject(bank.LogoAddress) : "",
-            IsActive = bank.IsActive,            
+            IsActive = bank.IsActive,
         };
 
-        return bankModel;
+        return Result<BankViewModel>.SuccessResult(bankModel);
     }
 }

@@ -2,6 +2,7 @@
 using CPG.Application.UseCases.Application.Exceptions;
 using CPG.Application.UseCases.Application.Queries;
 using CPG.Application.UseCases.Application.ViewModels;
+using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Minio;
 using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
@@ -12,13 +13,13 @@ using System.Threading.Tasks;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Application;
 
-public class GetApplicationQueryHandler(ReadDbContext context, IMinioProvider minioProvider) : IRequestHandler<GetApplicationQuery, ApplicationViewModel>
+public class GetApplicationQueryHandler(ReadDbContext context, IMinioProvider minioProvider) : IRequestHandler<GetApplicationQuery, Result<ApplicationViewModel>>
 {
     private readonly ReadDbContext _context = context;
     private readonly IMinioProvider _minioProvider = minioProvider;
 
-    public async Task<ApplicationViewModel> Handle(GetApplicationQuery request, CancellationToken cancellationToken)
-    {   
+    public async Task<Result<ApplicationViewModel>> Handle(GetApplicationQuery request, CancellationToken cancellationToken)
+    {
         Guard.Against.NegativeOrZero(request.AppId, nameof(request.AppId));
 
         var app = await _context.ApplicationReadModels.FirstOrDefaultAsync(t => t.Id == request.AppId);
@@ -40,6 +41,6 @@ public class GetApplicationQueryHandler(ReadDbContext context, IMinioProvider mi
             CallbackUrls = app.ApplicationCallbackUrls?.ToDictionary(key => key.Id, value => value.CallbackUrl)
         };
 
-        return appModel;
+        return Result<ApplicationViewModel>.SuccessResult(appModel);
     }
 }
