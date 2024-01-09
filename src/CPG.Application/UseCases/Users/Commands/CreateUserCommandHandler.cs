@@ -49,13 +49,13 @@ public class CreateUserCommandHandler(IIdpProvider idpClient, IAggregateReposito
                 }
                 else
                 {
-                    userToUpdate = User.Update(userToUpdate, name, phoneNumber);
+                    User.Update(userToUpdate, name, phoneNumber, sub);
                     await _repository.UpdateAsync(userToUpdate, cancellationToken);
                 }
             }
             else
             {
-                userToUpdate = User.Update(userToUpdate, name, phoneNumber);
+                User.Update(userToUpdate, name, phoneNumber, sub);
                 await _repository.UpdateAsync(userToUpdate, cancellationToken);
             }
             await _repository.SaveChangesAsync(cancellationToken);
