@@ -69,14 +69,14 @@ namespace CPG.Domain.AggregateModels.UserAggregate
             return user;
         }
 
-        public static User Update(User user, Name name, string phoneNumber)
+        public static User Update(User user, Name name, string phoneNumber, string sub)
         {
             user.FirstName = name.FirstName;
             user.LastName = name.LastName;
             user.PhoneNumber = phoneNumber;
             user.KYCStatus = 1;
             user.LastUpdateFromIDP = DateTime.UtcNow;
-            user.IdpId = user.IdpId;
+            user.IdpId = sub;
 
             return user;
         }

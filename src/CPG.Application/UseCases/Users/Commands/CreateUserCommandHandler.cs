@@ -1,6 +1,4 @@
-﻿using CPG.Application.Shared;
-using CPG.Application.UseCases.Common.Queries;
-using CPG.Application.UseCases.Exceptions;
+﻿using CPG.Application.UseCases.Exceptions;
 using CPG.Application.UseCases.Users.Exceptions;
 using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Domain.AggregateModels.UserAggregate.Specifications;
@@ -11,7 +9,6 @@ using MediatR;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-
 
 namespace CPG.Application.UseCases.Users.Commands;
 
@@ -52,13 +49,13 @@ public class CreateUserCommandHandler(IIdpProvider idpClient, IAggregateReposito
                 }
                 else
                 {
-                    User.Update(userToUpdate, name, phoneNumber);
+                    User.Update(userToUpdate, name, phoneNumber, sub);
                     await _repository.UpdateAsync(userToUpdate, cancellationToken);
                 }
             }
             else
             {
-                User.Update(userToUpdate, name, phoneNumber);
+                User.Update(userToUpdate, name, phoneNumber, sub);
                 await _repository.UpdateAsync(userToUpdate, cancellationToken);
             }
             await _repository.SaveChangesAsync(cancellationToken);
