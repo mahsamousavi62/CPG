@@ -1,6 +1,4 @@
-﻿using CPG.Application.Shared;
-using CPG.Application.UseCases.Common.Queries;
-using CPG.Application.UseCases.Exceptions;
+﻿using CPG.Application.UseCases.Exceptions;
 using CPG.Application.UseCases.Users.Exceptions;
 using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Domain.AggregateModels.UserAggregate.Specifications;
@@ -11,7 +9,6 @@ using MediatR;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-
 
 namespace CPG.Application.UseCases.Users.Commands;
 
@@ -45,37 +42,36 @@ public class CreateUserCommandHandler(IIdpProvider idpClient, IAggregateReposito
                 var nationalCodeSpec = new UserByNationalCodeSpec(idpUserProfile.Result.UniqueIdentifier);
                 userToUpdate = await _repository.GetBySpecAsync(nationalCodeSpec);
 
-                    if (userToUpdate == null)
-                    {
-                        userToUpdate = User.Create(sub, nationalCode, name, phoneNumber, Enums.UserRoleType.CustomerUser);
-                        await _repository.AddAsync(userToUpdate, cancellationToken);
-                    }
-                    else
-                    {
-                        userToUpdate = User.Update(userToUpdate, name, phoneNumber);
-                        await _repository.UpdateAsync(userToUpdate, cancellationToken);
-                    }
+                if (userToUpdate == null)
+                {
+                    userToUpdate = User.Create(sub, nationalCode, name, phoneNumber, Enums.UserRoleType.CustomerUser);
+                    await _repository.AddAsync(userToUpdate, cancellationToken);
                 }
                 else
                 {
                     userToUpdate = User.Update(userToUpdate, name, phoneNumber);
                     await _repository.UpdateAsync(userToUpdate, cancellationToken);
                 }
-                await _repository.SaveChangesAsync(cancellationToken);
-                return Result<long>.SuccessResult(userToUpdate.Id);
             }
-            catch (DomainException exc)
+            else
             {
-                return Result<long>.Failure(new Error((exc as dynamic).Code, exc.Message));
+                userToUpdate = User.Update(userToUpdate, name, phoneNumber);
+                await _repository.UpdateAsync(userToUpdate, cancellationToken);
             }
-            catch (AppException exc)
-            {
-                return Result<long>.Failure(new Error((exc as dynamic).Code, exc.Message));
-            }
-            catch (Exception exc)
-            {
-                return Result<long>.Failure(new Error(exc.Source, exc.Message));
-            }
+            await _repository.SaveChangesAsync(cancellationToken);
+            return Result<long>.SuccessResult(userToUpdate.Id);
+        }
+        catch (DomainException exc)
+        {
+            return Result<long>.Failure(new Error((exc as dynamic).Code, exc.Message));
+        }
+        catch (AppException exc)
+        {
+            return Result<long>.Failure(new Error((exc as dynamic).Code, exc.Message));
+        }
+        catch (Exception exc)
+        {
+            return Result<long>.Failure(new Error(exc.Source, exc.Message));
         }
     }
 }
