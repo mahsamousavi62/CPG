@@ -1,11 +1,11 @@
-﻿using System.Net;
-using CPG.Application.UseCases.Ipg.Queries;
+﻿using CPG.Application.UseCases.Ipg.Queries;
 using CPG.Application.UseCases.Ipg.ViewModels;
-using CPG.Domain.SharedKernel.ApplicationSettings;
+using CPG.Application.UseCases.Users.Commands;
+using CPG.Domain.SharedKernel;
+using HotChocolate.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
-using HotChocolate.Authorization;
-using CPG.Domain.SharedKernel;
+using System.Net;
 
 namespace CPG.API.Controllers.v1;
 
@@ -13,20 +13,12 @@ namespace CPG.API.Controllers.v1;
 [Route("IPGResult")]
 public class IPGResultController : ApiBaseController
 {
-    private readonly IApplicationSettingsRepository _applicationSettingsRepository;
-
-    public IPGResultController(IApplicationSettingsRepository applicationSettingsRepository)
-    {
-        _applicationSettingsRepository = applicationSettingsRepository;
-    }
-
     [AllowAnonymous]
-    [HttpPost("p/b/{id}")]  
-    public async Task<IActionResult> GetData(string id)
+    [HttpPost("p/b/{id}")]
+    public async Task<IActionResult> GetData(CreateRedirectUrlCommnad command)
     {
-        var appConfig = await _applicationSettingsRepository.GetAllApplicationSettings();
-
-        return Redirect($"{appConfig.IPG_Callback_URL}?trackId={id}");
+        var response = await Mediator.Send(command);
+        return Redirect(response.Data);
     }
 
     [HttpPost("TransactionDetail")]
