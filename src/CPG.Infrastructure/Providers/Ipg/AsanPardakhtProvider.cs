@@ -56,11 +56,9 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
     {
         GetDataFromJsonProvider(request.ProviderData);
         var configViewModel = await ApplicationSettingRepositoy.GetAllApplicationSettings();
-
-        ResultData<PaymentTokenResponse> resultData = new();
         var headers = GetHeaders();
         var trackerId = RandomGenerator.GenerateRandomDigitNumber(16);
-        var callBack = await CreateCallbackUrl((short)request.IpgRedirectionMethodType, request.SiteAddress, trackerId.ToString(), configViewModel.CPG_BackEnd);
+        string callBack = CreateCallbackUrl((short)request.IpgRedirectionMethodType, request.SiteAddress, trackerId.ToString(), configViewModel.CPG_BackEnd);
        
         var response = await httpProvider.PostAsync3<PaymentTokenRequest, AsanPardakhtTokenResponse,
                                                     AsanPardakhtResponseBase, dynamic>(new HttpProviderRequest<dynamic>
@@ -171,20 +169,12 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
         return list;
     }
 
-    private async Task<string> CreateCallbackUrl(short ipgRedirectionType, string siteAddress, string trackerId, string callbackPage)
+    private static string CreateCallbackUrl(short ipgRedirectionType, string siteAddress, string trackerId, string callbackPage) => ipgRedirectionType switch
     {
-
-        switch (ipgRedirectionType)
-        {
-            case 1:
-                return $"{siteAddress}/{callbackPage}?track_id={trackerId}";
-            case 2:
-                return $"{siteAddress}/p/b/{trackerId}?pcu={callbackPage.TrimEnd()}/IPGResult";
-            default:
-                return string.Empty;
-        }
-        ;
-    }
+        1 => $"{siteAddress}/{callbackPage}?track_id={trackerId}",
+        2 => $"{siteAddress}/p/b/{trackerId}?pcu={callbackPage.TrimEnd()}/IPGResult",
+        _ => string.Empty,
+    };
 
     private async Task<TResponse?> PaymentTokenErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest? baseRequest, TResponse? response, TError? error, short statusCode)
       where TResponse : AsanPardakhtTokenResponse
