@@ -9,7 +9,9 @@ using CPG.Domain.Exceptions;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Minio;
 using MediatR;
+using Newtonsoft.Json;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -43,8 +45,15 @@ public class CreateCompanyCommandHandler(IAggregateRepository<Company> companyRe
             if (users == null || users.Count == 0)
                 throw new UsersNotFoundException();
 
-            var company = Company.Create(persianName, englishName, request.Model.NationalCodeMatchingRequied,
-                                        logo, request.Model.MethodTypes, siteAddress, request.Model.IpgRedirectionMethodType);
+            if (request.Model.NationalCodeMatchingRequied is true &&
+                request.Model.MethodTypes.ToList().Contains((short)Enums.CompanyPaymentMethodType.InternetPaymentGateway) &&
+                (string.IsNullOrEmpty(request.Model.Key) || string.IsNullOrEmpty(request.Model.IV) || request.Model.ThirdPartyCode is null))
+            {
+                throw new RequiredShaparakSettingsException();
+            }
+
+            var company = Company.Create(persianName, englishName, request.Model.NationalCodeMatchingRequied, logo, request.Model.MethodTypes,
+                siteAddress, request.Model.IpgRedirectionMethodType, request.Model.Key, request.Model.IV, request.Model.ThirdPartyCode);
 
             await _companyRepository.AddAsync(company, cancellationToken);
             await _companyRepository.SaveChangesAsync(cancellationToken);

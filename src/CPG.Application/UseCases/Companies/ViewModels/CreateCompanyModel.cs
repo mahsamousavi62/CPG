@@ -22,4 +22,7 @@ public class CreateCompanyModel
     public required List<long> Users { get; set; }
     [Required]
     public required IFormFile File { get; set; }
+    public string Key { get; set; }
+    public string Iv { get; set; }
+    public int? ThirdPartyCode { get; set; }
 }

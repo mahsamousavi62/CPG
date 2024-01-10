@@ -546,4 +546,7 @@
   <data name="VerifyInvalidApplication" xml:space="preserve">
     <value>the application is unable to verify this transaction</value>
   </data>
+  <data name="RequiredShaparakSettings" xml:space="preserve">
+    <value>Shaparak settings are required</value>
+  </data>
 </root>

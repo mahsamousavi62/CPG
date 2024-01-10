@@ -1087,6 +1087,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Shaparak settings are required.
+        /// </summary>
+        public static string RequiredShaparakSettings {
+            get {
+                return ResourceManager.GetString("RequiredShaparakSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ResponseApiUrl.
         /// </summary>
         public static string ResponseApiUrl {

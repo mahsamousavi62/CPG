@@ -16,6 +16,7 @@ using MediatR;
 using System;
 using System.Linq;
 using System.Net;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -42,8 +43,6 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
     {
         try
         {
-            var nationalCode = await _authenticationService.GetDataFromClaim<string>("NationalCode") ?? throw new Exception("nationalCode is empty");
-
             var paymentRequest = await _paymentRequestRepository.GetBySpecAsync(new PaymentRequestByCode(request.PaymentToken.PaymentRequestCode));
             if (paymentRequest is null) { throw new PaymentRequestNotFoundByCodeException(); }
             if (!paymentRequest.Company.IsActive) { throw new PaymentTokenInactiveCompanyException(); }
@@ -57,7 +56,15 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
             if (!companyIpg.IPGType.IsActive) { throw new PaymentTokenInactiveIPGTypeException(); }
             if (!companyIpg.Provider.IsActive) { throw new PaymentTokenInactiveProviderException(); }
 
+            if(paymentRequest.Company.NationalCodeMatchingRequied is true &&
+                (string.IsNullOrEmpty(paymentRequest.Company.ShaparakSetting.Iv) || string.IsNullOrEmpty(paymentRequest.Company.ShaparakSetting.Key)))
+            {
+                throw new PaymentTokenNullKeyOrIvException();
+            }
+
             var ipg = _ipgFactory.GetInstance(Enums.ProviderType.AsanPardakht);
+            var mobileNumber = await _authenticationService.GetDataFromClaim<string>(ClaimTypes.MobilePhone);
+
             var (status, result) = await ipg.GetPaymentTokenAsync(
                 new PaymentTokenRequest
                 {
@@ -66,7 +73,11 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                     IpgRedirectionMethodType = (Enums.IpgRedirectionMethodType)paymentRequest.Company.IpgRedirectionMethodType,
                     SiteAddress = paymentRequest.Company.SiteAddress,
                     IpgBaseUrl = companyIpg.Provider.IpgBaseUrl,
-                    NationalCode = nationalCode
+                    NationalCode = paymentRequest.NationalCode,
+                    MobileNumber = mobileNumber,
+                    NationalCodeMatchingRequied = paymentRequest.Company.NationalCodeMatchingRequied,
+                    ShaparakIv = paymentRequest.Company.ShaparakSetting.Iv,
+                    ShaparakKey = paymentRequest.Company.ShaparakSetting.Key,
                 });
 
             if (status == (short)HttpStatusCode.OK)

@@ -1,5 +1,4 @@
-﻿using CPG.Domain.SeedWork;
-using CPG.Infrastructure.Persistence.DbContexts.ReadModels;
+﻿using CPG.Infrastructure.Persistence.DbContexts.ReadModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -20,24 +19,26 @@ namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations.ReadMod
             readModel.Property(x => x.IsActive);
             readModel.Property(x => x.ModificationDate);
             readModel.Property(x => x.CreationDate);
+
             readModel.HasMany(a => a.PaymentMethods)
-            .WithOne(b => b.Company)
-            .HasForeignKey(b => b.CompanyId);
+                .WithOne(b => b.Company)
+                .HasForeignKey(b => b.CompanyId);
 
-            readModel
-        .HasMany(c => c.CompanyDeposits)
-        .WithOne(p => p.Company)
-        .HasForeignKey(p => p.CompanyId);
+            readModel.HasMany(c => c.CompanyDeposits)
+                .WithOne(p => p.Company)
+                .HasForeignKey(p => p.CompanyId);
 
-         readModel
-        .HasMany(c => c.PaymentMethods)
-        .WithOne(p => p.Company)
-        .HasForeignKey(p => p.CompanyId);
+            readModel.HasMany(c => c.PaymentMethods)
+                .WithOne(p => p.Company)
+                .HasForeignKey(p => p.CompanyId);
 
-            readModel
-            .HasMany(c => c.PaymentRequests)
-            .WithOne(p => p.Company)
-            .HasForeignKey(p => p.CompanyId);
+            readModel.HasMany(c => c.PaymentRequests)
+                .WithOne(p => p.Company)
+                .HasForeignKey(p => p.CompanyId);
+
+            readModel.HasOne(c => c.ShaparakSetting)
+                .WithOne(p => p.Company)
+                .HasForeignKey<CompanyShaparakSettingReadModel>(p => p.CompanyId);
         }
     }
 }

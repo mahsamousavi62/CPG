@@ -51,17 +51,24 @@ public class Company : AuditableEntity<long>, IAggregateRoot
 
     public List<CompanyIPG> CompanyIPGs { get; set; }
 
+    public CompanyShaparakSetting ShaparakSetting { get; set; }
+
     public static Company Create(PersianName persianName, EnglishName englishName,
-        bool nationalCodeMatchingRequied, Logo logo, short[] details, Url siteAddress, short IpgRedirectionMethodType)
+        bool nationalCodeMatchingRequied, Logo logo, short[] details, Url siteAddress,
+        short IpgRedirectionMethodType, string key, string iv, int? thirdPartyCode)
     {
-        var comapny = new Company(persianName, englishName, nationalCodeMatchingRequied, logo, siteAddress, IpgRedirectionMethodType);
+        var company = new Company(persianName, englishName, nationalCodeMatchingRequied, logo, siteAddress, IpgRedirectionMethodType);
 
-        var companyPaymentMethods = CompanyPaymentMethod.Create(details);
+        var companyPaymentMethods = CompanyPaymentMethod.Create(details);        
+        company.PaymentMethods.AddRange(companyPaymentMethods);
 
-        comapny.PaymentMethods.AddRange(companyPaymentMethods);
+        if (!string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(iv) && thirdPartyCode != null)
+        {
+            var companyShaparakSetting = CompanyShaparakSetting.Create(key, iv, thirdPartyCode);
+            company.ShaparakSetting = companyShaparakSetting;
+        }
 
-        comapny.AddDomainEvent(new NewCompanyCreatedEvent(comapny.Id, DateTime.UtcNow));
-
-        return comapny;
+        company.AddDomainEvent(new NewCompanyCreatedEvent(company.Id, DateTime.UtcNow));
+        return company;
     }
 }
