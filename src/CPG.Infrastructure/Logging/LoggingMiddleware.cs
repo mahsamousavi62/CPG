@@ -32,11 +32,11 @@ public class LoggingMiddleware
     {
         ArgumentNullException.ThrowIfNull(httpContext);
 
-        if (!httpContext.Request.Path.Value?.StartsWith("/api", StringComparison.OrdinalIgnoreCase) ?? false)
-        {
-            await next(httpContext);
-            return;
-        }
+        //if (!httpContext.Request.Path.Value?.StartsWith("/api", StringComparison.OrdinalIgnoreCase) ?? false)
+        //{
+        //    await next(httpContext);
+        //    return;
+        //}
 
         httpContext.Request.EnableBuffering();
         RequestResponseLogModel log;
