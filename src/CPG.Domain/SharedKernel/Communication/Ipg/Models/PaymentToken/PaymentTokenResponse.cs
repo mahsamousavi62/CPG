@@ -8,6 +8,9 @@ public class Params
 {
     [JsonPropertyName("RefID")]
     public string RefID { get; set; }
+
+    [JsonPropertyName("mobileap")]
+    public string MobileAp { get; set; }
 }
 
 public class PaymentTokenResponse

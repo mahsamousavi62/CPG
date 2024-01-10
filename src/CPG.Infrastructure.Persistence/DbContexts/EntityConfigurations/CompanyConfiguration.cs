@@ -1,8 +1,6 @@
 ﻿using CPG.Domain.AggregateModels.CompanyAggregate;
-using CPG.Domain.AggregateModels.UserAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.Reflection.Emit;
 
 namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations
 {
@@ -22,26 +20,25 @@ namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations
             entity.Property(x => x.SiteAddress).HasColumnName("SiteAddress").HasColumnType("varchar(1000)").IsRequired();
             entity.Property(x => x.IpgRedirectionMethodType).HasColumnName("IpgRedirectionMethodType").HasColumnType("smallint").IsRequired();
 
+            entity.HasMany(c => c.PaymentMethods)
+                .WithOne(p => p.Company)
+                .HasForeignKey(p => p.CompanyId);
 
-            entity
-         .HasMany(c => c.PaymentMethods)
-         .WithOne(p => p.Company)
-         .HasForeignKey(p => p.CompanyId);
+            entity.HasMany(c => c.Users)
+                .WithOne(p => p.Company)
+                .HasForeignKey(p => p.CompanyId);
 
-            entity
-           .HasMany(c => c.Users)
-           .WithOne(p => p.Company)
-           .HasForeignKey(p => p.CompanyId);
+            entity.HasMany(c => c.CompanyDeposits)
+                .WithOne(p => p.Company)
+                .HasForeignKey(p => p.CompanyId);
 
-            entity
-             .HasMany(c => c.CompanyDeposits)
-             .WithOne(p => p.Company)
-             .HasForeignKey(p => p.CompanyId);
+            entity.HasMany(x => x.PaymentRequests)
+                .WithOne(x => x.Company)
+                .HasForeignKey(x => x.CompanyId);
 
-            entity
-            .HasMany(x => x.PaymentRequests)
-            .WithOne(x => x.Company)
-            .HasForeignKey(x => x.CompanyId);
+            entity.HasOne(x => x.ShaparakSetting)
+                .WithOne(x => x.Company)
+                .HasForeignKey<CompanyShaparakSetting>(x => x.CompanyId);
         }
     }
 }

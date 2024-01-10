@@ -30,9 +30,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
     private byte transactionResultFailCounter = 0;
     private string userName;
     private string password;
-    private int merchantConfigurationId;
-    private string key;
-    private string iv;
+    private int merchantConfigurationId; 
 
     private void GetDataFromJsonProvider(string providerData)
     {
@@ -42,9 +40,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
             jsonObjectProviderData = JObject.Parse(providerData);
             merchantConfigurationId = jsonObjectProviderData["Merchant_Configuration_Id"] is not null ? (int)jsonObjectProviderData["Merchant_Configuration_Id"] : throw new Exception("Invalid merchantConfigurationId");
             userName = jsonObjectProviderData["User_Name"] is not null ? (string)jsonObjectProviderData["User_Name"] : throw new Exception("Invalid User_Name");
-            password = jsonObjectProviderData["Password"] is not null ? (string)jsonObjectProviderData["Password"] : throw new Exception("Invalid Password");
-            key = jsonObjectProviderData["Shaparak_Tabesh_Key"] is not null ? (string)jsonObjectProviderData["Shaparak_Tabesh_Key"] : throw new Exception("Invalid Shaparak_Tabesh_Key");
-            iv = jsonObjectProviderData["Shaparak_Tabesh_IV"] is not null ? (string)jsonObjectProviderData["Shaparak_Tabesh_IV"] : throw new Exception("Invalid Shaparak_Tabesh_IV");
+            password = jsonObjectProviderData["Password"] is not null ? (string)jsonObjectProviderData["Password"] : throw new Exception("Invalid Password");            
         }
         catch
         {
@@ -71,7 +67,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
                                                             serviceTypeId = 1,
                                                             paymentId = "0",
                                                             callbackURL = callBack,
-                                                            additionalData = CreateAdditionalData(request.NationalCode),
+                                                            additionalData = request.NationalCodeMatchingRequied ? CreateAdditionalData(request.NationalCode , request.ShaparakKey, request.ShaparakIv) : string.Empty,
                                                             merchantConfigurationId = merchantConfigurationId,
                                                             amountInRials = (long)request.PaymentRequestAmount,
                                                             localInvoiceId = trackerId.ToString(),
@@ -95,8 +91,9 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
             {
                 JsonStr = new()
                 {
-                    Params = new Params { RefID = response.Token },
+                    Params = new Params { RefID = response.Token, MobileAp = request.MobileNumber },
                     Url = request.IpgBaseUrl,
+                    
                 }
             }
         };
@@ -150,9 +147,8 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
         return response;
     }
 
-    private string CreateAdditionalData(string nationalCode)
-    {
-        
+    private string CreateAdditionalData(string nationalCode, string key, string iv)
+    {        
         string hexString = Guid.NewGuid().ToString("N");
         string randomString = hexString.Substring(0, 7);
         var original = $"0|{nationalCode}|{randomString}";

@@ -9,6 +9,7 @@ public class PaymentRequestByCode : Specification<PaymentRequest>, ISingleResult
     {
         Query.Where(t => t.PaymentCode == code)
             .Include(p => p.Company)
+            .ThenInclude(c => c.ShaparakSetting)
             .Include(p => p.Application);
     }
 }

@@ -21,7 +21,7 @@ public class CompanyController : ApiBaseController
     [HttpGet("{id:long}")]
     [ProducesResponseType(typeof(Result<CompanyViewModel>), (int)HttpStatusCode.OK)]
     public async Task<Result<CompanyViewModel>> GetCompany(long id)
-    { 
+    {
         return await Mediator.Send(new GetCompanyQuery(id));
     }
 
@@ -35,13 +35,12 @@ public class CompanyController : ApiBaseController
     public async Task<IActionResult> GetIpgRedirectionMethodType(Enums.IpgRedirectionMethodType type)
        => Ok(await Mediator.Send(new GetIpgRedirectionMethodTypeQuery()));
 
-
     [HttpPost]
     public async Task<Result<long>> CreateCompany([FromForm] CreateCompanyModel model)
     {
-        CreateCompanyViewModel createCompanyViewModel = new(
-             model.PersianName, model.EnglishName, model.NationalCodeMatchingRequied,
-             new FormFileProxy(model.File), model.MethodTypes, model.Users, model.SiteAddress, model.IpgRedirectionMethodType);
+        CreateCompanyViewModel createCompanyViewModel = new(model.PersianName, model.EnglishName,
+            model.NationalCodeMatchingRequied, new FormFileProxy(model.File), model.MethodTypes, model.Users,
+            model.SiteAddress, model.IpgRedirectionMethodType, model.Key, model.Iv, model.ThirdPartyCode);
 
         return await Mediator.Send(new CreateCompanyCommand(createCompanyViewModel));
     }

@@ -147,11 +147,23 @@
   <data name="Empty_PersianName" xml:space="preserve">
     <value>نام فارسی را وارد کنید</value>
   </data>
+  <data name="InvalidIvCharachter" xml:space="preserve">
+    <value>تعداد کاراکتر بردار اولیه شاپرک مجاز نمی باشد</value>
+  </data>
+  <data name="InvalidIvFormat" xml:space="preserve">
+    <value>فرمت بردار اولیه شاپرک صحیح نمی باشد</value>
+  </data>
+  <data name="InvalidKeyCharachter" xml:space="preserve">
+    <value>تعداد کاراکتر کد شخص ثالث شاپرک مجاز نمی باشد</value>
+  </data>
+  <data name="InvalidKeyFormat" xml:space="preserve">
+    <value>فرمت کد شخص ثالث شاپرک صحیح نمی باشد</value>
+  </data>
   <data name="Invalid_EnglishName" xml:space="preserve">
     <value>نام انگلیسی مجاز نمی باشد</value>
   </data>
   <data name="Invalid_EnglishNameCharachterLimit" xml:space="preserve">
-    <value>تعداد کاراکتر نام  انگلیسی مجاز نمی باشد</value>
+    <value>تعداد کاراکتر نام انگلیسی مجاز نمی باشد</value>
   </data>
   <data name="Invalid_logo" xml:space="preserve">
     <value>لوگو مجاز نمی باشد</value>
@@ -172,12 +184,9 @@
     <value>نام فارسی مجاز نمی باشد</value>
   </data>
   <data name="Invalid_PersianNameCharachterLimit" xml:space="preserve">
-    <value>تعداد کاراکتر نام  فارسی مجاز نمی باشد</value>
+    <value>تعداد کاراکتر نام فارسی مجاز نمی باشد</value>
   </data>
   <data name="MaximalFileSize" xml:space="preserve">
     <value>سایز لوگو مجاز نمی باشد</value>
-  </data>
-  <data name="String1" xml:space="preserve">
-    <value />
   </data>
 </root>
