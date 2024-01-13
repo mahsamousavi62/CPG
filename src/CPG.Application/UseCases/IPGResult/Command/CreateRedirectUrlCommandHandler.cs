@@ -9,17 +9,17 @@ using System.Threading.Tasks;
 
 namespace CPG.Application.UseCases.Users.Commands;
 
-public class CreateRedirectUrlCommandHandler(IApplicationSettingsRepository applicationSettingsRepository) : IRequestHandler<CreateRedirectUrlCommnad, Result<string>>
+public class CreateRedirectUrlCommandHandler(IApplicationSettingsRepository applicationSettingsRepository) : IRequestHandler<CreateRedirectUrlCommand, Result<string>>
 {
     private readonly IApplicationSettingsRepository _applicationSettingsRepository = applicationSettingsRepository;
 
-    public async Task<Result<string>> Handle(CreateRedirectUrlCommnad command, CancellationToken cancellationToken)
+    public async Task<Result<string>> Handle(CreateRedirectUrlCommand command, CancellationToken cancellationToken)
     {
         try
         {
             var appConfig = await _applicationSettingsRepository.GetAllApplicationSettings();
 
-            return Result<string>.SuccessResult($"{appConfig.IPG_Callback_URL}?trackId={command.id}");
+            return Result<string>.SuccessResult($"{appConfig.IPG_Callback_URL}?trackId={command.Id}");
         }
         catch (DomainException exc)
         {
