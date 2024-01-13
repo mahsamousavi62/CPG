@@ -15,8 +15,10 @@ public class IPGResultController : ApiBaseController
 {
     [AllowAnonymous]
     [HttpPost("p/b/{id}")]
-    public async Task<IActionResult> GetData(CreateRedirectUrlCommnad command)
+    public async Task<IActionResult> GetData(string id, [FromForm]CreateRedirectUrlCommand command)
     {
+        command = command with { Id = id };
+
         var response = await Mediator.Send(command);
         return Redirect(response.Data);
     }
