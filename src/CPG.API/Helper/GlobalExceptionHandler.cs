@@ -1,4 +1,5 @@
-﻿using CPG.Domain.SharedKernel;
+﻿using CPG.Domain.Exceptions;
+using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Logging;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
@@ -14,13 +15,20 @@ internal sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> log
         Exception exception,
         CancellationToken cancellationToken)
     {
+        var code = string.Empty;
+
+        if((exception as DomainException) != null)
+        {
+            code = ((DomainException)exception).Code;
+        }
+
         RequestResponseLogModel log = new ()
         {
             AuditType = Enums.AuditType.Develop.ToString(),
             StackTrace = exception.StackTrace,
             ResponseBody = exception.Message,
             IsSuccess = false,
-            ErrorCode = (exception as dynamic)?.Code
+            ErrorCode = code,
         };
         _logger.LogError(exception, "Exception occurred: {log}", log);
 

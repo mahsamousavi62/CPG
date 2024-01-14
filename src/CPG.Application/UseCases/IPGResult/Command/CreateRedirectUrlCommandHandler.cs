@@ -51,11 +51,11 @@ public class CreateRedirectUrlCommandHandler(IApplicationSettingsRepository appl
         }
         catch (DomainException exc)
         {
-            return Result<string>.Failure(new Error((exc as dynamic).Code, exc.Message));
+            return Result<string>.Failure(new Error(exc.Code, exc.Message));
         }
         catch (AppException exc)
         {
-            return Result<string>.Failure(new Error((exc as dynamic).Code, exc.Message));
+            return Result<string>.Failure(new Error(exc.Code, exc.Message));
         }
         catch (Exception exc)
         {

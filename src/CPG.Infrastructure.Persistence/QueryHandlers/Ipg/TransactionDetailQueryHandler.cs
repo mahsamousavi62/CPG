@@ -62,11 +62,11 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
         }
         catch (DomainException exc)
         {
-            return Result<TransactionDetailResponseViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
+            return Result<TransactionDetailResponseViewModel>.Failure(new Error(exc.Code, exc.Message));
         }
         catch (AppException exc)
         {
-            return Result<TransactionDetailResponseViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
+            return Result<TransactionDetailResponseViewModel>.Failure(new Error(exc.Code, exc.Message));
         }
         catch (Exception)
         {
