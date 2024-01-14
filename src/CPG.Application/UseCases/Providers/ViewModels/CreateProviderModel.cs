@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using CPG.Domain.SharedKernel;
+using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 using static CPG.Domain.SharedKernel.Enums;
 
@@ -22,5 +23,5 @@ public class CreateProviderModel
     public required IFormFile File { get; set; }
 
     [Required]
-    public byte[] MethodTypes { get; set; }
+    public Enums.PaymentMethodType[] MethodTypes { get; set; }
 }

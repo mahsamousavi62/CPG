@@ -7,6 +7,7 @@ using CPG.Domain.SharedKernel.Minio;
 using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,7 +22,7 @@ public class GetProviderQueryHandler(ReadDbContext context, IMinioProvider minio
     {
         Guard.Against.NegativeOrZero(request.ProviderId, nameof(request.ProviderId));
 
-        var provider = await _context.ProviderReadModels.FirstOrDefaultAsync(t => t.Id == request.ProviderId);
+        var provider = await _context.ProviderReadModels.Include(p => p.PaymentMethods).FirstOrDefaultAsync(t => t.Id == request.ProviderId);
 
         if (provider == null)
             throw new ProviderNotFoundException(request.ProviderId);
@@ -34,6 +35,7 @@ public class GetProviderQueryHandler(ReadDbContext context, IMinioProvider minio
             Logo = await _minioProvider.PresignedGetObject(provider.Logo),
             ProviderData = provider.ProviderData,
             ProviderType = provider.ProviderType,
+            PaymentMethods= provider.PaymentMethods.Select(p => p.MethodType).ToList()
         };
 
         return Result<ProviderViewModel>.SuccessResult(providerModel);

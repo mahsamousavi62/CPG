@@ -38,7 +38,7 @@ public class Provider : AuditableEntity<long>, IAggregateRoot
     public string ProviderData => _providerData;
     public List<ProviderPaymentMethod> PaymentMethods { get; set; } = [];
     public static Provider Create(PersianName persianName, EnglishName englishName, ProviderType providerType, 
-        Logo logo, string providerData, byte[] details)
+        Logo logo, string providerData, Enums.PaymentMethodType[] details)
     {
         var provider = new Provider(persianName, englishName, providerType, logo, providerData);
         provider.IsActive = true;

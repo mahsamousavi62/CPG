@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using CPG.Domain.SharedKernel;
 
 namespace CPG.Application.UseCases.Companies.ViewModels;
 
@@ -20,7 +21,7 @@ public class CompanyViewModel
 
     public string Logo { get; set; }
 
-    public Dictionary<short, string> PaymentMethods { get; set; }
+    public ICollection<Enums.PaymentMethodType> PaymentMethods { get; set; }
 
     public bool IsActive { get; set; }
 
