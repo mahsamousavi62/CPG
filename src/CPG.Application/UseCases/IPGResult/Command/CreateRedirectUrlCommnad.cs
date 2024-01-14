@@ -1,4 +1,4 @@
-﻿using CPG.Application.UseCases.IPGResult;
+﻿using CPG.Application.UseCases.IPGResult.ViewModels;
 using CPG.Domain.SharedKernel;
 using MediatR;
 
