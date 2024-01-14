@@ -225,10 +225,10 @@
   <data name="MethodTypes" xml:space="preserve">
     <value>MethodTypes</value>
   </data>
-  <data name="NationalCodeMatchingRequied" xml:space="preserve">
+  <data name="NationalCodeMatchingRequired" xml:space="preserve">
     <value>NationalCodeMatchingRequied</value>
   </data>
-  <data name="NationalCodeMatchingRequiedWithCardNumber" xml:space="preserve">
+  <data name="NationalCodeMatchingRequiredWithCardNumber" xml:space="preserve">
     <value>NationalCodeMatchingRequiedWithCardNumber</value>
   </data>
   <data name="PersianName" xml:space="preserve">
