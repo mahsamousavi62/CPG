@@ -77,8 +77,8 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                  ipgBaseUrl= jsonObjectProviderData["IPG_Base_URL"] is not null 
                     ? (string)jsonObjectProviderData["IPG_Base_URL"] : throw new Exception("Invalid IPG_Base_URL");
 
-                IpgVerificationTimeLimit = jsonObjectProviderData["IPG_Verification_TimeLimit"] is not null
-                               ? (short)jsonObjectProviderData["IPG_Verification_TimeLimit"] : throw new Exception("IPG_Verification_TimeLimit");
+                IpgVerificationTimeLimit = jsonObjectProviderData["IPG_Verification_Time_Limit"] is not null
+                               ? (short)jsonObjectProviderData["IPG_Verification_Time_Limit"] : throw new Exception("IPG_Verification_Time_Limit");
 
             }
             catch

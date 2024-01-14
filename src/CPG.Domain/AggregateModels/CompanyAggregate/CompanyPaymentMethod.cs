@@ -9,33 +9,31 @@ namespace CPG.Domain.AggregateModels.CompanyAggregate;
 
 public class CompanyPaymentMethod : AuditableEntity<long>
 {
-    public byte MethodType { get; set; }
+    public Enums.PaymentMethodType MethodType { get; set; }
     public long CompanyId { get; set; }
     public Company Company { get; set; }
 
-    public CompanyPaymentMethod(byte methodType, long companyId)
+    public CompanyPaymentMethod(Enums.PaymentMethodType methodType, long companyId)
     {
         MethodType = methodType;
         CompanyId = companyId;
         IsActive = true;
     }
 
-    public CompanyPaymentMethod(byte methodType)
+    public CompanyPaymentMethod(Enums.PaymentMethodType methodType)
     {
         MethodType = methodType;
+        IsActive = true;
     }
 
-    public static List<CompanyPaymentMethod> Create(byte[] methodTypes)
+    public static List<CompanyPaymentMethod> Create(Enums.PaymentMethodType[] methodTypes)
     {
         if (methodTypes is null || methodTypes.Length == 0)
             throw new ArgumentNullException(nameof(methodTypes));
 
         if (methodTypes.Select(x => x).Distinct().Count() != methodTypes.Length)
             throw new DuplicatePaymentMethodTypeException(nameof(methodTypes));
-
-        if (!methodTypes.All(methodType => Enum.IsDefined(typeof(Enums.PaymentMethodType), methodType)))
-            throw new InvalidPaymentMethodType(nameof(methodTypes));
-
+               
         var companyPaymentMethods = methodTypes.Select(i => new CompanyPaymentMethod(i)).ToList();
         return companyPaymentMethods;
     }

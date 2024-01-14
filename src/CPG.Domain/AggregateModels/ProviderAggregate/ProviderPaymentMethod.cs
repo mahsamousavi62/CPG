@@ -11,32 +11,30 @@ namespace CPG.Domain.AggregateModels.ProviderAggregate;
 
 public class ProviderPaymentMethod : AuditableEntity<long>
 {
-    public byte MethodType { get; set; }
+    public Enums.PaymentMethodType MethodType { get; set; }
     public long ProviderId { get; set; }
     public Provider Provider { get; set; }
 
-    public ProviderPaymentMethod(byte methodType, long providerId)
+    public ProviderPaymentMethod(Enums.PaymentMethodType methodType, long providerId)
     {
         MethodType = methodType;
         ProviderId = providerId;
         IsActive = true;
     }
 
-    public ProviderPaymentMethod(byte methodType)
+    public ProviderPaymentMethod(Enums.PaymentMethodType methodType)
     {
         MethodType = methodType;
+        IsActive= true;
     }
 
-    public static List<ProviderPaymentMethod> Create(byte[] methodTypes)
+    public static List<ProviderPaymentMethod> Create(Enums.PaymentMethodType[] methodTypes)
     {
         if (methodTypes is null || methodTypes.Length == 0)
             throw new ArgumentNullException(nameof(methodTypes));
 
         if (methodTypes.Select(x => x).Distinct().Count() != methodTypes.Length)
             throw new DuplicatePaymentMethodTypeException(nameof(methodTypes));
-
-        if (!methodTypes.All(methodType => Enum.IsDefined(typeof(Enums.PaymentMethodType), methodType)))
-            throw new InvalidPaymentMethodType(nameof(methodTypes));
 
         var providerPaymentMethods = methodTypes.Select(i => new ProviderPaymentMethod(i)).ToList();
         return providerPaymentMethods;
