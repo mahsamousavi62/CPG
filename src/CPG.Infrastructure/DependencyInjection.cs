@@ -143,9 +143,9 @@ public static class DependencyInjection
             .UseRouting()
             .UseTokenAuthentication()
             .UseTokenAuthorization()
-            .UseMiddleware<ErrorHandlingMiddleware>()
-            .UseMiddleware<LoggingMiddleware>()
             .UseAuthenticationMiddleware()
+            .UseMiddleware<LoggingMiddleware>()
+            .UseMiddleware<ErrorHandlingMiddleware>()
             .UseGraphQLQueries(configuration.GetSection("Infrastructure:GraphQL"), env)
             .UseEndpoints(endpoints =>
             {
