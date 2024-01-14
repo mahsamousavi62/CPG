@@ -4,6 +4,7 @@ using CPG.Infrastructure.Persistence.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CPG.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(WriteDbContext))]
-    partial class WriteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240114100312_updateProvider")]
+    partial class updateProvider
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -696,8 +699,6 @@ namespace CPG.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyIPGId");
-
                     b.ToTable("IPGTransaction", (string)null);
                 });
 
@@ -1174,17 +1175,6 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.Navigation("Provider");
                 });
 
-            modelBuilder.Entity("CPG.Domain.AggregateModels.TransactionAggregate.IPGTransaction", b =>
-                {
-                    b.HasOne("CPG.Domain.AggregateModels.CompanyIPGAggregate.CompanyIPG", "CompanyIPG")
-                        .WithMany("IPGTransactions")
-                        .HasForeignKey("CompanyIPGId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CompanyIPG");
-                });
-
             modelBuilder.Entity("CPG.Domain.AggregateModels.TransactionAggregate.Transaction", b =>
                 {
                     b.HasOne("CPG.Application.UseCases.CompanyDeposits.CompanyDeposit", "DestinationDeposit")
@@ -1290,8 +1280,6 @@ namespace CPG.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("CPG.Domain.AggregateModels.CompanyIPGAggregate.CompanyIPG", b =>
                 {
                     b.Navigation("IPGDeposits");
-
-                    b.Navigation("IPGTransactions");
                 });
 
             modelBuilder.Entity("CPG.Domain.AggregateModels.ProviderAggregate.Provider", b =>

@@ -11,8 +11,8 @@ namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations
             entity.ToTable("CompanyPaymentMethods");
             entity.HasKey(x => x.Id);
             entity.Property(x => x.Id).HasColumnName("Id").UseIdentityColumn();
-            entity.Property(x => x.CompanyId).IsRequired();
-            entity.Property(x => x.MethodType).IsRequired();
+            entity.Property(x => x.CompanyId).HasColumnName("CompanyId").IsRequired();
+            entity.Property(x => x.MethodType).HasColumnType("tinyint").IsRequired();
         }
     }
 }

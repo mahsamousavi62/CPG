@@ -2,6 +2,7 @@
 using CPG.Application.UseCases.CompanyIPGs.Exceptions;
 using CPG.Application.UseCases.Exceptions;
 using CPG.Application.UseCases.Ipg.Commands;
+using CPG.Application.UseCases.Ipg.Exception;
 using CPG.Application.UseCases.Ipg.ViewModels;
 using CPG.Application.UseCases.PaymentRequests.Exceptions;
 using CPG.Domain.AggregateModels.CompanyDepositAggregate.Specifications;
@@ -14,6 +15,7 @@ using CPG.Domain.SharedKernel.Communication.Ipg;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentTicket;
 using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Dynamic;
 using System.Linq;
@@ -59,13 +61,31 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
             if (!companyIpg.Provider.IsActive) { throw new PaymentTokenInactiveProviderException(); }
 
             if (paymentRequest.Company.NationalCodeMatchingRequied is true &&
-                (string.IsNullOrEmpty(paymentRequest.Company.ShaparakSetting.Iv) || string.IsNullOrEmpty(paymentRequest.Company.ShaparakSetting.Key)))
+                (string.IsNullOrEmpty(paymentRequest.Company.ShaparakSetting?.Iv) || string.IsNullOrEmpty(paymentRequest.Company.ShaparakSetting?.Key)))
             {
                 throw new PaymentTokenNullKeyOrIvException();
             }
 
             var ipg = _ipgFactory.GetInstance(companyIpg.Provider.ProviderType);
             var mobileNumber = await _authenticationService.GetDataFromClaim<string>(ClaimTypes.MobilePhone);
+
+            string ipgBaseUrl;
+            short IpgVerificationTimeLimit;
+            try
+            {
+                dynamic jsonObjectProviderData = JObject.Parse(companyIpg.Provider.ProviderData);
+                 ipgBaseUrl= jsonObjectProviderData["IPG_Base_URL"] is not null 
+                    ? (string)jsonObjectProviderData["IPG_Base_URL"] : throw new Exception("Invalid IPG_Base_URL");
+
+                IpgVerificationTimeLimit = jsonObjectProviderData["IPG_Verification_TimeLimit"] is not null
+                               ? (short)jsonObjectProviderData["IPG_Verification_TimeLimit"] : throw new Exception("IPG_Verification_TimeLimit");
+
+            }
+            catch
+            {
+                throw new ParseCompanyIpgProviderDataException(companyIpg.Provider.ProviderData);
+            }
+
 
             var result = await ipg.GetPaymentTokenAsync(
                 new PaymentTokenRequest
@@ -74,7 +94,7 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                     PaymentRequestAmount = paymentRequest.Amount,
                     IpgRedirectionMethodType = (Enums.IpgRedirectionMethodType)paymentRequest.Company.IpgRedirectionMethodType,
                     SiteAddress = paymentRequest.Company.SiteAddress,
-                    IpgBaseUrl = companyIpg.Provider.IpgBaseUrl,
+                    IpgBaseUrl = ipgBaseUrl,
                     NationalCode = paymentRequest.NationalCode,
                     MobileNumber = mobileNumber,
                     NationalCodeMatchingRequied = paymentRequest.Company.NationalCodeMatchingRequied,
@@ -105,6 +125,7 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
 
                 Transaction transaction = Transaction.Create(new CreateTransactionModel
                 {
+                    IpgVerificationTimeLimit= IpgVerificationTimeLimit,
                     CompanyIPG = companyIpg,
                     DestinationDepositId = destinationDepositId,
                     PaymentRequest = paymentRequest,
