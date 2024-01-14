@@ -17,9 +17,12 @@ public class CompanyIPGConfiguration : IEntityTypeConfiguration<CompanyIPG>
         entity.Property(x => x.IPGTypeId).IsRequired();
         entity.Property(x => x.ProviderData).HasColumnType("varchar(max)").IsRequired();
 
-        entity
-             .HasMany(c => c.IPGDeposits)
-             .WithOne(p => p.CompanyIPG)
-             .HasForeignKey(p => p.CompanyIPGId);
+        entity.HasMany(c => c.IPGDeposits)
+            .WithOne(p => p.CompanyIPG)
+            .HasForeignKey(p => p.CompanyIPGId);
+
+        //entity.HasMany(c => c.IPGTransactions)
+        //    .WithOne(i => i.CompanyIPG)
+        //    .HasForeignKey(i => i.CompanyIPG);
     }
 }
