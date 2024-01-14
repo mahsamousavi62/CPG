@@ -1,8 +1,10 @@
-﻿using CPG.Domain.AggregateModels.ProviderAggregate.Events;
+﻿using CPG.Domain.AggregateModels.CompanyAggregate;
+using CPG.Domain.AggregateModels.ProviderAggregate.Events;
 using CPG.Domain.AggregateModels.ProviderAggregate.Exceptions;
 using CPG.Domain.SeedWork;
 using CPG.Domain.SharedKernel;
 using System;
+using System.Collections.Generic;
 using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Domain.AggregateModels.ProviderAggregate;
@@ -13,15 +15,13 @@ public class Provider : AuditableEntity<long>, IAggregateRoot
     {
 
     }
-    public Provider(PersianName persianName, EnglishName englishName, ProviderType providerType, Logo logo, string providerData, short verificationTimeLimit, Url ipgBaseUrl)
+    public Provider(PersianName persianName, EnglishName englishName, ProviderType providerType, Logo logo, string providerData)
     {
         _persianName = persianName.Value;
         _englishName = englishName.Value;
         _providerType = providerType;
         _logo = logo.Value;
         _providerData = providerData;
-        _ipgVerificationTimeLimit = verificationTimeLimit;
-        _ipgBaseUrl = ipgBaseUrl.Value;
     }
 
     private string _persianName;
@@ -36,25 +36,24 @@ public class Provider : AuditableEntity<long>, IAggregateRoot
     public ProviderType ProviderType => _providerType;
     public string Logo => _logo;
     public string ProviderData => _providerData;
-    public short IpgVerificationTimeLimit => _ipgVerificationTimeLimit;
-    public string IpgBaseUrl => _ipgBaseUrl;
-
-    public static Provider Create(PersianName persianName, EnglishName englishName, ProviderType providerType, Logo logo, string providerData, short verificationTimeLimit, Url ipgBaseUrl)
+    public List<ProviderPaymentMethod> PaymentMethods { get; set; } = [];
+    public static Provider Create(PersianName persianName, EnglishName englishName, ProviderType providerType, 
+        Logo logo, string providerData, byte[] details)
     {
-        var provider = new Provider(persianName, englishName, providerType, logo, providerData, verificationTimeLimit, ipgBaseUrl);
+        var provider = new Provider(persianName, englishName, providerType, logo, providerData);
         provider.IsActive = true;
+        var paymentMethods = ProviderPaymentMethod.Create(details);
+        provider.PaymentMethods.AddRange(paymentMethods);
         return provider;
     }
 
-    public void Update(string persianName, string englishName, ProviderType providerType, string providerData, Logo logo, short verificationTimeLimit, Url ipgBaseUrl)
+    public void Update(string persianName, string englishName, ProviderType providerType, string providerData, Logo logo)
     {
         _persianName = persianName;
         _englishName = englishName;
         _providerType = providerType;
         _providerData = providerData;
         _logo = logo.Value;
-        _ipgVerificationTimeLimit = verificationTimeLimit;
-        _ipgBaseUrl = ipgBaseUrl;
     }
 
     public void SetAsActive(long userId)

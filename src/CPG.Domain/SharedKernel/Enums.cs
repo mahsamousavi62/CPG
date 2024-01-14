@@ -32,7 +32,7 @@ public class Enums
         NotValid
     }
 
-    public enum CompanyPaymentMethodType : short
+    public enum PaymentMethodType : byte
     {
         InternetPaymentGateway = 1,
         DirectDebit = 2,

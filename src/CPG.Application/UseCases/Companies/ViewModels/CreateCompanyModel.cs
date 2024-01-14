@@ -22,8 +22,7 @@ public class CreateCompanyModel
     public short IpgRedirectionMethodType { get; set; }
 
     [Required]
-    public required short[] MethodTypes { get; set; }
-
+    public required byte[] MethodTypes { get; set; }
     [Required]
     public required List<long> Users { get; set; }
 
