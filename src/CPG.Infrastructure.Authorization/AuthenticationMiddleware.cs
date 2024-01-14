@@ -36,7 +36,7 @@ public class AuthenticationMiddleware(IAuthenticationSchemeProvider schemes, Req
         var newIdentity = (ClaimsIdentity)clone.Identity;
 
         var user = await mediator.Send(new GetUserAuthenticateQuery());
-        if (user == null)
+        if (user is null)
             return principal;
 
         newIdentity.AddClaim(new Claim(ClaimTypes.Name, user?.FirstName, ClaimValueTypes.String));

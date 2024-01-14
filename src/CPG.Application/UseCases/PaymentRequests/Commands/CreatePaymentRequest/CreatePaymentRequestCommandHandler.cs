@@ -79,11 +79,11 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
         }
         catch (DomainException exc)
         {
-            return Result<PaymentRequestResponseViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
+            return Result<PaymentRequestResponseViewModel>.Failure(new Error(exc.Code, exc.Message));
         }
         catch (AppException exc)
         {
-            return Result<PaymentRequestResponseViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
+            return Result<PaymentRequestResponseViewModel>.Failure(new Error(exc.Code, exc.Message));
         }
         catch (Exception)
         {
