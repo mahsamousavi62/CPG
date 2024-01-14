@@ -46,7 +46,7 @@ public class CreateCompanyCommandHandler(IAggregateRepository<Company> companyRe
                 throw new UsersNotFoundException();
 
             if (request.Model.NationalCodeMatchingRequied is true &&
-                request.Model.MethodTypes.ToList().Contains((byte)Enums.PaymentMethodType.InternetPaymentGateway) &&
+                request.Model.MethodTypes.ToList().Contains(Enums.PaymentMethodType.InternetPaymentGateway) &&
                 (string.IsNullOrEmpty(request.Model.Key) || string.IsNullOrEmpty(request.Model.IV) || request.Model.ThirdPartyCode is null))
             {
                 throw new RequiredShaparakSettingsException();
