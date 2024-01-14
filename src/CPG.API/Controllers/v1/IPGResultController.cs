@@ -1,5 +1,6 @@
 ﻿using CPG.Application.UseCases.Ipg.Queries;
 using CPG.Application.UseCases.Ipg.ViewModels;
+using CPG.Application.UseCases.IPGResult.ViewModels;
 using CPG.Application.UseCases.Users.Commands;
 using CPG.Domain.SharedKernel;
 using HotChocolate.Authorization;
@@ -15,30 +16,32 @@ public class IPGResultController : ApiBaseController
 {
     [AllowAnonymous]
     [HttpPost("p/b/{id}")]
-    public async Task<IActionResult> GetData(string id, [FromForm]CreateRedirectUrlCommand command)
+    public async Task<IActionResult> GetData([FromQuery] RedirectViewModel model, [FromRoute] string id)
     {
-        command = command with { Id = id };
-
-        var response = await Mediator.Send(command);
+        var response = await Mediator.Send(new CreateRedirectUrlCommnad(model, id));
         return Redirect(response.Data);
     }
 
     [HttpPost("TransactionDetail")]
-    [ProducesResponseType(typeof(TransactionDetailResponseViewModel), 200)]
-    public async Task<IActionResult> GetTransactionDetail([Required] TransactionDetailRequestViewModel model)
-        => Ok(await Mediator.Send(new TransactionDetailQuery(model)));
+    [ProducesResponseType(typeof(Result<TransactionDetailResponseViewModel>), 200)]
+    public async Task<Result<TransactionDetailResponseViewModel>> GetTransactionDetail([Required] TransactionDetailRequestViewModel model)
+    {
+        return await Mediator.Send(new TransactionDetailQuery(model));
+    }
 
     [HttpPost("TransactionVerify")]
-    [ProducesResponseType(typeof(VerifyTransactionResponseViewModel), 200)]
-    public async Task<IActionResult> VerifyTransaction([Required] VerifyTransactionViewModel model)
-        => Ok(await Mediator.Send(new VerifyTransactionQuery(model)));
+    [ProducesResponseType(typeof(Result<VerifyTransactionResponseViewModel>), 200)]
+    public async Task<Result<VerifyTransactionResponseViewModel>> VerifyTransaction([Required] VerifyTransactionViewModel model)
+    {
+        return await Mediator.Send(new VerifyTransactionQuery(model));
+    }
 
     [HttpPost("{trackId}")]
-    [ProducesResponseType(typeof(ValidateTokenResponseViewModel), (int)HttpStatusCode.OK)]
-    public async Task<IActionResult> ValidateToken(string trackId)
+    [ProducesResponseType(typeof(Result<ValidateTokenResponseViewModel>), (int)HttpStatusCode.OK)]
+    public async Task<Result<ValidateTokenResponseViewModel>> ValidateToken(string trackId)
     {
         var redirectUrlData = await Mediator.Send(new ValidateTokenQuery(new ValidateTokenRequestViewModel { TrackId = trackId }));
-        return Ok(redirectUrlData.Data);
+        return redirectUrlData;
     }
 }
 

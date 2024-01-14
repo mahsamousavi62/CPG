@@ -207,10 +207,10 @@
   <data name="ModificationDate" xml:space="preserve">
     <value>تاریخ و زمان بروز رسانی</value>
   </data>
-  <data name="NationalCodeMatchingRequied" xml:space="preserve">
+  <data name="NationalCodeMatchingRequired" xml:space="preserve">
     <value>تطبیق کدملی</value>
   </data>
-  <data name="NationalCodeMatchingRequiedWithCardNumber" xml:space="preserve">
+  <data name="NationalCodeMatchingRequiredWithCardNumber" xml:space="preserve">
     <value>تطبیق کدملی پرداخت کننده با شماره کارت</value>
   </data>
   <data name="PaymentReceipt" xml:space="preserve">
@@ -554,5 +554,8 @@
   </data>
   <data name="VerifyInvalidApplication" xml:space="preserve">
     <value>امکان تایید تراکنش برای این Application مجاز نیست</value>
+  </data>
+  <data name="RequiredShaparakSettings" xml:space="preserve">
+    <value>وارد نمودن تنظیمات شاپرک الزامیست</value>
   </data>
 </root>

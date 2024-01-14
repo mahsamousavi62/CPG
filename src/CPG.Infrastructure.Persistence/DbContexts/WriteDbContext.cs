@@ -35,6 +35,8 @@ public class WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator 
     public DbSet<PaymentRequest> PaymentRequests { get; set; }
     public DbSet<CompanyIPG> CompanyIPGs { get; set; }
     public DbSet<CompanyIPGDeposit> CompanyIPGDeposits { get; set; }
+    public DbSet<CompanyShaparakSetting> ShaparakSettings { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
         => modelBuilder
             .ApplyConfiguration(new ApplicationSettingsConfiguration())
@@ -54,6 +56,7 @@ public class WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator 
             .ApplyConfiguration(new ApplicationCallbackUrlConfiguration())
             .ApplyConfiguration(new TransactionConfiguration())
             .ApplyConfiguration(new IPGTransactionConfiguration())
+            .ApplyConfiguration(new CompanyShaparakSettingConfiguration())
         ;
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())

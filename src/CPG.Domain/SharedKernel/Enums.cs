@@ -14,8 +14,8 @@ public class Enums
     {
         CPGReferencePage = 1,
         RayanReferencePage = 2
-
     }
+
     public enum UserRoleType
     {
         SuperAdmin = 1,
@@ -32,7 +32,7 @@ public class Enums
         NotValid
     }
 
-    public enum CompanyPaymentMethodType : short
+    public enum PaymentMethodType : byte
     {
         InternetPaymentGateway = 1,
         DirectDebit = 2,
@@ -51,12 +51,15 @@ public class Enums
     {
         Vandar = 1,
         AsanPardakht = 2,
+        Sep = 3,
     }
 
     public enum ServiceType : byte
     {
         AsanPardakhtToken = 1,
         AsanPardakhtTransResult = 2,
+        AsanPardakhtVerify = 3,
+        SepToken = 4,
     }
 
     public enum TransactionType : byte

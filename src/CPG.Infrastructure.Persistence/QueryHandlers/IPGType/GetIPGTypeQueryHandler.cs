@@ -2,6 +2,7 @@
 using CPG.Application.UseCases.IPGTypes.Exceptions;
 using CPG.Application.UseCases.IPGTypes.Queries;
 using CPG.Application.UseCases.IPGTypes.ViewModels;
+using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Minio;
 using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
@@ -11,12 +12,12 @@ using System.Threading.Tasks;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.IPGType;
 
-public class GetIPGTypeQueryHandler(ReadDbContext context, IMinioProvider minioProvider) : IRequestHandler<GetIPGTypeQuery, IPGTypeViewModel>
+public class GetIPGTypeQueryHandler(ReadDbContext context, IMinioProvider minioProvider) : IRequestHandler<GetIPGTypeQuery, Result<IPGTypeViewModel>>
 {
     private readonly ReadDbContext _context = context;
     private readonly IMinioProvider _minioProvider = minioProvider;
 
-    public async Task<IPGTypeViewModel> Handle(GetIPGTypeQuery request, CancellationToken cancellationToken)
+    public async Task<Result<IPGTypeViewModel>> Handle(GetIPGTypeQuery request, CancellationToken cancellationToken)
     {
         Guard.Against.NegativeOrZero(request.IPGTypeId, nameof(request.IPGTypeId));
 
@@ -33,6 +34,6 @@ public class GetIPGTypeQueryHandler(ReadDbContext context, IMinioProvider minioP
             Logo = await _minioProvider.PresignedGetObject(ipgType.Logo),
         };
 
-        return ipgTypeModel;
+        return Result<IPGTypeViewModel>.SuccessResult(ipgTypeModel);
     }
 }

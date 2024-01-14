@@ -9,10 +9,13 @@ using System.Threading.Tasks;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Company;
 
-public class GetCompanyPaymentMethodQueryHandler : IRequestHandler<GetCompanyPaymentMethodsQuery, Dictionary<int, string>>
+public class GetCompanyPaymentMethodQueryHandler : IRequestHandler<GetCompanyPaymentMethodsQuery, Result<Dictionary<int, string>>>
 {
-    public async Task<Dictionary<int, string>> Handle(GetCompanyPaymentMethodsQuery request, CancellationToken cancellationToken)
-    => await Task.FromResult(Enum.GetValues(typeof(Enums.CompanyPaymentMethodType))
-        .Cast<Enums.CompanyPaymentMethodType>()
-        .ToDictionary(x => (int)x, x => x.ToString()));
+    public async Task<Result<Dictionary<int, string>>> Handle(GetCompanyPaymentMethodsQuery request, CancellationToken cancellationToken)
+    {
+        var data = await Task.FromResult(Enum.GetValues(typeof(Enums.PaymentMethodType))
+         .Cast<Enums.PaymentMethodType>()
+         .ToDictionary(x => (int)x, x => x.ToString()));
+        return Result<Dictionary<int, string>>.SuccessResult(data);
+    }
 }

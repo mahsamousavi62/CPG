@@ -1,42 +1,26 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using CPG.Domain.SharedKernel;
+using CPG.Domain.SharedKernel.Logging;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.IO;
+using Serilog.Context;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Threading.Tasks;
-using System;
-using Microsoft.IO;
-using CPG.Domain.SharedKernel.Logging;
-using CPG.Domain.SharedKernel;
-using Serilog.Context;
-using Microsoft.Extensions.Primitives;
 using System.Linq;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Threading.Tasks;
 
 namespace CPG.Infrastructure.Logging;
 
-public class LoggingMiddleware
+public class LoggingMiddleware(RequestDelegate next, ILoggerFactory loggerFactory)
 {
-    private readonly RequestDelegate next;
-    private readonly ILogger logger;
-    private readonly RecyclableMemoryStreamManager recyclableMemoryStreamManager;
+    private readonly RequestDelegate next = next;
+    private readonly ILogger logger = loggerFactory.CreateLogger<LoggingMiddleware>();
+    private readonly RecyclableMemoryStreamManager recyclableMemoryStreamManager = new RecyclableMemoryStreamManager();
 
-    public LoggingMiddleware(RequestDelegate next, ILoggerFactory loggerFactory)
-    {
-        this.next = next;
-        recyclableMemoryStreamManager = new RecyclableMemoryStreamManager();
-        logger = loggerFactory.CreateLogger<LoggingMiddleware>();
-    }
-
-
-    public async Task InvokeAsync([NotNull] HttpContext httpContext, IAuthenticationService authenticationService)
+    public async Task InvokeAsync([NotNull] HttpContext httpContext)
     {
         ArgumentNullException.ThrowIfNull(httpContext);
-
-        //if (!httpContext.Request.Path.Value?.StartsWith("/api", StringComparison.OrdinalIgnoreCase) ?? false)
-        //{
-        //    await next(httpContext);
-        //    return;
-        //}
 
         httpContext.Request.EnableBuffering();
         RequestResponseLogModel log;
@@ -44,11 +28,11 @@ public class LoggingMiddleware
         {
             await httpContext.Request.Body.CopyToAsync(requestStream);
 
-             log = new()
+            log = new()
             {
-                UserAgent = httpContext.Request.Headers["User-Agent"].ToString(),
+                UserAgent = httpContext.Request.Headers.UserAgent.ToString(),
                 IP = httpContext.Request.GetClientIpAddress(),
-                Host = httpContext.Request.Headers["Host"].ToString(),
+                Host = httpContext.Request.Headers.Host.ToString(),
                 ServiceName = httpContext.Request.Path,
                 AuditType = httpContext.User.FindFirst("AuditType")?.Value ?? Enums.AuditType.User.ToString(),
                 RequestTime = DateTime.Now,
@@ -56,16 +40,15 @@ public class LoggingMiddleware
                 RequestQueryString = httpContext.Request.QueryString.ToString()
             };
 
-            if (httpContext.User.Claims.Count() != 0)
+            if (httpContext.User.Claims.Any())
             {
-                long companyId, applicationId, UserId;
-                long.TryParse(httpContext.User.Claims.FirstOrDefault(c => c.Type == "CompanyId")?.Value, out companyId);
+                _ = long.TryParse(httpContext.User.Claims.FirstOrDefault(c => c.Type == "CompanyId")?.Value, out long companyId);
                 log.CompanyId = companyId;
 
-                long.TryParse(httpContext.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out applicationId);
+                _ = long.TryParse(httpContext.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out long applicationId);
                 log.ApplicationId = applicationId;
 
-                _ = long.TryParse(httpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value, out UserId);
+                _ = long.TryParse(httpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value, out long UserId);
                 log.UserId = UserId;
 
                 log.ClientId = httpContext.User.Claims.FirstOrDefault(c => c.Type == "ClientId")?.Value;

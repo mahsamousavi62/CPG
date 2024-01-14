@@ -1,9 +1,10 @@
 ﻿using CPG.Application.UseCases.Application.ViewModels;
+using CPG.Domain.SharedKernel;
 using MediatR;
 using System.Collections.Generic;
 
 namespace CPG.Application.UseCases.Application.Queries;
 
-public class GetAllApplicationsQuery : IRequest<IReadOnlyCollection<ApplicationViewModel>>
+public class GetAllApplicationsQuery : IRequest<Result<IReadOnlyCollection<ApplicationViewModel>>>
 {
 }

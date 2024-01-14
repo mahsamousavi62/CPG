@@ -720,18 +720,18 @@ namespace CPG.Application.Shared.Resource {
         /// <summary>
         ///   Looks up a localized string similar to NationalCodeMatchingRequied.
         /// </summary>
-        public static string NationalCodeMatchingRequied {
+        public static string NationalCodeMatchingRequired {
             get {
-                return ResourceManager.GetString("NationalCodeMatchingRequied", resourceCulture);
+                return ResourceManager.GetString("NationalCodeMatchingRequired", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to NationalCodeMatchingRequiedWithCardNumber.
         /// </summary>
-        public static string NationalCodeMatchingRequiedWithCardNumber {
+        public static string NationalCodeMatchingRequiredWithCardNumber {
             get {
-                return ResourceManager.GetString("NationalCodeMatchingRequiedWithCardNumber", resourceCulture);
+                return ResourceManager.GetString("NationalCodeMatchingRequiredWithCardNumber", resourceCulture);
             }
         }
         
@@ -1083,6 +1083,15 @@ namespace CPG.Application.Shared.Resource {
         public static string RequiredCodeOrTrackIdException {
             get {
                 return ResourceManager.GetString("RequiredCodeOrTrackIdException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shaparak settings are required.
+        /// </summary>
+        public static string RequiredShaparakSettings {
+            get {
+                return ResourceManager.GetString("RequiredShaparakSettings", resourceCulture);
             }
         }
         

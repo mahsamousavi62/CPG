@@ -4,7 +4,7 @@ namespace CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
 
 public class VerifyTransactionRequest : AsanPardakhtRequestBase
 {
-    public long ProviderTrackerId { get; set; }
+    public string ProviderTrackerId { get; set; }
 
     public string ProviderData { get; set; }
 }

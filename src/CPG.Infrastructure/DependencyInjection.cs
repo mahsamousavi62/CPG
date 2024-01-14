@@ -141,11 +141,11 @@ public static class DependencyInjection
         => app
             .UseHttpsRedirection()
             .UseRouting()
+            .UseMiddleware<ErrorHandlingMiddleware>()
+            .UseMiddleware<LoggingMiddleware>()
             .UseTokenAuthentication()
             .UseTokenAuthorization()
             .UseAuthenticationMiddleware()
-            .UseMiddleware<LoggingMiddleware>()
-            .UseMiddleware<ErrorHandlingMiddleware>()
             .UseGraphQLQueries(configuration.GetSection("Infrastructure:GraphQL"), env)
             .UseEndpoints(endpoints =>
             {

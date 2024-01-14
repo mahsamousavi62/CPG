@@ -1,4 +1,5 @@
 ﻿using System;
+using CPG.Domain.AggregateModels.CompanyIPGAggregate;
 using CPG.Domain.SeedWork;
 using CPG.Domain.SharedKernel;
 
@@ -26,6 +27,7 @@ public class IPGTransaction : AuditableEntity<long>
     public DateTime? VerificationDateTime { get; set; }
     public DateTime? PredicateExpirationDateTime { get; set; }
     public Transaction Transaction { get; set; }
+    public CompanyIPG CompanyIPG { get; set; }
 
     public static IPGTransaction Create(string trackerId, Enums.IPGTransactionStatus status, long companyIpgId,
         string ipgToken, short verificationTimeLimit)
