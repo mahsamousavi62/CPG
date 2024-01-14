@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using CPG.Domain.SharedKernel;
+using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -15,7 +16,7 @@ public class CreateCompanyModel
     [Required]
     public string SiteAddress { get; set; }
     [Required]
-    public short IpgRedirectionMethodType { get; set; }
+    public Enums.IpgRedirectionMethodType IpgRedirectionMethodType { get; set; }
     [Required]
     public required short[] MethodTypes { get; set; }
     [Required]
