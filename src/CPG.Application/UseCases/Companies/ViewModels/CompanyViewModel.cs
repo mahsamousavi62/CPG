@@ -20,7 +20,7 @@ public class CompanyViewModel
 
     public string Logo { get; set; }
 
-    public Dictionary<short, string> PaymentMethods { get; set; }
+    public Dictionary<byte, string> PaymentMethods { get; set; }
 
     public bool IsActive { get; set; }
 
