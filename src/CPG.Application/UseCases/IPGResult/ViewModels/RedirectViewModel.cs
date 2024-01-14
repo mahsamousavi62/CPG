@@ -1,4 +1,4 @@
-﻿namespace CPG.Application.UseCases.IPGResult;
+﻿namespace CPG.Application.UseCases.IPGResult.ViewModels;
 
 public class RedirectViewModel
 {

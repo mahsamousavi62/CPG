@@ -1,6 +1,6 @@
 ﻿using CPG.Application.UseCases.Ipg.Queries;
 using CPG.Application.UseCases.Ipg.ViewModels;
-using CPG.Application.UseCases.IPGResult;
+using CPG.Application.UseCases.IPGResult.ViewModels;
 using CPG.Application.UseCases.Users.Commands;
 using CPG.Domain.SharedKernel;
 using HotChocolate.Authorization;
