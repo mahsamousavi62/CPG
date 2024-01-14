@@ -36,7 +36,7 @@ public class CreateCompanyCommandHandler(IAggregateRepository<Company> companyRe
 
             if (!Enum.TryParse<Enums.IpgRedirectionMethodType>
                 (request.Model.IpgRedirectionMethodType.ToString(), out Enums.IpgRedirectionMethodType methodType))
-                throw new IpgRedirectionMethodTypeNotFoundException(request.Model.IpgRedirectionMethodType);
+                throw new IpgRedirectionMethodTypeNotFoundException();
 
             Logo logo = new(request.Model.File, Enums.UploadFromEntityType.Company.ToString(), _minioProvider);
             var spec = new UserByUserIdsSpec(request.Model.Users);
@@ -46,7 +46,7 @@ public class CreateCompanyCommandHandler(IAggregateRepository<Company> companyRe
                 throw new UsersNotFoundException();
 
             if (request.Model.NationalCodeMatchingRequied is true &&
-                request.Model.MethodTypes.ToList().Contains((short)Enums.CompanyPaymentMethodType.InternetPaymentGateway) &&
+                request.Model.MethodTypes.ToList().Contains((byte)Enums.PaymentMethodType.InternetPaymentGateway) &&
                 (string.IsNullOrEmpty(request.Model.Key) || string.IsNullOrEmpty(request.Model.IV) || request.Model.ThirdPartyCode is null))
             {
                 throw new RequiredShaparakSettingsException();

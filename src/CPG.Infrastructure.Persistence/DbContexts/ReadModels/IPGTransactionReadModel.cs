@@ -2,6 +2,7 @@
 using System;
 using CPG.Domain.SeedWork;
 using CPG.Domain.SharedKernel;
+using CPG.Infrastructure.Persistence.DbContexts.ReadModels;
 
 namespace CPG.Domain.AggregateModels.TransactionAggregate;
 public class IPGTransactionReadModel
@@ -18,5 +19,6 @@ public class IPGTransactionReadModel
     public DateTime? PredicateExpirationDateTime { get; set; }
     public DateTime? VerificationDateTime { get; set; }
     public TransactionReadModel Transaction { get; set; }
+    public CompanyIPGReadModel CompanyIPG { get; set; }
 }
 

@@ -28,10 +28,11 @@ namespace CPG.Infrastructure.Providers.Ipg
             {
                 case Enums.ProviderType.AsanPardakht:
                     {
-                        var asanpardakht= new AsanPardakhtProvider(_httpProvider, _context);
-                        
-                        asanpardakht.ApplicationSettingRepositoy = _applicationSettingsRepository;
-                        return asanpardakht;
+                        return new AsanPardakhtProvider(_httpProvider, _context, _applicationSettingsRepository);
+                    }
+                case Enums.ProviderType.Sep:
+                    {
+                        return new SepProvider(_httpProvider, _context, _applicationSettingsRepository);
                     }
                     default: return null;
             }

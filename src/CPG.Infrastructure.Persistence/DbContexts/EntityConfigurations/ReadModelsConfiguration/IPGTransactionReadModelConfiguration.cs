@@ -24,5 +24,8 @@ public class IPGTransactionReadModelConfiguration : IEntityTypeConfiguration<IPG
         entity.Property(x => x.PredicateExpirationDateTime).HasColumnName("PredicateExpirationDateTime");
         entity.Property(x => x.VerificationDateTime).HasColumnName("VerificationDateTime");
 
+        entity.HasOne(x => x.CompanyIPG)
+            .WithMany(x => x.IPGTransactions)
+            .HasForeignKey(x => x.CompanyIPGId);
     }
 }

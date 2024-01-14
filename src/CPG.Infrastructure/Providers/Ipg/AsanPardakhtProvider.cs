@@ -19,9 +19,9 @@ using Newtonsoft.Json.Linq;
 
 namespace CPG.Infrastructure.Providers.Ipg;
 
-public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext context) : IIpgProvider
+public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext context, IApplicationSettingsRepository applicationSettingsRepository) : IIpgProvider
 {
-    public IApplicationSettingsRepository ApplicationSettingRepositoy;
+    public IApplicationSettingsRepository _applicationSettingRepositoy;
     private readonly IHttpProvider httpProvider = httpProvider;
     private readonly ReadDbContext context = context;
     private readonly byte serviceCallMaxTryCounter = 5;
@@ -30,7 +30,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
     private byte transactionResultFailCounter = 0;
     private string userName;
     private string password;
-    private int merchantConfigurationId; 
+    private int merchantConfigurationId;
 
     private void GetDataFromJsonProvider(string providerData)
     {
@@ -40,7 +40,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
             jsonObjectProviderData = JObject.Parse(providerData);
             merchantConfigurationId = jsonObjectProviderData["Merchant_Configuration_Id"] is not null ? (int)jsonObjectProviderData["Merchant_Configuration_Id"] : throw new Exception("Invalid merchantConfigurationId");
             userName = jsonObjectProviderData["User_Name"] is not null ? (string)jsonObjectProviderData["User_Name"] : throw new Exception("Invalid User_Name");
-            password = jsonObjectProviderData["Password"] is not null ? (string)jsonObjectProviderData["Password"] : throw new Exception("Invalid Password");            
+            password = jsonObjectProviderData["Password"] is not null ? (string)jsonObjectProviderData["Password"] : throw new Exception("Invalid Password");
         }
         catch
         {
@@ -48,14 +48,14 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
         }
     }
 
-    public async Task<(short, PaymentTokenResponse)> GetPaymentTokenAsync(PaymentTokenRequest request)
+    public async Task<PaymentTokenResponse> GetPaymentTokenAsync(PaymentTokenRequest request)
     {
         GetDataFromJsonProvider(request.ProviderData);
-        var configViewModel = await ApplicationSettingRepositoy.GetAllApplicationSettings();
+        var configViewModel = await _applicationSettingRepositoy.GetAllApplicationSettings();
         var headers = GetHeaders();
         var trackerId = RandomGenerator.GenerateRandomDigitNumber(16);
         string callBack = CreateCallbackUrl((short)request.IpgRedirectionMethodType, request.SiteAddress, trackerId.ToString(), configViewModel.CPG_BackEnd);
-       
+
         var response = await httpProvider.PostAsync3<PaymentTokenRequest, AsanPardakhtTokenResponse,
                                                     AsanPardakhtResponseBase, dynamic>(new HttpProviderRequest<dynamic>
                                                     {
@@ -67,7 +67,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
                                                             serviceTypeId = 1,
                                                             paymentId = "0",
                                                             callbackURL = callBack,
-                                                            additionalData = request.NationalCodeMatchingRequied ? CreateAdditionalData(request.NationalCode , request.ShaparakKey, request.ShaparakIv) : string.Empty,
+                                                            additionalData = request.NationalCodeMatchingRequied ? CreateAdditionalData(request.NationalCode, request.ShaparakKey, request.ShaparakIv) : string.Empty,
                                                             merchantConfigurationId = merchantConfigurationId,
                                                             amountInRials = (long)request.PaymentRequestAmount,
                                                             localInvoiceId = trackerId.ToString(),
@@ -83,22 +83,13 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
                                                         return System.Text.Json.JsonSerializer.Deserialize<AsanPardakhtTokenResponse>(formattedResponse);
                                                     });
 
-        var paymentToken = new PaymentTokenResponse
+        return new PaymentTokenResponse
         {
-            Url = $"{request.SiteAddress}/redirectToBank",
+            Status = response.Status,
             TrackerId = trackerId.ToString(),
-            JsonBody = new JsonStrModel
-            {
-                JsonStr = new()
-                {
-                    Params = new Params { RefID = response.Token, MobileAp = request.MobileNumber },
-                    Url = request.IpgBaseUrl,
-                    
-                }
-            }
+            Token = response.Token,
+            IpgBaseUrl = request.IpgBaseUrl,
         };
-
-        return (response.Status, paymentToken);
     }
 
     public async Task<TransactionResultResponse> GetTransactionResult(TransactionResultRequest request)
@@ -141,14 +132,14 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
                                                         Uri = "v1/Verify",
                                                         HeaderParameters = headers,
                                                         Provider = Enums.ProviderType.AsanPardakht,
-                                                        Service = Enums.ServiceType.AsanPardakhtTransResult,
+                                                        Service = Enums.ServiceType.AsanPardakhtVerify,
                                                     }, request, VerifyErrorHandler);
 
         return response;
     }
 
     private string CreateAdditionalData(string nationalCode, string key, string iv)
-    {        
+    {
         string hexString = Guid.NewGuid().ToString("N");
         string randomString = hexString.Substring(0, 7);
         var original = $"0|{nationalCode}|{randomString}";
@@ -227,7 +218,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
     private TResponse BaseErrorHandler<TResponse, TError, TBaseRequest>(AsanPardakhtResponseBase? error)
        where TResponse : AsanPardakhtResponseBase
        where TError : AsanPardakhtResponseBase
-       where TBaseRequest : AsanPardakhtRequestBase
+       where TBaseRequest : class
 
     {
         if (error is null || error.ErrorResult is null)

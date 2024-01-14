@@ -33,9 +33,7 @@ public class ProviderController : ApiBaseController
     {
         CreateProviderViewModel createProviderViewModel = new(model.PersianName, model.EnglishName,
                                                              model.ProviderType, model.ProviderData,
-                                                             new FormFileProxy(model.File),
-                                                             model.IpgVerificationTimeLimit,
-                                                             model.IpgBaseUrl);
+                                                             new FormFileProxy(model.File),model.MethodTypes);
 
         return await Mediator.Send(new CreateProviderCommand(createProviderViewModel));
     }

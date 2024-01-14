@@ -2,6 +2,8 @@
 using CPG.Application.UseCases.CompanyIPGs.Exceptions;
 using CPG.Application.UseCases.Exceptions;
 using CPG.Application.UseCases.Ipg.Commands;
+using CPG.Application.UseCases.Ipg.Exception;
+using CPG.Application.UseCases.Ipg.ViewModels;
 using CPG.Application.UseCases.PaymentRequests.Exceptions;
 using CPG.Domain.AggregateModels.CompanyDepositAggregate.Specifications;
 using CPG.Domain.AggregateModels.CompanyIPGAggregate.Specifications;
@@ -13,7 +15,9 @@ using CPG.Domain.SharedKernel.Communication.Ipg;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentTicket;
 using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
+using Newtonsoft.Json.Linq;
 using System;
+using System.Dynamic;
 using System.Linq;
 using System.Net;
 using System.Security.Claims;
@@ -29,7 +33,7 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
     IAggregateRepository<Domain.AggregateModels.CompanyIPGAggregate.CompanyIPG> companyIPGRepository,
     IAggregateRepository<Domain.AggregateModels.CompanyAggregate.Company> companyRepository,
     IAuthenticationService authenticationService,
-    ReadDbContext context) : IRequestHandler<GetPaymentTokenCommand, Result<PaymentTokenResponse>>
+    ReadDbContext context) : IRequestHandler<GetPaymentTokenCommand, Result<PaymentTokenResponseViewModel>>
 {
     private readonly IIpgFactory _ipgFactory = ipgFactory;
     private readonly IAggregateRepository<PaymentRequest> _paymentRequestRepository = paymentRequestAggregateRepository;
@@ -39,7 +43,7 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
     private readonly IAggregateRepository<CPG.Application.UseCases.CompanyDeposits.CompanyDeposit> _companyDepositRepository = companyDepositRepository;
     private readonly IAuthenticationService _authenticationService = authenticationService;
 
-    public async Task<Result<PaymentTokenResponse>> Handle(GetPaymentTokenCommand request, CancellationToken cancellationToken)
+    public async Task<Result<PaymentTokenResponseViewModel>> Handle(GetPaymentTokenCommand request, CancellationToken cancellationToken)
     {
         try
         {
@@ -56,23 +60,41 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
             if (!companyIpg.IPGType.IsActive) { throw new PaymentTokenInactiveIPGTypeException(); }
             if (!companyIpg.Provider.IsActive) { throw new PaymentTokenInactiveProviderException(); }
 
-            if(paymentRequest.Company.NationalCodeMatchingRequied is true &&
-                (string.IsNullOrEmpty(paymentRequest.Company.ShaparakSetting.Iv) || string.IsNullOrEmpty(paymentRequest.Company.ShaparakSetting.Key)))
+            if (paymentRequest.Company.NationalCodeMatchingRequied is true &&
+                (string.IsNullOrEmpty(paymentRequest.Company.ShaparakSetting?.Iv) || string.IsNullOrEmpty(paymentRequest.Company.ShaparakSetting?.Key)))
             {
                 throw new PaymentTokenNullKeyOrIvException();
             }
 
-            var ipg = _ipgFactory.GetInstance(Enums.ProviderType.AsanPardakht);
+            var ipg = _ipgFactory.GetInstance(companyIpg.Provider.ProviderType);
             var mobileNumber = await _authenticationService.GetDataFromClaim<string>(ClaimTypes.MobilePhone);
 
-            var (status, result) = await ipg.GetPaymentTokenAsync(
+            string ipgBaseUrl;
+            short IpgVerificationTimeLimit;
+            try
+            {
+                dynamic jsonObjectProviderData = JObject.Parse(companyIpg.Provider.ProviderData);
+                 ipgBaseUrl= jsonObjectProviderData["IPG_Base_URL"] is not null 
+                    ? (string)jsonObjectProviderData["IPG_Base_URL"] : throw new Exception("Invalid IPG_Base_URL");
+
+                IpgVerificationTimeLimit = jsonObjectProviderData["IPG_Verification_TimeLimit"] is not null
+                               ? (short)jsonObjectProviderData["IPG_Verification_TimeLimit"] : throw new Exception("IPG_Verification_TimeLimit");
+
+            }
+            catch
+            {
+                throw new ParseCompanyIpgProviderDataException(companyIpg.Provider.ProviderData);
+            }
+
+
+            var result = await ipg.GetPaymentTokenAsync(
                 new PaymentTokenRequest
                 {
                     ProviderData = companyIpg.ProviderData,
                     PaymentRequestAmount = paymentRequest.Amount,
                     IpgRedirectionMethodType = (Enums.IpgRedirectionMethodType)paymentRequest.Company.IpgRedirectionMethodType,
                     SiteAddress = paymentRequest.Company.SiteAddress,
-                    IpgBaseUrl = companyIpg.Provider.IpgBaseUrl,
+                    IpgBaseUrl = ipgBaseUrl,
                     NationalCode = paymentRequest.NationalCode,
                     MobileNumber = mobileNumber,
                     NationalCodeMatchingRequied = paymentRequest.Company.NationalCodeMatchingRequied,
@@ -80,7 +102,7 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                     ShaparakKey = paymentRequest.Company.ShaparakSetting.Key,
                 });
 
-            if (status == (short)HttpStatusCode.OK)
+            if (result.Status == (short)HttpStatusCode.OK)
             {
                 long destinationDepositId;
                 if (!string.IsNullOrWhiteSpace(paymentRequest.DestinationDepositIban))
@@ -103,10 +125,11 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
 
                 Transaction transaction = Transaction.Create(new CreateTransactionModel
                 {
+                    IpgVerificationTimeLimit= IpgVerificationTimeLimit,
                     CompanyIPG = companyIpg,
                     DestinationDepositId = destinationDepositId,
                     PaymentRequest = paymentRequest,
-                    Token = result.JsonBody.JsonStr.Params.RefID,
+                    Token = result.Token,
                     TrackId = result.TrackerId = result.TrackerId,
                     TransactionMethodType = Enums.TransactionType.IPG
                 });
@@ -116,26 +139,51 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                 await _paymentRequestRepository.UpdateAsync(paymentRequest);
                 await _paymentRequestRepository.SaveChangesAsync();
 
-                result.IpgRedirectionMethodType = (Enums.IpgRedirectionMethodType)paymentRequest.Company.IpgRedirectionMethodType;
+                var response = new PaymentTokenResponseViewModel()
+                {
+                    Url = result.IpgBaseUrl,
+                    JsonBody = new ExpandoObject(),
+                    RedirectionMethodType = paymentRequest.Company.IpgRedirectionMethodType,
+                };
 
-                return Result<PaymentTokenResponse>.SuccessResult(result);
+                switch (companyIpg.Provider.ProviderType)
+                {
+                    case Enums.ProviderType.Vandar:
+                        break;
+                    case Enums.ProviderType.AsanPardakht:
+                        {
+                            response.JsonBody.RefID = result.Token;
+                            response.JsonBody.Mobileap = mobileNumber;
+                            break;
+                        }
+                    case Enums.ProviderType.Sep:
+                        {
+                            response.JsonBody.Token = result.Token;
+                            response.JsonBody.GetMethod = false;
+                            break;
+                        }
+                    default:
+                        break;
+                }
+
+                return Result<PaymentTokenResponseViewModel>.SuccessResult(response);
             }
             else
             {
-                return Result<PaymentTokenResponse>.FailureResult(result, null);
+                return Result<PaymentTokenResponseViewModel>.Failure(new Error("1007000", GlobalResource.GetPaymentTicketUnexpectedError));
             }
         }
         catch (DomainException exc)
         {
-            return Result<PaymentTokenResponse>.Failure(new Error((exc as dynamic).Code, exc.Message));
+            return Result<PaymentTokenResponseViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
         }
         catch (AppException exc)
         {
-            return Result<PaymentTokenResponse>.Failure(new Error((exc as dynamic).Code, exc.Message));
+            return Result<PaymentTokenResponseViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
         }
         catch (Exception)
         {
-            return Result<PaymentTokenResponse>.Failure(new Error("1007000", GlobalResource.GetPaymentTicketUnexpectedError));
+            return Result<PaymentTokenResponseViewModel>.Failure(new Error("1007000", GlobalResource.GetPaymentTicketUnexpectedError));
         }
     }
 }

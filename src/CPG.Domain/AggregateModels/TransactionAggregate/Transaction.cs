@@ -53,7 +53,7 @@ public class Transaction : AuditableEntity<long>, IAggregateRoot
                                                   model.PaymentRequest.Application.Id, Enums.TransactionStatus.InPrgress);
 
         var ipgTransaction = IPGTransaction.Create(model.TrackId, Enums.IPGTransactionStatus.WaitingForPspResponse,
-                                                   model.CompanyIPG.Id, model.Token, model.CompanyIPG.Provider.IpgVerificationTimeLimit);
+                                                   model.CompanyIPG.Id, model.Token, model.IpgVerificationTimeLimit);
 
         transaction.IPGTransaction = ipgTransaction;
 

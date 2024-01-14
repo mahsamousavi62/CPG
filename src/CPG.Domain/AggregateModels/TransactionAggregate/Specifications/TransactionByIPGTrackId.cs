@@ -8,6 +8,8 @@ public class TransactionByIPGTrackId : Specification<Transaction>, ISingleResult
     public TransactionByIPGTrackId(string trackId)
     {
         Query.Include(t => t.IPGTransaction)
-             .Where(c => c.IPGTransaction.TrackId == trackId);
+            .ThenInclude(t => t.CompanyIPG)
+            .ThenInclude(t => t.Provider)
+            .Where(c => c.IPGTransaction.TrackId == trackId);
     }
 }

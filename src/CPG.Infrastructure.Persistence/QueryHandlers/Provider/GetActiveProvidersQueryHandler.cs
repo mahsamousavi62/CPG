@@ -34,8 +34,6 @@ public class GetActiveProvidersQueryHandler(ReadDbContext context, IMinioProvide
             Logo = await _minioProvider.PresignedGetObject(x.Logo),
             ProviderData = x.ProviderData,
             ProviderType = x.ProviderType,
-            IpgVerificationTimeLimit = x.IpgVerificationTimeLimit,
-            IpgBaseUrl = x.IpgBaseUrl,
             CreationDate = x.CreationDate,
             ModificationDate = x.ModificationDate,
         })).ConfigureAwait(false);

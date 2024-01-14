@@ -6,7 +6,7 @@ using CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
 namespace CCPG.Domain.SharedKernel.Communication.Ipg;
 public interface IIpgProvider
 {
-    Task<(short,PaymentTokenResponse)> GetPaymentTokenAsync(PaymentTokenRequest paymentIpgRequest);
+    Task<PaymentTokenResponse> GetPaymentTokenAsync(PaymentTokenRequest paymentIpgRequest);
 
     Task<TransactionResultResponse> GetTransactionResult(TransactionResultRequest transactionResultRequest);
 

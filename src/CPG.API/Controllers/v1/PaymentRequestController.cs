@@ -48,8 +48,8 @@ public class PaymentRequestController : ApiBaseController
 
     [HttpPost("CreateIPGJsonStr")]
     [Authorize]
-    [ProducesResponseType(typeof(ResultData<PaymentTokenResponse>), 200)]
-    public async Task<Result<PaymentTokenResponse>> GetAsanPardakhatPaymentTicket([FromBody] PaymentTokenViewModel paymentTicketRequest)
+    [ProducesResponseType(typeof(ResultData<PaymentTokenResponseViewModel>), 200)]
+    public async Task<Result<PaymentTokenResponseViewModel>> GetAsanPardakhatPaymentTicket([FromBody] PaymentTokenViewModel paymentTicketRequest)
     { 
         return await Mediator.Send(new GetPaymentTokenCommand(paymentTicketRequest));
     }
