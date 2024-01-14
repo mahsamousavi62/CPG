@@ -22,8 +22,5 @@ public class CreateProviderModel
     public required IFormFile File { get; set; }
 
     [Required]
-    public short IpgVerificationTimeLimit { get; set; }
-
-    [Required]
-    public string IpgBaseUrl { get; set; }
+    public byte[] MethodTypes { get; set; }
 }

@@ -1,31 +1,33 @@
-﻿using CPG.Domain.AggregateModels.CompanyAggregate.Exceptions;
-using CPG.Domain.SeedWork;
-using CPG.Domain.SharedKernel;
+﻿
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using CPG.Domain.AggregateModels.CompanyAggregate.Exceptions;
+using CPG.Domain.SeedWork;
+using CPG.Domain.SharedKernel;
 
-namespace CPG.Domain.AggregateModels.CompanyAggregate;
+namespace CPG.Domain.AggregateModels.ProviderAggregate;
 
-public class CompanyPaymentMethod : AuditableEntity<long>
+public class ProviderPaymentMethod : AuditableEntity<long>
 {
     public byte MethodType { get; set; }
-    public long CompanyId { get; set; }
-    public Company Company { get; set; }
+    public long ProviderId { get; set; }
+    public Provider Provider { get; set; }
 
-    public CompanyPaymentMethod(byte methodType, long companyId)
+    public ProviderPaymentMethod(byte methodType, long providerId)
     {
         MethodType = methodType;
-        CompanyId = companyId;
+        ProviderId = providerId;
         IsActive = true;
     }
 
-    public CompanyPaymentMethod(byte methodType)
+    public ProviderPaymentMethod(byte methodType)
     {
         MethodType = methodType;
     }
 
-    public static List<CompanyPaymentMethod> Create(byte[] methodTypes)
+    public static List<ProviderPaymentMethod> Create(byte[] methodTypes)
     {
         if (methodTypes is null || methodTypes.Length == 0)
             throw new ArgumentNullException(nameof(methodTypes));
@@ -36,7 +38,7 @@ public class CompanyPaymentMethod : AuditableEntity<long>
         if (!methodTypes.All(methodType => Enum.IsDefined(typeof(Enums.PaymentMethodType), methodType)))
             throw new InvalidPaymentMethodType(nameof(methodTypes));
 
-        var companyPaymentMethods = methodTypes.Select(i => new CompanyPaymentMethod(i)).ToList();
-        return companyPaymentMethods;
+        var providerPaymentMethods = methodTypes.Select(i => new ProviderPaymentMethod(i)).ToList();
+        return providerPaymentMethods;
     }
 }

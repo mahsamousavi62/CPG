@@ -13,8 +13,8 @@ public class GetCompanyPaymentMethodQueryHandler : IRequestHandler<GetCompanyPay
 {
     public async Task<Result<Dictionary<int, string>>> Handle(GetCompanyPaymentMethodsQuery request, CancellationToken cancellationToken)
     {
-        var data = await Task.FromResult(Enum.GetValues(typeof(Enums.CompanyPaymentMethodType))
-         .Cast<Enums.CompanyPaymentMethodType>()
+        var data = await Task.FromResult(Enum.GetValues(typeof(Enums.PaymentMethodType))
+         .Cast<Enums.PaymentMethodType>()
          .ToDictionary(x => (int)x, x => x.ToString()));
         return Result<Dictionary<int, string>>.SuccessResult(data);
     }

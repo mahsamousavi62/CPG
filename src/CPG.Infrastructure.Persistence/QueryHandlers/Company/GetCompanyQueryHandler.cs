@@ -34,7 +34,7 @@ public class GetCompanyQueryHandler(ReadDbContext context, IMinioProvider minioP
             SiteAddress = company.SiteAddress,
             IpgRedirectionMethodType = company.IpgRedirectionMethodType,
             PaymentMethods = company.PaymentMethods.ToDictionary(p => p.MethodType,
-                                    p => ((Enums.CompanyPaymentMethodType)p.MethodType).ToString()),
+                                    p => ((Enums.PaymentMethodType)p.MethodType).ToString()),
             CreationDate = company.CreationDate,
             ModificationDate = company.ModificationDate,
             IsActive = company.IsActive

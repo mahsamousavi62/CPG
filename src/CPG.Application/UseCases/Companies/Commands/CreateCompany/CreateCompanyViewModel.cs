@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace CPG.Application.UseCases.Companies.Commands.CreateCompany;
 
 public class CreateCompanyViewModel(string persianName, string englishName, bool nationalCodeMatchingRequied, 
-    IFile file, short[] methodTypes, List<long> users, string siteAddress, short ipgRedirectionMethodType,
+    IFile file, byte[] methodTypes, List<long> users, string siteAddress, short ipgRedirectionMethodType,
     string key, string iv, int? thirdPartyCode)
 {
     public string PersianName { get; set; } = persianName;
@@ -13,7 +13,7 @@ public class CreateCompanyViewModel(string persianName, string englishName, bool
     public string SiteAddress { get; set; } = siteAddress;
     public short IpgRedirectionMethodType { get; set; }=ipgRedirectionMethodType;
     public IFile File { get; set; } = file;
-    public short[] MethodTypes { get; set; } = methodTypes;
+    public byte[] MethodTypes { get; set; } = methodTypes;
     public List<long> Users { get; set; } = users;
     public string Key { get; set; } = key;
     public string IV { get; set; } = iv;

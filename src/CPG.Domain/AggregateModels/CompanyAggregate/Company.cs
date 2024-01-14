@@ -54,7 +54,7 @@ public class Company : AuditableEntity<long>, IAggregateRoot
     public CompanyShaparakSetting ShaparakSetting { get; set; }
 
     public static Company Create(PersianName persianName, EnglishName englishName,
-        bool nationalCodeMatchingRequied, Logo logo, short[] details, Url siteAddress,
+        bool nationalCodeMatchingRequied, Logo logo, byte[] details, Url siteAddress,
         short IpgRedirectionMethodType, string key, string iv, int? thirdPartyCode)
     {
         var company = new Company(persianName, englishName, nationalCodeMatchingRequied, logo, siteAddress, IpgRedirectionMethodType);
