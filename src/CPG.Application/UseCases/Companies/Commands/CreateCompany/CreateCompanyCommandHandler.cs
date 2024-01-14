@@ -66,11 +66,11 @@ public class CreateCompanyCommandHandler(IAggregateRepository<Company> companyRe
         }
         catch (DomainException exc)
         {
-            return Result<long>.Failure(new Error((exc as dynamic).Code, exc.Message));
+            return Result<long>.Failure(new Error(exc.Code, exc.Message));
         }
         catch (AppException exc)
         {
-            return Result<long>.Failure(new Error((exc as dynamic).Code, exc.Message));
+            return Result<long>.Failure(new Error(exc.Code, exc.Message));
         }
         catch (Exception exc)
         {

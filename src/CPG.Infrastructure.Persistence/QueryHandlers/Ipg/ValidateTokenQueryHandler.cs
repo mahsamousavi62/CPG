@@ -94,11 +94,11 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
         }
         catch (DomainException exc)
         {
-            return Result<ValidateTokenResponseViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
+            return Result<ValidateTokenResponseViewModel>.Failure(new Error(exc.Code, exc.Message));
         }
         catch (AppException exc)
         {
-            return Result<ValidateTokenResponseViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
+            return Result<ValidateTokenResponseViewModel>.Failure(new Error(exc.Code, exc.Message));
         }
         catch (Exception)
         {
