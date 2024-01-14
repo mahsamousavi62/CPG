@@ -5,9 +5,9 @@ namespace CPG.Domain.SharedKernel.Communication.Ipg.AsanPardakht;
 public class AsanPardakhtResponseBase : ResponseBase
 {
     [JsonPropertyName("error")]
-    public Error ErrorResult { get; set; }
+    public ErrorData ErrorResult { get; set; }
 
-    public class Error
+    public class ErrorData
     {
         [JsonPropertyName("code")]
         public int Code { get; set; }

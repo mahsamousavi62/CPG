@@ -1,11 +1,7 @@
 ﻿using CPG.Application.Shared.Resource;
 using CPG.Application.UseCases.Common.Queries;
 using CPG.Application.UseCases.Common.ViewModels;
-using CPG.Application.UseCases.Files.Commands.DownloadFile;
-using CPG.Application.UseCases.Files.Commands.UploadFile;
 using CPG.Domain.SharedKernel;
-using CPG.Infrastructure.File;
-using Elasticsearch.Net.Specification.MachineLearningApi;
 using HotChocolate.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -20,18 +16,18 @@ public class CommonController : ApiBaseController
 
     [HttpGet("resources")]
     [AllowAnonymous]
-    public ActionResult<Dictionary<string, string>> GetResources()
+    public Result<Dictionary<string, string>> GetResources()
     {
-        return Ok(resourceHelper.GetResources());
+        return resourceHelper.GetResources();
     }
 
     [HttpGet("GetAppSetting/{entityType:int}")]
-    [ProducesResponseType(typeof(IReadOnlyCollection<ApplicationSettingViewModel>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(Result<IReadOnlyCollection<ApplicationSettingViewModel>>), (int)HttpStatusCode.OK)]
     [AllowAnonymous]
-    public async Task<ActionResult<IReadOnlyCollection<ApplicationSettingViewModel>>> GetAppSetting(int entityType)
+    public async Task<Result<IReadOnlyCollection<ApplicationSettingViewModel>>> GetAppSetting(int entityType)
     {
         var entityTypeEnum = (Enums.ApplicationSettingEntityType)entityType;
-        return Ok(await Mediator.Send(new GetApplicationSettingsQuery(entityTypeEnum)));
+        return await Mediator.Send(new GetApplicationSettingsQuery(entityTypeEnum));
     }
 
    

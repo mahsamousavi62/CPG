@@ -21,7 +21,11 @@ public class CompanyIPGReadModelConfiguration : IEntityTypeConfiguration<Company
         readModel.Property(x => x.ModificationDate);
 
         readModel.HasMany(x => x.CompanyIPGDeposits)
-                 .WithOne(x => x.CompanyIPG)
-                 .HasForeignKey(b => b.CompanyIPGId);
+            .WithOne(x => x.CompanyIPG)
+            .HasForeignKey(b => b.CompanyIPGId);
+
+        readModel.HasMany(x => x.IPGTransactions)
+            .WithOne(x => x.CompanyIPG)
+            .HasForeignKey(x => x.CompanyIPGId);
     }
 }

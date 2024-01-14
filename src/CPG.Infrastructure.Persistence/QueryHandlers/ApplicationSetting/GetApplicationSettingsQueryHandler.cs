@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.ApplicationSetting
 {
-    public class GetApplicationSettingsQueryHandler : IRequestHandler<GetApplicationSettingsQuery, IReadOnlyCollection<ApplicationSettingViewModel>>
+    public class GetApplicationSettingsQueryHandler : IRequestHandler<GetApplicationSettingsQuery, Result<IReadOnlyCollection<ApplicationSettingViewModel>>>
     {
         private readonly ReadDbContext _context;
         private readonly IRedisCaheService _cacheService;
@@ -23,11 +23,11 @@ namespace CPG.Infrastructure.Persistence.QueryHandlers.ApplicationSetting
             _cacheService = cacheService;
         }
 
-        public async Task<IReadOnlyCollection<ApplicationSettingViewModel>> Handle(GetApplicationSettingsQuery query, CancellationToken cancellationToken)
+        public async Task<Result<IReadOnlyCollection<ApplicationSettingViewModel>>> Handle(GetApplicationSettingsQuery query, CancellationToken cancellationToken)
         {
 
             var applicationSettings = (await GetAll()).Where(x => x.EntityType == query.EntityType).ToList();
-            return applicationSettings;
+            return Result<IReadOnlyCollection<ApplicationSettingViewModel>>.SuccessResult(applicationSettings);
         }
 
 

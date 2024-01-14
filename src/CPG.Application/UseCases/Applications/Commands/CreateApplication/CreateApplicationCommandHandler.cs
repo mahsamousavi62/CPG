@@ -18,13 +18,13 @@ namespace CPG.Application.UseCases.Applications.Commands.CreateApplication;
 internal class CreateApplicationCommandHandler(IAggregateRepository<Domain.AggregateModels.ApplicationAggregate.Application> applicationRepository,
                                                IReadRepository<ApplicationIdentifier> identifierRepository,
                                                IMinioProvider minioProvider)
-    : IRequestHandler<CreateApplicationCommand, long>
+    : IRequestHandler<CreateApplicationCommand, Result<long>>
 {
     private readonly IAggregateRepository<Domain.AggregateModels.ApplicationAggregate.Application> _applicationRepository = applicationRepository;
     private readonly IReadRepository<ApplicationIdentifier> _identifierRepository = identifierRepository;
     private readonly IMinioProvider _minioProvider = minioProvider;
 
-    public async Task<long> Handle(CreateApplicationCommand request, CancellationToken cancellationToken)
+    public async Task<Result<long>> Handle(CreateApplicationCommand request, CancellationToken cancellationToken)
     {
         PersianName persianName = new(request.Model.PersianName);
         EnglishName englishName = new(request.Model.EnglishName);
@@ -41,20 +41,20 @@ internal class CreateApplicationCommandHandler(IAggregateRepository<Domain.Aggre
         }
 
         var  applicationByClinetIds = await _applicationRepository.GetBySpecAsync(new ApplicationbyIdpClientId(request.Model.IdpClientIds));
-
-        
+                
         if (applicationByClinetIds is not null &&(applicationByClinetIds.ApplicationIdentifiers != null || applicationByClinetIds.ApplicationIdentifiers.Count != 0))
         {
-            //throw new DuplicateIdpClientIdsException(string.Join('-', applicationByClinetIds.ApplicationIdentifiers.Select(t => t.IdpClientId)));
-            throw new DuplicateIdpClientIdsException("");
+            throw new DuplicateIdpClientIdsException(string.Join('-', applicationByClinetIds.ApplicationIdentifiers.Select(t => t.IdpClientId)));            
         }
 
-        var applicationByCallBackUrls = await _applicationRepository.GetBySpecAsync(new ApplicationByCallBackUrl(request.Model.CallbackUrls));
-        if (applicationByCallBackUrls is not null && (applicationByCallBackUrls.ApplicationCallbackUrls != null
-            || applicationByCallBackUrls.ApplicationCallbackUrls.Count != 0))
+        if (request.Model.CallbackUrls!=null)
         {
-            //throw new DuplicateCallbackUrlException(string.Join('-', applicationByCallBackUrls.ApplicationCallbackUrls.Select(t => t.CallbackUrl)));
-            throw new DuplicateCallbackUrlException("");
+            var applicationByCallBackUrls = await _applicationRepository.GetBySpecAsync(new ApplicationByCallBackUrl(request.Model.CallbackUrls));
+            if (applicationByCallBackUrls is not null && (applicationByCallBackUrls.ApplicationCallbackUrls != null
+                || applicationByCallBackUrls.ApplicationCallbackUrls.Count != 0))
+            {
+                throw new DuplicateCallbackUrlException(string.Join('-', applicationByCallBackUrls.ApplicationCallbackUrls.Select(t => t.CallbackUrl)));
+            } 
         }
 
         Url responseUrl = new(request.Model.ResponseApiUrl);
@@ -66,6 +66,6 @@ internal class CreateApplicationCommandHandler(IAggregateRepository<Domain.Aggre
         await _applicationRepository.AddAsync(application, cancellationToken);
         await _applicationRepository.SaveChangesAsync(cancellationToken);
 
-        return application.Id;
+        return Result<long>.SuccessResult(application.Id);
     }
 }

@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace CPG.Application.UseCases.Banks.Commands.ActivateBank;
 
-public class ActivateBankCommandHandler(IAggregateRepository<Bank> bankRepository, ICurrentUser currentUser) : IRequestHandler<ActivateBankCommand>
+public class ActivateBankCommandHandler(IAggregateRepository<Bank> bankRepository, ICurrentUser currentUser) : IRequestHandler<ActivateBankCommand, Result<bool>>
 {
     private readonly IAggregateRepository<Bank> _bankRepository = bankRepository;
     private readonly ICurrentUser _currentUser = currentUser;
 
-    public async Task Handle(ActivateBankCommand command, CancellationToken cancellationToken)
+    public async Task<Result<bool>> Handle(ActivateBankCommand command, CancellationToken cancellationToken)
     {
         var bank = await _bankRepository.GetByIdAsync(command.BankId, cancellationToken)
                    ?? throw new BankNotFoundException(command.BankId);
@@ -24,5 +24,7 @@ public class ActivateBankCommandHandler(IAggregateRepository<Bank> bankRepositor
             bank.SetAsInactive();
 
         await _bankRepository.SaveChangesAsync(cancellationToken);
+
+        return Result<bool>.Success();
     }
 }

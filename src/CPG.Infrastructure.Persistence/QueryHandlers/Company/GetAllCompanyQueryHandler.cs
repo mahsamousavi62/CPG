@@ -12,12 +12,12 @@ using System.Threading.Tasks;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Company;
 
-public class GetAllCompanyQueryHandler(ReadDbContext context, IMinioProvider minioProvider) : IRequestHandler<GetAllCompanyQuery, IReadOnlyCollection<CompanyViewModel>>
+public class GetAllCompanyQueryHandler(ReadDbContext context, IMinioProvider minioProvider) : IRequestHandler<GetAllCompanyQuery, Result<IReadOnlyCollection<CompanyViewModel>>>
 {
     private readonly ReadDbContext _context = context;
     private readonly IMinioProvider _minioProvider = minioProvider;
 
-    public async Task<IReadOnlyCollection<CompanyViewModel>> Handle(GetAllCompanyQuery request, CancellationToken cancellationToken)
+    public async Task<Result<IReadOnlyCollection<CompanyViewModel>>> Handle(GetAllCompanyQuery request, CancellationToken cancellationToken)
     {
         var companies = await _context.CompanyReadModels
             .Include(m => m.PaymentMethods)
@@ -36,10 +36,10 @@ public class GetAllCompanyQueryHandler(ReadDbContext context, IMinioProvider min
             ModificationDate = company.ModificationDate,
             IsActive = company.IsActive,
             PaymentMethods = company.PaymentMethods
-          .ToDictionary(p => p.MethodType, p => ((Enums.CompanyPaymentMethodType)p.MethodType).ToString())
+          .ToDictionary(p => p.MethodType, p => ((Enums.PaymentMethodType)p.MethodType).ToString())
         })).ConfigureAwait(false);
 
-        return companyViewModels;
+        return Result<IReadOnlyCollection<CompanyViewModel>>.SuccessResult(companyViewModels);
     }
 
 }

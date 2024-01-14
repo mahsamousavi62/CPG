@@ -1,5 +1,6 @@
 ﻿using CPG.Application.UseCases.Banks.Queries;
 using CPG.Application.UseCases.Banks.ViewModels;
+using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Minio;
 using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
@@ -11,16 +12,16 @@ using System.Threading.Tasks;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Bank;
 
-public class GetAllBanksQueryHandler(ReadDbContext context, IMinioProvider minioProvider) : IRequestHandler<GetAllBanksQuery, IReadOnlyCollection<BankViewModel>>
+public class GetAllBanksQueryHandler(ReadDbContext context, IMinioProvider minioProvider) : IRequestHandler<GetAllBanksQuery, Result<IReadOnlyCollection<BankViewModel>>>
 {
     private readonly ReadDbContext _context = context;
     private readonly IMinioProvider _minioProvider = minioProvider;
 
-    public async Task<IReadOnlyCollection<BankViewModel>> Handle(GetAllBanksQuery request, CancellationToken cancellationToken)
+    public async Task<Result<IReadOnlyCollection<BankViewModel>>> Handle(GetAllBanksQuery request, CancellationToken cancellationToken)
     {
         var banks = await _context.BankReadModels.ToListAsync(cancellationToken: cancellationToken);
 
-        return await Task.WhenAll(banks.Select(async x => new BankViewModel
+        var data = await Task.WhenAll(banks.Select(async x => new BankViewModel
         {
             Id = x.Id,
             Name = x.Name,
@@ -30,5 +31,7 @@ public class GetAllBanksQueryHandler(ReadDbContext context, IMinioProvider minio
             CreationDate = x.CreationDate,
             ModificationDate = x.ModificationDate
         })).ConfigureAwait(false);
+
+        return Result<IReadOnlyCollection<BankViewModel>>.SuccessResult(data);
     }
 }

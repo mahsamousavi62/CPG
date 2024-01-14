@@ -4,7 +4,6 @@ using CPG.Application.UseCases.Companies.ViewModels;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Minio;
 using CPG.Infrastructure.Persistence.DbContexts;
-using HotChocolate.Language;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -13,12 +12,12 @@ using System.Threading.Tasks;
 
 namespace CPG.Application.UseCases.Companies.Queries;
 
-public class GetCompanyQueryHandler(ReadDbContext context, IMinioProvider minioProvider) : IRequestHandler<GetCompanyQuery, CompanyViewModel>
+public class GetCompanyQueryHandler(ReadDbContext context, IMinioProvider minioProvider) : IRequestHandler<GetCompanyQuery, Result<CompanyViewModel>>
 {
     private readonly ReadDbContext _context = context;
     private readonly IMinioProvider _minioProvider = minioProvider;
 
-    public async Task<CompanyViewModel> Handle(GetCompanyQuery request, CancellationToken cancellationToken)
+    public async Task<Result<CompanyViewModel>> Handle(GetCompanyQuery request, CancellationToken cancellationToken)
     {
         Guard.Against.NegativeOrZero(request.CompanyId, nameof(request.CompanyId));
 
@@ -35,12 +34,12 @@ public class GetCompanyQueryHandler(ReadDbContext context, IMinioProvider minioP
             SiteAddress = company.SiteAddress,
             IpgRedirectionMethodType = company.IpgRedirectionMethodType,
             PaymentMethods = company.PaymentMethods.ToDictionary(p => p.MethodType,
-                                    p => ((Enums.CompanyPaymentMethodType)p.MethodType).ToString()),
+                                    p => ((Enums.PaymentMethodType)p.MethodType).ToString()),
             CreationDate = company.CreationDate,
             ModificationDate = company.ModificationDate,
             IsActive = company.IsActive
         };
 
-        return companyModel;
+        return Result<CompanyViewModel>.SuccessResult(companyModel);
     }
 }

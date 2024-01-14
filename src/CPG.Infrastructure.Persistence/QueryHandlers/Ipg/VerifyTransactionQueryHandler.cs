@@ -45,31 +45,30 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
                 throw new VerifyRequiredCodeOrTrackIdException();
             }
 
-            var paymentRequest = await _paymentRequestRepository.GetBySpecAsync(new PaymentRequestByCodeOrTrackerId(request.VerifyTransaction.Code, request.VerifyTransaction.TrackerId));
+            var paymentRequest = await _paymentRequestRepository
+                .GetBySpecAsync(new PaymentRequestByCodeOrTrackerId(request.VerifyTransaction.Code, request.VerifyTransaction.TrackerId), cancellationToken) 
+                ?? throw new VerifyInvalidCodeOrTrackIdException();
 
-            if (paymentRequest is null) { throw new VerifyInvalidCodeOrTrackIdException(); }
-
-            long applicationId;
-            long.TryParse(_httpContext.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out applicationId);
+            _ = long.TryParse(_httpContext.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out long applicationId);
 
             if (paymentRequest.ApplicationId != applicationId) { throw new VerifyInvalidApplicationException(); }
 
             if (paymentRequest.Status != PaymentStatus.TransactionWaitingForVerification) { throw new VerifyInvalidStatusException(); }
 
             paymentRequest.Status = PaymentStatus.TransactionVerifiedByApplication;
-            await _paymentRequestRepository.UpdateAsync(paymentRequest);
-            await _paymentRequestRepository.SaveChangesAsync();
+            await _paymentRequestRepository.UpdateAsync(paymentRequest, cancellationToken);
+            await _paymentRequestRepository.SaveChangesAsync(cancellationToken);
 
-            var transaction = await _transactionRepository.GetBySpecAsync(new TransactionByPaymentRequestId(paymentRequest.Id));
+            var transaction = await _transactionRepository.GetBySpecAsync(new TransactionByPaymentRequestId(paymentRequest.Id), cancellationToken);
 
-            var companyIpg = await _context.CompanyIPGReadModels.FirstOrDefaultAsync(t => t.Id == transaction.IPGTransaction.CompanyIPGId);
-            if (companyIpg is null) { throw new CompanyIPGNotFoundException(transaction.IPGTransaction.CompanyIPGId); }
+            var companyIpg = await _context.CompanyIPGReadModels.FirstOrDefaultAsync(t => t.Id == transaction.IPGTransaction.CompanyIPGId, cancellationToken: cancellationToken)
+                ?? throw new CompanyIPGNotFoundException(transaction.IPGTransaction.CompanyIPGId);
 
             var ipg = _ipgFactory.GetInstance(ProviderType.AsanPardakht);
             var result = await ipg.Verify(new VerifyTransactionRequest
             {
                 ProviderData = companyIpg.ProviderData,
-                ProviderTrackerId = 1,
+                ProviderTrackerId = transaction.IPGTransaction.ProviderTrackerId,
             });
 
             if (transaction is null || transaction.IPGTransaction is null)
@@ -123,11 +122,11 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
         }
         catch (DomainException exc)
         {
-            return Result<VerifyTransactionResponseViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
+            return Result<VerifyTransactionResponseViewModel>.Failure(new Error(exc.Code, exc.Message));
         }
         catch (AppException exc)
         {
-            return Result<VerifyTransactionResponseViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
+            return Result<VerifyTransactionResponseViewModel>.Failure(new Error(exc.Code, exc.Message));
         }
         catch (Exception)
         {

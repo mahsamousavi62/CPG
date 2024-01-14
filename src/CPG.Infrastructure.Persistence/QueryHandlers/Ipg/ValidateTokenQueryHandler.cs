@@ -1,9 +1,7 @@
-﻿using CPG.Application.UseCases.CompanyIPGs.Exceptions;
-using CPG.Application.UseCases.Ipg.Queries;
+﻿using CPG.Application.UseCases.Ipg.Queries;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.TransactionResult;
 using CPG.Domain.SharedKernel.Communication.Ipg;
 using CPG.Domain.SharedKernel;
-using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
 using System;
 using CPG.Application.UseCases.Ipg.Exceptions;
@@ -11,7 +9,6 @@ using CPG.Domain.AggregateModels.TransactionAggregate.Specifications;
 using static CPG.Domain.SharedKernel.Enums;
 using CPG.Domain.AggregateModels.TransactionAggregate;
 using System.Threading;
-using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using CPG.Application.UseCases.Ipg.ViewModels;
 using CPG.Application.Shared.Resource;
@@ -22,13 +19,11 @@ namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 
 public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
     IAggregateRepository<PaymentRequest> paymentRequestRepository,
-    IAggregateRepository<Transaction> transactionRepository,
-    ReadDbContext context) : IRequestHandler<ValidateTokenQuery, Result<ValidateTokenResponseViewModel>>
+    IAggregateRepository<Transaction> transactionRepository) : IRequestHandler<ValidateTokenQuery, Result<ValidateTokenResponseViewModel>>
 {
     private readonly IIpgFactory _ipgFactory = ipgFactory;
     private readonly IAggregateRepository<PaymentRequest> _paymentRequestRepository = paymentRequestRepository;
     private readonly IAggregateRepository<Transaction> _transactionRepository = transactionRepository;
-    private readonly ReadDbContext _context = context;
 
     public async Task<Result<ValidateTokenResponseViewModel>> Handle(ValidateTokenQuery request, CancellationToken cancellationToken)
     {
@@ -42,45 +37,74 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
                 throw new TrackIdInvalidStatusException();
 
             var paymentRequest = await _paymentRequestRepository.GetByIdAsync(transaction.PaymentRquestId);
-
-            var companyIpg = await _context.CompanyIPGReadModels.FirstOrDefaultAsync(t => t.Id == transaction.IPGTransaction.CompanyIPGId);
-            if (companyIpg is null) { throw new CompanyIPGNotFoundException(companyIpg.Id); }
-
-            var ipg = _ipgFactory.GetInstance(Enums.ProviderType.AsanPardakht);
-            var result = await ipg.GetTransactionResult(new TransactionResultRequest
+            var providerType = transaction.IPGTransaction.CompanyIPG.Provider.ProviderType;
+            switch (providerType)
             {
-                ProviderData = companyIpg.ProviderData,
-                LocalInvoiceId = transaction.IPGTransaction.TrackId,
-            });
-
-            switch (result.Status)
-            {
-                case 1:
+                case ProviderType.Vandar:
+                    break;
+                case ProviderType.AsanPardakht:
                     {
-                        transaction.IPGTransaction.Status = IPGTransactionStatus.FetchingResult;
+                        var ipg = _ipgFactory.GetInstance(providerType);
+                        var result = await ipg.GetTransactionResult(new TransactionResultRequest
+                        {
+                            ProviderData = transaction.IPGTransaction.CompanyIPG.ProviderData,
+                            LocalInvoiceId = transaction.IPGTransaction.TrackId,
+                        });
+
+                        switch (result.Status)
+                        {
+                            case 1:
+                                {
+                                    transaction.IPGTransaction.Status = IPGTransactionStatus.FetchingResult;
+                                    break;
+                                }
+                            case 2:
+                                {
+                                    transaction.IPGTransaction.Status = IPGTransactionStatus.SucceededAndWaitingForVerification;
+                                    transaction.IPGTransaction.PredicateExpirationDateTime = result.PayGateTranDate.AddMinutes(transaction.IPGTransaction.VerificationTimeLimit);
+                                    paymentRequest.Status = PaymentStatus.TransactionWaitingForVerification;
+                                    break;
+                                }
+                            case 3:
+                                {
+                                    transaction.IPGTransaction.Status = IPGTransactionStatus.Failed;
+                                    transaction.Status = TransactionStatus.TransactionFailed;
+                                    paymentRequest.Status = PaymentStatus.TransactionFailed;
+                                    break;
+                                }
+                            default:
+                                break;
+                        }
+
+                        transaction.IPGTransaction.ProviderTrackerId = result.PayGateTranID;
+                        transaction.IPGTransaction.ReferenceNumber = result.Rrn;
+                        transaction.IPGTransaction.EncryptCardNumber = result.Hash;
+
                         break;
                     }
-                case 2:
+                case ProviderType.Sep:
                     {
-                        transaction.IPGTransaction.Status = IPGTransactionStatus.SucceededAndWaitingForVerification;
-                        transaction.IPGTransaction.PredicateExpirationDateTime = result.PayGateTranDate.AddMinutes(transaction.IPGTransaction.VerificationTimeLimit);
-                        paymentRequest.Status = PaymentStatus.TransactionWaitingForVerification;
-                        break;
-                    }
-                case 3:
-                    {
-                        transaction.IPGTransaction.Status = IPGTransactionStatus.Failed;
-                        transaction.Status = TransactionStatus.TransactionFailed;
-                        paymentRequest.Status = PaymentStatus.TransactionFailed;
+                        transaction.IPGTransaction.ProviderTrackerId = request.ValidateToken.RefNum;
+                        transaction.IPGTransaction.ReferenceNumber = request.ValidateToken.Rrn;
+                        transaction.IPGTransaction.EncryptCardNumber = request.ValidateToken.HashedCardNumber;
+
+                        if (request.ValidateToken.Status is 1 or 3 or 4 or 5 or 8 or 10 or 11 or 12 or 21)
+                        {
+                            transaction.IPGTransaction.Status = IPGTransactionStatus.Failed;
+                            transaction.Status = TransactionStatus.TransactionFailed;
+                            paymentRequest.Status = PaymentStatus.TransactionFailed;
+                        }
+                        else if(request.ValidateToken.Status is 2)
+                        {
+                            transaction.IPGTransaction.Status = IPGTransactionStatus.SucceededAndWaitingForVerification;
+                            transaction.IPGTransaction.PredicateExpirationDateTime = DateTime.UtcNow.AddMinutes(transaction.IPGTransaction.VerificationTimeLimit);
+                            paymentRequest.Status = PaymentStatus.TransactionWaitingForVerification;
+                        }
                         break;
                     }
                 default:
                     break;
             }
-
-            transaction.IPGTransaction.ProviderTrackerId = result.PayGateTranID;
-            transaction.IPGTransaction.ReferenceNumber = result.Rrn;
-            transaction.IPGTransaction.EncryptCardNumber = result.Hash;
 
             await _transactionRepository.UpdateAsync(transaction);
             await _transactionRepository.SaveChangesAsync();
@@ -94,11 +118,11 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
         }
         catch (DomainException exc)
         {
-            return Result<ValidateTokenResponseViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
+            return Result<ValidateTokenResponseViewModel>.Failure(new Error(exc.Code, exc.Message));
         }
         catch (AppException exc)
         {
-            return Result<ValidateTokenResponseViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
+            return Result<ValidateTokenResponseViewModel>.Failure(new Error(exc.Code, exc.Message));
         }
         catch (Exception)
         {

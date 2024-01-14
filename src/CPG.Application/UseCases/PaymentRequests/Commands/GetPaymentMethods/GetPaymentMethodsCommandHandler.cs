@@ -115,11 +115,11 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
         }
         catch (DomainException exc)
         { 
-            return Result<PaymentMethodsViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
+            return Result<PaymentMethodsViewModel>.Failure(new Error(exc.Code, exc.Message));
         }
         catch (AppException exc)
         { 
-            return Result<PaymentMethodsViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
+            return Result<PaymentMethodsViewModel>.Failure(new Error(exc.Code, exc.Message));
         }
         catch (Exception)
         {

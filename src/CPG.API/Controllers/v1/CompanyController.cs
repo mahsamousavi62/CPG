@@ -12,18 +12,22 @@ namespace CPG.API.Controllers;
 public class CompanyController : ApiBaseController
 {
     [HttpGet("GetAll")]
-    [ProducesResponseType(typeof(IReadOnlyCollection<CompanyViewModel>), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<IReadOnlyCollection<CompanyViewModel>>> GetAll()
-     => Ok(await Mediator.Send(new GetAllCompanyQuery()));
+    [ProducesResponseType(typeof(Result<IReadOnlyCollection<CompanyViewModel>>), (int)HttpStatusCode.OK)]
+    public async Task<Result<IReadOnlyCollection<CompanyViewModel>>> GetAll()
+    {
+        return await Mediator.Send(new GetAllCompanyQuery());
+    }
 
     [HttpGet("{id:long}")]
-    [ProducesResponseType(typeof(CompanyViewModel), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<CompanyViewModel>> GetCompany(long id)
-        => Ok(await Mediator.Send(new GetCompanyQuery(id)));
+    [ProducesResponseType(typeof(Result<CompanyViewModel>), (int)HttpStatusCode.OK)]
+    public async Task<Result<CompanyViewModel>> GetCompany(long id)
+    {
+        return await Mediator.Send(new GetCompanyQuery(id));
+    }
 
     [HttpGet("GetCompanyPaymentMethodsType")]
-    [EnumDataType(typeof(Enums.CompanyPaymentMethodType))]
-    public async Task<IActionResult> GetCompanyPaymentMethodsType(Enums.CompanyPaymentMethodType type)
+    [EnumDataType(typeof(Enums.PaymentMethodType))]
+    public async Task<IActionResult> GetCompanyPaymentMethodsType(Enums.PaymentMethodType type)
         => Ok(await Mediator.Send(new GetCompanyPaymentMethodsQuery()));
 
     [HttpGet("GetIpgRedirectionMethodType")]
@@ -31,13 +35,12 @@ public class CompanyController : ApiBaseController
     public async Task<IActionResult> GetIpgRedirectionMethodType(Enums.IpgRedirectionMethodType type)
        => Ok(await Mediator.Send(new GetIpgRedirectionMethodTypeQuery()));
 
-
     [HttpPost]
     public async Task<Result<long>> CreateCompany([FromForm] CreateCompanyModel model)
     {
-        CreateCompanyViewModel createCompanyViewModel = new(
-             model.PersianName, model.EnglishName, model.NationalCodeMatchingRequied,
-             new FormFileProxy(model.File), model.MethodTypes, model.Users,model.SiteAddress,model.IpgRedirectionMethodType);
+        CreateCompanyViewModel createCompanyViewModel = new(model.PersianName, model.EnglishName,
+            model.NationalCodeMatchingRequired, new FormFileProxy(model.File), model.MethodTypes, model.Users,
+            model.SiteAddress, model.IpgRedirectionMethodType, model.Key, model.Iv, model.ThirdPartyCode);
 
         return await Mediator.Send(new CreateCompanyCommand(createCompanyViewModel));
     }

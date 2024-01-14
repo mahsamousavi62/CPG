@@ -160,7 +160,7 @@ namespace CPG.Domain.AggregateModels.CompanyAggregate {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to تعداد کاراکتر نام  انگلیسی مجاز نمی باشد.
+        ///   Looks up a localized string similar to تعداد کاراکتر نام انگلیسی مجاز نمی باشد.
         /// </summary>
         internal static string Invalid_EnglishNameCharachterLimit {
             get {
@@ -223,11 +223,47 @@ namespace CPG.Domain.AggregateModels.CompanyAggregate {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to تعداد کاراکتر نام  فارسی مجاز نمی باشد.
+        ///   Looks up a localized string similar to تعداد کاراکتر نام فارسی مجاز نمی باشد.
         /// </summary>
         internal static string Invalid_PersianNameCharachterLimit {
             get {
                 return ResourceManager.GetString("Invalid_PersianNameCharachterLimit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to تعداد کاراکتر بردار اولیه شاپرک مجاز نمی باشد.
+        /// </summary>
+        internal static string InvalidIvCharachter {
+            get {
+                return ResourceManager.GetString("InvalidIvCharachter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to فرمت بردار اولیه شاپرک صحیح نمی باشد.
+        /// </summary>
+        internal static string InvalidIvFormat {
+            get {
+                return ResourceManager.GetString("InvalidIvFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to تعداد کاراکتر کد شخص ثالث شاپرک مجاز نمی باشد.
+        /// </summary>
+        internal static string InvalidKeyCharachter {
+            get {
+                return ResourceManager.GetString("InvalidKeyCharachter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to فرمت کد شخص ثالث شاپرک صحیح نمی باشد.
+        /// </summary>
+        internal static string InvalidKeyFormat {
+            get {
+                return ResourceManager.GetString("InvalidKeyFormat", resourceCulture);
             }
         }
         
@@ -237,15 +273,6 @@ namespace CPG.Domain.AggregateModels.CompanyAggregate {
         internal static string MaximalFileSize {
             get {
                 return ResourceManager.GetString("MaximalFileSize", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string String1 {
-            get {
-                return ResourceManager.GetString("String1", resourceCulture);
             }
         }
     }
