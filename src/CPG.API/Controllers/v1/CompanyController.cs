@@ -39,7 +39,7 @@ public class CompanyController : ApiBaseController
     public async Task<Result<long>> CreateCompany([FromForm] CreateCompanyModel model)
     {
         CreateCompanyViewModel createCompanyViewModel = new(model.PersianName, model.EnglishName,
-            model.NationalCodeMatchingRequied, new FormFileProxy(model.File), model.MethodTypes, model.Users,
+            model.NationalCodeMatchingRequired, new FormFileProxy(model.File), model.MethodTypes, model.Users,
             model.SiteAddress, model.IpgRedirectionMethodType, model.Key, model.Iv, model.ThirdPartyCode);
 
         return await Mediator.Send(new CreateCompanyCommand(createCompanyViewModel));

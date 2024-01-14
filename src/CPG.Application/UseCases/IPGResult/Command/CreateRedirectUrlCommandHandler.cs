@@ -17,7 +17,7 @@ public class CreateRedirectUrlCommandHandler(IApplicationSettingsRepository appl
     private readonly IApplicationSettingsRepository _applicationSettingsRepository = applicationSettingsRepository;
     private readonly IAggregateRepository<Transaction> _transactionRepository = transactionRepository;
 
-    public async Task<Result<string>> Handle(CreateRedirectUrlCommnad command, CancellationToken cancellationToken)
+    public async Task<Result<string>> Handle(CreateRedirectUrlCommand command, CancellationToken cancellationToken)
     {
         try
         {

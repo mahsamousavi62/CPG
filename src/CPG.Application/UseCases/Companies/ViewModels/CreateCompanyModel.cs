@@ -9,21 +9,30 @@ public class CreateCompanyModel
 {
     [Required]
     public required string PersianName { get; set; }
+
     [Required] 
     public required string EnglishName { get; set; }
+
     [Required]
-    public required bool NationalCodeMatchingRequied { get; set; }
+    public required bool NationalCodeMatchingRequired { get; set; }
+
     [Required]
     public string SiteAddress { get; set; }
+
     [Required]
     public Enums.IpgRedirectionMethodType IpgRedirectionMethodType { get; set; }
     [Required]
     public required short[] MethodTypes { get; set; }
+
     [Required]
     public required List<long> Users { get; set; }
+
     [Required]
     public required IFormFile File { get; set; }
+
     public string Key { get; set; }
+
     public string Iv { get; set; }
+
     public int? ThirdPartyCode { get; set; }
 }
