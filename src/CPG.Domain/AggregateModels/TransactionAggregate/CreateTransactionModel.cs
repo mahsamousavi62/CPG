@@ -11,4 +11,5 @@ public class CreateTransactionModel
     public string Token { get; set; }
     public long DestinationDepositId { get; set; }
     public Enums.TransactionType TransactionMethodType { get; set; }
+    public short IpgVerificationTimeLimit { get; set; }
 }

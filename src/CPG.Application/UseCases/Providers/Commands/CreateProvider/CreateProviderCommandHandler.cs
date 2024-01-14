@@ -27,21 +27,16 @@ internal class CreateProviderCommandHandler(IAggregateRepository<Provider> provi
         }
         var sameEnglishNameProvider = await _providerRepository.GetBySpecAsync(new ProviderByEnglishName(request.Model.EnglishName));
         if (sameEnglishNameProvider != null)
-        {
             throw new DuplicateProviderEnglishNameException(request.Model.EnglishName);
-        }
+
 
         var sameProvidertype = await _providerRepository.GetBySpecAsync(new ProviderByProviderType(request.Model.ProviderType));
         if (sameProvidertype!=null)
-        {
             throw new DuplicateProviderTypeException(request.Model.ProviderType);
-        }
         
         Logo logo = new(request.Model.File, Enums.UploadFromEntityType.Provider.ToString(), _minioProvider);
 
-
-        var provider = Provider.Create(persianName, englishName, request.Model.ProviderType, logo, request.Model.ProviderData, request.Model.IpgVerificationTimeLimit, request.Model.IpgBaseUrl);
-
+        var provider = Provider.Create(persianName, englishName, request.Model.ProviderType,logo, request.Model.ProviderData, request.Model.MethodTypes);
 
         await _providerRepository.AddAsync(provider, cancellationToken);
         await _providerRepository.SaveChangesAsync(cancellationToken);
