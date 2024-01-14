@@ -9,5 +9,5 @@ public class VerifyRequest : AsanPardakhtRequestBase
     public long MerchantConfigurationId { get; set; }
 
     [JsonPropertyName("payGateTranId")]
-    public long PayGateTranId { get; set; }
+    public string PayGateTranId { get; set; }
 }

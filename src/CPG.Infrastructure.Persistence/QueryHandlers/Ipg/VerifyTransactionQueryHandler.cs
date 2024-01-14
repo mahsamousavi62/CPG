@@ -69,7 +69,7 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
             var result = await ipg.Verify(new VerifyTransactionRequest
             {
                 ProviderData = companyIpg.ProviderData,
-                ProviderTrackerId = 1,
+                ProviderTrackerId = transaction.IPGTransaction.ProviderTrackerId,
             });
 
             if (transaction is null || transaction.IPGTransaction is null)

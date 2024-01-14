@@ -36,7 +36,7 @@ public class CreateCompanyCommandHandler(IAggregateRepository<Company> companyRe
 
             if (!Enum.TryParse<Enums.IpgRedirectionMethodType>
                 (request.Model.IpgRedirectionMethodType.ToString(), out Enums.IpgRedirectionMethodType methodType))
-                throw new IpgRedirectionMethodTypeNotFoundException(request.Model.IpgRedirectionMethodType);
+                throw new IpgRedirectionMethodTypeNotFoundException();
 
             Logo logo = new(request.Model.File, Enums.UploadFromEntityType.Company.ToString(), _minioProvider);
             var spec = new UserByUserIdsSpec(request.Model.Users);

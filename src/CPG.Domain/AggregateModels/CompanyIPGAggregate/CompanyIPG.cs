@@ -1,6 +1,7 @@
 ﻿using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Domain.AggregateModels.IPGTypeAggregate;
 using CPG.Domain.AggregateModels.ProviderAggregate;
+using CPG.Domain.AggregateModels.TransactionAggregate;
 using CPG.Domain.SeedWork;
 using System.Collections.Generic;
 
@@ -29,6 +30,7 @@ namespace CPG.Domain.AggregateModels.CompanyIPGAggregate
         public Provider Provider { get; set; }
         public IPGType IPGType { get; set; }
         public List<CompanyIPGDeposit> IPGDeposits { get; set; }
+        public List<IPGTransaction> IPGTransactions { get; set; }
 
         public static CompanyIPG Create(long companyId, long providerId, long ipgTypeId, string providerData, CompanyIPGDeposit[] details)
         {

@@ -3,8 +3,7 @@ using CPG.Application.UseCases.Exceptions;
 
 namespace CPG.Application.UseCases.Companies.Exceptions;
 
-public class IpgRedirectionMethodTypeNotFoundException(short type) : AppException(string.Format(GlobalResource.IpgRedirectionMethodTypeNotFound, type))
+public class IpgRedirectionMethodTypeNotFoundException() : AppException(string.Format(GlobalResource.IpgRedirectionMethodTypeNotFound))
 {
-    public override string Code => "ipgRedirectionMethodType_not_found";
-    public short Type { get; } = type;
+    public override string Code => "ipgRedirectionMethodType_not_found";    
 }

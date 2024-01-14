@@ -1,5 +1,6 @@
 ﻿using CPG.Application.UseCases.Ipg.Queries;
 using CPG.Application.UseCases.Ipg.ViewModels;
+using CPG.Application.UseCases.IPGResult;
 using CPG.Application.UseCases.Users.Commands;
 using CPG.Domain.SharedKernel;
 using HotChocolate.Authorization;
@@ -15,11 +16,9 @@ public class IPGResultController : ApiBaseController
 {
     [AllowAnonymous]
     [HttpPost("p/b/{id}")]
-    public async Task<IActionResult> GetData(string id, [FromForm]CreateRedirectUrlCommand command)
+    public async Task<IActionResult> GetData([FromQuery] RedirectViewModel model, [FromRoute] string id)
     {
-        command = command with { Id = id };
-
-        var response = await Mediator.Send(command);
+        var response = await Mediator.Send(new CreateRedirectUrlCommnad(model, id));
         return Redirect(response.Data);
     }
 
@@ -32,7 +31,8 @@ public class IPGResultController : ApiBaseController
 
     [HttpPost("TransactionVerify")]
     [ProducesResponseType(typeof(Result<VerifyTransactionResponseViewModel>), 200)]
-    public async Task<Result<VerifyTransactionResponseViewModel>> VerifyTransaction([Required] VerifyTransactionViewModel model) {
+    public async Task<Result<VerifyTransactionResponseViewModel>> VerifyTransaction([Required] VerifyTransactionViewModel model)
+    {
         return await Mediator.Send(new VerifyTransactionQuery(model));
     }
 
