@@ -2,11 +2,11 @@
 
 public class PaymentTokenResponse
 {
-    public short Status { get; set; }
-
     public string TrackerId { get; set; }
 
     public string Token { get; set; }
 
     public string IpgBaseUrl { get; set; }
+
+    public short StatusCode { get; set; }
 }

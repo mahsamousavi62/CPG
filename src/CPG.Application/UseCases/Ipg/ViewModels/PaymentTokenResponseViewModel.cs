@@ -8,5 +8,7 @@ public class PaymentTokenResponseViewModel
 
     public dynamic JsonBody { get; set; }
 
+    public string Method => "Post";
+
     public Enums.IpgRedirectionMethodType RedirectionMethodType { get; set; }
 }
