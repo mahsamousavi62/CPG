@@ -85,7 +85,7 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
         {
             return Result<PaymentRequestResponseViewModel>.Failure(new Error(exc.Code, exc.Message));
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             return Result<PaymentRequestResponseViewModel>.Failure(new Error("1001000", GlobalResource.GetPaymentTicketUnexpectedError));
         }

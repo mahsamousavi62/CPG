@@ -21,7 +21,7 @@ namespace CPG.Infrastructure.Providers.Ipg;
 
 public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext context, IApplicationSettingsRepository applicationSettingsRepository) : IIpgProvider
 {
-    public IApplicationSettingsRepository _applicationSettingRepositoy;
+    public IApplicationSettingsRepository _applicationSettingRepositoy=applicationSettingsRepository;
     private readonly IHttpProvider httpProvider = httpProvider;
     private readonly ReadDbContext context = context;
     private readonly byte serviceCallMaxTryCounter = 5;
