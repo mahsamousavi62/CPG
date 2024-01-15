@@ -60,6 +60,7 @@ public class Enums
         AsanPardakhtTransResult = 2,
         AsanPardakhtVerify = 3,
         SepToken = 4,
+        SepVerify = 5,
     }
 
     public enum TransactionType : byte
