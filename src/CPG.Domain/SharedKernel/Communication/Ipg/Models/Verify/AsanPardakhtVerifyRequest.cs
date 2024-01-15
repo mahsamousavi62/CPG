@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
 
-public class VerifyRequest : AsanPardakhtRequestBase
+public class AsanPardakhtVerifyRequest : AsanPardakhtRequestBase
 {
     [JsonPropertyName("merchantConfigurationId")]
     public long MerchantConfigurationId { get; set; }

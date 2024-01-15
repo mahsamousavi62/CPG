@@ -1,14 +1,11 @@
-﻿using CPG.Application.UseCases.CompanyIPGs.Exceptions;
-using CPG.Application.UseCases.Ipg.Queries;
+﻿using CPG.Application.UseCases.Ipg.Queries;
 using CPG.Domain.SharedKernel.Communication.Ipg;
 using CPG.Domain.SharedKernel;
-using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
-using Microsoft.EntityFrameworkCore;
 using CPG.Domain.AggregateModels.TransactionAggregate;
 using CPG.Domain.AggregateModels.TransactionAggregate.Specifications;
 using CPG.Application.Shared.Resource;
@@ -26,14 +23,12 @@ namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
     IAggregateRepository<PaymentRequest> paymentRequestRepository,
     IAggregateRepository<Transaction> transactionRepository,
-    ReadDbContext context,
     IHttpContextAccessor httpContext) : IRequestHandler<VerifyTransactionQuery, Result<VerifyTransactionResponseViewModel>>
 {
 
     private readonly IIpgFactory _ipgFactory = ipgFactory;
     private readonly IAggregateRepository<PaymentRequest> _paymentRequestRepository = paymentRequestRepository;
     private readonly IAggregateRepository<Transaction> _transactionRepository = transactionRepository;
-    private readonly ReadDbContext _context = context;
     private readonly IHttpContextAccessor _httpContext = httpContext;
 
     public async Task<Result<VerifyTransactionResponseViewModel>> Handle(VerifyTransactionQuery request, CancellationToken cancellationToken)
@@ -45,9 +40,8 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
                 throw new VerifyRequiredCodeOrTrackIdException();
             }
 
-            var paymentRequest = await _paymentRequestRepository
-                .GetBySpecAsync(new PaymentRequestByCodeOrTrackerId(request.VerifyTransaction.Code, request.VerifyTransaction.TrackerId), cancellationToken) 
-                ?? throw new VerifyInvalidCodeOrTrackIdException();
+            var paymentRequest = await _paymentRequestRepository.GetBySpecAsync(new PaymentRequestByCodeOrTrackerId(request.VerifyTransaction.Code,
+                request.VerifyTransaction.TrackerId), cancellationToken) ?? throw new VerifyInvalidCodeOrTrackIdException();
 
             _ = long.TryParse(_httpContext.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out long applicationId);
 
@@ -60,21 +54,19 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
             await _paymentRequestRepository.SaveChangesAsync(cancellationToken);
 
             var transaction = await _transactionRepository.GetBySpecAsync(new TransactionByPaymentRequestId(paymentRequest.Id), cancellationToken);
-
-            var companyIpg = await _context.CompanyIPGReadModels.FirstOrDefaultAsync(t => t.Id == transaction.IPGTransaction.CompanyIPGId, cancellationToken: cancellationToken)
-                ?? throw new CompanyIPGNotFoundException(transaction.IPGTransaction.CompanyIPGId);
-
-            var ipg = _ipgFactory.GetInstance(ProviderType.AsanPardakht);
-            var result = await ipg.Verify(new VerifyTransactionRequest
-            {
-                ProviderData = companyIpg.ProviderData,
-                ProviderTrackerId = transaction.IPGTransaction.ProviderTrackerId,
-            });
-
             if (transaction is null || transaction.IPGTransaction is null)
             {
                 throw new Exception("transaction or ipgTransaction not found");
             }
+
+            var providerType = transaction.IPGTransaction.CompanyIPG.Provider.ProviderType;
+
+            var ipg = _ipgFactory.GetInstance(providerType);
+            var result = await ipg.Verify(new VerifyTransactionRequest
+            {
+                ProviderData = transaction.IPGTransaction.CompanyIPG.ProviderData,
+                ProviderTrackerId = transaction.IPGTransaction.ProviderTrackerId,
+            });
 
             transaction.IPGTransaction.Status = result.Status;
 

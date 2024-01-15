@@ -2,6 +2,6 @@
 
 namespace CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
 
-public class VerifyResponse : AsanPardakhtResponseBase
+public class AsanPardakhtVerifyResponse : AsanPardakhtResponseBase
 {
 }

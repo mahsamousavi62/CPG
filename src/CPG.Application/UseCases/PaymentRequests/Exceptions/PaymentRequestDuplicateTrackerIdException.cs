@@ -4,7 +4,7 @@ using CPG.Application.UseCases.Exceptions;
 namespace CPG.Application.UseCases.PaymentRequests.Exceptions
 {
     public class PaymentRequestDuplicateTrackerIdException(string trackerId): AppException
-        (string.Format(GlobalResource.PaymentRequestDuplicateTrackerId))
+        (string.Format(GlobalResource.PaymentRequestDuplicateTrackerId, trackerId))
     {
         public override string Code => "paymentRequest_duplicate_TrackerId";
 }

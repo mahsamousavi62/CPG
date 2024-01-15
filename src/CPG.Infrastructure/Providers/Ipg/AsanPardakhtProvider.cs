@@ -21,7 +21,7 @@ namespace CPG.Infrastructure.Providers.Ipg;
 
 public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext context, IApplicationSettingsRepository applicationSettingsRepository) : IIpgProvider
 {
-    public IApplicationSettingsRepository _applicationSettingRepositoy;
+    public IApplicationSettingsRepository _applicationSettingRepositoy=applicationSettingsRepository;
     private readonly IHttpProvider httpProvider = httpProvider;
     private readonly ReadDbContext context = context;
     private readonly byte serviceCallMaxTryCounter = 5;
@@ -118,12 +118,11 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
     public async Task<VerifyTransactionResponse> Verify(VerifyTransactionRequest request)
     {
         GetDataFromJsonProvider(request.ProviderData);
-        ResultData<VerifyTransactionResponse> resultData = new();
         var headers = GetHeaders();
         var response = await httpProvider.PostAsync<VerifyTransactionRequest, VerifyTransactionResponse,
                                                     AsanPardakhtResponseBase, dynamic>(new HttpProviderRequest<dynamic>
                                                     {
-                                                        Body = new VerifyRequest
+                                                        Body = new AsanPardakhtVerifyRequest
                                                         {
                                                             PayGateTranId = request.ProviderTrackerId,
                                                             MerchantConfigurationId = merchantConfigurationId

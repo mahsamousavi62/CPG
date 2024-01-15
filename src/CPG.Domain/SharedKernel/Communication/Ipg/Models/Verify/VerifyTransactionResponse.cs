@@ -1,8 +1,6 @@
-﻿using CPG.Domain.SharedKernel.Communication.Ipg.AsanPardakht;
+﻿namespace CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
 
-namespace CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
-
-public class VerifyTransactionResponse : AsanPardakhtResponseBase
+public class VerifyTransactionResponse : ResponseBase
 {
     public Enums.IPGTransactionStatus Status { get; set; }
 }

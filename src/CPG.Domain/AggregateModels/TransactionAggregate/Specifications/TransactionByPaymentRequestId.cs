@@ -9,6 +9,8 @@ public class TransactionByPaymentRequestId : Specification<Transaction>, ISingle
     {
         Query.Where(c => c.PaymentRquestId == paymentRequestId)
             .Include(t => t.DestinationDeposit)
-            .Include(t => t.IPGTransaction);
+            .Include(t => t.IPGTransaction)
+            .ThenInclude(t => t.CompanyIPG)
+            .ThenInclude(t => t.Provider);
     }
 }
