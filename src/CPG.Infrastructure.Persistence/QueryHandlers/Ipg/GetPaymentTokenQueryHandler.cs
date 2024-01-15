@@ -151,18 +151,24 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                         break;
                     case Enums.ProviderType.AsanPardakht:
                         {
-                            response.JsonBody.JsonStr = new ExpandoObject();
-                            response.JsonBody.JsonStr.Params = new ExpandoObject();
-                            response.JsonBody.JsonStr.Params.RefID = result.Token;
-                            response.JsonBody.JsonStr.Params.Mobileap = mobileNumber;
-                            response.JsonBody.JsonStr.Url = result.IpgBaseUrl;
+                            response.JsonBody.jsonStr = new ExpandoObject();
+                            response.JsonBody.jsonStr.@params = new ExpandoObject();
+                            response.JsonBody.jsonStr.@params.RefID = result.Token;
+                            response.JsonBody.jsonStr.@params.Mobileap = mobileNumber;
+                            response.JsonBody.jsonStr.url = result.IpgBaseUrl;
+                            response.JsonBody.jsonStr.method = "POST";
+
                             break;
                         }
                     case Enums.ProviderType.Sep:
                         {
-                            response.JsonBody.Token = result.Token;
-                            response.JsonBody.GetMethod = false;
-                            break;
+                            response.JsonBody.jsonStr = new ExpandoObject();
+                            response.JsonBody.jsonStr.url = result.IpgBaseUrl;
+                            response.JsonBody.jsonStr.method = "POST";
+                            response.JsonBody.jsonStr.@params = new ExpandoObject();
+                            response.JsonBody.jsonStr.@params.Token = result.Token;
+                            response.JsonBody.jsonStr.@params.GetMethod = false;
+                            break;                    
                         }
                     default:
                         break;
