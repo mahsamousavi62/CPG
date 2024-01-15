@@ -808,7 +808,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, the payment address has expired, repeat the operation if necessary.
+        ///   Looks up a localized string similar to Dear user, the payment code has expired, repeat the operation if necessary.
         /// </summary>
         public static string PaymentRequestCodeExpired {
             get {
