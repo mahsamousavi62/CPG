@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using CCPG.Domain.SharedKernel.Communication.Ipg;
 using CPG.Application.Shared.Resource;
@@ -14,6 +15,7 @@ using CPG.Domain.SharedKernel.Communication.Ipg.Models.TransactionResult;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
 using CPG.Domain.SharedKernel.Helper;
 using CPG.Infrastructure.Persistence.DbContexts;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -112,7 +114,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
                                                         Service = Enums.ServiceType.AsanPardakhtTransResult,
                                                     }, request, TransactionResultErrorHandler);
         
-        response.Status = response.StatusCode == 200 ? (short)2 : response.StatusCode;
+        response.Status = response.StatusCode == (short)HttpStatusCode.OK ? (short)2 : response.StatusCode;
         return response;
     }
 
