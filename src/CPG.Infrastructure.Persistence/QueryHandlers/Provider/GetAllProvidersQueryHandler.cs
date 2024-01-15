@@ -1,5 +1,6 @@
 ﻿using CPG.Application.UseCases.Providers.Queries;
 using CPG.Application.UseCases.Providers.ViewModels;
+using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Minio;
 using CPG.Infrastructure.Persistence.DbContexts;
@@ -19,8 +20,7 @@ public class GetAllProvidersQueryHandler(ReadDbContext context, IMinioProvider m
 
     public async Task<Result<IReadOnlyCollection<ProviderViewModel>>> Handle(GetAllProvidersQuery request, CancellationToken cancellationToken)
     {
-        var providers = await _context.ProviderReadModels.ToListAsync(cancellationToken: cancellationToken);
-        
+        var providers = await _context.ProviderReadModels.Include(p => p.PaymentMethods).ToListAsync(cancellationToken: cancellationToken);
         var viewModels = await Task.WhenAll(providers.Select(async x => new ProviderViewModel
         {
             Id = x.Id,
@@ -31,6 +31,7 @@ public class GetAllProvidersQueryHandler(ReadDbContext context, IMinioProvider m
             ProviderType = x.ProviderType,
             CreationDate = x.CreationDate,
             ModificationDate = x.ModificationDate,
+            PaymentMethods = x.PaymentMethods.Select(p => p.MethodType).ToList()
         })).ConfigureAwait(false);
 
         return Result<IReadOnlyCollection<ProviderViewModel>>.SuccessResult(viewModels);
