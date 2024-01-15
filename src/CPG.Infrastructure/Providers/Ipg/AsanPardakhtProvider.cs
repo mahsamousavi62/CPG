@@ -114,7 +114,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
                                                         Service = Enums.ServiceType.AsanPardakhtTransResult,
                                                     }, request, TransactionResultErrorHandler);
         
-        response.Status = response.StatusCode == (short)HttpStatusCode.OK ? (short)2 : response.StatusCode;
+        response.Status = response.StatusCode == (short)HttpStatusCode.OK ? (short)2 : response.Status;
         return response;
     }
 
