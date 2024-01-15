@@ -66,6 +66,25 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                 throw new PaymentTokenNullKeyOrIvException();
             }
 
+            long destinationDepositId;
+            if (!string.IsNullOrWhiteSpace(paymentRequest.DestinationDepositIban))
+            {
+                var companyDeposit = await _companyDepositRepository.GetBySpecAsync(new CompanyDepositByIban(paymentRequest.DestinationDepositIban));
+                if (companyDeposit is null) throw new Exception("CompanyDeposit not found!");
+                if (companyDeposit.CompanyId != paymentRequest.CompanyId) { throw new PaymentTokenDepositNotBelongsCompanyException(); }
+                if (!companyDeposit.IsActive) { throw new PaymentTokenInactiveDepositException(); }
+                if (!companyDeposit.Bank.IsActive) { throw new PaymentTokenInactiveBankException(); }
+                destinationDepositId = companyDeposit.Id;
+            }
+            else
+            {
+                var tempcompanyIpg = await _companyIPGRepository.GetBySpecAsync(new CompanyIPGByIpgDeposit(companyIpg.Id));
+
+                if (tempcompanyIpg.IPGDeposits.SingleOrDefault() is null)
+                    throw new Exception("CompanyDeposit not found!");
+                destinationDepositId = tempcompanyIpg.IPGDeposits.SingleOrDefault().CompanyDepositId;
+            }
+
             var ipg = _ipgFactory.GetInstance(companyIpg.Provider.ProviderType);
             var mobileNumber = await _authenticationService.GetDataFromClaim<string>(ClaimTypes.MobilePhone);
 
@@ -77,15 +96,14 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                  ipgBaseUrl= jsonObjectProviderData["IPG_Base_URL"] is not null 
                     ? (string)jsonObjectProviderData["IPG_Base_URL"] : throw new Exception("Invalid IPG_Base_URL");
 
-                IpgVerificationTimeLimit = jsonObjectProviderData["IPG_Verification_TimeLimit"] is not null
-                               ? (short)jsonObjectProviderData["IPG_Verification_TimeLimit"] : throw new Exception("IPG_Verification_TimeLimit");
+                IpgVerificationTimeLimit = jsonObjectProviderData["IPG_Verification_Time_Limit"] is not null
+                               ? (short)jsonObjectProviderData["IPG_Verification_Time_Limit"] : throw new Exception("IPG_Verification_TimeLimit");
 
             }
             catch
             {
                 throw new ParseCompanyIpgProviderDataException(companyIpg.Provider.ProviderData);
             }
-
 
             var result = await ipg.GetPaymentTokenAsync(
                 new PaymentTokenRequest
@@ -102,27 +120,8 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                     ShaparakKey = paymentRequest.Company.ShaparakSetting.Key,
                 });
 
-            if (result.Status == (short)HttpStatusCode.OK)
+            if (result.StatusCode == (short)HttpStatusCode.OK)
             {
-                long destinationDepositId;
-                if (!string.IsNullOrWhiteSpace(paymentRequest.DestinationDepositIban))
-                {
-                    var companyDeposit = await _companyDepositRepository.GetBySpecAsync(new CompanyDepositByIban(paymentRequest.DestinationDepositIban));
-                    if (companyDeposit is null) throw new Exception("CompanyDeposit not found!");
-                    if (companyDeposit.CompanyId != paymentRequest.CompanyId) { throw new PaymentTokenDepositNotBelongsCompanyException(); }
-                    if (!companyDeposit.IsActive) { throw new PaymentTokenInactiveDepositException(); }
-                    if (!companyDeposit.Bank.IsActive) { throw new PaymentTokenInactiveBankException(); }
-                    destinationDepositId = companyDeposit.Id;
-                }
-                else
-                {
-                    var tempcompanyIpg = await _companyIPGRepository.GetBySpecAsync(new CompanyIPGByIpgDeposit(companyIpg.Id));
-
-                    if (tempcompanyIpg.IPGDeposits.SingleOrDefault() is null)
-                        throw new Exception("CompanyDeposit not found!");
-                    destinationDepositId = tempcompanyIpg.IPGDeposits.SingleOrDefault().CompanyDepositId;
-                }
-
                 Transaction transaction = Transaction.Create(new CreateTransactionModel
                 {
                     IpgVerificationTimeLimit= IpgVerificationTimeLimit,
@@ -141,7 +140,7 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
 
                 var response = new PaymentTokenResponseViewModel()
                 {
-                    Url = result.IpgBaseUrl,
+                    Url = $"{paymentRequest.Company.SiteAddress}/redirectToBank",
                     JsonBody = new ExpandoObject(),
                     RedirectionMethodType = paymentRequest.Company.IpgRedirectionMethodType,
                 };
@@ -152,8 +151,11 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                         break;
                     case Enums.ProviderType.AsanPardakht:
                         {
-                            response.JsonBody.RefID = result.Token;
-                            response.JsonBody.Mobileap = mobileNumber;
+                            response.JsonBody.JsonStr = new ExpandoObject();
+                            response.JsonBody.JsonStr.Params = new ExpandoObject();
+                            response.JsonBody.JsonStr.Params.RefID = result.Token;
+                            response.JsonBody.JsonStr.Params.Mobileap = mobileNumber;
+                            response.JsonBody.JsonStr.Url = result.IpgBaseUrl;
                             break;
                         }
                     case Enums.ProviderType.Sep:

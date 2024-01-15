@@ -21,7 +21,7 @@ namespace CPG.Infrastructure.Providers.Ipg;
 
 public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext context, IApplicationSettingsRepository applicationSettingsRepository) : IIpgProvider
 {
-    public IApplicationSettingsRepository _applicationSettingRepositoy;
+    public IApplicationSettingsRepository _applicationSettingRepositoy = applicationSettingsRepository;
     private readonly IHttpProvider httpProvider = httpProvider;
     private readonly ReadDbContext context = context;
     private readonly byte serviceCallMaxTryCounter = 5;
@@ -85,7 +85,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
 
         return new PaymentTokenResponse
         {
-            Status = response.Status,
+            StatusCode = response.StatusCode,
             TrackerId = trackerId.ToString(),
             Token = response.Token,
             IpgBaseUrl = request.IpgBaseUrl,
@@ -111,7 +111,8 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
                                                         Provider = Enums.ProviderType.AsanPardakht,
                                                         Service = Enums.ServiceType.AsanPardakhtTransResult,
                                                     }, request, TransactionResultErrorHandler);
-        response.Status = response.Status == 200 ? (short)2 : response.Status;
+        
+        response.Status = response.StatusCode == 200 ? (short)2 : response.StatusCode;
         return response;
     }
 
