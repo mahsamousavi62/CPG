@@ -1,4 +1,5 @@
 ﻿using CPG.Domain.AggregateModels.TransactionAggregate;
+using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Domain.SharedKernel;
 
@@ -131,3 +132,4 @@ public struct ResultData<T>(Enums.OperationResult operationResult)
 
     public string? Error { get; set; } = null;
 }
+

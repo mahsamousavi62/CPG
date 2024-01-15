@@ -20,7 +20,7 @@ namespace CPG.Infrastructure.Providers.Ipg;
 
 public class SepProvider(IHttpProvider httpProvider, ReadDbContext context, IApplicationSettingsRepository applicationSettingsRepository) : IIpgProvider
 {
-    public IApplicationSettingsRepository _applicationSettingRepositoy=applicationSettingsRepository;
+    public IApplicationSettingsRepository _applicationSettingRepositoy = applicationSettingsRepository;
     private readonly IHttpProvider httpProvider = httpProvider;
     private readonly ReadDbContext context = context;
     private readonly byte serviceCallMaxTryCounter = 5;
@@ -35,7 +35,7 @@ public class SepProvider(IHttpProvider httpProvider, ReadDbContext context, IApp
         try
         {
             jsonObjectProviderData = JObject.Parse(providerData);
-            terminalId = jsonObjectProviderData["TerminalId"] is not null ? (int)jsonObjectProviderData["TerminalId"] : throw new Exception("Invalid TerminalId");
+            terminalId = jsonObjectProviderData["Terminal_ID"] is not null ? (int)jsonObjectProviderData["Terminal_ID"] : throw new Exception("Invalid TerminalId");
         }
         catch
         {
@@ -71,10 +71,10 @@ public class SepProvider(IHttpProvider httpProvider, ReadDbContext context, IApp
 
         return new PaymentTokenResponse
         {
-            Status = response.Status,
+            StatusCode = response.StatusCode,
             TrackerId = trackerId,
             Token = response.Token,
-            IpgBaseUrl = request.IpgBaseUrl,
+            IpgBaseUrl = request.IpgBaseUrl,            
         };  
     }
 
