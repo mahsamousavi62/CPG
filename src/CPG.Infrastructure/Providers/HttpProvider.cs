@@ -340,7 +340,7 @@ public class HttpProvider : IHttpProvider
                     return await errorHandler(baseRequest, result, errorResult, (short)response.StatusCode);
                 }
             }
-            result.Status = (short)response.StatusCode;
+            result.StatusCode = (short)response.StatusCode;
             return result;
         }
         catch (Exception exc)
