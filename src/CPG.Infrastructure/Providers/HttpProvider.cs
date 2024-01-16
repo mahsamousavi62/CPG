@@ -320,7 +320,7 @@ public class HttpProvider : IHttpProvider
             var response = await client.GetAsync(request.Uri);
 
             var resString = await response.Content.ReadAsStringAsync();
-            //infraHelper.Value.AddServiceCallLog(request, response, resString);
+            _logService.AddServiceCallLog(request, response, resString);
 
             var result = await response.Content.ReadFromJsonAsync<TResponse>();
             var errorResult = result as TError;
@@ -340,7 +340,7 @@ public class HttpProvider : IHttpProvider
                     return await errorHandler(baseRequest, result, errorResult, (short)response.StatusCode);
                 }
             }
-            result.Status = (short)response.StatusCode;
+            result.StatusCode = (short)response.StatusCode;
             return result;
         }
         catch (Exception exc)
