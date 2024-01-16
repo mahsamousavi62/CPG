@@ -1,13 +1,14 @@
 ﻿using CPG.Domain.SharedKernel.Communication.Ipg.AsanPardakht;
+using Newtonsoft.Json;
 using System.Text.Json.Serialization;
 
 namespace CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
 
 public class AsanPardakhtVerifyRequest : AsanPardakhtRequestBase
 {
-    [JsonPropertyName("merchantConfigurationId")]
+    [JsonProperty(PropertyName = "merchantConfigurationId")]
     public long MerchantConfigurationId { get; set; }
 
-    [JsonPropertyName("payGateTranId")]
+    [JsonProperty(PropertyName = "payGateTranId")]
     public string PayGateTranId { get; set; }
 }
