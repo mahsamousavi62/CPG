@@ -118,6 +118,7 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                     NationalCodeMatchingRequied = paymentRequest.Company.NationalCodeMatchingRequied,
                     ShaparakIv = paymentRequest.Company.ShaparakSetting.Iv,
                     ShaparakKey = paymentRequest.Company.ShaparakSetting.Key,
+                    ThirdPartyCode = paymentRequest.Company.ShaparakSetting.ThirdPartyCode,
                 });
 
             if (result.StatusCode == (short)HttpStatusCode.OK)

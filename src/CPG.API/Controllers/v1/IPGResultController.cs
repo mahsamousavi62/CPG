@@ -16,7 +16,7 @@ public class IPGResultController : ApiBaseController
 {
     [AllowAnonymous]
     [HttpPost("p/b/{id}")]
-    public async Task<IActionResult> GetData([FromQuery] RedirectViewModel model, [FromRoute] string id)
+    public async Task<IActionResult> GetData([FromForm] RedirectViewModel model, [FromRoute] string id)
     {
         var response = await Mediator.Send(new CreateRedirectUrlCommnad(model, id));
         return Redirect(response.Data);
