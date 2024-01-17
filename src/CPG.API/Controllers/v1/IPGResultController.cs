@@ -24,14 +24,14 @@ public class IPGResultController : ApiBaseController
 
     [HttpPost("TransactionDetail")]
     [ProducesResponseType(typeof(Result<TransactionDetailResponseViewModel>), 200)]
-    public async Task<Result<TransactionDetailResponseViewModel>> GetTransactionDetail([Required] TransactionDetailRequestViewModel model)
+    public async Task<Result<TransactionDetailResponseViewModel>> TransactionDetail([Required] TransactionDetailRequestViewModel model)
     {
         return await Mediator.Send(new TransactionDetailQuery(model));
     }
 
     [HttpPost("TransactionVerify")]
     [ProducesResponseType(typeof(Result<VerifyTransactionResponseViewModel>), 200)]
-    public async Task<Result<VerifyTransactionResponseViewModel>> VerifyTransaction([Required] VerifyTransactionViewModel model)
+    public async Task<Result<VerifyTransactionResponseViewModel>> TransactionVerify([Required] VerifyTransactionViewModel model)
     {
         return await Mediator.Send(new VerifyTransactionQuery(model));
     }
