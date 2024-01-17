@@ -1,4 +1,5 @@
 ﻿using CPG.Domain.AggregateModels.TransactionAggregate;
+using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Domain.SharedKernel;
 
@@ -60,6 +61,7 @@ public class Enums
         AsanPardakhtTransResult = 2,
         AsanPardakhtVerify = 3,
         SepToken = 4,
+        SepVerify = 5,
     }
 
     public enum TransactionType : byte
@@ -130,3 +132,4 @@ public struct ResultData<T>(Enums.OperationResult operationResult)
 
     public string? Error { get; set; } = null;
 }
+

@@ -56,6 +56,7 @@ public class ReadDbContext(DbContextOptions<ReadDbContext> options) : DbContext(
             .ApplyConfiguration(new UserReadModelConfiguration())
             .ApplyConfiguration(new UserRoleReadModelConfiguration())
             .ApplyConfiguration(new ProviderReadModelConfiguration())
+            .ApplyConfiguration(new ProviderPaymentMethodReadModelConfiguration())
             .ApplyConfiguration(new ApplicationReadModelConfiguration())
             .ApplyConfiguration(new ApplicationIdentifierReadModelConfiguration())
             .ApplyConfiguration(new ApplicationCallbackUrlReadModelConfiguration())
