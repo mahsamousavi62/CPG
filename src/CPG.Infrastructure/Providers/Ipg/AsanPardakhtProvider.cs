@@ -113,7 +113,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
                                                         Provider = Enums.ProviderType.AsanPardakht,
                                                         Service = Enums.ServiceType.AsanPardakhtTransResult,
                                                     }, request, TransactionResultErrorHandler);
-        
+
         response.Status = response.StatusCode == (short)HttpStatusCode.OK ? (short)2 : response.Status;
         return response;
     }
@@ -135,8 +135,13 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
                                                         HeaderParameters = headers,
                                                         Provider = Enums.ProviderType.AsanPardakht,
                                                         Service = Enums.ServiceType.AsanPardakhtVerify,
-                                                    }, request, VerifyErrorHandler);
+                                                    }, request, VerifyErrorHandler, (string stringResponse) =>
+                                                    {
+                                                        if (string.IsNullOrEmpty(stringResponse))
+                                                            return new VerifyTransactionResponse { Status = Enums.IPGTransactionStatus.VerificationSucceeded };
 
+                                                        return System.Text.Json.JsonSerializer.Deserialize<VerifyTransactionResponse>(stringResponse);
+                                                    });
         return response;
     }
 
