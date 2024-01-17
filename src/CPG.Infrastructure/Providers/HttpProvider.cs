@@ -65,7 +65,16 @@ public class HttpProvider : IHttpProvider
             var resString = await response.Content.ReadAsStringAsync();
             _logService.AddServiceCallLog(request, response, resString);
 
-            var result = await response.Content.ReadFromJsonAsync<TResponse>();
+            TResponse result = null;
+            if (decoder != null)
+            {
+                result = decoder(resString);
+            }
+            else if (response.IsSuccessStatusCode)
+            {
+                result = await response.Content.ReadFromJsonAsync<TResponse>();
+            }
+
             TError? errorResult = result as TError;
             if (result is null)
             {
