@@ -15,7 +15,7 @@ public class ValidateTokenCommandHandler(IAggregateRepository<Transaction> repos
 
     public async Task Handle(ValidateTokenCommand command, CancellationToken cancellationToken)
     {
-        var transaction = await _repository.GetBySpecAsync(new TransactionByIPGTrackId(command.ValidateToken.TrackId));
+        var transaction = await _repository.GetBySpecAsync(new TransactionByIPGTrackId(command.TrackId));
 
         if (transaction?.IPGTransaction is null)
             throw new NotFoundTrackIdException();
