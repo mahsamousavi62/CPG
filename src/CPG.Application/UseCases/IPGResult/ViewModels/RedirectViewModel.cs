@@ -4,8 +4,8 @@ public class RedirectViewModel
 {
     public string MID { get; set; }
     public long TerminalId { get; set; }
-    public long RefNum { get; set; }
-    public long ResNum { get; set; }
+    public string RefNum { get; set; }
+    public string ResNum { get; set; }
     public string State { get; set; }
     public string TraceNo { get; set; }
     public long Amount { get; set; }
