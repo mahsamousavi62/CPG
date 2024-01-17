@@ -29,7 +29,7 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
     {
         try
         {
-            var transaction = await _transactionRepository.GetBySpecAsync(new TransactionByIPGTrackId(request.ValidateToken.TrackId));
+            var transaction = await _transactionRepository.GetBySpecAsync(new TransactionByIPGTrackId(request.TrackId));
 
             if (transaction?.IPGTransaction is null)
                 throw new NotFoundTrackIdException();
@@ -84,17 +84,19 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
                     }
                 case ProviderType.Sep:
                     {
-                        transaction.IPGTransaction.ProviderTrackerId = request.ValidateToken.RefNum;
-                        transaction.IPGTransaction.ReferenceNumber = request.ValidateToken.Rrn;
-                        transaction.IPGTransaction.EncryptCardNumber = request.ValidateToken.HashedCardNumber;
+                        var req = System.Text.Json.JsonSerializer.Deserialize<SepValidateTokenViewModel>(request.ValidateToken.Request);
 
-                        if (request.ValidateToken.Status is 1 or 3 or 4 or 5 or 8 or 10 or 11 or 12 or 21)
+                        transaction.IPGTransaction.ProviderTrackerId = req.RefNum;
+                        transaction.IPGTransaction.ReferenceNumber = req.Rrn;
+                        transaction.IPGTransaction.EncryptCardNumber = req.HashedCardNumber;
+
+                        if (req.Status is "1" or "3" or "4" or "5" or "8" or "10" or "11" or "12" or "21")
                         {
                             transaction.IPGTransaction.Status = IPGTransactionStatus.Failed;
                             transaction.Status = TransactionStatus.TransactionFailed;
                             paymentRequest.Status = PaymentStatus.TransactionFailed;
                         }
-                        else if(request.ValidateToken.Status is 2)
+                        else if (req.Status is "2")
                         {
                             transaction.IPGTransaction.Status = IPGTransactionStatus.SucceededAndWaitingForVerification;
                             transaction.IPGTransaction.PredicateExpirationDateTime = DateTime.UtcNow.AddMinutes(transaction.IPGTransaction.VerificationTimeLimit);
@@ -130,5 +132,5 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
         }
     }
 
-    
+
 }

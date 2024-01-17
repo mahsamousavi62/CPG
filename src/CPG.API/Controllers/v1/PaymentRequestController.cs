@@ -3,7 +3,6 @@ using CPG.Application.UseCases.PaymentRequests.Commands.CreatePaymentRequest;
 using CPG.Application.UseCases.PaymentRequests.Commands.GetPaymentMethods;
 using CPG.Application.UseCases.PaymentRequests.Queries;
 using CPG.Application.UseCases.PaymentRequests.ViewModels;
-using CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentTicket;
 using CPG.Domain.SharedKernel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +10,7 @@ using CPG.Application.UseCases.Ipg.ViewModels;
 using CPG.Application.UseCases.Ipg.Queries;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.TransactionResult;
 using CPG.Application.UseCases.PaymentRequests.Commands.CancelPaymentRequet;
+using System.ComponentModel.DataAnnotations;
 
 namespace CPG.API.Controllers.v1;
 
@@ -61,5 +61,19 @@ public class PaymentRequestController : ApiBaseController
     public async Task<Result<TransactionResultResponse>> GetPaymentTransactionInfo([FromBody] PaymentTransactionViewModel paymentTransactionRequest)
     {
         return await Mediator.Send(new GetPaymentTransactionInfoQuery(paymentTransactionRequest));
+    }
+
+    [HttpPost("TransactionDetail")]
+    [ProducesResponseType(typeof(Result<TransactionDetailResponseViewModel>), 200)]
+    public async Task<Result<TransactionDetailResponseViewModel>> GetTransactionDetail([Required] TransactionDetailRequestViewModel model)
+    {
+        return await Mediator.Send(new TransactionDetailQuery(model));
+    }
+
+    [HttpPost("TransactionVerify")]
+    [ProducesResponseType(typeof(Result<VerifyTransactionResponseViewModel>), 200)]
+    public async Task<Result<VerifyTransactionResponseViewModel>> VerifyTransaction([Required] VerifyTransactionViewModel model)
+    {
+        return await Mediator.Send(new VerifyTransactionQuery(model));
     }
 }
