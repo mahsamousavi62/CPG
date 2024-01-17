@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Domain.SharedKernel.Logging
@@ -16,7 +17,7 @@ namespace CPG.Domain.SharedKernel.Logging
         public DateTime ResponseTime { get; set; }
         public string? ResponseStatus { get; set; }
         public object? ResponseBody { get; set; }
-        public string AuditType { get; set; }
+        public Enums.AuditType AuditType { get; set; }
         public long? CompanyId { get; set; }
         public long? ApplicationId { get; set; }
         public long? UserId { get; set; }
@@ -25,5 +26,9 @@ namespace CPG.Domain.SharedKernel.Logging
         public string StackTrace { get; set; }
         public bool IsSuccess { get; set; }
         public string ErrorCode { get; set; }
+        public DateTime StartDateTime { get; set; }
+        public DateTime EndDateTime { get; set; }
+        public long DurationMs { get; set; }
+        public KeyValuePair<string ,object>[] RoutValues { get; set; }
     }
 }

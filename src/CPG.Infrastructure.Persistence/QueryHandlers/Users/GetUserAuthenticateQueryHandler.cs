@@ -30,7 +30,7 @@ namespace CPG.Infrastructure.Persistence.QueryHandlers.Users
                 return cacheData;
 
             var sub = await _authenticationService.GetDataFromClaim<string>("sub", string.Empty);
-            var clientId = await _authenticationService.GetClientId( string.Empty);
+            var clientId = await _authenticationService.GetClientId(string.Empty);
 
             var user = await _context.UserReadModels.Include(u => u.UserRoles).
                        SingleOrDefaultAsync(u => u.IsActive && u.IDPId == sub);
@@ -38,8 +38,6 @@ namespace CPG.Infrastructure.Persistence.QueryHandlers.Users
             if (user == null)
                 return null;
             var applicationIdentifier = (await _context.ApplicationIdentifierReadModels.SingleOrDefaultAsync(a => a.IdpClientId == clientId));
-            //todo :optimize 
-           var auditType = applicationIdentifier?.IdpClientId != "pay__daryaftyar_client"? Enums.AuditType.Client : Enums.AuditType.User;
 
             cacheData = new UserAuthenticateViewModel
             {
@@ -50,9 +48,8 @@ namespace CPG.Infrastructure.Persistence.QueryHandlers.Users
                 IDPId = clientId,
                 PhoneNumber = user.PhoneNumber,
                 UserRoles = user?.UserRoles.ToDictionary(p => p.RoleType, p => ((Enums.UserRoleType)p.RoleType).ToString()),
-                CompanyId = user?.CompanyId??0,
-                ApplicationId = applicationIdentifier?.ApplicationId??0,
-                AuditType = auditType
+                CompanyId = user?.CompanyId ?? 0,
+                ApplicationId = applicationIdentifier?.ApplicationId ?? 0,
             };
             _cacheService.SetData(CacheKey, cacheData);
 
