@@ -23,7 +23,7 @@ public class UnhandledExceptionBehaviour<TRequest, TResponse>(ILogger<TRequest> 
             var requestName = typeof(TRequest).Name;
             RequestResponseLogModel log = new()
             {
-                AuditType = Enums.AuditType.Develop.ToString(),
+                AuditType = Enums.AuditType.Develop,
                 ServiceName = requestName,
                 StackTrace = ex.StackTrace,
                 ResponseBody = ex.Message,
