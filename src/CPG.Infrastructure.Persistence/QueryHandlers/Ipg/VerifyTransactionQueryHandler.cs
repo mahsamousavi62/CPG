@@ -81,7 +81,7 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
 
                 transaction.PredictedSettlementDateTime = date;
                 transaction.Status = TransactionStatus.TransactionSucceeded;
-                transaction.IPGTransaction.VerificationDateTime = DateTime.UtcNow;
+                transaction.IPGTransaction.VerificationDateTime = DateTime.Now;
                 paymentRequest.Status = PaymentStatus.TransactionVerificationSucceeded;
             }
             else if (result.Status == IPGTransactionStatus.VerificationFailed)
@@ -106,7 +106,7 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
                 PaymentMethodTypeTitle = transaction is null ? string.Empty : GetPaymentMethodTypeTitle(transaction.TransactionMethodType),
                 Status = (short)paymentRequest.Status,
                 StatusTitle = GetStatusTitle(paymentRequest.Status),
-                PredictedExpirationDateTime = transaction.PredictedSettlementDateTime?.ToString("yyyy-MM-dd HH:mm:ss zzz"),
+                PredictedSettlementDateTime = transaction.PredictedSettlementDateTime?.ToString("yyyy-MM-dd HH:mm:ss zzz"),
                 CPGVerificationDateTime = transaction.IPGTransaction.VerificationDateTime?.ToString("yyyy-MM-dd HH:mm:ss zzz"),
             };
 

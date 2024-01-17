@@ -2,7 +2,6 @@
 
 public class RedirectViewModel
 {
-    public string pcu { get; set; }
     public string MID { get; set; }
     public long TerminalId { get; set; }
     public long RefNum { get; set; }
