@@ -31,8 +31,8 @@ public class VerifyTransactionResponseViewModel
     [JsonPropertyName("statusTitle")]
     public string StatusTitle { get; set; }
 
-    [JsonPropertyName("predictedExpirationDateTime")]
-    public string PredictedExpirationDateTime { get; set; }
+    [JsonPropertyName("predictedSettlementDateTime")]
+    public string PredictedSettlementDateTime { get; set; }
 
     [JsonPropertyName("cpgVerificationDateTime")]
     public string CPGVerificationDateTime { get; set; }
