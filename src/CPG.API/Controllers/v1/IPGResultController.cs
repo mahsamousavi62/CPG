@@ -3,7 +3,7 @@ using CPG.Application.UseCases.Ipg.ViewModels;
 using CPG.Application.UseCases.IPGResult.ViewModels;
 using CPG.Application.UseCases.Users.Commands;
 using CPG.Domain.SharedKernel;
-using HotChocolate.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
@@ -29,6 +29,7 @@ public class IPGResultController : ApiBaseController
         return await Mediator.Send(new TransactionDetailQuery(model));
     }
 
+    
     [HttpPost("TransactionVerify")]
     [ProducesResponseType(typeof(Result<VerifyTransactionResponseViewModel>), 200)]
     public async Task<Result<VerifyTransactionResponseViewModel>> TransactionVerify([Required] VerifyTransactionViewModel model)
