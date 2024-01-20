@@ -65,6 +65,8 @@ public class LoggingMiddleware(RequestDelegate next, ILoggerFactory loggerFactor
                 log.UserId = UserId;
 
                 log.ClientId = httpContext.User.Claims.FirstOrDefault(c => c.Type == "ClientId")?.Value;
+
+                log.MobilePhone = httpContext.User.Claims.FirstOrDefault(c => c.Type == "MobilePhone")?.Value;
             }
             requestStream.Position = 0;
             using StreamReader streamReader = new(requestStream);
