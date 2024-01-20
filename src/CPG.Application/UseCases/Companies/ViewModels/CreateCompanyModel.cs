@@ -22,7 +22,7 @@ public class CreateCompanyModel
     [Required]
     public Enums.IpgRedirectionMethodType IpgRedirectionMethodType { get; set; }
     [Required]
-    public required byte[] MethodTypes { get; set; }
+    public required List<Enums.PaymentMethodType> MethodTypes { get; set; }
     [Required]
     public required List<long> Users { get; set; }
 

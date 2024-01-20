@@ -1,12 +1,11 @@
-﻿namespace CPG.Application.UseCases.IPGResult;
+﻿namespace CPG.Application.UseCases.IPGResult.ViewModels;
 
 public class RedirectViewModel
 {
-    public string pcu { get; set; }
     public string MID { get; set; }
     public long TerminalId { get; set; }
-    public long RefNum { get; set; }
-    public long ResNum { get; set; }
+    public string RefNum { get; set; }
+    public string ResNum { get; set; }
     public string State { get; set; }
     public string TraceNo { get; set; }
     public long Amount { get; set; }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Infrastructure.Persistence.DbContexts.ReadModels;
@@ -14,4 +15,6 @@ public class ProviderReadModel
     public bool IsActive { get; set; }
     public DateTime CreationDate { get; set; }
     public DateTime? ModificationDate { get; set; }
+    public ICollection<ProviderPaymentMethodReadModel> PaymentMethods { get; set; }
+
 }

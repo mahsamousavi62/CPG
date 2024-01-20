@@ -35,8 +35,7 @@ public class GetAllCompanyQueryHandler(ReadDbContext context, IMinioProvider min
             CreationDate = company.CreationDate,
             ModificationDate = company.ModificationDate,
             IsActive = company.IsActive,
-            PaymentMethods = company.PaymentMethods
-          .ToDictionary(p => p.MethodType, p => ((Enums.PaymentMethodType)p.MethodType).ToString())
+            PaymentMethods = company.PaymentMethods.Select(p => p.MethodType).ToList()
         })).ConfigureAwait(false);
 
         return Result<IReadOnlyCollection<CompanyViewModel>>.SuccessResult(companyViewModels);

@@ -66,6 +66,25 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                 throw new PaymentTokenNullKeyOrIvException();
             }
 
+            long destinationDepositId;
+            if (!string.IsNullOrWhiteSpace(paymentRequest.DestinationDepositIban))
+            {
+                var companyDeposit = await _companyDepositRepository.GetBySpecAsync(new CompanyDepositByIban(paymentRequest.DestinationDepositIban));
+                if (companyDeposit is null) throw new Exception("CompanyDeposit not found!");
+                if (companyDeposit.CompanyId != paymentRequest.CompanyId) { throw new PaymentTokenDepositNotBelongsCompanyException(); }
+                if (!companyDeposit.IsActive) { throw new PaymentTokenInactiveDepositException(); }
+                if (!companyDeposit.Bank.IsActive) { throw new PaymentTokenInactiveBankException(); }
+                destinationDepositId = companyDeposit.Id;
+            }
+            else
+            {
+                var tempcompanyIpg = await _companyIPGRepository.GetBySpecAsync(new CompanyIPGByIpgDeposit(companyIpg.Id));
+
+                if (tempcompanyIpg.IPGDeposits.SingleOrDefault() is null)
+                    throw new Exception("CompanyDeposit not found!");
+                destinationDepositId = tempcompanyIpg.IPGDeposits.SingleOrDefault().CompanyDepositId;
+            }
+
             var ipg = _ipgFactory.GetInstance(companyIpg.Provider.ProviderType);
             var mobileNumber = await _authenticationService.GetDataFromClaim<string>(ClaimTypes.MobilePhone);
 
@@ -77,15 +96,14 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                  ipgBaseUrl= jsonObjectProviderData["IPG_Base_URL"] is not null 
                     ? (string)jsonObjectProviderData["IPG_Base_URL"] : throw new Exception("Invalid IPG_Base_URL");
 
-                IpgVerificationTimeLimit = jsonObjectProviderData["IPG_Verification_TimeLimit"] is not null
-                               ? (short)jsonObjectProviderData["IPG_Verification_TimeLimit"] : throw new Exception("IPG_Verification_TimeLimit");
+                IpgVerificationTimeLimit = jsonObjectProviderData["IPG_Verification_Time_Limit"] is not null
+                               ? (short)jsonObjectProviderData["IPG_Verification_Time_Limit"] : throw new Exception("IPG_Verification_TimeLimit");
 
             }
             catch
             {
                 throw new ParseCompanyIpgProviderDataException(companyIpg.Provider.ProviderData);
             }
-
 
             var result = await ipg.GetPaymentTokenAsync(
                 new PaymentTokenRequest
@@ -100,29 +118,11 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                     NationalCodeMatchingRequied = paymentRequest.Company.NationalCodeMatchingRequied,
                     ShaparakIv = paymentRequest.Company.ShaparakSetting.Iv,
                     ShaparakKey = paymentRequest.Company.ShaparakSetting.Key,
+                    ThirdPartyCode = paymentRequest.Company.ShaparakSetting.ThirdPartyCode,
                 });
 
-            if (result.Status == (short)HttpStatusCode.OK)
+            if (result.StatusCode == (short)HttpStatusCode.OK)
             {
-                long destinationDepositId;
-                if (!string.IsNullOrWhiteSpace(paymentRequest.DestinationDepositIban))
-                {
-                    var companyDeposit = await _companyDepositRepository.GetBySpecAsync(new CompanyDepositByIban(paymentRequest.DestinationDepositIban));
-                    if (companyDeposit is null) throw new Exception("CompanyDeposit not found!");
-                    if (companyDeposit.CompanyId != paymentRequest.CompanyId) { throw new PaymentTokenDepositNotBelongsCompanyException(); }
-                    if (!companyDeposit.IsActive) { throw new PaymentTokenInactiveDepositException(); }
-                    if (!companyDeposit.Bank.IsActive) { throw new PaymentTokenInactiveBankException(); }
-                    destinationDepositId = companyDeposit.Id;
-                }
-                else
-                {
-                    var tempcompanyIpg = await _companyIPGRepository.GetBySpecAsync(new CompanyIPGByIpgDeposit(companyIpg.Id));
-
-                    if (tempcompanyIpg.IPGDeposits.SingleOrDefault() is null)
-                        throw new Exception("CompanyDeposit not found!");
-                    destinationDepositId = tempcompanyIpg.IPGDeposits.SingleOrDefault().CompanyDepositId;
-                }
-
                 Transaction transaction = Transaction.Create(new CreateTransactionModel
                 {
                     IpgVerificationTimeLimit= IpgVerificationTimeLimit,
@@ -141,7 +141,7 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
 
                 var response = new PaymentTokenResponseViewModel()
                 {
-                    Url = result.IpgBaseUrl,
+                    Url = $"{paymentRequest.Company.SiteAddress}/redirectToBank",
                     JsonBody = new ExpandoObject(),
                     RedirectionMethodType = paymentRequest.Company.IpgRedirectionMethodType,
                 };
@@ -152,15 +152,24 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                         break;
                     case Enums.ProviderType.AsanPardakht:
                         {
-                            response.JsonBody.RefID = result.Token;
-                            response.JsonBody.Mobileap = mobileNumber;
+                            response.JsonBody.jsonStr = new ExpandoObject();
+                            response.JsonBody.jsonStr.@params = new ExpandoObject();
+                            response.JsonBody.jsonStr.@params.RefID = result.Token;
+                            response.JsonBody.jsonStr.@params.Mobileap = mobileNumber;
+                            response.JsonBody.jsonStr.url = result.IpgBaseUrl;
+                            response.JsonBody.jsonStr.method = "POST";
+
                             break;
                         }
                     case Enums.ProviderType.Sep:
                         {
-                            response.JsonBody.Token = result.Token;
-                            response.JsonBody.GetMethod = false;
-                            break;
+                            response.JsonBody.jsonStr = new ExpandoObject();
+                            response.JsonBody.jsonStr.url = result.IpgBaseUrl;
+                            response.JsonBody.jsonStr.method = "POST";
+                            response.JsonBody.jsonStr.@params = new ExpandoObject();
+                            response.JsonBody.jsonStr.@params.Token = result.Token;
+                            response.JsonBody.jsonStr.@params.GetMethod = false;
+                            break;                    
                         }
                     default:
                         break;

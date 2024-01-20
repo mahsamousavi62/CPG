@@ -20,7 +20,7 @@ namespace CPG.Infrastructure.Providers.Ipg;
 
 public class SepProvider(IHttpProvider httpProvider, ReadDbContext context, IApplicationSettingsRepository applicationSettingsRepository) : IIpgProvider
 {
-    public IApplicationSettingsRepository _applicationSettingRepositoy;
+    public IApplicationSettingsRepository _applicationSettingRepositoy = applicationSettingsRepository;
     private readonly IHttpProvider httpProvider = httpProvider;
     private readonly ReadDbContext context = context;
     private readonly byte serviceCallMaxTryCounter = 5;
@@ -35,7 +35,7 @@ public class SepProvider(IHttpProvider httpProvider, ReadDbContext context, IApp
         try
         {
             jsonObjectProviderData = JObject.Parse(providerData);
-            terminalId = jsonObjectProviderData["TerminalId"] is not null ? (int)jsonObjectProviderData["TerminalId"] : throw new Exception("Invalid TerminalId");
+            terminalId = jsonObjectProviderData["Terminal_ID"] is not null ? (int)jsonObjectProviderData["Terminal_ID"] : throw new Exception("Invalid TerminalId");
         }
         catch
         {
@@ -53,8 +53,8 @@ public class SepProvider(IHttpProvider httpProvider, ReadDbContext context, IApp
         var response = await httpProvider.PostAsync<PaymentTokenRequest, SepTokenResponse,
                                                     SepResponseBase, dynamic>(new HttpProviderRequest<dynamic>
                                                     {
-                                                        BaseAddress = "https://sep.shaparak.ir/OnlinePG",
-                                                        Uri = "/OnlinePG",
+                                                        BaseAddress = "https://sep.shaparak.ir/",
+                                                        Uri = "OnlinePG/OnlinePG",
                                                         Body = new SepTokenRequest
                                                         {
                                                             Action = "token",
@@ -71,10 +71,10 @@ public class SepProvider(IHttpProvider httpProvider, ReadDbContext context, IApp
 
         return new PaymentTokenResponse
         {
-            Status = response.Status,
+            StatusCode = response.StatusCode,
             TrackerId = trackerId,
             Token = response.Token,
-            IpgBaseUrl = request.IpgBaseUrl,
+            IpgBaseUrl = request.IpgBaseUrl,            
         };  
     }
 
@@ -83,9 +83,33 @@ public class SepProvider(IHttpProvider httpProvider, ReadDbContext context, IApp
         throw new System.NotImplementedException();
     }
 
-    public async Task<VerifyTransactionResponse> Verify(VerifyTransactionRequest transactionResultRequest)
+    public async Task<VerifyTransactionResponse> Verify(VerifyTransactionRequest request)
     {
-        throw new System.NotImplementedException();
+        GetDataFromJsonProvider(request.ProviderData);
+        var response = await httpProvider.PostAsync<VerifyTransactionRequest, SepVerifyTransactionResponse,
+                                                    SepResponseBase, dynamic>(new HttpProviderRequest<dynamic>
+                                                    {
+                                                        Body = new SepVerifyTransactionRequest
+                                                        {
+                                                            RefNum = request.ProviderTrackerId,
+                                                            TerminalNumber = terminalId
+                                                        },
+                                                        BaseAddress = "https://sep.shaparak.ir/",
+                                                        Uri = "verifyTxnRandomSessionkey/ipg/VerifyTranscation",                                                        
+                                                        Provider = Enums.ProviderType.Sep,
+                                                        Service = Enums.ServiceType.SepVerify,
+                                                    }, request, VerifyErrorHandler);
+
+        var status = response.ResultCode switch
+        {
+            -105 or -104 or -106 => Enums.IPGTransactionStatus.Verifying,
+            0 or 2 => Enums.IPGTransactionStatus.VerificationSucceeded,
+            -2 or -6 or 5 => Enums.IPGTransactionStatus.VerificationFailed,
+        };
+        return new VerifyTransactionResponse
+        {
+            Status = status
+        };
     }
 
     private static string CreateCallbackUrl(short ipgRedirectionType, string siteAddress, string trackerId, string callbackPage) => ipgRedirectionType switch
@@ -102,9 +126,8 @@ public class SepProvider(IHttpProvider httpProvider, ReadDbContext context, IApp
         var original = $"0|{nationalCode}|{randomString}";
         var dkey = AesHelper.Base64Decode(key);
         var div = AesHelper.Base64Decode(iv);
-        var token = AesHelper.EncryptAes(original, dkey ?? string.Empty, div ?? string.Empty);
-        var json = JsonConvert.SerializeObject(new { EncryptedNationalId = token });
-        return json;
+        var token = AesHelper.EncryptAes(original, dkey ?? string.Empty, div ?? string.Empty);        
+        return token;
     }
 
     private async Task<TResponse?> PaymentTokenErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest? baseRequest, TResponse? response, TError? error, short statusCode)
@@ -120,8 +143,26 @@ public class SepProvider(IHttpProvider httpProvider, ReadDbContext context, IApp
         return await Task.FromResult(BaseErrorHandler<TResponse, TError, TBaseRequest>(error));
     }
 
+    private async Task<TResponse?> VerifyErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest? baseRequest, TResponse? response, TError? error, short statusCode)
+      where TResponse : SepVerifyTransactionResponse
+      where TError : SepResponseBase
+      where TBaseRequest : VerifyTransactionRequest
+    {
+        return statusCode switch
+        {
+            504 => new VerifyTransactionResponse { Status = Enums.IPGTransactionStatus.Verifying } as TResponse,           
+            _ => verifyFailCounter < serviceCallMaxTryCounter ? await Retry() : await Task.FromResult(BaseErrorHandler<TResponse, TError, TBaseRequest>(error)),
+        };
+
+        async Task<TResponse> Retry()
+        {
+            verifyFailCounter++;
+            return await Verify(baseRequest) as TResponse;
+        }
+    }
+
     private TResponse BaseErrorHandler<TResponse, TError, TBaseRequest>(SepResponseBase? error)
-       where TResponse : SepResponseBase
+       where TResponse : ResponseBase
        where TError : SepResponseBase
        where TBaseRequest : class
 

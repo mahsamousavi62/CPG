@@ -99,11 +99,11 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
                 throw new CompanyIsInactiveException(company.PersianName);
             }
 
-            var ipgResult = await Task.WhenAll(company.CompanyIPGs?.Select(t => t.IPGType).Select(async t => new IPGInfo
+            var ipgResult = await Task.WhenAll(company.CompanyIPGs?.Select(t => new { t.IPGType, t.Id }).Select(async t => new IPGInfo
             {
                 Id = t.Id,
-                Logo = await _minioProvider.PresignedGetObject(t.Logo),
-                PersianName = t.PersianName,
+                Logo = await _minioProvider.PresignedGetObject(t.IPGType.Logo),
+                PersianName = t.IPGType.PersianName,
             })).ConfigureAwait(false);
 
             return Result<PaymentMethodsViewModel>.SuccessResult(new PaymentMethodsViewModel
@@ -114,11 +114,11 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
             });
         }
         catch (DomainException exc)
-        { 
+        {
             return Result<PaymentMethodsViewModel>.Failure(new Error(exc.Code, exc.Message));
         }
         catch (AppException exc)
-        { 
+        {
             return Result<PaymentMethodsViewModel>.Failure(new Error(exc.Code, exc.Message));
         }
         catch (Exception)

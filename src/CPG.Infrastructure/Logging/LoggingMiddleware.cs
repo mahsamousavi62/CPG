@@ -1,4 +1,5 @@
-﻿using CPG.Domain.SharedKernel;
+﻿using Azure;
+using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -9,6 +10,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Infrastructure.Logging;
 
@@ -33,11 +35,22 @@ public class LoggingMiddleware(RequestDelegate next, ILoggerFactory loggerFactor
                 UserAgent = httpContext.Request.Headers.UserAgent.ToString(),
                 IP = httpContext.Request.GetClientIpAddress(),
                 Host = httpContext.Request.Headers.Host.ToString(),
-                ServiceName = httpContext.Request.Path,
-                AuditType = httpContext.User.FindFirst("AuditType")?.Value ?? Enums.AuditType.User.ToString(),
-                RequestTime = DateTime.Now,
                 RequestMethod = httpContext.Request.Method,
-                RequestQueryString = httpContext.Request.QueryString.ToString()
+                RequestQueryString = httpContext.Request.QueryString.ToString(),
+                RoutValues = httpContext.Request.RouteValues.ToArray(),
+            };
+
+            log.ServiceName = httpContext.Request.RouteValues["action"] != null
+               ? httpContext.Request.RouteValues["action"].ToString()
+               : (string)httpContext.Request.Path;
+
+
+            log.AuditType = log.ServiceName switch
+            {
+                "PaymentRequest" => Enums.AuditType.Client,
+                "TransactionVerify" => Enums.AuditType.Client,
+                "TransactionDetail" => Enums.AuditType.Client,
+                _ => Enums.AuditType.User
             };
 
             if (httpContext.User.Claims.Any())
@@ -64,19 +77,19 @@ public class LoggingMiddleware(RequestDelegate next, ILoggerFactory loggerFactor
         using (var responseBody = recyclableMemoryStreamManager.GetStream())
         {
             httpContext.Response.Body = responseBody;
+
+            log.StartDateTime = DateTime.Now;
             await next(httpContext);
-
+            log.EndDateTime = DateTime.Now;
+            TimeSpan timeDifference = log.EndDateTime - log.StartDateTime;
+            log.DurationMs = (long)timeDifference.TotalMilliseconds;
             log.ResponseStatus = httpContext.Response.StatusCode.ToString();
-            log.ResponseTime = DateTime.Now;
-
             string text;
             using var reader = new StreamReader(httpContext.Response.Body);
             _ = httpContext.Response.Body.Seek(0, SeekOrigin.Begin);
             text = await reader.ReadToEndAsync();
             _ = httpContext.Response.Body.Seek(0, SeekOrigin.Begin);
-
             log.ResponseBody = text;
-
             await responseBody.CopyToAsync(originalBodyStream);
         }
 

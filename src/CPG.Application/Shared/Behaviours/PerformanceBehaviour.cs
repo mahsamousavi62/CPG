@@ -40,8 +40,8 @@ public class PerformanceBehaviour<TRequest, TResponse>(
             {
                 RequestMethod = requestName,
                 UserId = userId,
-                ElapsedMilliseconds = elapsedMilliseconds,
-                AuditType = Enums.AuditType.Develop.ToString()
+                DurationMs = elapsedMilliseconds,
+                AuditType = Enums.AuditType.Develop
             };
 
             _logger.LogWarning("Long Running Request {@log}", log);

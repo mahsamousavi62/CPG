@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using CCPG.Domain.SharedKernel.Communication.Ipg;
 using CPG.Application.Shared.Resource;
@@ -14,6 +15,7 @@ using CPG.Domain.SharedKernel.Communication.Ipg.Models.TransactionResult;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
 using CPG.Domain.SharedKernel.Helper;
 using CPG.Infrastructure.Persistence.DbContexts;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -21,7 +23,7 @@ namespace CPG.Infrastructure.Providers.Ipg;
 
 public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext context, IApplicationSettingsRepository applicationSettingsRepository) : IIpgProvider
 {
-    public IApplicationSettingsRepository _applicationSettingRepositoy;
+    public IApplicationSettingsRepository _applicationSettingRepositoy = applicationSettingsRepository;
     private readonly IHttpProvider httpProvider = httpProvider;
     private readonly ReadDbContext context = context;
     private readonly byte serviceCallMaxTryCounter = 5;
@@ -64,13 +66,13 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
                                                         HeaderParameters = headers,
                                                         Body = new AsanPardakhtTokenRequest
                                                         {
-                                                            serviceTypeId = 1,
-                                                            paymentId = "0",
-                                                            callbackURL = callBack,
-                                                            additionalData = request.NationalCodeMatchingRequied ? CreateAdditionalData(request.NationalCode, request.ShaparakKey, request.ShaparakIv) : string.Empty,
-                                                            merchantConfigurationId = merchantConfigurationId,
-                                                            amountInRials = (long)request.PaymentRequestAmount,
-                                                            localInvoiceId = trackerId.ToString(),
+                                                            ServiceTypeId = 1,
+                                                            PaymentId = "0",
+                                                            CallbackURL = callBack,
+                                                            AdditionalData = request.NationalCodeMatchingRequied ? CreateAdditionalData(request.NationalCode, request.ShaparakKey, request.ShaparakIv) : string.Empty,
+                                                            MerchantConfigurationId = merchantConfigurationId,
+                                                            AmountInRials = (long)request.PaymentRequestAmount,
+                                                            LocalInvoiceId = trackerId.ToString(),
                                                         },
                                                         Provider = Enums.ProviderType.AsanPardakht,
                                                         Service = Enums.ServiceType.AsanPardakhtToken,
@@ -85,7 +87,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
 
         return new PaymentTokenResponse
         {
-            Status = response.Status,
+            StatusCode = response.StatusCode,
             TrackerId = trackerId.ToString(),
             Token = response.Token,
             IpgBaseUrl = request.IpgBaseUrl,
@@ -111,19 +113,19 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
                                                         Provider = Enums.ProviderType.AsanPardakht,
                                                         Service = Enums.ServiceType.AsanPardakhtTransResult,
                                                     }, request, TransactionResultErrorHandler);
-        response.Status = response.Status == 200 ? (short)2 : response.Status;
+
+        response.Status = response.StatusCode == (short)HttpStatusCode.OK ? (short)2 : response.Status;
         return response;
     }
 
     public async Task<VerifyTransactionResponse> Verify(VerifyTransactionRequest request)
     {
         GetDataFromJsonProvider(request.ProviderData);
-        ResultData<VerifyTransactionResponse> resultData = new();
         var headers = GetHeaders();
         var response = await httpProvider.PostAsync<VerifyTransactionRequest, VerifyTransactionResponse,
                                                     AsanPardakhtResponseBase, dynamic>(new HttpProviderRequest<dynamic>
                                                     {
-                                                        Body = new VerifyRequest
+                                                        Body = new AsanPardakhtVerifyRequest
                                                         {
                                                             PayGateTranId = request.ProviderTrackerId,
                                                             MerchantConfigurationId = merchantConfigurationId
@@ -133,8 +135,13 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
                                                         HeaderParameters = headers,
                                                         Provider = Enums.ProviderType.AsanPardakht,
                                                         Service = Enums.ServiceType.AsanPardakhtVerify,
-                                                    }, request, VerifyErrorHandler);
+                                                    }, request, VerifyErrorHandler, (string stringResponse) =>
+                                                    {
+                                                        if (string.IsNullOrEmpty(stringResponse))
+                                                            return new VerifyTransactionResponse { Status = Enums.IPGTransactionStatus.VerificationSucceeded };
 
+                                                        return System.Text.Json.JsonSerializer.Deserialize<VerifyTransactionResponse>(stringResponse);
+                                                    });
         return response;
     }
 
