@@ -1195,7 +1195,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to the application is unable to fetch this transaction detail.
+        ///   Looks up a localized string similar to the application {0} is unable to fetch this transaction detail.
         /// </summary>
         public static string TransactionDetailInvalidApplication {
             get {
