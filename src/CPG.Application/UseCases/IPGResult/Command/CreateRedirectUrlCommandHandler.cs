@@ -7,6 +7,7 @@ using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.ApplicationSettings;
 using MediatR;
 using System;
+using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -30,17 +31,19 @@ public class CreateRedirectUrlCommandHandler(IApplicationSettingsRepository appl
             {
                 case Enums.ProviderType.Vandar:
                     break;
-                case Enums.ProviderType.AsanPardakht:
+                case Enums.ProviderType.AsanPardakht: 
                     {
                         url = $"{appConfig.IPG_Callback_URL}?trackId={command.id}";
                         break;
                     }
                 case Enums.ProviderType.Sep:
                     {
-                        url = $"{appConfig.IPG_Callback_URL}?trackId={command.id}&MID={command.model.MID}&TerminalId={command.model.TerminalId}" +
-                            $"&RefNum={command.model.RefNum}&ResNum={command.model.ResNum}&State={command.model.State}&TraceNo={command.model.TraceNo}" +
-                            $"&Amount={command.model.Amount}&Wage={command.model.Wage}&Rrn={command.model.Rrn}&SecurePan={command.model.SecurePan}&" +
-                            $"Token={command.model.Token}&HashedCardNumber={command.model.HashedCardNumber}&Status={command.model.Status}";
+                        var encoder = UrlEncoder.Create();
+
+                        url = $"{appConfig.IPG_Callback_URL}?trackId={encoder.Encode(command.id)}&MID={encoder.Encode(command.model.MID ?? "")}&TerminalId={encoder.Encode(command.model.TerminalId.ToString())}" +
+                            $"&RefNum={encoder.Encode(command.model.RefNum ?? "")}&ResNum={encoder.Encode(command.model.ResNum ?? "")}&State={encoder.Encode(command.model.State ?? "")}&TraceNo={encoder.Encode(command.model.TraceNo ?? "")}" +
+                            $"&Amount={encoder.Encode(command.model.Amount.ToString())}&Wage={encoder.Encode(command.model.Wage ?? "")}&Rrn={encoder.Encode(command.model.Rrn ?? "")}&SecurePan={encoder.Encode(command.model.SecurePan ?? "")}&" +
+                            $"Token={encoder.Encode(command.model.Token ?? "")}&HashedCardNumber={encoder.Encode(command.model.HashedCardNumber ?? "")}&Status={encoder.Encode(command.model.Status.ToString())}";                        
                         break;
                     }
                 default:

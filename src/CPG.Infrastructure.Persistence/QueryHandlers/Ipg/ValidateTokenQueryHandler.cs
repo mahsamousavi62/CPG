@@ -14,6 +14,7 @@ using CPG.Application.UseCases.Ipg.ViewModels;
 using CPG.Application.Shared.Resource;
 using CPG.Domain.Exceptions;
 using CPG.Application.UseCases.Exceptions;
+using System.Linq;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 
@@ -24,6 +25,8 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
     private readonly IIpgFactory _ipgFactory = ipgFactory;
     private readonly IAggregateRepository<PaymentRequest> _paymentRequestRepository = paymentRequestRepository;
     private readonly IAggregateRepository<Transaction> _transactionRepository = transactionRepository;
+    private readonly string[] sepUnsuccessStatusList = ["1", "3", "4", "5", "8", "10", "11", "12", "21"];
+    private readonly string[] sepSuccessStatusList = ["2"];
 
     public async Task<Result<ValidateTokenResponseViewModel>> Handle(ValidateTokenQuery request, CancellationToken cancellationToken)
     {
@@ -90,13 +93,13 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
                         transaction.IPGTransaction.ReferenceNumber = req.Rrn;
                         transaction.IPGTransaction.EncryptCardNumber = req.HashedCardNumber;
 
-                        if (req.Status is "1" or "3" or "4" or "5" or "8" or "10" or "11" or "12" or "21")
+                        if (sepUnsuccessStatusList.Contains(req.Status))
                         {
                             transaction.IPGTransaction.Status = IPGTransactionStatus.Failed;
                             transaction.Status = TransactionStatus.TransactionFailed;
                             paymentRequest.Status = PaymentStatus.TransactionFailed;
                         }
-                        else if (req.Status is "2")
+                        else if (sepSuccessStatusList.Contains(req.Status))
                         {
                             transaction.IPGTransaction.Status = IPGTransactionStatus.SucceededAndWaitingForVerification;
                             transaction.IPGTransaction.PredicateExpirationDateTime = DateTime.UtcNow.AddMinutes(transaction.IPGTransaction.VerificationTimeLimit);
