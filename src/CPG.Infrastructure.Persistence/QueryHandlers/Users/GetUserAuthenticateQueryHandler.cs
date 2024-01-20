@@ -35,18 +35,17 @@ namespace CPG.Infrastructure.Persistence.QueryHandlers.Users
             var user = await _context.UserReadModels.Include(u => u.UserRoles).
                        SingleOrDefaultAsync(u => u.IsActive && u.IDPId == sub);
 
-            if (user == null)
-                return null;
+         
             var applicationIdentifier = (await _context.ApplicationIdentifierReadModels.SingleOrDefaultAsync(a => a.IdpClientId == clientId));
 
             cacheData = new UserAuthenticateViewModel
             {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Id = user.Id,
-                NationalCode = user.NationalCode,
+                FirstName = user?.FirstName??string.Empty,
+                LastName = user?.LastName ?? string.Empty,
+                Id = user?.Id??0,
+                NationalCode = user?.NationalCode ?? string.Empty,
                 IDPId = clientId,
-                PhoneNumber = user.PhoneNumber,
+                PhoneNumber = user?.PhoneNumber ?? string.Empty,
                 UserRoles = user?.UserRoles.ToDictionary(p => p.RoleType, p => ((Enums.UserRoleType)p.RoleType).ToString()),
                 CompanyId = user?.CompanyId ?? 0,
                 ApplicationId = applicationIdentifier?.ApplicationId ?? 0,

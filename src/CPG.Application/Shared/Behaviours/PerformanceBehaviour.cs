@@ -40,7 +40,7 @@ public class PerformanceBehaviour<TRequest, TResponse>(
             {
                 RequestMethod = requestName,
                 UserId = userId,
-                ElapsedMilliseconds = elapsedMilliseconds,
+                DurationMs = elapsedMilliseconds,
                 AuditType = Enums.AuditType.Develop
             };
 

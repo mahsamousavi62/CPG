@@ -3,7 +3,7 @@ using CPG.Application.UseCases.Ipg.ViewModels;
 using CPG.Application.UseCases.IPGResult.ViewModels;
 using CPG.Application.UseCases.Users.Commands;
 using CPG.Domain.SharedKernel;
-using HotChocolate.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using System.ComponentModel.DataAnnotations;
@@ -23,7 +23,6 @@ public class IPGResultController : ApiBaseController
         var response = await Mediator.Send(new CreateRedirectUrlCommnad(model, id));
         return Redirect(response.Data);
     }
-
     [HttpPost("{trackId}")]
     [ProducesResponseType(typeof(Result<ValidateTokenResponseViewModel>), (int)HttpStatusCode.OK)]
     public async Task<Result<ValidateTokenResponseViewModel>> ValidateToken(string trackId, [AllowNull][FromBody] ValidateTokenRequestViewModel model)
