@@ -9,7 +9,7 @@ namespace CPG.Infrastructure.Persistence.GraphQL.Queries;
 
 public class CompanyReadModelQueries
 {
-    [UsePaging(IncludeTotalCount = true, MaxPageSize = 200)]
+    [UsePaging(IncludeTotalCount = true, MaxPageSize = 2)]
     [UseProjection]
     [UseFiltering]
     [UseSorting]

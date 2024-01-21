@@ -76,12 +76,12 @@ namespace CPG.Infrastructure.Persistence
             services
                 .AddGraphQLServer()
                 .AddAuthorization()
-                .AddQueryType<GetApplicationSettingsQuery>()
+                //.AddQueryType<GetApplicationSettingsQuery>()
                 .AddQueryType<CompanyReadModelQueries>()
                 .AddProjections()
                 .AddFiltering()
-                .AddSorting()
-                .AddType<CompanyReadModelType>();
+                .AddSorting();
+                //.AddType<CompanyReadModelType>();
 
             services.AddErrorFilter<GraphQLErrorFilter>();
 
