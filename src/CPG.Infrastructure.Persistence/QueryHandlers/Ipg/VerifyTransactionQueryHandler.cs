@@ -47,7 +47,7 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
 
             if (paymentRequest.ApplicationId != applicationId) { throw new VerifyInvalidApplicationException(); }
 
-            if (paymentRequest.Status != PaymentStatus.TransactionWaitingForVerification ||
+            if (paymentRequest.Status != PaymentStatus.TransactionWaitingForVerification &&
                 paymentRequest.Status != PaymentStatus.TransactionVerificationFailed
                 ) { throw new VerifyInvalidStatusException(); }
 
