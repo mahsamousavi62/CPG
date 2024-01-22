@@ -92,7 +92,7 @@ public class SepProvider(IHttpProvider httpProvider, ReadDbContext context, IApp
                                                         Body = new SepVerifyTransactionRequest
                                                         {
                                                             RefNum = request.ProviderTrackerId,
-                                                            TerminalNumber = terminalId
+                                                            TerminalNumber = terminalId.ToString(),
                                                         },
                                                         BaseAddress = "https://sep.shaparak.ir/",
                                                         Uri = "verifyTxnRandomSessionkey/ipg/VerifyTranscation",                                                        

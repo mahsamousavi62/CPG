@@ -541,7 +541,7 @@
     <value>VerificationTimeLimit</value>
   </data>
   <data name="TransactionDetailInvalidApplication" xml:space="preserve">
-    <value>the application is unable to fetch this transaction detail</value>
+    <value>the application {0} is unable to fetch this transaction detail</value>
   </data>
   <data name="VerifyInvalidApplication" xml:space="preserve">
     <value>the application is unable to verify this transaction</value>
