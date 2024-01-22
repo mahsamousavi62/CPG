@@ -47,9 +47,13 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
 
             if (paymentRequest.ApplicationId != applicationId) { throw new VerifyInvalidApplicationException(); }
 
-            if (paymentRequest.Status != PaymentStatus.TransactionWaitingForVerification) { throw new VerifyInvalidStatusException(); }
+            if (paymentRequest.Status != PaymentStatus.TransactionWaitingForVerification ||
+                paymentRequest.Status != PaymentStatus.TransactionVerificationFailed
+                ) { throw new VerifyInvalidStatusException(); }
 
             paymentRequest.Status = PaymentStatus.TransactionVerifiedByApplication;
+            paymentRequest.VerificationDateTime ??= DateTime.Now;   
+
             await _paymentRequestRepository.UpdateAsync(paymentRequest, cancellationToken);
             await _paymentRequestRepository.SaveChangesAsync(cancellationToken);
 
@@ -83,6 +87,7 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
                 transaction.Status = TransactionStatus.TransactionSucceeded;
                 transaction.IPGTransaction.VerificationDateTime = DateTime.Now;
                 paymentRequest.Status = PaymentStatus.TransactionVerificationSucceeded;
+               
             }
             else if (result.Status == IPGTransactionStatus.VerificationFailed)
             {
