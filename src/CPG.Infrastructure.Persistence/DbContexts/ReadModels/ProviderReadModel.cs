@@ -15,6 +15,6 @@ public class ProviderReadModel
     public bool IsActive { get; set; }
     public DateTime CreationDate { get; set; }
     public DateTime? ModificationDate { get; set; }
-    public ICollection<ProviderPaymentMethodReadModel> PaymentMethods { get; set; }
+    public IEnumerable<ProviderPaymentMethodReadModel> PaymentMethods { get; set; }
 
 }

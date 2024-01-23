@@ -39,7 +39,7 @@
   <ItemGroup>
     <Folder Include="GraphQL\Types\CompanyDeposit\" />
     <Folder Include="GraphQL\Types\CompanyIPG\" />
-    <Folder Include="GraphQL\Types\Provider\" />
+    <Folder Include="GraphQL\Types\Application\" />
   </ItemGroup>
 
 </Project>
