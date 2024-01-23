@@ -1,11 +1,8 @@
-﻿using CPG.Application.UseCases.Common.Queries;
-using CPG.Domain.SharedKernel;
+﻿using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.ApplicationSettings;
-using CPG.Domain.SharedKernel.Communication.Ipg;
 using CPG.Infrastructure.Persistence.DbContexts;
 using CPG.Infrastructure.Persistence.GraphQL.ErrorHandling;
 using CPG.Infrastructure.Persistence.GraphQL.Queries;
-using CPG.Infrastructure.Persistence.GraphQL.Types;
 using CPG.Infrastructure.Persistence.Interceptors;
 using CPG.Infrastructure.Persistence.Redis;
 using CPG.Infrastructure.Persistence.Repositories;
@@ -76,12 +73,12 @@ namespace CPG.Infrastructure.Persistence
             services
                 .AddGraphQLServer()
                 .AddAuthorization()
-                //.AddQueryType<GetApplicationSettingsQuery>()
-                .AddQueryType<CompanyReadModelQueries>()
+                //.AddQueryType<CompanyReadModelQueries>()
+                .AddQueryType<BankReadModelQueries>()
+                //.AddQueryType<ApplicationReadModelQueries>()
                 .AddProjections()
                 .AddFiltering()
                 .AddSorting();
-                //.AddType<CompanyReadModelType>();
 
             services.AddErrorFilter<GraphQLErrorFilter>();
 
