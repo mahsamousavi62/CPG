@@ -13,7 +13,7 @@ public class ApplicationReadModel
     public bool IsActive { get; set; }
     public DateTime CreationDate { get; set; }
     public DateTime? ModificationDate { get; set; }
-    public ICollection<ApplicationIdentifierReadModel> ApplicationIdentifiers { get; set; }
-    public ICollection<ApplicationCallbackUrlReadModel> ApplicationCallbackUrls { get; set; }
+    public IEnumerable<ApplicationIdentifierReadModel> ApplicationIdentifiers { get; set; }
+    public IEnumerable<ApplicationCallbackUrlReadModel> ApplicationCallbackUrls { get; set; }
     public ICollection<PaymentRequestReadModel> PaymentRequests{ get; set; }
 }

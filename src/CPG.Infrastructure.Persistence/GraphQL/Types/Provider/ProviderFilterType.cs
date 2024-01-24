@@ -3,11 +3,11 @@ using CPG.Infrastructure.Persistence.GraphQL.CustomFilterInputType;
 using CPG.Infrastructure.Persistence.GraphQL.FilterInputType;
 using HotChocolate.Data.Filters;
 
-namespace CPG.Infrastructure.Persistence.GraphQL.Types.Company;
+namespace CPG.Infrastructure.Persistence.GraphQL.Types.Provider;
 
-public class CompanyFilterType : FilterInputType<CompanyReadModel>
+public class ProviderFilterType : FilterInputType<ProviderReadModel>
 {
-    protected override void Configure(IFilterInputTypeDescriptor<CompanyReadModel> descriptor)
+    protected override void Configure(IFilterInputTypeDescriptor<ProviderReadModel> descriptor)
     {
         descriptor.BindFieldsExplicitly();
         descriptor.Field(f => f.PersianName).Type<CustomStringOperationFilterInputType>();

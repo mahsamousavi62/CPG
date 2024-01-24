@@ -2,10 +2,15 @@
 using CPG.Infrastructure.Persistence.GraphQL.CustomFilterInputType;
 using CPG.Infrastructure.Persistence.GraphQL.FilterInputType;
 using HotChocolate.Data.Filters;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace CPG.Infrastructure.Persistence.GraphQL.Types.Company;
+namespace CPG.Infrastructure.Persistence.GraphQL.Types.Application;
 
-public class CompanyFilterType : FilterInputType<CompanyReadModel>
+public class ApplicationFilterType : FilterInputType<CompanyReadModel>
 {
     protected override void Configure(IFilterInputTypeDescriptor<CompanyReadModel> descriptor)
     {

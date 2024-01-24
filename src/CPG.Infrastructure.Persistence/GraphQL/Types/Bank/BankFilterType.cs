@@ -13,6 +13,6 @@ internal class BankFilterType : FilterInputType<BankReadModel>
         descriptor.BindFieldsExplicitly();
         descriptor.Field(f => f.Name).Type<CustomStringOperationFilterInputType>();
         descriptor.Field(f => f.IsActive).Type<CustomBooleanOperationFilterInputType>();
-        descriptor.Field(f => f.Id).Type<CustomLongOperationFilterInputType>();
+        descriptor.Field(f => f.Id).Type<CustomIntOperationFilterInputType>();
     }
 }

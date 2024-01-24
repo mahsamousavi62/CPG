@@ -18,7 +18,7 @@ public class CompanyReadModelQueries
     [UseSorting<CompanySortType>]
     public IQueryable<CompanyReadModel> GetCompanies([Service] ReadDbContext dbContext, [Service] IMinioProvider minioProvider)
     {
-        var companies = dbContext.CompanyReadModels.Include(m => m.PaymentMethods);        
+        var companies = dbContext.CompanyReadModels.Include(m => m.PaymentMethods);
 
         var companyViewModels = companies.Select(company => new CompanyReadModel
         {
