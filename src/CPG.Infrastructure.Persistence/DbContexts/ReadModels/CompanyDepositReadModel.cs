@@ -19,4 +19,7 @@ public class CompanyDepositReadModel
     public CompanyReadModel Company { get; set; }
     public List<CompanyIPGDepositReadModel> CompanyIPGDeposits { get; set; }
     public List<TransactionReadModel> Transactions { get; set; }
+    public string BankName { get; set; }
+    public string CompanyName { get; set; }
+    public string BankLogo { get; set; }
 }

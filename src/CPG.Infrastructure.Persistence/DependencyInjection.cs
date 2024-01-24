@@ -31,7 +31,7 @@ namespace CPG.Infrastructure.Persistence
         {
             services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
             services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
-            
+
             services
                 .AddDbContext<WriteDbContext>((sp, options) =>
                 {
@@ -77,11 +77,12 @@ namespace CPG.Infrastructure.Persistence
                 .AddGraphQLServer()
                 .AddAuthorization()
                 //.AddQueryType<GetApplicationSettingsQuery>()
-                .AddQueryType<CompanyReadModelQueries>()
+               // .AddQueryType<CompanyReadModelQueries>()
+               // .AddQueryType<CompanyDepositReadModelQueries>()
+                .AddQueryType<CompanyIPGReadModelQueries>()
                 .AddProjections()
                 .AddFiltering()
                 .AddSorting();
-                //.AddType<CompanyReadModelType>();
 
             services.AddErrorFilter<GraphQLErrorFilter>();
 
