@@ -46,7 +46,6 @@ public class AuthenticationMiddleware(IAuthenticationSchemeProvider schemes, Req
         newIdentity.AddClaim(new Claim(type: "NationalCode", value: user?.NationalCode));
         newIdentity.AddClaim(new Claim(type: "CompanyId", value: user?.CompanyId.ToString()));
         newIdentity.AddClaim(new Claim(type: "UserId", value: user?.Id.ToString()));
-        newIdentity.AddClaim(new Claim(type: "AuditType", value: user?.AuditType.ToString()));
         newIdentity.AddClaim(new Claim(type: "ApplicationId", value: user?.ApplicationId.ToString()));
         newIdentity.AddClaim(new Claim(type: "ClientId", value: user?.IDPId.ToString()));
 

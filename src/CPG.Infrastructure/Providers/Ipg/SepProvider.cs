@@ -92,7 +92,7 @@ public class SepProvider(IHttpProvider httpProvider, ReadDbContext context, IApp
                                                         Body = new SepVerifyTransactionRequest
                                                         {
                                                             RefNum = request.ProviderTrackerId,
-                                                            TerminalNumber = terminalId
+                                                            TerminalNumber = terminalId.ToString(),
                                                         },
                                                         BaseAddress = "https://sep.shaparak.ir/",
                                                         Uri = "verifyTxnRandomSessionkey/ipg/VerifyTranscation",                                                        
@@ -126,9 +126,8 @@ public class SepProvider(IHttpProvider httpProvider, ReadDbContext context, IApp
         var original = $"0|{nationalCode}|{randomString}";
         var dkey = AesHelper.Base64Decode(key);
         var div = AesHelper.Base64Decode(iv);
-        var token = AesHelper.EncryptAes(original, dkey ?? string.Empty, div ?? string.Empty);
-        var json = JsonConvert.SerializeObject(new { EncryptedNationalId = token });
-        return json;
+        var token = AesHelper.EncryptAes(original, dkey ?? string.Empty, div ?? string.Empty);        
+        return token;
     }
 
     private async Task<TResponse?> PaymentTokenErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest? baseRequest, TResponse? response, TError? error, short statusCode)

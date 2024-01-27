@@ -47,9 +47,13 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
 
             if (paymentRequest.ApplicationId != applicationId) { throw new VerifyInvalidApplicationException(); }
 
-            if (paymentRequest.Status != PaymentStatus.TransactionWaitingForVerification) { throw new VerifyInvalidStatusException(); }
+            if (paymentRequest.Status != PaymentStatus.TransactionWaitingForVerification &&
+                paymentRequest.Status != PaymentStatus.TransactionVerificationFailed
+                ) { throw new VerifyInvalidStatusException(); }
 
             paymentRequest.Status = PaymentStatus.TransactionVerifiedByApplication;
+            paymentRequest.VerificationDateTime ??= DateTime.Now;   
+
             await _paymentRequestRepository.UpdateAsync(paymentRequest, cancellationToken);
             await _paymentRequestRepository.SaveChangesAsync(cancellationToken);
 
@@ -81,8 +85,9 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
 
                 transaction.PredictedSettlementDateTime = date;
                 transaction.Status = TransactionStatus.TransactionSucceeded;
-                transaction.IPGTransaction.VerificationDateTime = DateTime.UtcNow;
+                transaction.IPGTransaction.VerificationDateTime = DateTime.Now;
                 paymentRequest.Status = PaymentStatus.TransactionVerificationSucceeded;
+               
             }
             else if (result.Status == IPGTransactionStatus.VerificationFailed)
             {
@@ -101,12 +106,13 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
                 Code = paymentRequest.PaymentCode,
                 TrackerId = paymentRequest.TrackerId,
                 DestinationDepositIban = transaction.DestinationDeposit.Iban,
+                DestinationDepositAccountNumber = transaction?.DestinationDeposit?.AccountNumber,
                 ReferenceNumber = transaction.IPGTransaction.ReferenceNumber,
                 PaymentMethodType = (short)transaction?.TransactionMethodType,
                 PaymentMethodTypeTitle = transaction is null ? string.Empty : GetPaymentMethodTypeTitle(transaction.TransactionMethodType),
                 Status = (short)paymentRequest.Status,
                 StatusTitle = GetStatusTitle(paymentRequest.Status),
-                PredictedExpirationDateTime = transaction.PredictedSettlementDateTime?.ToString("yyyy-MM-dd HH:mm:ss zzz"),
+                PredictedSettlementDateTime = transaction.PredictedSettlementDateTime?.ToString("yyyy-MM-dd HH:mm:ss zzz"),
                 CPGVerificationDateTime = transaction.IPGTransaction.VerificationDateTime?.ToString("yyyy-MM-dd HH:mm:ss zzz"),
             };
 
