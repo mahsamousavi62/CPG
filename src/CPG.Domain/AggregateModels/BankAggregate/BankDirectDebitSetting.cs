@@ -7,6 +7,10 @@ namespace CPG.Domain.AggregateModels.BankAggregate;
 
 public class BankDirectDebitSetting : AuditableEntity<long>
 {
+    private static readonly long minAmountValue = 1000000;
+    private static readonly long maxAmountValue = 10000000000;
+    private static readonly short minLength = 3;
+    private static readonly short maxLength = 255;
     public long ProviderId { get; set; }
     public int BankId { get; set; }
     public string DDBankCode { get; set; }
@@ -34,10 +38,10 @@ public class BankDirectDebitSetting : AuditableEntity<long>
     public static BankDirectDebitSetting Create(long providerId, string ddBankCode, decimal maxWithdrawalAmountPerDay,
         ValidityDuration maxMandateValidityDurationPerMonth, AuthenticationType authenticationType)
     {
-        if (maxWithdrawalAmountPerDay < 1000000 || maxWithdrawalAmountPerDay > 10000000000)
+        if (maxWithdrawalAmountPerDay < minAmountValue || maxWithdrawalAmountPerDay > maxAmountValue)
             throw new InvalidMaxWithdrawalAmountPerDayException(maxWithdrawalAmountPerDay);
 
-        if (ddBankCode.Length < 3 || ddBankCode.Length > 255)
+        if (ddBankCode.Length < minLength || ddBankCode.Length > maxLength)
             throw new InvalidIvCharachterException(ddBankCode);
 
         var setting = new BankDirectDebitSetting(providerId, ddBankCode, maxWithdrawalAmountPerDay, 
@@ -48,10 +52,10 @@ public class BankDirectDebitSetting : AuditableEntity<long>
     public void Update(long providerId, string ddBankCode, decimal maxWithdrawalAmountPerDay,
         ValidityDuration maxMandateValidityDurationPerMonth, AuthenticationType authenticationType)
     {
-        if (maxWithdrawalAmountPerDay < 1000000 || maxWithdrawalAmountPerDay > 10000000000)
+        if (maxWithdrawalAmountPerDay < minAmountValue || maxWithdrawalAmountPerDay > maxAmountValue)
             throw new InvalidMaxWithdrawalAmountPerDayException(maxWithdrawalAmountPerDay);
 
-        if (ddBankCode.Length < 3 || ddBankCode.Length > 255)
+        if (ddBankCode.Length < minLength || ddBankCode.Length > maxLength)
             throw new InvalidIvCharachterException(ddBankCode);
 
         ProviderId = providerId;        
