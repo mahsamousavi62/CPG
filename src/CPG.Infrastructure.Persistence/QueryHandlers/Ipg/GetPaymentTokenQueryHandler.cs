@@ -93,8 +93,8 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
             try
             {
                 dynamic jsonObjectProviderData = JObject.Parse(companyIpg.Provider.ProviderData);
-                 ipgBaseUrl= jsonObjectProviderData["IPG_Base_URL"] is not null 
-                    ? (string)jsonObjectProviderData["IPG_Base_URL"] : throw new Exception("Invalid IPG_Base_URL");
+                ipgBaseUrl = jsonObjectProviderData["IPG_Base_URL"] is not null
+                   ? (string)jsonObjectProviderData["IPG_Base_URL"] : throw new Exception("Invalid IPG_Base_URL");
 
                 IpgVerificationTimeLimit = jsonObjectProviderData["IPG_Verification_Time_Limit"] is not null
                                ? (short)jsonObjectProviderData["IPG_Verification_Time_Limit"] : throw new Exception("IPG_Verification_TimeLimit");
@@ -118,13 +118,14 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                     NationalCodeMatchingRequied = paymentRequest.Company.NationalCodeMatchingRequied,
                     ShaparakIv = paymentRequest.Company.ShaparakSetting.Iv,
                     ShaparakKey = paymentRequest.Company.ShaparakSetting.Key,
+                    ThirdPartyCode = paymentRequest.Company.ShaparakSetting.ThirdPartyCode,
                 });
 
             if (result.StatusCode == (short)HttpStatusCode.OK)
             {
                 Transaction transaction = Transaction.Create(new CreateTransactionModel
                 {
-                    IpgVerificationTimeLimit= IpgVerificationTimeLimit,
+                    IpgVerificationTimeLimit = IpgVerificationTimeLimit,
                     CompanyIPG = companyIpg,
                     DestinationDepositId = destinationDepositId,
                     PaymentRequest = paymentRequest,
@@ -152,12 +153,15 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                     case Enums.ProviderType.AsanPardakht:
                         {
                             response.JsonBody.jsonStr = new ExpandoObject();
-                            response.JsonBody.jsonStr.@params = new ExpandoObject();
-                            response.JsonBody.jsonStr.@params.RefID = result.Token;
-                            response.JsonBody.jsonStr.@params.Mobileap = mobileNumber;
                             response.JsonBody.jsonStr.url = result.IpgBaseUrl;
                             response.JsonBody.jsonStr.method = "POST";
+                            response.JsonBody.jsonStr.@params = new ExpandoObject();
+                            response.JsonBody.jsonStr.@params.RefID = result.Token;
 
+                            if (!string.IsNullOrEmpty(mobileNumber))
+                            {
+                                response.JsonBody.jsonStr.@params.Mobileap = mobileNumber;
+                            }
                             break;
                         }
                     case Enums.ProviderType.Sep:
@@ -168,7 +172,7 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                             response.JsonBody.jsonStr.@params = new ExpandoObject();
                             response.JsonBody.jsonStr.@params.Token = result.Token;
                             response.JsonBody.jsonStr.@params.GetMethod = false;
-                            break;                    
+                            break;
                         }
                     default:
                         break;

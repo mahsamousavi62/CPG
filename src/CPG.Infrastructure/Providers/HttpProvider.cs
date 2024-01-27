@@ -65,7 +65,16 @@ public class HttpProvider : IHttpProvider
             var resString = await response.Content.ReadAsStringAsync();
             _logService.AddServiceCallLog(request, response, resString);
 
-            var result = await response.Content.ReadFromJsonAsync<TResponse>();
+            TResponse result = null;
+            if (decoder != null)
+            {
+                result = decoder(resString);
+            }
+            else if (response.IsSuccessStatusCode)
+            {
+                result = await response.Content.ReadFromJsonAsync<TResponse>();
+            }
+
             TError? errorResult = result as TError;
             if (result is null)
             {
@@ -320,7 +329,7 @@ public class HttpProvider : IHttpProvider
             var response = await client.GetAsync(request.Uri);
 
             var resString = await response.Content.ReadAsStringAsync();
-            //infraHelper.Value.AddServiceCallLog(request, response, resString);
+            _logService.AddServiceCallLog(request, response, resString);
 
             var result = await response.Content.ReadFromJsonAsync<TResponse>();
             var errorResult = result as TError;
@@ -340,7 +349,7 @@ public class HttpProvider : IHttpProvider
                     return await errorHandler(baseRequest, result, errorResult, (short)response.StatusCode);
                 }
             }
-            result.Status = (short)response.StatusCode;
+            result.StatusCode = (short)response.StatusCode;
             return result;
         }
         catch (Exception exc)

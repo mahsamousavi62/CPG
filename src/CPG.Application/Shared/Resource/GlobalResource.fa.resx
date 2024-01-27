@@ -550,7 +550,7 @@
     <value>محدودیت زمانی تایید</value>
   </data>
   <data name="TransactionDetailInvalidApplication" xml:space="preserve">
-    <value>امکان مشاهده جزئیات تراکنش برای این Application مجاز نیست</value>
+    <value>امکان مشاهده جزئیات تراکنش برای این Application {0} مجاز نیست</value>
   </data>
   <data name="VerifyInvalidApplication" xml:space="preserve">
     <value>امکان تایید تراکنش برای این Application مجاز نیست</value>

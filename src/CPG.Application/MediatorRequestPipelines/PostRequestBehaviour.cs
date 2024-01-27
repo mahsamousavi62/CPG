@@ -16,7 +16,7 @@ public class PostRequestLogger<TRequest, TResponse>(ILogger<TRequest> logger) : 
         var requestName = typeof(TRequest).Name;
         RequestResponseLogModel log = new ()
         {
-            AuditType = Enums.AuditType.Develop.ToString(),
+            AuditType = Enums.AuditType.Develop,
             ServiceName = requestName,
             ResponseBody = response
         };

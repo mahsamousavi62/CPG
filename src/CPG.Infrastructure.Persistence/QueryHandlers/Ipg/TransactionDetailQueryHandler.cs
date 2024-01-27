@@ -34,14 +34,12 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
                 throw new RequiredCodeOrTrackIdException();
             }
             var paymentRequest = await _context.PaymentRequestReadModels.FirstOrDefaultAsync(t => t.PaymentCode == request.RequestViewModel.Code ||
-                                                                                                  t.TrackerId == request.RequestViewModel.TrackerId);
+                                                                                                  t.TrackerId == request.RequestViewModel.TrackerId, 
+                                                                                                  cancellationToken: cancellationToken) ?? throw new InvalidCodeOrTrackIdException();
 
-            if (paymentRequest is null) { throw new InvalidCodeOrTrackIdException(); }
+            _ = long.TryParse(_httpContext.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out long applicationId);
 
-            long applicationId;
-            long.TryParse(_httpContext.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out applicationId);
-
-            if (paymentRequest.ApplicationId != applicationId) { throw new TransactionDetailInvalidApplicationException(); }
+            if (paymentRequest.ApplicationId != applicationId) { throw new TransactionDetailInvalidApplicationException(applicationId); }
 
             var transaction = await _transactionRepository.GetBySpecAsync(new TransactionByPaymentRequestId(paymentRequest.Id));
 
@@ -57,6 +55,7 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
                     PaymentMethodTypeTitle = transaction is null ? string.Empty : GetPaymentMethodTypeTitle(transaction.TransactionMethodType),
                     ReferenceNumber = transaction is not null && transaction.TransactionMethodType == TransactionType.IPG ? transaction.IPGTransaction?.ReferenceNumber : string.Empty,
                     DestinationDepositIban = transaction?.DestinationDeposit?.Iban,
+                   DestinationDepositAccountNumber= transaction?.DestinationDeposit?.AccountNumber,
                     PredictedExpirationDateTime = transaction is not null && transaction.TransactionMethodType == TransactionType.IPG ? transaction.IPGTransaction?.PredicateExpirationDateTime?.ToString("yyyy-MM-dd HH:mm:ss zzz") : string.Empty,
                 });
         }
