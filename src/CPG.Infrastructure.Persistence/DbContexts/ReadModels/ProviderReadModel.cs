@@ -16,5 +16,5 @@ public class ProviderReadModel
     public DateTime CreationDate { get; set; }
     public DateTime? ModificationDate { get; set; }
     public IEnumerable<ProviderPaymentMethodReadModel> PaymentMethods { get; set; }
-
+    public IEnumerable<BankDirectDebitSettingReadModel> BankDirectDebitSettings { get;}
 }

@@ -16,4 +16,5 @@ public class BankDirectDebitSettingReadModel
     public DateTime CreationDate { get; set; }
     public DateTime? ModificationDate { get; set; }
     public BankReadModel Bank { get; set; }
+    public ProviderReadModel Provider { get; set; }
 }

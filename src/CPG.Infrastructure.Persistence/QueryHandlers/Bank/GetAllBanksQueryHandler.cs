@@ -19,7 +19,7 @@ public class GetAllBanksQueryHandler(ReadDbContext context, IMinioProvider minio
 
     public async Task<Result<IReadOnlyCollection<BankViewModel>>> Handle(GetAllBanksQuery request, CancellationToken cancellationToken)
     {
-        var banks = await _context.BankReadModels.ToListAsync(cancellationToken: cancellationToken);
+        var banks = await _context.BankReadModels.Include(t => t.DirectDebitSetting).ThenInclude(t => t.Provider).ToListAsync(cancellationToken: cancellationToken);
 
         var data = await Task.WhenAll(banks.Select(async x => new BankViewModel
         {
@@ -27,6 +27,8 @@ public class GetAllBanksQueryHandler(ReadDbContext context, IMinioProvider minio
             Name = x.Name,
             IbanPrefix = x.IbanPrefix,
             Logo = !string.IsNullOrEmpty(x.LogoAddress) ? await _minioProvider.PresignedGetObject(x.LogoAddress) : "",
+            HasDirectDebitFeature = x.HasDirectDebitFeature,
+            ProviderName = x.DirectDebitSetting != null ? x.DirectDebitSetting.Provider.PersianName : string.Empty,
             IsActive = x.IsActive,
             CreationDate = x.CreationDate,
             ModificationDate = x.ModificationDate
