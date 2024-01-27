@@ -7,7 +7,7 @@ public sealed class BankByIdSpec : Specification<Bank>, ISingleResultSpecificati
 {
     public BankByIdSpec(int bankId)
     {
-        Query
+        Query.Include(bank => bank.DirectDebitSetting)
             .Where(bank => bank.Id == bankId);
     }
 }

@@ -12,7 +12,7 @@ namespace CPG.Domain.AggregateModels.BankAggregate.Specifications
     {
         public BankByIbanPrefixSpec(string ibanPrefix)
         {
-            Query
+            Query.Include(bank => bank.DirectDebitSetting)
                 .Where(bank => bank.IbanPrefix.Value == ibanPrefix);
         }
     }
