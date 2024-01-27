@@ -7,17 +7,21 @@ namespace CPG.Domain.AggregateModels.BankAggregate;
 
 public class BankDirectDebitSetting : AuditableEntity<long>
 {
+    private static readonly long minAmountValue = 1000000;
+    private static readonly long maxAmountValue = 10000000000;
+    private static readonly short minLength = 3;
+    private static readonly short maxLength = 255;
     public long ProviderId { get; set; }
     public int BankId { get; set; }
     public string DDBankCode { get; set; }
     public decimal MaxWithdrawalAmountPerDay { get; set; }
     public ValidityDuration MaxMandateValidityDurationPerMonth { get; set; }
-    public AuthenticationType AuthenticationType { get; set; }    
+    public AuthenticationType AuthenticationType { get; set; }
     public Bank Bank { get; set; }
 
     public BankDirectDebitSetting()
     {
-        
+
     }
 
     public BankDirectDebitSetting(long providerId, string ddBankCode, decimal maxWithdrawalAmountPerDay,
@@ -34,13 +38,13 @@ public class BankDirectDebitSetting : AuditableEntity<long>
     public static BankDirectDebitSetting Create(long providerId, string ddBankCode, decimal maxWithdrawalAmountPerDay,
         ValidityDuration maxMandateValidityDurationPerMonth, AuthenticationType authenticationType)
     {
-        if (maxWithdrawalAmountPerDay < 1000000 || maxWithdrawalAmountPerDay > 10000000000)
+        if (maxWithdrawalAmountPerDay < minAmountValue || maxWithdrawalAmountPerDay > maxAmountValue)
             throw new InvalidMaxWithdrawalAmountPerDayException(maxWithdrawalAmountPerDay);
 
-        if (ddBankCode.Length < 3 || ddBankCode.Length > 255)
+        if (ddBankCode.Length < minLength || ddBankCode.Length > maxLength)
             throw new InvalidIvCharachterException(ddBankCode);
 
-        var setting = new BankDirectDebitSetting(providerId, ddBankCode, maxWithdrawalAmountPerDay, 
+        var setting = new BankDirectDebitSetting(providerId, ddBankCode, maxWithdrawalAmountPerDay,
             maxMandateValidityDurationPerMonth, authenticationType);
         return setting;
     }
@@ -48,13 +52,13 @@ public class BankDirectDebitSetting : AuditableEntity<long>
     public void Update(long providerId, string ddBankCode, decimal maxWithdrawalAmountPerDay,
         ValidityDuration maxMandateValidityDurationPerMonth, AuthenticationType authenticationType)
     {
-        if (maxWithdrawalAmountPerDay < 1000000 || maxWithdrawalAmountPerDay > 10000000000)
+        if (maxWithdrawalAmountPerDay < minAmountValue || maxWithdrawalAmountPerDay > maxAmountValue)
             throw new InvalidMaxWithdrawalAmountPerDayException(maxWithdrawalAmountPerDay);
 
-        if (ddBankCode.Length < 3 || ddBankCode.Length > 255)
+        if (ddBankCode.Length < minLength || ddBankCode.Length > maxLength)
             throw new InvalidIvCharachterException(ddBankCode);
 
-        ProviderId = providerId;        
+        ProviderId = providerId;
         DDBankCode = ddBankCode;
         MaxWithdrawalAmountPerDay = maxWithdrawalAmountPerDay;
         MaxMandateValidityDurationPerMonth = maxMandateValidityDurationPerMonth;

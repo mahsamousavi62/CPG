@@ -20,5 +20,15 @@ public class BankDirectDebitSettingReadModelConfiguration : IEntityTypeConfigura
         readModel.Property(x => x.IsActive);
         readModel.Property(x => x.CreationDate);
         readModel.Property(x => x.ModificationDate);
+
+
+        readModel.HasOne(c => c.Bank)
+           .WithOne(p => p.DirectDebitSetting)
+           .HasForeignKey<BankDirectDebitSettingReadModel>(p => p.BankId);
+
+
+        readModel.HasOne(c => c.Provider)
+           .WithMany(p => p.BankDirectDebitSettings)
+           .HasForeignKey(p => p.ProviderId);
     }
 }

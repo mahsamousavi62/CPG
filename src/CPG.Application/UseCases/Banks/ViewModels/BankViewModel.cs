@@ -17,6 +17,8 @@ public class BankViewModel
 
     public bool? HasDirectDebitFeature { get; set; }
 
+    public string ProviderName { get; set; }
+
     public BankDirectDebitSettingViewModel? DirectDebitSetting { get; set; }
 
     public DateTime CreationDate { get; set; }
