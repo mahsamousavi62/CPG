@@ -13,6 +13,7 @@ public class CompanyDepositViewModel
     public string AccountNumber { get; set; }
     public string Name { get; set; }
     public string Iban { get; set; }
+    public bool? IsDefaultForDD { get; set; }
     public bool IsActive { get; set; }
     public DateTime CreationDate { get; set; }
     public DateTime? ModificationDate { get; set; }
