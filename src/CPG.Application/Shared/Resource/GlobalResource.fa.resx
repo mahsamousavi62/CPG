@@ -558,4 +558,7 @@
   <data name="RequiredShaparakSettings" xml:space="preserve">
     <value>وارد نمودن تنظیمات شاپرک الزامیست</value>
   </data>
+  <data name="CompanyDepositNotBelongToCompany" xml:space="preserve">
+    <value>حساب متعلق به شرکت نمی باشد</value>
+  </data>
 </root>
