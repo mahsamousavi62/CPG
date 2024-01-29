@@ -14,7 +14,6 @@ namespace CPG.Application.UseCases.CompanyDeposits.Commands.SetAsDefaultForDD;
 public class SetAsDefaultForDDCommandHandler(IAggregateRepository<Company> companyRepository, WriteDbContext context)
     : IRequestHandler<SetAsDefaultForDDCommand, Result<bool>>
 {
-    private readonly IAggregateRepository<CompanyDeposit> _companyDepositRepository = companyDepositRepository;
     private readonly IAggregateRepository<Company> _companyRepository = companyRepository;
     private readonly WriteDbContext _context = context;
 
