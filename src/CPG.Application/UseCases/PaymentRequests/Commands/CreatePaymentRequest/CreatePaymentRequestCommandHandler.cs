@@ -17,6 +17,7 @@ using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Domain.Exceptions;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.ApplicationSettings;
+using IdentityModel;
 using Mapster;
 using MediatR;
 using System;
@@ -59,9 +60,16 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
             if (!application.IsActive)
                 throw new PaymentRequestApplicationIsInactiveException(application.PersianName, application.EnglishName);
 
-            var validCallBackUrl = application.ApplicationCallbackUrls.Select(a => a.CallbackUrl).Contains(request.Model.CallBackUrl);
-            if (!validCallBackUrl)
-                throw new PaymentRequestInvalidCallbackUrlException(request.Model.CallBackUrl);
+            var validCallBackUrl = application.ApplicationCallbackUrls.Select(a => a.CallbackUrl);
+
+            foreach (var item in validCallBackUrl)
+            {
+                Uri baseUri = new Uri(item);
+                Uri compareUri = new Uri(request.Model.CallBackUrl);
+               if( !string.Equals(baseUri.Host, compareUri.Host, StringComparison.OrdinalIgnoreCase))
+                    throw new PaymentRequestInvalidCallbackUrlException(request.Model.CallBackUrl);
+            }
+           
 
             paymentRequest.ApplicationId = application.Id;
             PaymentRequest.Create(paymentRequest, config.ExpireTime, clientId, application.EnglishName);
