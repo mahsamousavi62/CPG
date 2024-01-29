@@ -97,5 +97,39 @@ namespace CPG.Domain.AggregateModels.BankAggregate {
                 return ResourceManager.GetString("InvalidProviderType", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to سقف مجاز برداشت روزانه نامعتبر است.
+        /// </summary>
+        internal static string InvalidMaxWithdrawalAmountPerDay
+        {
+            get
+            {
+                return ResourceManager.GetString("InvalidMaxWithdrawalAmountPerDay", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to شناسه بانک برای برداشت مستقیم در سرویس دهنده مورد نظر نامعتبر است
+        /// </summary>
+        internal static string InvalidDDBankCode
+        {
+            get
+            {
+                return ResourceManager.GetString("InvalidDDBankCode", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to وارد نمودن اطلاعات برداشت مستقیم الزامی می باشد
+        /// </summary>
+        internal static string RequiredDirectDebitSetting
+        {
+            get
+            {
+                return ResourceManager.GetString("RequiredDirectDebitSetting", resourceCulture);
+            }
+        }
+        
     }
 }

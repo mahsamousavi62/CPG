@@ -28,10 +28,10 @@ public class BanksController : ApiBaseController
         return await Mediator.Send(new GetActiveBanksQuery());
     }
 
-    [HttpPost("update/{bankId:int}/{ibanPrefix}")]
-    public async Task<Result<bool>> UpdateBank(UpdateBankCommand command)
+    [HttpPost("update")]
+    public async Task<Result<bool>> UpdateBank(UpdateBankViewModel model)
     {
-        return await Mediator.Send(command);
+        return await Mediator.Send(new UpdateBankCommand(model));
     }
 
     [HttpPost("activate/{bankId:int}/{isActive:bool}")]

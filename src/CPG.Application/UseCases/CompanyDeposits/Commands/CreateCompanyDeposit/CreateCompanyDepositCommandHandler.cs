@@ -4,6 +4,7 @@ using CPG.Domain.AggregateModels.BankAggregate;
 using CPG.Domain.AggregateModels.BankAggregate.Exceptions;
 using CPG.Domain.AggregateModels.BankAggregate.Specifications;
 using CPG.Domain.AggregateModels.CompanyAggregate;
+using CPG.Domain.AggregateModels.CompanyAggregate.Specifications;
 using CPG.Domain.AggregateModels.CompanyDepositAggregate.Specifications;
 using CPG.Domain.SharedKernel;
 using MediatR;
@@ -25,8 +26,10 @@ public class CreateCompanyDepositCommandHandler(IAggregateRepository<CompanyDepo
     {
         var (persianName, iban) = await Validate(request.Model);
         var bankId = await GetBankId(iban);
+
+        var isFirstDeposit = (await _companyDepositRepository.GetBySpecAsync(new CompanyHasAnyDepositSpec(request.Model.CompanyId), cancellationToken)) != null ? true : false;
         var companyDeposit = CompanyDeposit.Create(persianName, iban, bankId,
-                                request.Model.AccountNumber, request.Model.CompanyId);
+                                request.Model.AccountNumber, request.Model.CompanyId, isFirstDeposit);
 
         await _companyDepositRepository.AddAsync(companyDeposit, cancellationToken);
         await _companyDepositRepository.SaveChangesAsync(cancellationToken);
