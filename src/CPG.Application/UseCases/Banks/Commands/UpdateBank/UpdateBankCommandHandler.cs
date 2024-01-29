@@ -5,20 +5,23 @@ using System.Threading;
 using CPG.Domain.AggregateModels.BankAggregate;
 using CPG.Application.UseCases.Banks.Exceptions;
 using CPG.Domain.SharedKernel.Interfaces;
+using System;
+using CPG.Domain.AggregateModels.BankAggregate.Specifications;
 
 namespace CPG.Application.UseCases.Banks.Commands.UpdateBank;
 
 public class UpdateBankCommandHandler(IAggregateRepository<Bank> bankRepository, ICurrentUser currentUser) : IRequestHandler<UpdateBankCommand, Result<bool>>
 {
     private readonly IAggregateRepository<Bank> _bankRepository = bankRepository;
-    private readonly ICurrentUser _currentUser = currentUser;
 
     public async Task<Result<bool>> Handle(UpdateBankCommand command, CancellationToken cancellationToken)
     {
-        var bank = await _bankRepository.GetByIdAsync(command.BankId, cancellationToken)
-                   ?? throw new BankNotFoundException(command.BankId);
+        var model = command.model;
+        var bank = await _bankRepository.GetBySpecAsync(new BankByIdSpec(model.BankId), cancellationToken)
+                   ?? throw new BankNotFoundException(model.BankId);
 
-        bank.Update(command.IbanPrefix);
+        bank.Update(model.Name, model.LogoAddress, model.IbanPrefix, model.HasDirectDebitFeature, model.ProviderId,
+            model.DDBankCode, model.MaxWithdrawalAmountPerDay, model.MaxMandateValidityDurationPerMonth, model.AuthenticationType);
 
         await _bankRepository.SaveChangesAsync(cancellationToken);
 
