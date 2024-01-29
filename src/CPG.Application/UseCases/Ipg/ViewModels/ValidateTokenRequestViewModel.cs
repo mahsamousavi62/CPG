@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using CPG.Domain.AggregateModels.PaymentRequestAggregate;
+using System.Net.NetworkInformation;
+using Newtonsoft.Json.Linq;
 
 namespace CPG.Application.UseCases.Ipg.ViewModels;
 
@@ -22,4 +24,17 @@ public class SepValidateTokenViewModel
     public string Token { get; set; }
     public string HashedCardNumber { get; set; }
     public string Status { get; set; }
+}
+
+public class PecValidateTokenViewModel
+{
+    public short Status { get; set; }
+    public long Token { get; set; }
+    public long OrderId { get; set; }
+    public int TerminalNo { get; set; }
+    public long RRN { get; set; }
+    public string Amount { get; set; }
+    public string SwAmount { get; set; }
+    public string HashCardNumber { get; set; }
+    public long STraceNo { get; set; }
 }
