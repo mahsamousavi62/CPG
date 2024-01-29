@@ -1,14 +1,10 @@
-﻿
-using System.Net.Http;
-using CCPG.Domain.SharedKernel.Communication.Ipg;
+﻿using CCPG.Domain.SharedKernel.Communication.Ipg;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.ApplicationSettings;
 using CPG.Domain.SharedKernel.Communication;
 using CPG.Domain.SharedKernel.Communication.Ipg;
 using CPG.Infrastructure.Persistence.DbContexts;
-using MassTransit;
 using MediatR;
-using Microsoft.Extensions.Logging;
 
 namespace CPG.Infrastructure.Providers.Ipg
 {
@@ -33,6 +29,10 @@ namespace CPG.Infrastructure.Providers.Ipg
                 case Enums.ProviderType.Sep:
                     {
                         return new SepProvider(_httpProvider, _context, _applicationSettingsRepository);
+                    }
+                case Enums.ProviderType.Vandar:
+                    {
+                        return new VandarProvider(_httpProvider, _context, _applicationSettingsRepository);
                     }
                     default: return null;
             }

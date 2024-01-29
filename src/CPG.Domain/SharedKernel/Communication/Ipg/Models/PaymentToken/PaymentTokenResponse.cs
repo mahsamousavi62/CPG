@@ -9,4 +9,8 @@ public class PaymentTokenResponse
     public string IpgBaseUrl { get; set; }
 
     public short StatusCode { get; set; }
+
+    public string RefreshToken { get; set; }
+
+    public int ExpiresIn { get; set; }
 }

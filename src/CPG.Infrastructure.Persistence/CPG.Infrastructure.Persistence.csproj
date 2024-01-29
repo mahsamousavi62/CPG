@@ -41,6 +41,7 @@
     <Folder Include="GraphQL\Types\CompanyIPG\" />
     <Folder Include="GraphQL\Types\Application\" />
     <Folder Include="GraphQL\Types\Provider\" />
+    <Folder Include="QueryHandlers\DirectDebit\" />
   </ItemGroup>
 
 </Project>
