@@ -7,6 +7,7 @@ using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.ApplicationSettings;
 using MediatR;
 using System;
+using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,38 +19,39 @@ public class CreateRedirectUrlCommandHandler(IApplicationSettingsRepository appl
     private readonly IApplicationSettingsRepository _applicationSettingsRepository = applicationSettingsRepository;
     private readonly IAggregateRepository<Transaction> _transactionRepository = transactionRepository;
 
-    public async Task<Result<string>> Handle(CreateRedirectUrlCommnad command, CancellationToken cancellationToken)    
+    public async Task<Result<string>> Handle(CreateRedirectUrlCommnad command, CancellationToken cancellationToken)
     {
         try
         {
             var appConfig = await _applicationSettingsRepository.GetAllApplicationSettings();
-
             var transaction = await _transactionRepository.GetBySpecAsync(new TransactionByIPGTrackId(command.id));
-
             var url = string.Empty;
             switch (transaction.IPGTransaction.CompanyIPG.Provider.ProviderType)
             {
                 case Enums.ProviderType.Vandar:
                     break;
-                case Enums.ProviderType.AsanPardakht: 
+                case Enums.ProviderType.AsanPardakht:
                     {
                         url = $"{appConfig.IPG_Callback_URL}?trackId={command.id}";
                         break;
                     }
+                case Enums.ProviderType.Pec:
                 case Enums.ProviderType.Sep:
                     {
                         var encoder = UrlEncoder.Create();
+                        var urlBuilder = new StringBuilder($"{appConfig.IPG_Callback_URL}?trackId={encoder.Encode(command.id)}");
 
-                        url = $"{appConfig.IPG_Callback_URL}?trackId={encoder.Encode(command.id)}&MID={encoder.Encode(command.model.MID ?? "")}&TerminalId={encoder.Encode(command.model.TerminalId.ToString())}" +
-                            $"&RefNum={encoder.Encode(command.model.RefNum ?? "")}&ResNum={encoder.Encode(command.model.ResNum ?? "")}&State={encoder.Encode(command.model.State ?? "")}&TraceNo={encoder.Encode(command.model.TraceNo ?? "")}" +
-                            $"&Amount={encoder.Encode(command.model.Amount.ToString())}&Wage={encoder.Encode(command.model.Wage ?? "")}&Rrn={encoder.Encode(command.model.Rrn ?? "")}&SecurePan={encoder.Encode(command.model.SecurePan ?? "")}&" +
-                            $"Token={encoder.Encode(command.model.Token ?? "")}&HashedCardNumber={encoder.Encode(command.model.HashedCardNumber ?? "")}&Status={encoder.Encode(command.model.Status.ToString())}";                        
+                        foreach (var field in command.form)
+                        {
+                            var fieldValue = field.Value.ToString();
+                            urlBuilder.Append($"&{field.Key}={encoder.Encode(fieldValue)}");
+                        }
+                        url = urlBuilder.ToString();
                         break;
                     }
                 default:
                     break;
             }
-
             return Result<string>.SuccessResult(url);
         }
         catch (DomainException exc)

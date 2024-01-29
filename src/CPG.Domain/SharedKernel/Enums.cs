@@ -53,6 +53,7 @@ public class Enums
         Vandar = 1,
         AsanPardakht = 2,
         Sep = 3,
+        Pec=4,
     }
 
     public enum ServiceType : byte
@@ -62,6 +63,8 @@ public class Enums
         AsanPardakhtVerify = 3,
         SepToken = 4,
         SepVerify = 5,
+        PecToken = 6,
+        PecVerify=7,
     }
 
     public enum TransactionType : byte

@@ -70,6 +70,7 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
             {
                 ProviderData = transaction.IPGTransaction.CompanyIPG.ProviderData,
                 ProviderTrackerId = transaction.IPGTransaction.ProviderTrackerId,
+                Token=transaction.IPGTransaction.IPGToken
             });
 
             transaction.IPGTransaction.Status = result.Status;
