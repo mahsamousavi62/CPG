@@ -19,6 +19,7 @@ public class CompanyDepositReadModelConfiguration : IEntityTypeConfiguration<Com
         readModel.Property(x => x.BankId).HasColumnName("BankId");
         readModel.Property(x => x.AccountNumber).HasColumnName("AccountNumber");
         readModel.Property(x => x.CompanyId).HasColumnName("CompanyId");
+        readModel.Property(x => x.IsDefaultForDD).HasColumnName("IsDefaultForDD");
         readModel.Property(x => x.IsActive);
         readModel.Property(x => x.ModificationDate);
         readModel.Property(x => x.CreationDate);

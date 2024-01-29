@@ -241,6 +241,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CompanyDeposit not belong to company.
+        /// </summary>
+        public static string CompanyDepositNotBelongToCompany {
+            get {
+                return ResourceManager.GetString("CompanyDepositNotBelongToCompany", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to companyDepositNotFound.
         /// </summary>
         public static string CompanyDepositNotFound {

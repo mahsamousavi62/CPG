@@ -23,6 +23,8 @@ public class CompanyDeposit : AuditableEntity<long>, IAggregateRoot
 
     public long CompanyId { get; }
 
+    public bool? IsDefaultForDD { get; set; }
+
     public Company Company { get; set; }
 
     public Bank Bank { get; set; }
@@ -36,7 +38,7 @@ public class CompanyDeposit : AuditableEntity<long>, IAggregateRoot
 
     }
 
-    public CompanyDeposit(PersianName name, Iban iban, int bankId, string accountNumber, long companyId)
+    public CompanyDeposit(PersianName name, Iban iban, int bankId, string accountNumber, long companyId, bool isDefaultForDD)
     {
         Guard.Against.NullOrEmpty(accountNumber);
 
@@ -45,12 +47,13 @@ public class CompanyDeposit : AuditableEntity<long>, IAggregateRoot
         BankId = bankId;
         AccountNumber = accountNumber;
         CompanyId = companyId;
+        IsDefaultForDD = isDefaultForDD;
         IsActive = true;
     }
 
-    public static CompanyDeposit Create(PersianName name, Iban iban, int bankId, string accountNumber, long companyId)
+    public static CompanyDeposit Create(PersianName name, Iban iban, int bankId, string accountNumber, long companyId, bool isDefaultForDD)
     {
-        var companyDeposit = new CompanyDeposit(name, iban, bankId, accountNumber, companyId);
+        var companyDeposit = new CompanyDeposit(name, iban, bankId, accountNumber, companyId, isDefaultForDD);
 
         companyDeposit.AddDomainEvent(new NewCompanyDepositCreatedEvent(companyDeposit.Id, DateTime.UtcNow));
 

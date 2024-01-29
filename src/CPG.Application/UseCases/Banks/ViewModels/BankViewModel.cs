@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CPG.Domain.AggregateModels.BankAggregate;
+using System;
 
 namespace CPG.Application.UseCases.Banks.ViewModels;
 
@@ -13,6 +14,12 @@ public class BankViewModel
     public string IbanPrefix { get; set; }
 
     public string Logo { get; set; }
+
+    public bool? HasDirectDebitFeature { get; set; }
+
+    public string ProviderName { get; set; }
+
+    public BankDirectDebitSettingViewModel? DirectDebitSetting { get; set; }
 
     public DateTime CreationDate { get; set; }
 

@@ -84,7 +84,6 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
 
                                                         return System.Text.Json.JsonSerializer.Deserialize<AsanPardakhtTokenResponse>(formattedResponse);
                                                     });
-
         return new PaymentTokenResponse
         {
             StatusCode = response.StatusCode,

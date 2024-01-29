@@ -39,6 +39,7 @@ public class GetCompanyDepositsByCompanyIdQueryHandler(ReadDbContext context, IM
                BankName = company.Bank.Name,
                CompanyId = company.CompanyId,
                CompanyName = company.Company.PersianName,
+               IsDefaultForDD = company.IsDefaultForDD,
                CreationDate = company.CreationDate,
                IsActive = company.IsActive,
                ModificationDate = company.ModificationDate,

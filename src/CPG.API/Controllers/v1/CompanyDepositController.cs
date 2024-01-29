@@ -1,5 +1,6 @@
 ﻿using CPG.Application.UseCases.CharisPayServices.Queries;
 using CPG.Application.UseCases.CompanyDeposits.Commands.CreateCompanyDeposit;
+using CPG.Application.UseCases.CompanyDeposits.Commands.SetAsDefaultForDD;
 using CPG.Application.UseCases.CompanyDeposits.Queries;
 using CPG.Application.UseCases.CompanyDeposits.ViewModels;
 using CPG.Domain.SharedKernel;
@@ -48,4 +49,9 @@ public class CompanyDepositController : ApiBaseController
         return await Mediator.Send(new CreateCompanyDepositCommand(model));
     }
 
+    [HttpPost("SetAsDefaultForDD")]
+    public async Task<Result<bool>> SetAsDefaultForDD(SetAsDefaultForDDViewModel model)
+    {
+        return await Mediator.Send(new SetAsDefaultForDDCommand(model));
+    }
 }

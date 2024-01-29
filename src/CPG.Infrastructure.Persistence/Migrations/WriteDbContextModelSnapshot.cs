@@ -60,6 +60,10 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<byte?>("IsDefaultForDD")
+                        .HasColumnType("tinyint")
+                        .HasColumnName("IsDefaultForDD");
+
                     b.Property<DateTime?>("ModificationDate")
                         .HasColumnType("datetime2");
 
@@ -228,6 +232,10 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.Property<long>("CreationUserId")
                         .HasColumnType("bigint");
 
+                    b.Property<bool?>("HasDirectDebitFeature")
+                        .HasColumnType("bit")
+                        .HasColumnName("HasDirectDebitFeature");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -254,6 +262,58 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Bank", (string)null);
+                });
+
+            modelBuilder.Entity("CPG.Domain.AggregateModels.BankAggregate.BankDirectDebitSetting", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<byte>("AuthenticationType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<int>("BankId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("CreationUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("DDBankCode")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<byte>("MaxMandateValidityDurationPerMonth")
+                        .HasColumnType("tinyint");
+
+                    b.Property<decimal>("MaxWithdrawalAmountPerDay")
+                        .HasPrecision(18)
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime?>("ModificationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("ModificationUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("ProviderId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BankId")
+                        .IsUnique();
+
+                    b.ToTable("BankDirectDebitSetting", (string)null);
                 });
 
             modelBuilder.Entity("CPG.Domain.AggregateModels.CompanyAggregate.Company", b =>
@@ -325,7 +385,8 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<long>("CompanyId")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("CompanyId");
 
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
@@ -1095,6 +1156,17 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.Navigation("IbanPrefix");
                 });
 
+            modelBuilder.Entity("CPG.Domain.AggregateModels.BankAggregate.BankDirectDebitSetting", b =>
+                {
+                    b.HasOne("CPG.Domain.AggregateModels.BankAggregate.Bank", "Bank")
+                        .WithOne("DirectDebitSetting")
+                        .HasForeignKey("CPG.Domain.AggregateModels.BankAggregate.BankDirectDebitSetting", "BankId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Bank");
+                });
+
             modelBuilder.Entity("CPG.Domain.AggregateModels.CompanyAggregate.CompanyPaymentMethod", b =>
                 {
                     b.HasOne("CPG.Domain.AggregateModels.CompanyAggregate.Company", "Company")
@@ -1270,6 +1342,8 @@ namespace CPG.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("CPG.Domain.AggregateModels.BankAggregate.Bank", b =>
                 {
                     b.Navigation("CompanyDeposits");
+
+                    b.Navigation("DirectDebitSetting");
                 });
 
             modelBuilder.Entity("CPG.Domain.AggregateModels.CompanyAggregate.Company", b =>
