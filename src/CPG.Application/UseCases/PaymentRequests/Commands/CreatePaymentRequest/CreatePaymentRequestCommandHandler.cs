@@ -61,15 +61,13 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
                 throw new PaymentRequestApplicationIsInactiveException(application.PersianName, application.EnglishName);
 
             var validCallBackUrl = application.ApplicationCallbackUrls.Select(a => a.CallbackUrl);
+            var compareUri = new Uri(request.Model.CallBackUrl, UriKind.Absolute);
 
-            foreach (var item in validCallBackUrl)
+            if (validCallBackUrl.All(url => !Uri.TryCreate(url, UriKind.Absolute, out var baseUri)
+            || !string.Equals(baseUri.Host, compareUri.Host, StringComparison.OrdinalIgnoreCase)))
             {
-                Uri baseUri = new Uri(item);
-                Uri compareUri = new Uri(request.Model.CallBackUrl);
-               if( !string.Equals(baseUri.Host, compareUri.Host, StringComparison.OrdinalIgnoreCase))
-                    throw new PaymentRequestInvalidCallbackUrlException(request.Model.CallBackUrl);
+                throw new PaymentRequestInvalidCallbackUrlException(request.Model.CallBackUrl);
             }
-           
 
             paymentRequest.ApplicationId = application.Id;
             PaymentRequest.Create(paymentRequest, config.ExpireTime, clientId, application.EnglishName);
