@@ -78,6 +78,7 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
                 foreach (var companyIPGItem in company?.CompanyIPGs)
                 {
                     var defaultDeposit = companyIPGItem.IPGDeposits.FirstOrDefault(t => t.IsDefault);
+                    if (defaultDeposit == null) throw new Exception("company not found");
                     if (!defaultDeposit.IsActive)
                     {
                         toBeRemoved.Add(companyIPGItem);

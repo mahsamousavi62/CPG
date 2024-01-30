@@ -47,4 +47,6 @@ public class CompanyShaparakSetting : AuditableEntity<long>
         var setting = new CompanyShaparakSetting(key, iv, thirdPartyCode);        
         return setting;
     }
+
+    
 }

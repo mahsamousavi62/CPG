@@ -15,7 +15,6 @@ public class Company : AuditableEntity<long>, IAggregateRoot
     {
 
     }
-
     public Company(PersianName persianName, EnglishName englishName, bool nationalCodeMatchingRequied, Logo logo,
         Url siteAddress, Enums.IpgRedirectionMethodType ipgRedirectionMethodType)
     {
@@ -29,28 +28,17 @@ public class Company : AuditableEntity<long>, IAggregateRoot
         IsActive = true;
     }
 
-    public string PersianName { get; }
-
-    public string EnglishName { get; }
-
-    public string Logo { get; }
-
-    public bool NationalCodeMatchingRequied { get; }
-
+    public string PersianName { get; set; }
+    public string EnglishName { get; set; }
+    public string Logo { get; set; }
+    public bool NationalCodeMatchingRequied { get; set; }
     public string SiteAddress { get; set; }
-
     public Enums.IpgRedirectionMethodType IpgRedirectionMethodType { get; set; }
-
     public List<CompanyDeposit> CompanyDeposits { get; set; }
-
     public List<CompanyPaymentMethod> PaymentMethods { get; set; } = [];
-
     public List<User> Users { get; set; }
-
     public List<PaymentRequest> PaymentRequests { get; set; }
-
     public List<CompanyIPG> CompanyIPGs { get; set; }
-
     public CompanyShaparakSetting ShaparakSetting { get; set; }
 
     public static Company Create(PersianName persianName, EnglishName englishName,
@@ -59,7 +47,7 @@ public class Company : AuditableEntity<long>, IAggregateRoot
     {
         var company = new Company(persianName, englishName, nationalCodeMatchingRequied, logo, siteAddress, ipgRedirectionMethodType);
 
-        var companyPaymentMethods = CompanyPaymentMethod.Create(details);        
+        var companyPaymentMethods = CompanyPaymentMethod.Create(details);
         company.PaymentMethods.AddRange(companyPaymentMethods);
 
         if (!string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(iv) && thirdPartyCode != null)
@@ -71,4 +59,27 @@ public class Company : AuditableEntity<long>, IAggregateRoot
         company.AddDomainEvent(new NewCompanyCreatedEvent(company.Id, DateTime.UtcNow));
         return company;
     }
+
+    public static void Update(Company company, CompanyModel updateModel)
+    {
+        company.PaymentMethods.Clear();
+        
+        company.PersianName = updateModel.persianName.Value;
+        company.EnglishName = updateModel.englishName.Value;
+        company.Logo = updateModel.logo.Value;
+        company.NationalCodeMatchingRequied = updateModel.nationalCodeMatchingRequied;
+        company.SiteAddress = updateModel.siteAddress.Value;
+        var companyPaymentMethods = CompanyPaymentMethod.Create(updateModel.details);
+        company.PaymentMethods.AddRange(companyPaymentMethods);
+        
+        if (!string.IsNullOrEmpty(updateModel.key) && !string.IsNullOrEmpty(updateModel.iv) && updateModel.thirdPartyCode != null)
+        {
+            var companyShaparakSetting = CompanyShaparakSetting.Create(updateModel.key, updateModel.iv, updateModel.thirdPartyCode);
+            company.ShaparakSetting = companyShaparakSetting;
+        }
+       
+    }
 }
+public record CompanyModel(PersianName persianName, EnglishName englishName,
+        bool nationalCodeMatchingRequied, Logo logo, Enums.PaymentMethodType[] details, Url siteAddress,
+        Enums.IpgRedirectionMethodType ipgRedirectionMethodType, string key, string iv, int? thirdPartyCode);

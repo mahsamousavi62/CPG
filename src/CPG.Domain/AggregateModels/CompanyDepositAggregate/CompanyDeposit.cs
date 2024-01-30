@@ -60,4 +60,8 @@ public class CompanyDeposit : AuditableEntity<long>, IAggregateRoot
         return companyDeposit;
     }
 
+    public static void Update(CompanyDeposit companyDeposit, PersianName persianName)
+    {
+        throw new NotImplementedException();
+    }
 }

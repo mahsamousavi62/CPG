@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 namespace CPG.Application.UseCases.Companies.Commands.CreateCompany;
 
+
 public class CreateCompanyViewModel(string persianName, string englishName, bool nationalCodeMatchingRequied, 
     IFile file, Enums.PaymentMethodType[] methodTypes, List<long> users, string siteAddress, Enums.IpgRedirectionMethodType ipgRedirectionMethodType,
     string key, string iv, int? thirdPartyCode)
