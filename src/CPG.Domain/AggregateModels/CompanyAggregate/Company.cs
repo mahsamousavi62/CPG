@@ -71,4 +71,9 @@ public class Company : AuditableEntity<long>, IAggregateRoot
         company.AddDomainEvent(new NewCompanyCreatedEvent(company.Id, DateTime.UtcNow));
         return company;
     }
+
+    public static void Update()
+    {
+
+    }
 }
