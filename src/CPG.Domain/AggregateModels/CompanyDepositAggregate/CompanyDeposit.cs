@@ -13,24 +13,16 @@ namespace CPG.Application.UseCases.CompanyDeposits;
 
 public class CompanyDeposit : AuditableEntity<long>, IAggregateRoot
 {
-    public string Name { get; }
-
-    public int BankId { get; }
-
-    public string Iban { get; }
-
-    public string AccountNumber { get; }
-
-    public long CompanyId { get; }
-
+    public string Name { get; set; }
+    public int BankId { get; set; }
+    public string Iban { get; set; }
+    public string AccountNumber { get; set; }
+    public long CompanyId { get; set; }
     public bool? IsDefaultForDD { get; set; }
 
     public Company Company { get; set; }
-
     public Bank Bank { get; set; }
-
     public List<CompanyIPGDeposit> CompanyIPGDeposits { get; set; }
-
     public List<Transaction> Transactions { get; set; }
 
     public CompanyDeposit()
@@ -62,6 +54,6 @@ public class CompanyDeposit : AuditableEntity<long>, IAggregateRoot
 
     public static void Update(CompanyDeposit companyDeposit, PersianName persianName)
     {
-        throw new NotImplementedException();
+       companyDeposit.Name=persianName.Value;
     }
 }

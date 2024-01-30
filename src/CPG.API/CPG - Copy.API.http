@@ -13,7 +13,7 @@ Authorization: bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjUyMENEN0MwN0Y2NDQ3MTlDRTFFRU
 {
 "companyIPGId":4,
 "companyPaymentMethodType":0,
-"paymentRequestCode":"CIP_pay__daryaftyar_client_e0ef80bb2685493d"
+"paymentRequestCode":"CIP_pay__daryaftyar_client_74c05766858c4f39"
 }
 
 
@@ -144,7 +144,7 @@ Content-Type: application/json
 
 {
   "id":5,
-  "name":"2تست"
+  "name":"edittest"
 }
 
 ###
