@@ -1,7 +1,7 @@
-﻿using CPG.Domain.SharedKernel.Communication.Ipg.Vandar;
+﻿using CPG.Domain.SharedKernel.Communication.DirectDebit.Vandar;
 using System.Text.Json.Serialization;
 
-namespace CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentToken;
+namespace CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Token;
 
 public class VandarTokenResponse : VandarResponseBase
 {

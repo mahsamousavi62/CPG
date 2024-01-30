@@ -561,4 +561,7 @@
   <data name="CompanyDepositNotBelongToCompany" xml:space="preserve">
     <value>حساب متعلق به شرکت نمی باشد</value>
   </data>
+  <data name="EmptyRefreshToken" xml:space="preserve">
+    <value>مقدار RefreshToken خالی است</value>
+  </data>
 </root>

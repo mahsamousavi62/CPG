@@ -107,6 +107,28 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
                         }
                         break;
                     }
+                case ProviderType.Pec:
+                    {
+                        var req = System.Text.Json.JsonSerializer.Deserialize<PecValidateTokenViewModel>(request.ValidateToken.Request);
+
+                        transaction.IPGTransaction.ProviderTrackerId = req.STraceNo.ToString();
+                        transaction.IPGTransaction.ReferenceNumber = req.RRN.ToString();
+                        transaction.IPGTransaction.EncryptCardNumber = req.HashCardNumber;
+
+                        if (req.Status != 0)
+                        {
+                            transaction.IPGTransaction.Status = IPGTransactionStatus.Failed;
+                            transaction.Status = TransactionStatus.TransactionFailed;
+                            paymentRequest.Status = PaymentStatus.TransactionFailed;
+                        }
+                        else if (req.Status == 0)
+                        {
+                            transaction.IPGTransaction.Status = IPGTransactionStatus.SucceededAndWaitingForVerification;
+                            transaction.IPGTransaction.PredicateExpirationDateTime = DateTime.UtcNow.AddMinutes(transaction.IPGTransaction.VerificationTimeLimit);
+                            paymentRequest.Status = PaymentStatus.TransactionWaitingForVerification;
+                        }
+                        break;
+                    }
                 default:
                     break;
             }

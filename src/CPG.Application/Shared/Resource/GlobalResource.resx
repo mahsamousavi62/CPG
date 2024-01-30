@@ -552,4 +552,7 @@
   <data name="CompanyDepositNotBelongToCompany" xml:space="preserve">
     <value>CompanyDeposit not belong to company</value>
   </data>
+  <data name="EmptyRefreshToken" xml:space="preserve">
+    <value>Refresh token is empty</value>
+  </data>
 </root>

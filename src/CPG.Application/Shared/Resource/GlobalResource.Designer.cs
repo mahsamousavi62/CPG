@@ -502,6 +502,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Refresh token is empty.
+        /// </summary>
+        public static string EmptyRefreshToken {
+            get {
+                return ResourceManager.GetString("EmptyRefreshToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to EnglishName.
         /// </summary>
         public static string EnglishName {
