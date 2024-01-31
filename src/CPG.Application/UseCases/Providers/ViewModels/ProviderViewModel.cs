@@ -15,6 +15,7 @@ public class ProviderViewModel
     public ProviderType ProviderType { get; set; }
     public DateTime CreationDate { get; set; }
     public DateTime? ModificationDate { get; set; }
+    public bool IsActive { get; set; }
     public ICollection<Enums.PaymentMethodType> PaymentMethods { get; set; }
 
 }

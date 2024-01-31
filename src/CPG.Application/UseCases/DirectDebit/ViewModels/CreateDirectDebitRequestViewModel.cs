@@ -2,8 +2,8 @@
 
 namespace CPG.Application.UseCases.DirectDebit.ViewModels;
 
-public class GetTokenViewModel
+public class CreateDirectDebitRequestViewModel
 {
     [Required]
-    public long ProviderId { get; set; }        
+    public int BankId { get; set; }
 }

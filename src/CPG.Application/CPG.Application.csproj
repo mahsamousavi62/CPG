@@ -59,7 +59,6 @@
     <Folder Include="UseCases\CompanyIPG\Exceptions\" />
     <Folder Include="UseCases\CompanyIPG\Queries\" />
     <Folder Include="UseCases\DirectDebit\Exceptions\" />
-    <Folder Include="UseCases\DirectDebit\Query\" />
     <Folder Include="UseCases\PaymentRequests\EventHandler\" />
     <Folder Include="UseCases\CompanyIPGs\EventHandler\" />
     <Folder Include="UseCases\Providers\Commands\UpdateProvider\" />

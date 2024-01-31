@@ -5,10 +5,8 @@ using CPG.Application.UseCases.Banks.ViewModels;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Minio;
 using CPG.Infrastructure.Persistence.DbContexts;
-using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -23,7 +21,7 @@ public class GetBankQueryHandler(ReadDbContext context, IMinioProvider minioProv
     {
         Guard.Against.NegativeOrZero(request.BankId, nameof(request.BankId));
 
-        var bank = await _context.BankReadModels.Include(t => t.DirectDebitSetting).FirstOrDefaultAsync(t => t.Id == request.BankId);
+        var bank = await _context.BankReadModels.Include(t => t.DirectDebitSetting).ThenInclude(t => t.Provider).FirstOrDefaultAsync(t => t.Id == request.BankId);
         if (bank == null)
             throw new BankNotFoundException(request.BankId);
 
@@ -43,7 +41,9 @@ public class GetBankQueryHandler(ReadDbContext context, IMinioProvider minioProv
                 DDBankCode = bank.DirectDebitSetting.DDBankCode,
                 MaxMandateValidityDurationPerMonth = bank.DirectDebitSetting.MaxMandateValidityDurationPerMonth,
                 MaxWithdrawalAmountPerDay = bank.DirectDebitSetting.MaxWithdrawalAmountPerDay,
-                ProviderId = bank.DirectDebitSetting.ProviderId
+                ProviderId = bank.DirectDebitSetting.ProviderId,
+                ProviderName = bank.DirectDebitSetting.Provider.PersianName,
+                IsActive = bank.DirectDebitSetting.IsActive,
             } : null,
         };
 
