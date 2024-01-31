@@ -552,6 +552,18 @@
   <data name="CompanyDepositNotBelongToCompany" xml:space="preserve">
     <value>CompanyDeposit not belong to company</value>
   </data>
+  <data name="BusinessID" xml:space="preserve">
+    <value>Business_ID</value>
+  </data>
+  <data name="DDGrantBaseURL" xml:space="preserve">
+    <value>DD_Grant_Base_URL</value>
+  </data>
+  <data name="DDNotifyWebhookURL" xml:space="preserve">
+    <value>DD_Notify_Webhook_URL</value>
+  </data>
+  <data name="RefreshToken" xml:space="preserve">
+    <value>Refresh_Token</value>
+  </data>
   <data name="EmptyRefreshToken" xml:space="preserve">
     <value>Refresh token is empty</value>
   </data>
