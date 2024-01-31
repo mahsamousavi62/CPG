@@ -196,6 +196,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Business_ID.
+        /// </summary>
+        public static string BusinessID {
+            get {
+                return ResourceManager.GetString("BusinessID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CallbackUrls.
         /// </summary>
         public static string CallbackUrls {
@@ -390,6 +399,24 @@ namespace CPG.Application.Shared.Resource {
         public static string CreateProvider {
             get {
                 return ResourceManager.GetString("CreateProvider", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DD_Grant_Base_URL.
+        /// </summary>
+        public static string DDGrantBaseURL {
+            get {
+                return ResourceManager.GetString("DDGrantBaseURL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DD_Notify_Webhook_URL.
+        /// </summary>
+        public static string DDNotifyWebhookURL {
+            get {
+                return ResourceManager.GetString("DDNotifyWebhookURL", resourceCulture);
             }
         }
         
@@ -1092,6 +1119,15 @@ namespace CPG.Application.Shared.Resource {
         public static string RayanReferencePage {
             get {
                 return ResourceManager.GetString("RayanReferencePage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh_Token.
+        /// </summary>
+        public static string RefreshToken {
+            get {
+                return ResourceManager.GetString("RefreshToken", resourceCulture);
             }
         }
         
