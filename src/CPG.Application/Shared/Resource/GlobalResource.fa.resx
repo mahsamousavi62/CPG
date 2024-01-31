@@ -409,7 +409,7 @@
     <value>محدودیت زمانی تایید درگاه</value>
   </data>
   <data name="VerificationTimeLimitIPG" xml:space="preserve">
-    <value>محدودیت زمانی تایید تراکنش درگاه</value>
+    <value>IPG_Verification_Time_Limit</value>
   </data>
   <data name="PaymentRequestNotFound" xml:space="preserve">
     <value>درخواست پرداخت  با شناسه {0} یافت نشد </value>
@@ -538,7 +538,7 @@
     <value>درخواست پرداخت مورد نظر در وضعیت مجاز برای تایید قرار ندارد</value>
   </data>
   <data name="IpgBaseUrl" xml:space="preserve">
-    <value>نشانی صفحه درگاه پرداخت</value>
+    <value>IPG_Base_URL</value>
   </data>
   <data name="Validation_MaxLength" xml:space="preserve">
     <value>{0} نمی‌تواند بیشتر از {1} کاراکتر باشد</value>
@@ -560,5 +560,29 @@
   </data>
   <data name="CompanyDepositNotBelongToCompany" xml:space="preserve">
     <value>حساب متعلق به شرکت نمی باشد</value>
+  </data>
+  <data name="BusinessID" xml:space="preserve">
+    <value>Business_ID</value>
+  </data>
+  <data name="DDGrantBaseURL" xml:space="preserve">
+    <value>DD_Grant_Base_URL</value>
+  </data>
+  <data name="DDNotifyWebhookURL" xml:space="preserve">
+    <value>DD_Notify_Webhook_URL</value>
+  </data>
+  <data name="DirectDebitSetting" xml:space="preserve">
+    <value>تنظیمات برداشت مستقیم</value>
+  </data>
+  <data name="IPGSetting" xml:space="preserve">
+    <value>تنظیمات درگاه پرداخت</value>
+  </data>
+  <data name="Pec" xml:space="preserve">
+    <value>تجارت الکترونیک پارسیان</value>
+  </data>
+  <data name="RefreshToken" xml:space="preserve">
+    <value>Refresh_Token</value>
+  </data>
+  <data name="Sep" xml:space="preserve">
+    <value>پرداخت الکترونیک سامان</value>
   </data>
 </root>

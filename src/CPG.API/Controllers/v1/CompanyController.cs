@@ -42,7 +42,7 @@ public class CompanyController : ApiBaseController
     {
         CreateCompanyViewModel createCompanyViewModel = new(model.PersianName, model.EnglishName,
             model.NationalCodeMatchingRequired, new FormFileProxy(model.File), model.MethodTypes.ToArray(), model.Users,
-            model.SiteAddress, model.IpgRedirectionMethodType, model.Key, model.Iv, model.ThirdPartyCode);
+            model.SiteAddress, model.IpgRedirectionMethodType, model.ShaparakSetting.Key, model.ShaparakSetting.Iv, model.ShaparakSetting.ThirdPartyCode);
 
         return await Mediator.Send(new CreateCompanyCommand(createCompanyViewModel));
     }
@@ -52,7 +52,7 @@ public class CompanyController : ApiBaseController
     {
         UpdateCompanyViewModel updateCompanyViewModel = new(model.Id, model.PersianName, model.EnglishName,
             model.NationalCodeMatchingRequired, new FormFileProxy(model.File), model.MethodTypes.ToArray(), model.Users,
-            model.SiteAddress, model.IpgRedirectionMethodType, model.Key, model.Iv, model.ThirdPartyCode);
+            model.SiteAddress, model.IpgRedirectionMethodType, model.ShaparakSetting.Key, model.ShaparakSetting.Iv, model.ShaparakSetting.ThirdPartyCode);
 
         return await Mediator.Send(new UpdateCompanyCommand(updateCompanyViewModel));
     }

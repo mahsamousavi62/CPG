@@ -89,6 +89,3 @@ public class Company : AuditableEntity<long>, IAggregateRoot
 
     
 }
-public record CompanyModel(PersianName persianName, EnglishName englishName,
-        bool nationalCodeMatchingRequied, Logo logo, Enums.PaymentMethodType[] details, Url siteAddress,
-        Enums.IpgRedirectionMethodType ipgRedirectionMethodType, string key, string iv, int? thirdPartyCode);
