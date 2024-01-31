@@ -17,25 +17,20 @@ public class Provider : AuditableEntity<long>, IAggregateRoot
     }
     public Provider(PersianName persianName, EnglishName englishName, ProviderType providerType, Logo logo, string providerData)
     {
-        _persianName = persianName.Value;
-        _englishName = englishName.Value;
-        _providerType = providerType;
-        _logo = logo.Value;
-        _providerData = providerData;
+        PersianName = persianName.Value;
+        EnglishName = englishName.Value;
+        ProviderType = providerType;
+        Logo = logo.Value;
+        ProviderData = providerData;
     }
 
-    private string _persianName;
-    private string _englishName;
-    private ProviderType _providerType;
-    private string _logo;
-    private string _providerData;
-    private short _ipgVerificationTimeLimit;
-    public string _ipgBaseUrl;
-    public string PersianName => _persianName;
-    public string EnglishName => _englishName;
-    public ProviderType ProviderType => _providerType;
-    public string Logo => _logo;
-    public string ProviderData => _providerData;
+   
+ 
+    public string PersianName { get; set; }
+    public string EnglishName { get; set; }
+    public ProviderType ProviderType { get; set; }
+    public string Logo { get; set; }
+    public string ProviderData { get; set; }
     public List<ProviderPaymentMethod> PaymentMethods { get; set; } = [];
     public static Provider Create(PersianName persianName, EnglishName englishName, ProviderType providerType, 
         Logo logo, string providerData, Enums.PaymentMethodType[] details)
@@ -47,13 +42,17 @@ public class Provider : AuditableEntity<long>, IAggregateRoot
         return provider;
     }
 
-    public void Update(string persianName, string englishName, ProviderType providerType, string providerData, Logo logo)
+    public static void Update(Provider provider,PersianName persianName, EnglishName englishName, ProviderType providerType,
+        Logo logo, string providerData, Enums.PaymentMethodType[] details)
     {
-        _persianName = persianName;
-        _englishName = englishName;
-        _providerType = providerType;
-        _providerData = providerData;
-        _logo = logo.Value;
+        provider.PersianName = persianName.Value;
+        provider.EnglishName = englishName.Value;
+        provider.ProviderType  = providerType;
+        provider.ProviderData = providerData; 
+        provider.Logo = logo.Value;
+        provider.PaymentMethods.Clear();
+        var paymentMethods = ProviderPaymentMethod.Create(details);
+        provider.PaymentMethods.AddRange(paymentMethods);
     }
 
     public void SetAsActive(long userId)

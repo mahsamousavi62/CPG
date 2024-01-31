@@ -60,7 +60,6 @@
     <Folder Include="UseCases\CompanyIPG\Queries\" />
     <Folder Include="UseCases\PaymentRequests\EventHandler\" />
     <Folder Include="UseCases\CompanyIPGs\EventHandler\" />
-    <Folder Include="UseCases\Providers\Commands\UpdateProvider\" />
     <Folder Include="UseCases\Providers\EventHandlers\" />
   </ItemGroup>
 </Project>

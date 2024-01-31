@@ -11,12 +11,14 @@ namespace CPG.Application.UseCases.Companies.Commands.UpdateCompany
 {
     public class UpdateCompanyViewModel : CreateCompanyViewModel
     {
-        public UpdateCompanyViewModel(string persianName, string englishName, bool nationalCodeMatchingRequied, IFile file,
+        public UpdateCompanyViewModel(long id,  string persianName, string englishName, bool nationalCodeMatchingRequied, IFile file,
             Enums.PaymentMethodType[] methodTypes, List<long> users, string siteAddress,
             Enums.IpgRedirectionMethodType ipgRedirectionMethodType,
             string key, string iv, int? thirdPartyCode) : base(persianName, englishName, nationalCodeMatchingRequied, file, 
                 methodTypes, users, siteAddress, ipgRedirectionMethodType, key, iv, thirdPartyCode)
         {
+            id = Id;
         }
+        public long Id { get; set; } 
     }
 }

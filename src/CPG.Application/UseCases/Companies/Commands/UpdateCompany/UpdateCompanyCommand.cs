@@ -1,5 +1,6 @@
-﻿using MediatR;
+﻿using CPG.Domain.SharedKernel;
+using MediatR;
 
 namespace CPG.Application.UseCases.Companies.Commands.UpdateCompany;
 
-public record UpdateCompanyCommand(UpdateCompanyViewModel Model) : IRequest<Unit>;
+public record UpdateCompanyCommand(UpdateCompanyViewModel Model) : IRequest<Result<Unit>>;

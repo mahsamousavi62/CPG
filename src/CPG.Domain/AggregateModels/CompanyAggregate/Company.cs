@@ -60,25 +60,34 @@ public class Company : AuditableEntity<long>, IAggregateRoot
         return company;
     }
 
-    public static void Update(Company company, CompanyModel updateModel)
+    public static void Update(Company company, PersianName persianName, EnglishName englishName,
+        bool nationalCodeMatchingRequied, Logo logo, Enums.PaymentMethodType[] methodTypes, Url siteAddress, 
+        Enums.IpgRedirectionMethodType ipgRedirectionMethodType, string key, string iV, int? thirdPartyCode)
     {
         company.PaymentMethods.Clear();
-        
-        company.PersianName = updateModel.persianName.Value;
-        company.EnglishName = updateModel.englishName.Value;
-        company.Logo = updateModel.logo.Value;
-        company.NationalCodeMatchingRequied = updateModel.nationalCodeMatchingRequied;
-        company.SiteAddress = updateModel.siteAddress.Value;
-        var companyPaymentMethods = CompanyPaymentMethod.Create(updateModel.details);
+
+        company.PersianName = persianName.Value;
+        company.EnglishName = englishName.Value;
+        company.Logo = logo.Value;
+        company.NationalCodeMatchingRequied = nationalCodeMatchingRequied;
+        company.SiteAddress = siteAddress.Value;
+        company.IpgRedirectionMethodType=ipgRedirectionMethodType;
+        var companyPaymentMethods = CompanyPaymentMethod.Create(methodTypes);
         company.PaymentMethods.AddRange(companyPaymentMethods);
-        
-        if (!string.IsNullOrEmpty(updateModel.key) && !string.IsNullOrEmpty(updateModel.iv) && updateModel.thirdPartyCode != null)
+
+        if (!string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(iV) && thirdPartyCode != null)
         {
-            var companyShaparakSetting = CompanyShaparakSetting.Create(updateModel.key, updateModel.iv, updateModel.thirdPartyCode);
-            company.ShaparakSetting = companyShaparakSetting;
+            if (company.ShaparakSetting is null)
+                company.ShaparakSetting = CompanyShaparakSetting.Create(key, iV, thirdPartyCode);
+
+            else
+                CompanyShaparakSetting.Update(company.ShaparakSetting,key, iV,thirdPartyCode);
         }
-       
+        else
+            company.ShaparakSetting = null;
     }
+
+    
 }
 public record CompanyModel(PersianName persianName, EnglishName englishName,
         bool nationalCodeMatchingRequied, Logo logo, Enums.PaymentMethodType[] details, Url siteAddress,
