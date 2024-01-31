@@ -1,21 +1,17 @@
-﻿
-using System.Net.Http;
-using CCPG.Domain.SharedKernel.Communication.Ipg;
+﻿using CCPG.Domain.SharedKernel.Communication.Ipg;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.ApplicationSettings;
 using CPG.Domain.SharedKernel.Communication;
 using CPG.Domain.SharedKernel.Communication.Ipg;
 using CPG.Domain.SharedKernel.Logging;
 using CPG.Infrastructure.Persistence.DbContexts;
-using MassTransit;
-using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace CPG.Infrastructure.Providers.Ipg
 {
     public class IpgFactory(IHttpProvider httpProvider,
         ILogService logService,
-        IApplicationSettingsRepository applicationSettingsRepository, 
+        IApplicationSettingsRepository applicationSettingsRepository,
         ReadDbContext context,
          ILogger<PecProvider> pecProviderLogger) : IIpgFactory
     {
@@ -26,7 +22,7 @@ namespace CPG.Infrastructure.Providers.Ipg
         private readonly ILogger<PecProvider> _pecProviderLogger = pecProviderLogger;
         public IIpgProvider GetInstance(Enums.ProviderType providerType)
         {
-           switch (providerType) 
+            switch (providerType)
             {
                 case Enums.ProviderType.AsanPardakht:
                     {
@@ -38,9 +34,9 @@ namespace CPG.Infrastructure.Providers.Ipg
                     }
                 case Enums.ProviderType.Pec:
                     {
-                        return new PecProvider( _context, _applicationSettingsRepository, _logService, _pecProviderLogger);
+                        return new PecProvider(_context, _applicationSettingsRepository, _logService, _pecProviderLogger);
                     }
-                    default: return null;
+                default: return null;
             }
         }
     }

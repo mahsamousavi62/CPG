@@ -15,9 +15,5 @@ public class UpdateBankViewModel
     public string IbanPrefix { get; set; }
     [Required]
     public bool HasDirectDebitFeature { get; set; }
-    public long ProviderId { get; set; }
-    public string DDBankCode { get; set; }
-    public decimal MaxWithdrawalAmountPerDay { get; set; }
-    public ValidityDuration MaxMandateValidityDurationPerMonth { get; set; }
-    public AuthenticationType AuthenticationType { get; set; }
+    public UpdateBankDirectDebitSettingViewModel DirectDebitSetting { get; set; }
 }

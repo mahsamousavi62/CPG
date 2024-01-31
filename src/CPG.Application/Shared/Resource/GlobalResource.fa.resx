@@ -585,4 +585,7 @@
   <data name="Sep" xml:space="preserve">
     <value>پرداخت الکترونیک سامان</value>
   </data>
+  <data name="EmptyRefreshToken" xml:space="preserve">
+    <value>مقدار RefreshToken خالی است</value>
+  </data>
 </root>

@@ -31,7 +31,9 @@ public class GetAllProvidersQueryHandler(ReadDbContext context, IMinioProvider m
             ProviderType = x.ProviderType,
             CreationDate = x.CreationDate,
             ModificationDate = x.ModificationDate,
-            PaymentMethods = x.PaymentMethods.Select(p => p.MethodType).ToList()
+            IsActive = x.IsActive,
+            PaymentMethods = x.PaymentMethods.Select(p => p.MethodType).ToList(),
+            
         })).ConfigureAwait(false);
 
         return Result<IReadOnlyCollection<ProviderViewModel>>.SuccessResult(viewModels);
