@@ -37,7 +37,6 @@ public class GetAvailableBankListQueryHandler(ReadDbContext contebankt, IMinioPr
                 CreationDate = bank.CreationDate,
                 ModificationDate = bank.ModificationDate,
                 HasDirectDebitFeature = bank.HasDirectDebitFeature,
-                ProviderName = bank.DirectDebitSetting.Provider.PersianName,
             }))
             .ConfigureAwait(false);
 
