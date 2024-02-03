@@ -30,14 +30,15 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
     {
         try
         {
-            var paymentRequest = await _paymentRequestRepository.FirstOrDefaultAsync(new PaymentRequestByCode(request.ViewModel.PaymentCode));
+            var paymentRequest = await _paymentRequestRepository.FirstOrDefaultAsync
+                (new PaymentRequestByCode(request.ViewModel.PaymentCode));
 
             if (paymentRequest is null)
             {
                 throw new PaymentRequestCodeNotFoundException();
             }
 
-            if (paymentRequest.UrlExpirationDateTime < DateTime.UtcNow)
+            if (paymentRequest.UrlExpirationDateTime < DateTime.Now)
             {
                 throw new PaymentRequestCodeIsExpiredException();
             }

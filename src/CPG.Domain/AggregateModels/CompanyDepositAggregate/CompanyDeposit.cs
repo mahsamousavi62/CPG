@@ -47,7 +47,7 @@ public class CompanyDeposit : AuditableEntity<long>, IAggregateRoot
     {
         var companyDeposit = new CompanyDeposit(name, iban, bankId, accountNumber, companyId, isDefaultForDD);
 
-        companyDeposit.AddDomainEvent(new NewCompanyDepositCreatedEvent(companyDeposit.Id, DateTime.UtcNow));
+        companyDeposit.AddDomainEvent(new NewCompanyDepositCreatedEvent(companyDeposit.Id, DateTime.Now));
 
         return companyDeposit;
     }
