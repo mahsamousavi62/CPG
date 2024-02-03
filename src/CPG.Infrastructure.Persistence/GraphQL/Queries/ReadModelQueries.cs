@@ -13,6 +13,7 @@ using CPG.Application.UseCases.IPGTypes.ViewModels;
 using System.Threading.Tasks;
 using System.Threading;
 using CPG.Infrastructure.Persistence.GraphQL.Types.CompanyDeposit;
+using static HotChocolate.ErrorCodes;
 
 namespace CPG.Infrastructure.Persistence.GraphQL.Queries;
 
@@ -36,7 +37,7 @@ public class ReadModelQueries
             CreationDate = x.CreationDate,
             ModificationDate = x.ModificationDate
         });
-                
+
         return data;
     }
 
@@ -169,25 +170,25 @@ public class ReadModelQueries
     [UseProjection]
     [UseFiltering<CompanyDepositFilterType>]
     [UseSorting<CompanayDepositSortType>]
-    public IQueryable<CompanyDepositReadModel> GetCompanyDepositsByCompanyId([Service] ReadDbContext dbContext, 
-        [Service] IMinioProvider minioProvider,long companyId)
+    public IQueryable<CompanyDepositReadModel> GetCompanyDepositsByCompanyId([Service] ReadDbContext dbContext,
+        [Service] IMinioProvider minioProvider, long companyId)
     {
-        var companyDeposits = dbContext.CompanyDepositReadModels.Include(c => c.Bank).Include(c => c.Company).Where(c=>c.CompanyId==companyId);
-        var companyDepositViewModels =companyDeposits.Select(company => new CompanyDepositReadModel
-             {
-                 Id = company.Id,
-                 Name = company.Name,
-                 AccountNumber = company.AccountNumber,
-                 Iban = company.Iban,
-                 BankId = company.BankId,
-                 BankLogo = minioProvider.PresignedGetObject(company.Bank.LogoAddress).GetAwaiter().GetResult(),
-                 BankName = company.Bank.Name,
-                 CompanyId = company.CompanyId,
-                 CompanyName = company.Company.PersianName,
-                 CreationDate = company.CreationDate,
-                 IsActive = company.IsActive,
-                 ModificationDate = company.ModificationDate,
-             });
+        var companyDeposits = dbContext.CompanyDepositReadModels.Include(c => c.Bank).Include(c => c.Company).Where(c => c.CompanyId == companyId);
+        var companyDepositViewModels = companyDeposits.Select(company => new CompanyDepositReadModel
+        {
+            Id = company.Id,
+            Name = company.Name,
+            AccountNumber = company.AccountNumber,
+            Iban = company.Iban,
+            BankId = company.BankId,
+            BankLogo = minioProvider.PresignedGetObject(company.Bank.LogoAddress).GetAwaiter().GetResult(),
+            BankName = company.Bank.Name,
+            CompanyId = company.CompanyId,
+            CompanyName = company.Company.PersianName,
+            CreationDate = company.CreationDate,
+            IsActive = company.IsActive,
+            ModificationDate = company.ModificationDate,
+        });
         return companyDepositViewModels;
     }
 
@@ -200,7 +201,7 @@ public class ReadModelQueries
     {
         var ipgTypes = dbContext.IPGTypeReadModels;
 
-        var viewModels = ipgTypes.Select( x => new IPGTypeReadModel
+        var viewModels = ipgTypes.Select(x => new IPGTypeReadModel
         {
             Id = x.Id,
             PersianName = x.PersianName,
@@ -217,7 +218,7 @@ public class ReadModelQueries
     [UseProjection]
     [UseFiltering<CompanyIPGFilterType>]
     [UseSorting<CompanayIPGSortType>]
-    public IQueryable<CompanyIPGReadModel> GetCompanyIPGsbyCompanyId([Service] ReadDbContext dbContext, 
+    public IQueryable<CompanyIPGReadModel> GetCompanyIPGsbyCompanyId([Service] ReadDbContext dbContext,
         [Service] IMinioProvider minioProvider, long companyId)
     {
         var data = dbContext.CompanyIPGReadModels
@@ -244,7 +245,7 @@ public class ReadModelQueries
             IPGTypeLogo = minioProvider.PresignedGetObject(entity.IPGType.Logo).GetAwaiter().GetResult(),
             IPGTypeName = entity.IPGType.PersianName,
             ProviderName = entity.Provider.PersianName,
-        }); ; ;
+        });
         return viewModels;
     }
 
@@ -294,5 +295,34 @@ public class ReadModelQueries
         return users;
     }
 
+
+    [UseOffsetPaging(IncludeTotalCount = true)]
+    [UseProjection]
+    [UseFiltering<UserFilterType>]
+    [UseSorting<UserSortType>]
+    public IQueryable<UserReadModel> GetUsers([Service] ReadDbContext dbContext)
+    {
+        var data = dbContext.UserReadModels.Include(c => c.Company).Include(c => c.UserRoles);
+
+        var viewModels = data.Select(entity => new UserReadModel
+        {
+            Id = entity.Id,
+            CompanyId = entity.CompanyId,
+            CompanyName = entity.Company.PersianName,
+            FirstName = entity.FirstName,
+            IDPId = entity.IDPId,
+            IsActive = entity.IsActive,
+            IsLegal = entity.IsLegal,
+            LastName = entity.LastName,
+            LastUpdateFromIDP = entity.LastUpdateFromIDP,
+            CreationDate = entity.CreationDate,
+            ModificationDate = entity.ModificationDate,
+            NationalCode = entity.NationalCode,
+            PhoneNumber = entity.PhoneNumber,
+            UserRoles = entity.UserRoles,
+
+        });
+        return viewModels;
+    }
 
 }
