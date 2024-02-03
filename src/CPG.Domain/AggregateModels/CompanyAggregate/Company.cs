@@ -72,6 +72,7 @@ public class Company : AuditableEntity<long>, IAggregateRoot
         company.NationalCodeMatchingRequied = nationalCodeMatchingRequied;
         company.SiteAddress = siteAddress.Value;
         company.IpgRedirectionMethodType=ipgRedirectionMethodType;
+       
         var companyPaymentMethods = CompanyPaymentMethod.Create(methodTypes);
         company.PaymentMethods.AddRange(companyPaymentMethods);
 

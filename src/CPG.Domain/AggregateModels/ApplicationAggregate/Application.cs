@@ -43,7 +43,7 @@ public class Application : AuditableEntity<long>, IAggregateRoot
             var applicationCallbackUrls = ApplicationCallbackUrl.Create(callbackUrls);
             application.ApplicationCallbackUrls.AddRange(applicationCallbackUrls);
         }
-        application.IsActive = true;        
+        application.IsActive = true;
 
         return application;
     }
@@ -75,13 +75,13 @@ public class Application : AuditableEntity<long>, IAggregateRoot
                EnglishName == application.EnglishName;
     }
 
-    public static void Update(Application application, PersianName persianName, EnglishName englishName, Url responseUrl, Logo logo, 
+    public static void Update(Application application, PersianName persianName, EnglishName englishName, Url responseUrl, Logo logo,
         string[] idpClientIds, Url[] urls)
     {
         application.PersianName = persianName.Value;
         application.EnglishName = englishName.Value;
-        application.ResponseApiUrl=responseUrl.Value;
-        application.Logo=logo.Value;
+        application.ResponseApiUrl = responseUrl.Value;
+        application.Logo = logo.Value;
         application.ApplicationIdentifiers.Clear();
         application.ApplicationCallbackUrls.Clear();
         var applicationIdentifiers = ApplicationIdentifier.Create(idpClientIds);
@@ -92,21 +92,6 @@ public class Application : AuditableEntity<long>, IAggregateRoot
             var applicationCallbackUrls = ApplicationCallbackUrl.Create(urls);
             application.ApplicationCallbackUrls.AddRange(applicationCallbackUrls);
         }
-
-    }
-
-
-    private void test (long[] applicationIdentifiers, Application entity)
-    {
-        if (applicationIdentifiers == null)
-        {
-            entity.ApplicationIdentifiers = new List<ApplicationIdentifier>();
-            return;
-        }
-
-        var selectedCoursesHS = new HashSet<long>(applicationIdentifiers);
-        var instructorCourses = new HashSet<long>(entity.ApplicationIdentifiers.Select(c => c.Id));
-        entity.ApplicationIdentifiers.Clear();
 
     }
 }

@@ -7,7 +7,7 @@ public class CreateCompanyIPGViewModel(long companyId,
     long iPGTypeId,
     string providerData,
     List<CreateCompanyIPGDepositViewModel> companyIPGDeposits
-    )
+)
 {
     public long CompanyId { get; set; } = companyId;
     public long ProviderId { get; set; } = providerId;

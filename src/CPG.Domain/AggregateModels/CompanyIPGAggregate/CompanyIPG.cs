@@ -3,6 +3,7 @@ using CPG.Domain.AggregateModels.IPGTypeAggregate;
 using CPG.Domain.AggregateModels.ProviderAggregate;
 using CPG.Domain.AggregateModels.TransactionAggregate;
 using CPG.Domain.SeedWork;
+using System;
 using System.Collections.Generic;
 
 namespace CPG.Domain.AggregateModels.CompanyIPGAggregate
@@ -38,6 +39,18 @@ namespace CPG.Domain.AggregateModels.CompanyIPGAggregate
             var ipgDeposits = CompanyIPGDeposit.Create(details);
             companyIpg.IPGDeposits = ipgDeposits;
             return companyIpg;
+        }
+
+        public static void Update(CompanyIPG companyIpg, long companyId, long providerId, long iPGTypeId, string providerData,
+            CompanyIPGDeposit[] details)
+        {
+            companyIpg.CompanyId=companyId;
+            companyIpg.ProviderId=providerId;
+            companyIpg.ProviderId = providerId;
+            companyIpg.IPGTypeId=iPGTypeId;
+            companyIpg.IPGDeposits.Clear();
+            var ipgDeposits = CompanyIPGDeposit.Create(details);
+            companyIpg.IPGDeposits = ipgDeposits;
         }
     }
 }

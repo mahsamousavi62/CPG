@@ -1,8 +1,10 @@
 ﻿using CPG.Application.UseCases.CompanyDeposits.ViewModels;
 using CPG.Application.UseCases.CompanyIPGs.Commands.CreateCompanyIPG;
+using CPG.Application.UseCases.CompanyIPGs.Commands.UpdateCompanyIPG;
 using CPG.Application.UseCases.CompanyIPGs.Queries;
 using CPG.Application.UseCases.CompanyIPGs.ViewModels;
 using CPG.Domain.SharedKernel;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -45,5 +47,15 @@ public class CompanyIPGController : ApiBaseController
         var createViewModel = new CreateCompanyIPGViewModel(model.CompanyId, model.ProviderId, model.IPGTypeId, model.ProviderData, createIpgDepositViewModels);
 
         return await Mediator.Send(new CreateCompanyIPGCommand(createViewModel));
+    }
+
+    [HttpPut]
+    public async Task<Result<Unit>> UpdateCompanyIPG(UpdateCompanyIPGModel model)
+    {
+        var createIpgDepositViewModels = model.CompanyIPGDeposits.Select(t => new CreateCompanyIPGDepositViewModel { DepositId = t.DepositId, IsDefault = t.IsDefault }).ToList();
+        var createViewModel = new UpdateCompanyIPGViewModel(model.Id, model.CompanyId, model.ProviderId, model.IPGTypeId,
+            model.ProviderData, createIpgDepositViewModels);
+
+        return await Mediator.Send(new UpdateCompanyIPGCommand(createViewModel));
     }
 }
