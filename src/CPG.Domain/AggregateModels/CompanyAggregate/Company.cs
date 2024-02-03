@@ -68,7 +68,7 @@ public class Company : AuditableEntity<long>, IAggregateRoot
             company.ShaparakSetting = companyShaparakSetting;
         }
 
-        company.AddDomainEvent(new NewCompanyCreatedEvent(company.Id, DateTime.UtcNow));
+        company.AddDomainEvent(new NewCompanyCreatedEvent(company.Id, DateTime.Now));
         return company;
     }
 
