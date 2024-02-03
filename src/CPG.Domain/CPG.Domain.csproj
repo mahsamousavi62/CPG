@@ -43,6 +43,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Update="AggregateModels\DirectDebitGrantAggregate\Resource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resource.resx</DependentUpon>
+    </Compile>
     <Compile Update="AggregateModels\PaymentRequestAggregate\Resource.Designer.cs">
       <DependentUpon>Resource.resx</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -78,6 +83,10 @@
       <LastGenOutput>Resource.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
+    <EmbeddedResource Update="AggregateModels\DirectDebitGrantAggregate\Resource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="AggregateModels\PaymentRequestAggregate\Resource.resx">
       <LastGenOutput>Resource.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
@@ -102,6 +111,8 @@
     <Folder Include="AggregateModels\CompanyIPGAggregate\Events\" />
     <Folder Include="AggregateModels\CompanyIPGAggregate\Events\" />
     <Folder Include="AggregateModels\CompanyIPGAggregate\Guards\" />
+    <Folder Include="AggregateModels\DirectDebitGrantAggregate\Exceptions\" />
+    <Folder Include="AggregateModels\DirectDebitGrantAggregate\Specifications\" />
     <Folder Include="AggregateModels\PaymentRequestAggregate\Events\" />
     <Folder Include="AggregateModels\ProviderAggregate\Guards\" />
     <Folder Include="AggregateModels\CompanyDepositAggregate\Guards\" />
