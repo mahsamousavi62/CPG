@@ -38,6 +38,7 @@ public class WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator 
     public DbSet<CompanyIPGDeposit> CompanyIPGDeposits { get; set; }
     public DbSet<CompanyShaparakSetting> ShaparakSettings { get; set; }
     public DbSet<DirectDebitGrant> DirectDebitGrants { get; set; }
+    public DbSet<DirectDebitPlan> DirectDebitPlans { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
         => modelBuilder
@@ -61,6 +62,7 @@ public class WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator 
             .ApplyConfiguration(new CompanyShaparakSettingConfiguration())
             .ApplyConfiguration(new BankDirectDebitSettingConfiguration())
             .ApplyConfiguration(new DirectDebitGrantConfiguration())
+            .ApplyConfiguration(new DirectDebitPlanConfiguration())
         ;
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
