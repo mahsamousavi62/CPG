@@ -5,6 +5,7 @@ using CPG.Domain.AggregateModels.TransactionAggregate;
 using CPG.Domain.SeedWork;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CPG.Domain.AggregateModels.CompanyIPGAggregate
 {
@@ -48,9 +49,18 @@ namespace CPG.Domain.AggregateModels.CompanyIPGAggregate
             companyIpg.ProviderId=providerId;
             companyIpg.ProviderId = providerId;
             companyIpg.IPGTypeId=iPGTypeId;
-            companyIpg.IPGDeposits.Clear();
-            var ipgDeposits = CompanyIPGDeposit.Create(details);
-            companyIpg.IPGDeposits = ipgDeposits;
+
+            foreach (var newItem in details)
+            {
+                if (!companyIpg.IPGDeposits.Any(p => p.CompanyDepositId == newItem.CompanyDepositId))
+                    companyIpg.IPGDeposits.Add(newItem);
+            }
+
+            foreach (var currnetItem in companyIpg.IPGDeposits)
+            {
+                if (!details.Any(p => p.CompanyDepositId == currnetItem.CompanyDepositId))
+                    currnetItem.IsActive = false;
+            }
         }
     }
 }

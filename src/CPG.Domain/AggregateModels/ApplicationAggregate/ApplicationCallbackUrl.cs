@@ -13,11 +13,13 @@ public class ApplicationCallbackUrl : AuditableEntity<long>
     {
         CallbackUrl = callbackUrl;
         ApplicationId = applicationId;
+        IsActive = true;
     }
 
     public ApplicationCallbackUrl(string callbackUrl)
     {
         CallbackUrl = callbackUrl;
+        IsActive = true;
     }
 
     public static List<ApplicationCallbackUrl> Create(Url[] callbackUrlList)
@@ -31,6 +33,11 @@ public class ApplicationCallbackUrl : AuditableEntity<long>
         var applicationCallbackUrls = callbackUrlList.Select(i => new ApplicationCallbackUrl(i.Value)).ToList();
         applicationCallbackUrls.ForEach(x => x.IsActive = true);
         return applicationCallbackUrls;
+    }
+
+    internal static ApplicationCallbackUrl Create(Url newItem)
+    {
+        return new ApplicationCallbackUrl(newItem);
     }
 
     public string CallbackUrl { get; set; }

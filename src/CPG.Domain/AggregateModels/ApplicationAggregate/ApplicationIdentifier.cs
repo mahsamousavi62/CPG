@@ -12,11 +12,13 @@ public class ApplicationIdentifier : AuditableEntity<long>
     {
         IdpClientId = idpClientId;
         ApplicationId = applicationId;
+        IsActive = true;
     }
 
     public ApplicationIdentifier(string idpClientId)
     {
         IdpClientId = idpClientId;
+        IsActive = true;
     }
 
     public static List<ApplicationIdentifier> Create(string[] IdpClientIdList)
@@ -30,6 +32,11 @@ public class ApplicationIdentifier : AuditableEntity<long>
         var applicationIdentifiers = IdpClientIdList.Select(i => new ApplicationIdentifier(i)).ToList();
         applicationIdentifiers.ForEach(x => x.IsActive = true);
         return applicationIdentifiers;
+    }
+
+    public static ApplicationIdentifier Create(string newItem)
+    {
+       return new ApplicationIdentifier(newItem);
     }
 
     public string IdpClientId { get; set; }

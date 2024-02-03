@@ -6,6 +6,7 @@ using CPG.Domain.SeedWork;
 using CPG.Domain.SharedKernel;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CPG.Domain.AggregateModels.CompanyAggregate;
 
@@ -61,20 +62,27 @@ public class Company : AuditableEntity<long>, IAggregateRoot
     }
 
     public static void Update(Company company, PersianName persianName, EnglishName englishName,
-        bool nationalCodeMatchingRequied, Logo logo, Enums.PaymentMethodType[] methodTypes, Url siteAddress, 
+        bool nationalCodeMatchingRequied, Logo logo, Enums.PaymentMethodType[] methodTypes, Url siteAddress,
         Enums.IpgRedirectionMethodType ipgRedirectionMethodType, string key, string iV, int? thirdPartyCode)
     {
-        company.PaymentMethods.Clear();
-
         company.PersianName = persianName.Value;
         company.EnglishName = englishName.Value;
         company.Logo = logo.Value;
         company.NationalCodeMatchingRequied = nationalCodeMatchingRequied;
         company.SiteAddress = siteAddress.Value;
-        company.IpgRedirectionMethodType=ipgRedirectionMethodType;
-       
-        var companyPaymentMethods = CompanyPaymentMethod.Create(methodTypes);
-        company.PaymentMethods.AddRange(companyPaymentMethods);
+        company.IpgRedirectionMethodType = ipgRedirectionMethodType;
+
+        foreach (var newItem in methodTypes)
+        {
+            if (!company.PaymentMethods.Any(p => p.MethodType == newItem))
+                company.PaymentMethods.Add(CompanyPaymentMethod.Create(newItem));
+        }
+
+        foreach (var currnetItem in company.PaymentMethods)
+        {
+            if (!methodTypes.Any(p => p == currnetItem.MethodType))
+               currnetItem.IsActive = false;
+        }
 
         if (!string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(iV) && thirdPartyCode != null)
         {
@@ -82,11 +90,11 @@ public class Company : AuditableEntity<long>, IAggregateRoot
                 company.ShaparakSetting = CompanyShaparakSetting.Create(key, iV, thirdPartyCode);
 
             else
-                CompanyShaparakSetting.Update(company.ShaparakSetting,key, iV,thirdPartyCode);
+                CompanyShaparakSetting.Update(company.ShaparakSetting, key, iV, thirdPartyCode);
         }
         else
             company.ShaparakSetting = null;
     }
 
-    
+
 }

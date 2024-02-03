@@ -1,11 +1,13 @@
 ﻿using CPG.Domain.AggregateModels.ApplicationAggregate.Events;
 using CPG.Domain.AggregateModels.ApplicationAggregate.Exceptions;
+using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Domain.AggregateModels.PaymentRequestAggregate;
 using CPG.Domain.SeedWork;
 using CPG.Domain.SharedKernel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace CPG.Domain.AggregateModels.ApplicationAggregate;
 
@@ -82,16 +84,29 @@ public class Application : AuditableEntity<long>, IAggregateRoot
         application.EnglishName = englishName.Value;
         application.ResponseApiUrl = responseUrl.Value;
         application.Logo = logo.Value;
-        application.ApplicationIdentifiers.Clear();
-        application.ApplicationCallbackUrls.Clear();
-        var applicationIdentifiers = ApplicationIdentifier.Create(idpClientIds);
-        application.ApplicationIdentifiers.AddRange(applicationIdentifiers);
 
-        if (urls?.Length > 0 is true)
+        foreach (var newItem in idpClientIds)
         {
-            var applicationCallbackUrls = ApplicationCallbackUrl.Create(urls);
-            application.ApplicationCallbackUrls.AddRange(applicationCallbackUrls);
+            if (!application.ApplicationIdentifiers.Any(p => p.IdpClientId== newItem))
+                application.ApplicationIdentifiers.Add(ApplicationIdentifier.Create(newItem));
         }
 
+        foreach (var currnetItem in application.ApplicationIdentifiers)
+        {
+            if (!idpClientIds.Any(p => p == currnetItem.IdpClientId))
+                currnetItem.IsActive = false;
+        }
+
+        foreach (var newItem in urls)
+        {
+            if (!application.ApplicationCallbackUrls.Any(p => p.CallbackUrl == newItem))
+                application.ApplicationCallbackUrls.Add(ApplicationCallbackUrl.Create(newItem));
+        }
+
+        foreach (var currnetItem in application.ApplicationCallbackUrls)
+        {
+            if (!urls.Any(p => p == currnetItem.CallbackUrl))
+                currnetItem.IsActive = false;
+        }
     }
 }

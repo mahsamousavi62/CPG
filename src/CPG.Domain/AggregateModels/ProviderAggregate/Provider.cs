@@ -5,6 +5,7 @@ using CPG.Domain.SeedWork;
 using CPG.Domain.SharedKernel;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Domain.AggregateModels.ProviderAggregate;
@@ -23,8 +24,6 @@ public class Provider : AuditableEntity<long>, IAggregateRoot
         Logo = logo.Value;
         ProviderData = providerData;
     }
-
-   
  
     public string PersianName { get; set; }
     public string EnglishName { get; set; }
@@ -50,9 +49,18 @@ public class Provider : AuditableEntity<long>, IAggregateRoot
         provider.ProviderType  = providerType;
         provider.ProviderData = providerData; 
         provider.Logo = logo.Value;
-        provider.PaymentMethods.Clear();
-        var paymentMethods = ProviderPaymentMethod.Create(details);
-        provider.PaymentMethods.AddRange(paymentMethods);
+
+        foreach (var newItem in details)
+        {
+            if (!provider.PaymentMethods.Any(p => p.MethodType == newItem))
+                provider.PaymentMethods.Add(ProviderPaymentMethod.Create(newItem));
+        }
+
+        foreach (var currnetItem in provider.PaymentMethods)
+        {
+            if (!details.Any(p => p == currnetItem.MethodType))
+                currnetItem.IsActive = false;
+        }
     }
 
     public void SetAsActive(long userId)

@@ -95,7 +95,7 @@ public class UpdateCompanyCommandHandler(IAggregateRepository<Company> companyRe
 
         if (samePersianName != null) throw new DuplicatePersianNameException(persianName);
 
-        Company sameEnglishName = await _companyRepository.GetBySpecAsync(new CompanyByEnglishName(englishName));
+        Company sameEnglishName = await _companyRepository.GetBySpecAsync(new CompanyByEnglishNameUpdateMode(englishName,id));
 
         if (sameEnglishName != null) throw new DuplicateEnglishNameException(englishName);
     }
