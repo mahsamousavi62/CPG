@@ -10,7 +10,7 @@ public class UpdateBankViewModel
     [Required]
     public string Name { get; set; }
     [Required]
-    public string LogoAddress { get; set; }
+    public string Logo { get; set; }
     [Required]
     public string IbanPrefix { get; set; }
     [Required]

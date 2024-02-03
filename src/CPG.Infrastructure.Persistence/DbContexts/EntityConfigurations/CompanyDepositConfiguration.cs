@@ -20,7 +20,7 @@ namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations
             entity.Property(x => x.BankId).HasColumnName("BankId").HasColumnType("int").IsRequired();
             entity.Property(x => x.AccountNumber).HasColumnName("AccountNumber").HasMaxLength(255).HasColumnType("varchar").IsRequired();
             entity.Property(x => x.CompanyId).HasColumnName("CompanyId").HasColumnType("bigint").IsRequired();
-            entity.Property(x => x.IsDefaultForDD).HasColumnName("IsDefaultForDD").HasColumnType("tinyint");
+            entity.Property(x => x.IsDefaultForDD).HasColumnName("IsDefaultForDD").HasColumnType("bit");
         }
     }
 }

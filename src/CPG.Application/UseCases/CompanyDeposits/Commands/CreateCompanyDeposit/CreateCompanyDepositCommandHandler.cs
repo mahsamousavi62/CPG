@@ -1,13 +1,16 @@
 ﻿using CPG.Application.UseCases.Companies.Exceptions;
 using CPG.Application.UseCases.CompanyDeposits.Exceptions;
+using CPG.Application.UseCases.Exceptions;
 using CPG.Domain.AggregateModels.BankAggregate;
 using CPG.Domain.AggregateModels.BankAggregate.Exceptions;
 using CPG.Domain.AggregateModels.BankAggregate.Specifications;
 using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Domain.AggregateModels.CompanyAggregate.Specifications;
 using CPG.Domain.AggregateModels.CompanyDepositAggregate.Specifications;
+using CPG.Domain.Exceptions;
 using CPG.Domain.SharedKernel;
 using MediatR;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,20 +24,34 @@ public class CreateCompanyDepositCommandHandler(IAggregateRepository<CompanyDepo
     private readonly IAggregateRepository<Company> _companyRepository = companyRepository;
     private readonly IAggregateRepository<Bank> _bankRepository = bankRepository;
 
-
     public async Task<Result<long>> Handle(CreateCompanyDepositCommand request, CancellationToken cancellationToken)
     {
-        var (persianName, iban) = await Validate(request.Model);
-        var bankId = await GetBankId(iban);
+        try
+        {
+            var (persianName, iban) = await Validate(request.Model);
+            var bankId = await GetBankId(iban);
 
-        var isFirstDeposit = (await _companyDepositRepository.GetBySpecAsync(new CompanyHasAnyDepositSpec(request.Model.CompanyId), cancellationToken)) != null ? true : false;
-        var companyDeposit = CompanyDeposit.Create(persianName, iban, bankId,
-                                request.Model.AccountNumber, request.Model.CompanyId, isFirstDeposit);
+            var isFirstDeposit = (await _companyDepositRepository.GetBySpecAsync(new CompanyHasAnyDepositSpec(request.Model.CompanyId), cancellationToken)) != null ? true : false;
+            var companyDeposit = CompanyDeposit.Create(persianName, iban, bankId,
+                                    request.Model.AccountNumber, request.Model.CompanyId, isFirstDeposit);
 
-        await _companyDepositRepository.AddAsync(companyDeposit, cancellationToken);
-        await _companyDepositRepository.SaveChangesAsync(cancellationToken);
+            await _companyDepositRepository.AddAsync(companyDeposit, cancellationToken);
+            await _companyDepositRepository.SaveChangesAsync(cancellationToken);
 
-        return Result<long>.SuccessResult(companyDeposit.Id);
+            return Result<long>.SuccessResult(companyDeposit.Id);
+        }
+        catch (DomainException exc)
+        {
+            return Result<long>.Failure(new Error(exc.Code, exc.Message));
+        }
+        catch (AppException exc)
+        {
+            return Result<long>.Failure(new Error(exc.Code, exc.Message));
+        }
+        catch (Exception exc)
+        {
+            return Result<long>.Failure(new Error(exc.Source, exc.Message));
+        }
     }
 
     private async Task<(PersianName, Iban)> Validate(CreateCompanyDepositViewModel companyDeposit)

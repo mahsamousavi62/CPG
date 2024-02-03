@@ -7,7 +7,8 @@ public class ApplicationByIdSpec : Specification<Application>, ISingleResultSpec
 {
     public ApplicationByIdSpec(int appId)
     {
-        Query
+        Query.Include(a=>a.ApplicationCallbackUrls)
+            .Include(a=>a.ApplicationIdentifiers)
             .Where(app => app.Id == appId);
     }
 }

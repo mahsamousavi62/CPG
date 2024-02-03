@@ -33,8 +33,13 @@ public class CompanyPaymentMethod : AuditableEntity<long>
 
         if (methodTypes.Select(x => x).Distinct().Count() != methodTypes.Length)
             throw new DuplicatePaymentMethodTypeException(nameof(methodTypes));
-               
+
         var companyPaymentMethods = methodTypes.Select(i => new CompanyPaymentMethod(i)).ToList();
         return companyPaymentMethods;
+    }
+
+    public static CompanyPaymentMethod Create(Enums.PaymentMethodType newItem)
+    {
+        return new CompanyPaymentMethod(newItem);
     }
 }

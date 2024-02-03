@@ -42,7 +42,7 @@ namespace CPG.Infrastructure.Authorization
                           ValidateAudience = JwtConfig.ValidateAudience,
                           ValidateLifetime = JwtConfig.ValidateLifetime,
                           ClockSkew = TimeSpan.FromSeconds(Convert.ToInt32(JwtConfig.ClockSkew)),
-                  };
+                      };
                   });
 
                 return services;

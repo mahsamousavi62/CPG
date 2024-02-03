@@ -39,4 +39,9 @@ public class ProviderPaymentMethod : AuditableEntity<long>
         var providerPaymentMethods = methodTypes.Select(i => new ProviderPaymentMethod(i)).ToList();
         return providerPaymentMethods;
     }
+
+    internal static ProviderPaymentMethod Create(Enums.PaymentMethodType newItem)
+    {
+        return new ProviderPaymentMethod(newItem);
+    }
 }

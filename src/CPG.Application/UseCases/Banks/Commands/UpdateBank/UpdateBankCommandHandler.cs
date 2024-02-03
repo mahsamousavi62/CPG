@@ -22,7 +22,7 @@ public class UpdateBankCommandHandler(IAggregateRepository<Bank> bankRepository,
             var bank = await _bankRepository.GetBySpecAsync(new BankByIdSpec(model.BankId), cancellationToken)
                        ?? throw new BankNotFoundException(model.BankId);
 
-            bank.Update(model.Name, model.LogoAddress, model.IbanPrefix, model.HasDirectDebitFeature, model.DirectDebitSetting.ProviderId,
+            bank.Update(model.Name, model.Logo, model.IbanPrefix, model.HasDirectDebitFeature, model.DirectDebitSetting.ProviderId,
                 model.DirectDebitSetting.DDBankCode, model.DirectDebitSetting.MaxWithdrawalAmountPerDay,
                 model.DirectDebitSetting.MaxMandateValidityDurationPerMonth, model.DirectDebitSetting.AuthenticationType);
 

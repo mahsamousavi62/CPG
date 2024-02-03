@@ -102,7 +102,7 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
                         else if (sepSuccessStatusList.Contains(req.Status))
                         {
                             transaction.IPGTransaction.Status = IPGTransactionStatus.SucceededAndWaitingForVerification;
-                            transaction.IPGTransaction.PredicateExpirationDateTime = DateTime.UtcNow.AddMinutes(transaction.IPGTransaction.VerificationTimeLimit);
+                            transaction.IPGTransaction.PredicateExpirationDateTime = DateTime.Now.AddMinutes(transaction.IPGTransaction.VerificationTimeLimit);
                             paymentRequest.Status = PaymentStatus.TransactionWaitingForVerification;
                         }
                         break;
@@ -124,7 +124,7 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
                         else if (req.Status == PecSuccedStatus)
                         {
                             transaction.IPGTransaction.Status = IPGTransactionStatus.SucceededAndWaitingForVerification;
-                            transaction.IPGTransaction.PredicateExpirationDateTime = DateTime.UtcNow.AddMinutes(transaction.IPGTransaction.VerificationTimeLimit);
+                            transaction.IPGTransaction.PredicateExpirationDateTime = DateTime.Now.AddMinutes(transaction.IPGTransaction.VerificationTimeLimit);
                             paymentRequest.Status = PaymentStatus.TransactionWaitingForVerification;
                         }
                         break;

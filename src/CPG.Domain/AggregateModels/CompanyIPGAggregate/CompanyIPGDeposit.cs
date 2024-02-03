@@ -43,5 +43,8 @@ namespace CPG.Domain.AggregateModels.CompanyIPGAggregate
 
             return values.ToList();
         }
+   
+    
+    
     }
 }
