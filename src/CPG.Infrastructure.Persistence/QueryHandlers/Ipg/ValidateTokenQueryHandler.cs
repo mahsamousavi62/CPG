@@ -33,7 +33,7 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
         try
         {
             var transaction = await _transactionRepository.GetBySpecAsync(new TransactionByIPGTrackId(request.TrackId));
-
+            var PecSuccedStatus = "0";
             if (transaction?.IPGTransaction is null)
                 throw new NotFoundTrackIdException();
             if (transaction.IPGTransaction.Status != IPGTransactionStatus.WaitingForPspResponse)
@@ -115,13 +115,13 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
                         transaction.IPGTransaction.ReferenceNumber = req.RRN.ToString();
                         transaction.IPGTransaction.EncryptCardNumber = req.HashCardNumber;
 
-                        if (req.Status != 0)
+                        if (req.Status != PecSuccedStatus)
                         {
                             transaction.IPGTransaction.Status = IPGTransactionStatus.Failed;
                             transaction.Status = TransactionStatus.TransactionFailed;
                             paymentRequest.Status = PaymentStatus.TransactionFailed;
                         }
-                        else if (req.Status == 0)
+                        else if (req.Status == PecSuccedStatus)
                         {
                             transaction.IPGTransaction.Status = IPGTransactionStatus.SucceededAndWaitingForVerification;
                             transaction.IPGTransaction.PredicateExpirationDateTime = DateTime.UtcNow.AddMinutes(transaction.IPGTransaction.VerificationTimeLimit);
