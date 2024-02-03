@@ -57,21 +57,21 @@ public class UpdateProviderCommandHandler(IAggregateRepository<Provider> provide
         PersianName persianName = new(model.PersianName);
         EnglishName englishName = new(model.EnglishName);
 
-        var provider = await _providerRepository.GetByIdAsync(model.Id);
+        var provider = await _providerRepository.GetBySpecAsync(new ProviderById(model.Id));
         if (provider == null)
             throw new ProviderNotFoundException(model.Id);
 
-        var samePersianNameProvider = await _providerRepository.GetBySpecAsync(new ProviderByPersianName(model.PersianName));
+        var samePersianNameProvider = await _providerRepository.GetBySpecAsync(new ProviderByPersianNameUpdateMode(model.PersianName,model.Id));
         if (samePersianNameProvider != null)
         {
             throw new DuplicateProviderPersianNameException(model.PersianName);
         }
-        var sameEnglishNameProvider = await _providerRepository.GetBySpecAsync(new ProviderByEnglishName(model.EnglishName));
+        var sameEnglishNameProvider = await _providerRepository.GetBySpecAsync(new ProviderByEnglishNameUpdateMode(model.EnglishName,model.Id));
         if (sameEnglishNameProvider != null)
             throw new DuplicateProviderEnglishNameException(model.EnglishName);
 
 
-        var sameProvidertype = await _providerRepository.GetBySpecAsync(new ProviderByProviderType(model.ProviderType));
+        var sameProvidertype = await _providerRepository.GetBySpecAsync(new ProviderByProviderTypeUpdateMode(model.ProviderType,model.Id));
         if (sameProvidertype != null)
             throw new DuplicateProviderTypeException(model.ProviderType);
     

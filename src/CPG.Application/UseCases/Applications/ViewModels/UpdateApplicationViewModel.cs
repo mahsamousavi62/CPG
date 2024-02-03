@@ -6,10 +6,11 @@ namespace CPG.Application.UseCases.Applications.ViewModels;
 
 public class UpdateApplicationViewModel : CreateApplicationViewModel
 {
-    public UpdateApplicationViewModel(string persianName, string englishName, string responseApiUrl, 
+    public UpdateApplicationViewModel(int id ,string persianName, string englishName, string responseApiUrl, 
         string[] idpClientIds, string[] callbackUrls, IFile file)
         : base(persianName, englishName, responseApiUrl, idpClientIds, callbackUrls, file)
     {
+        Id=id;
     }
-    public long Id { get; set; }
+    public int Id { get; set; }
 }

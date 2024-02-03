@@ -36,7 +36,7 @@ public class UpdateCompanyCommandHandler(IAggregateRepository<Company> companyRe
             PersianName persianName = new(request.Model.PersianName);
             EnglishName englishName = new(request.Model.EnglishName);
 
-            var company = await _companyRepository.GetByIdAsync(request.Model.Id);
+            var company = await _companyRepository.GetBySpecAsync(new CompanyByIdSpec( request.Model.Id));
             if (company == null)
                 throw new CompanyNotFoundException(request.Model.Id);
 

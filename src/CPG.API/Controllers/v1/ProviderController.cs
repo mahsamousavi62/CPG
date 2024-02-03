@@ -43,7 +43,7 @@ public class ProviderController : ApiBaseController
     [HttpPut]
     public async Task<Result<Unit>> UpdateProvider([FromForm] UpdateProviderModel model)
     {
-        UpdateProviderViewModel updateProviderViewModel = new(model.PersianName, model.EnglishName,
+        UpdateProviderViewModel updateProviderViewModel = new(model.Id,model.PersianName, model.EnglishName,
                                                              model.ProviderType, model.ProviderData,
                                                              new FormFileProxy(model.File), model.MethodTypes);
 

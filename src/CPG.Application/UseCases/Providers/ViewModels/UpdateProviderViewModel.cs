@@ -6,8 +6,9 @@ namespace CPG.Application.UseCases.Providers.ViewModels;
 
 public class UpdateProviderViewModel : CreateProviderViewModel
 {
-    public UpdateProviderViewModel(string persianName, string englishName, Enums.ProviderType providerType, string providerData, IFile file, Enums.PaymentMethodType[] methodTypes) : base(persianName, englishName, providerType, providerData, file, methodTypes)
+    public UpdateProviderViewModel(long id ,string persianName, string englishName, Enums.ProviderType providerType, string providerData, IFile file, Enums.PaymentMethodType[] methodTypes) : base(persianName, englishName, providerType, providerData, file, methodTypes)
     {
+       Id=id;
     }
     public long Id { get; set; }
 }

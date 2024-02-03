@@ -17,7 +17,7 @@ namespace CPG.Application.UseCases.Companies.Commands.UpdateCompany
             string key, string iv, int? thirdPartyCode) : base(persianName, englishName, nationalCodeMatchingRequied, file, 
                 methodTypes, users, siteAddress, ipgRedirectionMethodType, key, iv, thirdPartyCode)
         {
-            id = Id;
+           Id = id;
         }
         public long Id { get; set; } 
     }

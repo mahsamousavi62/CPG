@@ -66,25 +66,25 @@ public class UpdateApplicationCommandHandlerr(IAggregateRepository<Domain.Aggreg
         PersianName persianName = new(model.PersianName);
         EnglishName englishName = new(model.EnglishName);
 
-        var application = await _applicationRepository.GetByIdAsync(model.Id);
+        var application = await _applicationRepository.GetBySpecAsync(new ApplicationByIdSpec(model.Id));
         if (application == null)
             throw new ApplicationNotFoundException(model.Id);
 
-        var samePersianNameApplication = await _applicationRepository.GetBySpecAsync(new ApplicationByPersianName(model.PersianName));
+        var samePersianNameApplication = await _applicationRepository.GetBySpecAsync(new ApplicationByPersianNameUpdateMode(model.PersianName,model.Id));
         if (samePersianNameApplication != null)
             throw new DuplicatePersianNameException(model.PersianName);
 
-        var sameEnglishNameApplication = await _applicationRepository.GetBySpecAsync(new ApplicationByEnglishName(model.EnglishName));
+        var sameEnglishNameApplication = await _applicationRepository.GetBySpecAsync(new ApplicationByEnglishNameUpdateMode(model.EnglishName,model.Id));
         if (sameEnglishNameApplication != null)
             throw new DuplicateEnglishNameException(model.EnglishName);
 
-        var applicationByClinetIds = await _applicationRepository.GetBySpecAsync(new ApplicationbyIdpClientId(model.IdpClientIds));
+        var applicationByClinetIds = await _applicationRepository.GetBySpecAsync(new ApplicationbyIdpClientIdUpdateMode(model.IdpClientIds, model.Id));
         if (applicationByClinetIds is not null && (applicationByClinetIds.ApplicationIdentifiers != null || applicationByClinetIds.ApplicationIdentifiers.Count != 0))
             throw new DuplicateIdpClientIdsException(string.Join('-', applicationByClinetIds.ApplicationIdentifiers.Select(t => t.IdpClientId)));
 
         if (model.CallbackUrls != null)
         {
-            var applicationByCallBackUrls = await _applicationRepository.GetBySpecAsync(new ApplicationByCallBackUrl(model.CallbackUrls));
+            var applicationByCallBackUrls = await _applicationRepository.GetBySpecAsync(new ApplicationByCallBackUrlUpdateMode(model.CallbackUrls, model.Id));
             if (applicationByCallBackUrls is not null && (applicationByCallBackUrls.ApplicationCallbackUrls != null
                 || applicationByCallBackUrls.ApplicationCallbackUrls.Count != 0))
                 throw new DuplicateCallbackUrlException(string.Join('-', applicationByCallBackUrls.ApplicationCallbackUrls.Select(t => t.CallbackUrl)));

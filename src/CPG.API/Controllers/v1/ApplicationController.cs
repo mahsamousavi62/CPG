@@ -45,7 +45,7 @@ public class ApplicationController : ApiBaseController
     [HttpPut]
     public async Task<Result<Unit>> UpdateApplication([FromForm] UpdateApplicationModel model)
     {
-        UpdateApplicationViewModel createApplicationViewModel = new(model.PersianName, model.EnglishName, model.ResponseApiUrl, model.IdpClientIds, model.CallbackUrls, new FormFileProxy(model.File));
+        UpdateApplicationViewModel createApplicationViewModel = new(model.Id, model.PersianName, model.EnglishName, model.ResponseApiUrl, model.IdpClientIds, model.CallbackUrls, new FormFileProxy(model.File));
 
         return await Mediator.Send(new UpdateApplicationCommand(createApplicationViewModel));
     }
