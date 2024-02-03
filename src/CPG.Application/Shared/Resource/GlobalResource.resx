@@ -564,4 +564,7 @@
   <data name="RefreshToken" xml:space="preserve">
     <value>Refresh_Token</value>
   </data>
+  <data name="EmptyRefreshToken" xml:space="preserve">
+    <value>Refresh token is empty</value>
+  </data>
 </root>

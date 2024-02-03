@@ -2,6 +2,7 @@
 using CPG.Domain.SeedWork;
 using static CPG.Domain.SharedKernel.Enums;
 using CPG.Domain.AggregateModels.BankAggregate.Exceptions;
+using CPG.Domain.AggregateModels.ProviderAggregate;
 
 namespace CPG.Domain.AggregateModels.BankAggregate;
 
@@ -18,6 +19,7 @@ public class BankDirectDebitSetting : AuditableEntity<long>
     public ValidityDuration MaxMandateValidityDurationPerMonth { get; set; }
     public AuthenticationType AuthenticationType { get; set; }
     public Bank Bank { get; set; }
+    public Provider Provider { get; set; }
 
     public BankDirectDebitSetting()
     {
