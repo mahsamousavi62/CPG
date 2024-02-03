@@ -12,7 +12,8 @@ public class BankDirectDebitSettingViewModel
     public decimal MaxWithdrawalAmountPerDay { get; set; }
     public ValidityDuration MaxMandateValidityDurationPerMonth { get; set; }
     public AuthenticationType AuthenticationType { get; set; }
+    public string ProviderName { get; set; }
+    public bool IsActive { get; set; }
     public DateTime CreationDate { get; set; }
-    public DateTime? ModificationDate { get; set; }
-    public BankViewModel Bank { get; set; }
+    public DateTime? ModificationDate { get; set; }    
 }

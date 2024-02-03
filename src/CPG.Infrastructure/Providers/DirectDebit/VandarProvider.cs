@@ -1,0 +1,265 @@
+﻿using CPG.Application.Shared.Resource;
+using CPG.Application.UseCases.Ipg.Exception;
+using CPG.Domain.SharedKernel;
+using CPG.Domain.SharedKernel.ApplicationSettings;
+using CPG.Domain.SharedKernel.Communication;
+using CPG.Domain.SharedKernel.Communication.DirectDebit;
+using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Show;
+using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Store;
+using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Token;
+using CPG.Domain.SharedKernel.Communication.DirectDebit.Vandar;
+using CPG.Domain.SharedKernel.Helper;
+using CPG.Infrastructure.Persistence.DbContexts;
+using CPG.Infrastructure.Persistence.Redis;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace CPG.Infrastructure.Providers.DirectDebit;
+
+internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context, IApplicationSettingsRepository applicationSettingsRepository,
+    IRedisCacheService cacheService) : IDirectDebitProvider
+{
+    public IApplicationSettingsRepository _applicationSettingRepositoy = applicationSettingsRepository;
+    private readonly IRedisCacheService _cacheService = cacheService;
+    private readonly IHttpProvider _httpProvider = httpProvider;
+    private readonly ReadDbContext context = context;
+    private readonly byte serviceCallMaxTryCounter = 5;
+    private byte tokenFailCounter = 0;
+    private byte storeFailCounter = 0;
+    private byte showFailCounter = 0;
+    private byte verifyFailCounter = 0;
+    private byte transactionResultFailCounter = 0;
+    private string refreshToken;
+    private string businessData;
+    public const string tokenCacheKey = "vandar_token_key";
+
+    private void GetDataFromJsonProvider(string providerData)
+    {
+        dynamic jsonObjectProviderData;
+        try
+        {
+            jsonObjectProviderData = JObject.Parse(providerData);
+            refreshToken = jsonObjectProviderData["Refresh_Token"] is not null ? jsonObjectProviderData["Refresh_Token"] : throw new Exception("Invalid Refresh_Token");
+            businessData = jsonObjectProviderData["Business_ID"] is not null ? jsonObjectProviderData["Business_ID"] : throw new Exception("Invalid Business_ID");
+        }
+        catch
+        {
+            throw new ParseCompanyIpgProviderDataException(providerData);
+        }
+    }
+
+    public async Task<TokenResponse> GetTokenAsync(TokenRequest request)
+    {
+        var data = _cacheService.GetData<VandarTokenResponse>(tokenCacheKey);
+        var trackerId = RandomGenerator.GenerateRandomDigitNumber(16);
+        if (data is null)
+        {
+            GetDataFromJsonProvider(request.ProviderData);
+            data = await _httpProvider.PostAsync<TokenRequest, VandarTokenResponse,
+                                                        VandarResponseBase, dynamic>(new HttpProviderRequest<dynamic>
+                                                        {
+                                                            BaseAddress = "https://api.vandar.io/",
+                                                            Uri = "v3/refreshtoken",
+                                                            Body = new VandarTokenRequest
+                                                            {
+                                                                RefreshToken = refreshToken,
+                                                            },
+                                                            Provider = Enums.ProviderType.Sep,
+                                                            Service = Enums.ServiceType.SepToken,
+                                                        }, request, PaymentTokenErrorHandler);
+            _cacheService.SetData(tokenCacheKey, data);
+        }
+        return new TokenResponse
+        {
+            AccessToken = data.AccessToken,
+            RefreshToken = data.RefreshToken,
+            ExpiresIn = data.ExpiresIn,
+            TrackerId = trackerId,
+        };
+    }
+
+    public async Task<StoreResponse> StoreAsync(StoreRequest request)
+    {
+        GetDataFromJsonProvider(request.ProviderData);
+        var headers = await GetHeaders(request.ProviderData);
+        var trackerId = RandomGenerator.GenerateRandomDigitNumber(16);
+        var applicationSettings = await _applicationSettingRepositoy.GetAllApplicationSettings();
+
+        var callbackUrl = CreateCallbackUrl(applicationSettings.Direct_Debit_Grant_Result_URL, trackerId);
+        var data = await _httpProvider.PostAsync<StoreRequest, VandarStoreResponse, VandarResponseBase, dynamic>
+            (new HttpProviderRequest<dynamic>
+            {
+                BaseAddress = "https://api.vandar.io/",
+                Uri = $"v3/business/{businessData}/subscription/authorization/store",
+                HeaderParameters = headers,
+                Body = new VandarStoreRequest
+                {
+                    BankCode = request.BankCode,
+                    CallbackUrl = callbackUrl,
+                    Count = request.Count,
+                    Limit = request.Limit,
+                    Mobile = request.MobileNumber,
+                    Name = request.FullName,
+                    NationalCode = request.NationalCode,
+                    ExpirationDate = request.ExpirationDate.ToString("yyyy-MM-dd")
+                },
+                Provider = Enums.ProviderType.Sep,
+                Service = Enums.ServiceType.SepToken,
+            }, request, StoreErrorHandler);
+
+        return new StoreResponse
+        {
+            Status = data.Status,
+            Message = data.Message,
+            Token = data.Result.Authorization.Token,
+            TrackerId = trackerId,
+        };
+    }
+
+    public async Task<ShowResponse> ShowAsync(ShowRequest request)
+    {
+        GetDataFromJsonProvider(request.ProviderData);
+        var headers = await GetHeaders(request.ProviderData);
+
+        var data = await _httpProvider.PostAsync<ShowRequest, VandarShowResponse, VandarResponseBase, dynamic>
+            (new HttpProviderRequest<dynamic>
+            {
+                BaseAddress = "https://api.vandar.io/",
+                Uri = $"v3/business/{businessData}/subscription/authorization?mobile={request.MobileNumber}",
+                HeaderParameters = headers,
+                Provider = Enums.ProviderType.Sep,
+                Service = Enums.ServiceType.SepToken,
+            }, request, ShowErrorHandler);
+
+        return new ShowResponse
+        {
+            Status = data.Status,
+            Data = data.Data.Select(t => new Data { BankCode = t.BankCode, CallbackUrl = t.CallbackUrl, Count = t.Count, CreatedAt = t.CreatedAt,
+                CustomerUuid = t.CustomerUuid, Email = t.Email, ExpirationDate = t.ExpirationDate, Id = t.Id, Limit = t.Limit, Mobile = t.Mobile,
+                Name = t.Name, NationalCode = t.NationalCode, PayerAccount = t.PayerAccount, RevokedAt = t.RevokedAt, Status = t.Status,
+                Token = t.Token}).ToList(),
+            Links = new LinkData { First = data.Links.First, Last = data.Links.Last, Prev = data.Links.Prev, Next = data.Links.Next },
+            Meta = new MetaData { CurrentPage = data.Meta.CurrentPage, From = data.Meta.From, LastPage = data.Meta.LastPage, Path = data.Meta.Path,
+                PerPage = data.Meta.PerPage, To = data.Meta.To, Total = data.Meta.Total, Links = data.Meta.Links.Select(l => new Link { Url = l.Url,
+                    Label = l.Label, Active = l.Active }).ToList() }
+        };
+    }
+
+    private static string CreateCallbackUrl(string url, string trackerId)
+    {
+        return $"{url}?track_id={trackerId}";
+    }
+
+    private async Task<List<(string Key, string? Value)>> GetHeaders(string providerData)
+    {
+        var data = await GetTokenAsync(new TokenRequest { ProviderData = providerData });
+        return new List<(string Key, string? Value)> { ("Authorization", string.Concat("BEARER ", data.AccessToken)) };
+    }
+
+    private async Task<TResponse> PaymentTokenErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest baseRequest, TResponse response, TError error, short statusCode)
+        where TResponse : VandarTokenResponse
+        where TError : VandarResponseBase
+        where TBaseRequest : TokenRequest
+    {
+        return response.StatusCode switch
+        {
+            401 => await GetToken(),
+            422 => throw new Exception(GlobalResource.EmptyRefreshToken),
+            _ => await Retry()
+        };
+
+        async Task<TResponse> GetToken()
+        {
+            _cacheService.SetData<VandarTokenResponse?>(tokenCacheKey, null);
+            return await GetTokenAsync(baseRequest) as TResponse;
+        }
+
+        async Task<TResponse> Retry()
+        {
+            if (tokenFailCounter < serviceCallMaxTryCounter)
+            {
+                tokenFailCounter++;
+                return await GetTokenAsync(baseRequest) as TResponse;
+            }
+            return await Task.FromResult(BaseErrorHandler<TResponse, TError, TBaseRequest>(error));
+        }
+    }
+
+    private async Task<TResponse> StoreErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest baseRequest, TResponse response, TError error, short statusCode)
+            where TResponse : VandarStoreResponse
+            where TError : VandarResponseBase
+            where TBaseRequest : StoreRequest
+    {
+        return response.Status switch
+        {
+            0 => await GetToken(),
+            _ => await Retry()
+        };
+
+        async Task<TResponse> GetToken()
+        {
+            _cacheService.SetData<VandarStoreResponse?>(tokenCacheKey, null);
+            return await GetTokenAsync(new TokenRequest { ProviderData = baseRequest.ProviderData }) as TResponse;
+        }
+
+        async Task<TResponse> Retry()
+        {
+            if (storeFailCounter < serviceCallMaxTryCounter)
+            {
+                storeFailCounter++;
+                return await StoreAsync(baseRequest) as TResponse;
+            }
+            return await Task.FromResult(BaseErrorHandler<TResponse, TError, TBaseRequest>(error));
+        }
+    }
+
+    private async Task<TResponse> ShowErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest baseRequest, TResponse response, TError error, short statusCode)
+            where TResponse : VandarShowResponse
+            where TError : VandarResponseBase
+            where TBaseRequest : ShowRequest
+    {
+        return response.Status switch
+        {
+            0 => await GetToken(),
+            _ => await Retry()
+        };
+
+        async Task<TResponse> GetToken()
+        {
+            _cacheService.SetData<VandarStoreResponse?>(tokenCacheKey, null);
+            return await GetTokenAsync(new TokenRequest { ProviderData = baseRequest.ProviderData }) as TResponse;
+        }
+
+        async Task<TResponse> Retry()
+        {
+            if (showFailCounter < serviceCallMaxTryCounter)
+            {
+                showFailCounter++;
+                return await ShowAsync(baseRequest) as TResponse;
+            }
+            return await Task.FromResult(BaseErrorHandler<TResponse, TError, TBaseRequest>(error));
+        }
+    }
+
+    private TResponse BaseErrorHandler<TResponse, TError, TBaseRequest>(VandarResponseBase error)
+        where TResponse : ResponseBase
+        where TError : VandarResponseBase
+        where TBaseRequest : class
+    {
+        if (error is null)
+        {
+            throw new Exception(GlobalResource.ProviderUnexpectedError);
+        }
+        else
+        {
+            throw new Exception(error.Error);
+        }
+
+        throw new Exception(GlobalResource.ProviderUnexpectedError);
+    }
+
+
+}

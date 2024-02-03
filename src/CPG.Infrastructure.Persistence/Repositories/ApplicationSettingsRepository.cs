@@ -11,12 +11,12 @@ namespace CPG.Infrastructure.Persistence.Repositories
 {
     public class ApplicationSettingsRepository : IApplicationSettingsRepository
     {
-        private readonly IRedisCaheService _cacheService;
+        private readonly IRedisCacheService _cacheService;
         private readonly ILogger<ApplicationSettingsRepository> _logger;
         private readonly ReadDbContext _context;
         public const string CacheKey = "AuthenticationConfigApplicationSettings_key";
 
-        public ApplicationSettingsRepository(ReadDbContext context, IRedisCaheService cacheService,
+        public ApplicationSettingsRepository(ReadDbContext context, IRedisCacheService cacheService,
             ILogger<ApplicationSettingsRepository> logger)
         {
             _context = context;
