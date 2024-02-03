@@ -50,7 +50,7 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
             var paymentRequest = await _paymentRequestRepository.GetBySpecAsync(new PaymentRequestByCode(request.PaymentToken.PaymentRequestCode));
             if (paymentRequest is null) { throw new PaymentRequestNotFoundByCodeException(); }
             if (!paymentRequest.Company.IsActive) { throw new PaymentTokenInactiveCompanyException(); }
-            if (paymentRequest.UrlExpirationDateTime < DateTime.UtcNow) { throw new PaymentRequestCodeExpiredException(); }
+            if (paymentRequest.UrlExpirationDateTime < DateTime.Now) { throw new PaymentRequestCodeExpiredException(); }
             if (paymentRequest.IsUsed) { throw new PaymentRequestCodeIsUsedBeforeException(); }
             if (paymentRequest.Status != Enums.PaymentStatus.RedirectedToCpg) { throw new PaymentRequestCodeInvalidStatusException(); }
 

@@ -64,7 +64,7 @@ namespace CPG.Domain.AggregateModels.UserAggregate
         {
             var user = new User(idpId, nationalCode.Value, name.FirstName, name.LastName, phoneNumber.Value);
             user.UserRoles.Add(new UserRole(userRoleType));
-            user.LastUpdateFromIDP = DateTime.UtcNow;
+            user.LastUpdateFromIDP = DateTime.Now;
 
             return user;
         }
@@ -75,7 +75,7 @@ namespace CPG.Domain.AggregateModels.UserAggregate
             user.LastName = name.LastName;
             user.PhoneNumber = phoneNumber;
             user.KYCStatus = 1;
-            user.LastUpdateFromIDP = DateTime.UtcNow;
+            user.LastUpdateFromIDP = DateTime.Now;
             user.IdpId = sub;
 
             return user;
