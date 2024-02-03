@@ -28,7 +28,6 @@ public class GetAllBanksQueryHandler(ReadDbContext context, IMinioProvider minio
             IbanPrefix = x.IbanPrefix,
             Logo = !string.IsNullOrEmpty(x.LogoAddress) ? await _minioProvider.PresignedGetObject(x.LogoAddress) : "",
             HasDirectDebitFeature = x.HasDirectDebitFeature,
-            ProviderName = x.DirectDebitSetting != null ? x.DirectDebitSetting.Provider.PersianName : string.Empty,
             IsActive = x.IsActive,
             CreationDate = x.CreationDate,
             ModificationDate = x.ModificationDate

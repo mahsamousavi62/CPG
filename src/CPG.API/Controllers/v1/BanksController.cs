@@ -28,7 +28,7 @@ public class BanksController : ApiBaseController
         return await Mediator.Send(new GetActiveBanksQuery());
     }
 
-    [HttpPost("update")]
+    [HttpPut("update")]
     public async Task<Result<bool>> UpdateBank(UpdateBankViewModel model)
     {
         return await Mediator.Send(new UpdateBankCommand(model));
