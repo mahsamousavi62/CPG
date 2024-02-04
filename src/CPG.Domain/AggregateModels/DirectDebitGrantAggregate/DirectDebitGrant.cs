@@ -14,7 +14,7 @@ public class DirectDebitGrant : AuditableEntity<long>, IAggregateRoot
     internal decimal _amountLimitPerTransaction;
     internal string _trackId;
     internal DateTime _expirationDate;
-    internal DateTime _revokeDateTime;
+    internal DateTime? _revokeDateTime;
     internal long _providerId;
     internal string _grantToken;
     internal string _authorizationId;
@@ -28,12 +28,17 @@ public class DirectDebitGrant : AuditableEntity<long>, IAggregateRoot
     public decimal AmountLimitPerTransaction => _amountLimitPerTransaction;
     public string TrackId => _trackId;
     public DateTime ExpirationDate => _expirationDate;
-    public DateTime RevokeDateTime => _revokeDateTime;
+    public DateTime? RevokeDateTime => _revokeDateTime;
     public long ProviderId => _providerId;
     public string GrantToken => _grantToken;
     public string AuthorizationId => _authorizationId;
     public short Status => _status;
     public Provider Provider { get; set; }
+
+    public DirectDebitGrant()
+    {
+        
+    }
 
     public DirectDebitGrant(long userId, int bankId, string accountNumber, string phoneNumber, int successTransactionCountLimitPerMonth,
         decimal amountLimitPerTransaction, string trackId, DateTime expirationDate, DateTime revokeDateTime, long providerId, string grantToken,

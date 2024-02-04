@@ -13,7 +13,7 @@ public class DirectDebitGrantReadModel
     public decimal AmountLimitPerTransaction { get; set; }
     public string TrackId { get; set; }
     public DateTime ExpirationDate { get; set; }
-    public DateTime RevokeDateTime { get; set; }
+    public DateTime? RevokeDateTime { get; set; }
     public long ProviderId { get; set; }
     public string GrantToken { get; set; }
     public string AuthorizationId { get; set; }

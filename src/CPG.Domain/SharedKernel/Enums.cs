@@ -128,14 +128,14 @@ public class Enums
     public enum ValidityDuration
     {
         OneMonth = 1,
-        ThreeMonths = 2,
-        SixMonths = 3,
-        NineMonths = 4,
-        OneYear = 5,
-        TwoYears = 6,
-        ThreeYears = 7,
-        FourYears = 8,
-        FiveYears = 9,
+        ThreeMonths = 3,
+        SixMonths = 6,
+        NineMonths = 9,
+        OneYear = 12,
+        TwoYears = 24,
+        ThreeYears = 36,
+        FourYears = 48,
+        FiveYears = 60,
     }
 
     public enum AuthenticationType
