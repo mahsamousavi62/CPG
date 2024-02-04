@@ -13,6 +13,7 @@ using System.Linq;
 using CPG.Domain.AggregateModels.DirectDebitGrantAggregate.Specifications;
 using CPG.Application.UseCases.Banks.Exceptions;
 using CPG.Domain.SharedKernel.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace CPG.Application.UseCases.DirectDebit.Commands;
 
@@ -20,12 +21,14 @@ public class GetDirectDebitPlansCommandHandler(IDirectDebitFactory directDebitFa
     IAggregateRepository<Bank> bankRepository,
     IAggregateRepository<DirectDebitPlan> planRepository,
     IAggregateRepository<DirectDebitGrant> grantRepository,
+    ILogger<GetDirectDebitPlansCommandHandler> logger,
     ICurrentUser user
     ) : IRequestHandler<GetDirectDebitPlansCommand, Result<PlanViewModel>>
 {
     private readonly IAggregateRepository<Bank> _bankRepository = bankRepository;
     private readonly IAggregateRepository<DirectDebitPlan> _directDebitPlanRepository = planRepository;
     private readonly IAggregateRepository<DirectDebitGrant> _directDebitGrantRepository = grantRepository;
+    private readonly ILogger<GetDirectDebitPlansCommandHandler> _logger = logger;
     private readonly ICurrentUser _user = user;
 
     public async Task<Result<PlanViewModel>> Handle(GetDirectDebitPlansCommand request, CancellationToken cancellationToken)
@@ -61,6 +64,7 @@ public class GetDirectDebitPlansCommandHandler(IDirectDebitFactory directDebitFa
         }
         catch (Exception exc)
         {
+            _logger.LogError(exc.Message, exc);
             return Result<PlanViewModel>.Failure(new Error(exc.Source, exc.Message));
         }
     }
