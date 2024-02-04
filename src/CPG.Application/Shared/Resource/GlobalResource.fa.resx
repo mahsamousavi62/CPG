@@ -588,4 +588,13 @@
   <data name="EmptyRefreshToken" xml:space="preserve">
     <value>مقدار RefreshToken خالی است</value>
   </data>
+  <data name="ShaparakIv" xml:space="preserve">
+    <value>بردار اولیه شاپرک (Shaparak_IV)</value>
+  </data>
+  <data name="ShaparakKey" xml:space="preserve">
+    <value>کلید شاپرک (Shaparak_Key)</value>
+  </data>
+  <data name="ShaparakThirdPartyCode" xml:space="preserve">
+    <value>کد شخص ثالث شاپرک (Shaparak_Thirdparty_Code)</value>
+  </data>
 </root>

@@ -567,4 +567,13 @@
   <data name="EmptyRefreshToken" xml:space="preserve">
     <value>Refresh token is empty</value>
   </data>
+  <data name="ShaparakIv" xml:space="preserve">
+    <value>ShaparakIv</value>
+  </data>
+  <data name="ShaparakKey" xml:space="preserve">
+    <value>ShaparakKey</value>
+  </data>
+  <data name="ShaparakThirdPartyCode" xml:space="preserve">
+    <value>ShaparakThirdPartyCode</value>
+  </data>
 </root>
