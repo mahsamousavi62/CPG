@@ -1,11 +1,8 @@
-﻿using CPG.Application.UseCases.Common.Queries;
-using CPG.Domain.SharedKernel;
+﻿using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.ApplicationSettings;
-using CPG.Domain.SharedKernel.Communication.Ipg;
 using CPG.Infrastructure.Persistence.DbContexts;
 using CPG.Infrastructure.Persistence.GraphQL.ErrorHandling;
 using CPG.Infrastructure.Persistence.GraphQL.Queries;
-using CPG.Infrastructure.Persistence.GraphQL.Types;
 using CPG.Infrastructure.Persistence.Interceptors;
 using CPG.Infrastructure.Persistence.Redis;
 using CPG.Infrastructure.Persistence.Repositories;
@@ -54,7 +51,7 @@ namespace CPG.Infrastructure.Persistence
                 .AddScoped(typeof(IWriteRepository<>), typeof(WriteRepository<>))
                 .AddScoped(typeof(ICommonServiceRepository<>), typeof(CommonServiceRepository<>))
                 .AddScoped(typeof(IApplicationSettingsRepository), typeof(ApplicationSettingsRepository))
-                .AddScoped<IRedisCaheService, RedisCacheService>();
+                .AddScoped<IRedisCacheService, RedisCacheService>();
 
             _ = bool.TryParse(configuration["Redis:Enable"], out var enableRedis);
 
@@ -76,12 +73,10 @@ namespace CPG.Infrastructure.Persistence
             services
                 .AddGraphQLServer()
                 .AddAuthorization()
-                .AddQueryType<GetApplicationSettingsQuery>()
-                .AddQueryType<CompanyReadModelQueries>()
+                .AddQueryType<ReadModelQueries>()
                 .AddProjections()
                 .AddFiltering()
-                .AddSorting()
-                .AddType<CompanyReadModelType>();
+                .AddSorting();
 
             services.AddErrorFilter<GraphQLErrorFilter>();
 

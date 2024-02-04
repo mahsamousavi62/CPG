@@ -53,6 +53,7 @@ public class Enums
         Vandar = 1,
         AsanPardakht = 2,
         Sep = 3,
+        Pec=4,
     }
 
     public enum ServiceType : byte
@@ -62,6 +63,8 @@ public class Enums
         AsanPardakhtVerify = 3,
         SepToken = 4,
         SepVerify = 5,
+        PecToken = 6,
+        PecVerify=7,
     }
 
     public enum TransactionType : byte
@@ -118,10 +121,29 @@ public class Enums
         Provider = 2,
         User = 3,
         Develop = 4,
-    }
-  
+    }  
 
     public enum ProviderLogType { }
+
+    public enum ValidityDuration
+    {
+        OneMonth = 1,
+        ThreeMonths = 3,
+        SixMonths = 6,
+        NineMonths = 9,
+        OneYear = 12,
+        TwoYears = 24,
+        ThreeYears = 36,
+        FourYears = 48,
+        FiveYears = 60,
+    }
+
+    public enum AuthenticationType
+    {
+        CardInfoCOnfirmation = 1,
+        SendOtpCode = 2,
+        CheckMobileAndDepositOwnershipMatching = 3
+    }
 }
 
 public struct ResultData<T>(Enums.OperationResult operationResult)

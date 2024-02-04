@@ -13,6 +13,9 @@ public class VerifyTransactionResponseViewModel
     [JsonPropertyName("destinationDepositIban")]
     public string DestinationDepositIban { get; set; }
 
+    [JsonPropertyName("destinationDepositAccountNumber")]
+    public string DestinationDepositAccountNumber { get; set; }
+
     [JsonPropertyName("amount")]
     public decimal Amount { get; set; }
 

@@ -33,6 +33,7 @@ public class GetCompanyIPGDepositsQueryHandler(ReadDbContext context, IMinioProv
             Id = deposit.Id,
             IsActive = deposit.IsActive,
             Name = deposit.Name,
+            IsDefaultForDD = deposit.IsDefaultForDD,
             CreationDate = deposit.CreationDate,
             ModificationDate = deposit.ModificationDate,
             BankLogo = await _minioProvider.PresignedGetObject(deposit.Bank.LogoAddress),

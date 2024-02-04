@@ -55,6 +55,7 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
                     PaymentMethodTypeTitle = transaction is null ? string.Empty : GetPaymentMethodTypeTitle(transaction.TransactionMethodType),
                     ReferenceNumber = transaction is not null && transaction.TransactionMethodType == TransactionType.IPG ? transaction.IPGTransaction?.ReferenceNumber : string.Empty,
                     DestinationDepositIban = transaction?.DestinationDeposit?.Iban,
+                   DestinationDepositAccountNumber= transaction?.DestinationDeposit?.AccountNumber,
                     PredictedExpirationDateTime = transaction is not null && transaction.TransactionMethodType == TransactionType.IPG ? transaction.IPGTransaction?.PredicateExpirationDateTime?.ToString("yyyy-MM-dd HH:mm:ss zzz") : string.Empty,
                 });
         }

@@ -18,17 +18,20 @@ public class IPGResultController : ApiBaseController
 {
     [AllowAnonymous]
     [HttpPost("p/b/{id}")]
-    public async Task<IActionResult> GetData([FromForm] RedirectViewModel model, [FromRoute] string id)
+    public async Task<IActionResult> GetData([FromRoute] string id)
     {
-        var response = await Mediator.Send(new CreateRedirectUrlCommnad(model, id));
+        var response = await Mediator.Send(new CreateRedirectUrlCommnad(Request.Form, id));
         return Redirect(response.Data);
     }
+
     [HttpPost("{trackId}")]
     [ProducesResponseType(typeof(Result<ValidateTokenResponseViewModel>), (int)HttpStatusCode.OK)]
-    public async Task<Result<ValidateTokenResponseViewModel>> ValidateToken(string trackId, [AllowNull][FromBody] ValidateTokenRequestViewModel model)
+    public async Task<Result<ValidateTokenResponseViewModel>> ValidateToken(string trackId,
+                                                                            [AllowNull][FromBody] ValidateTokenRequestViewModel model)
     {
         var redirectUrlData = await Mediator.Send(new ValidateTokenQuery(model, trackId));
         return redirectUrlData;
     }
+
 }
 

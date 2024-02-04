@@ -50,7 +50,7 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
             var paymentRequest = await _paymentRequestRepository.GetBySpecAsync(new PaymentRequestByCode(request.PaymentToken.PaymentRequestCode));
             if (paymentRequest is null) { throw new PaymentRequestNotFoundByCodeException(); }
             if (!paymentRequest.Company.IsActive) { throw new PaymentTokenInactiveCompanyException(); }
-            if (paymentRequest.UrlExpirationDateTime < DateTime.UtcNow) { throw new PaymentRequestCodeExpiredException(); }
+            if (paymentRequest.UrlExpirationDateTime < DateTime.Now) { throw new PaymentRequestCodeExpiredException(); }
             if (paymentRequest.IsUsed) { throw new PaymentRequestCodeIsUsedBeforeException(); }
             if (paymentRequest.Status != Enums.PaymentStatus.RedirectedToCpg) { throw new PaymentRequestCodeInvalidStatusException(); }
 
@@ -93,8 +93,8 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
             try
             {
                 dynamic jsonObjectProviderData = JObject.Parse(companyIpg.Provider.ProviderData);
-                 ipgBaseUrl= jsonObjectProviderData["IPG_Base_URL"] is not null 
-                    ? (string)jsonObjectProviderData["IPG_Base_URL"] : throw new Exception("Invalid IPG_Base_URL");
+                ipgBaseUrl = jsonObjectProviderData["IPG_Base_URL"] is not null
+                   ? (string)jsonObjectProviderData["IPG_Base_URL"] : throw new Exception("Invalid IPG_Base_URL");
 
                 IpgVerificationTimeLimit = jsonObjectProviderData["IPG_Verification_Time_Limit"] is not null
                                ? (short)jsonObjectProviderData["IPG_Verification_Time_Limit"] : throw new Exception("IPG_Verification_TimeLimit");
@@ -125,7 +125,7 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
             {
                 Transaction transaction = Transaction.Create(new CreateTransactionModel
                 {
-                    IpgVerificationTimeLimit= IpgVerificationTimeLimit,
+                    IpgVerificationTimeLimit = IpgVerificationTimeLimit,
                     CompanyIPG = companyIpg,
                     DestinationDepositId = destinationDepositId,
                     PaymentRequest = paymentRequest,
@@ -139,43 +139,7 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                 await _paymentRequestRepository.UpdateAsync(paymentRequest);
                 await _paymentRequestRepository.SaveChangesAsync();
 
-                var response = new PaymentTokenResponseViewModel()
-                {
-                    Url = $"{paymentRequest.Company.SiteAddress}/redirectToBank",
-                    JsonBody = new ExpandoObject(),
-                    RedirectionMethodType = paymentRequest.Company.IpgRedirectionMethodType,
-                };
-
-                switch (companyIpg.Provider.ProviderType)
-                {
-                    case Enums.ProviderType.Vandar:
-                        break;
-                    case Enums.ProviderType.AsanPardakht:
-                        {
-                            response.JsonBody.jsonStr = new ExpandoObject();
-                            response.JsonBody.jsonStr.@params = new ExpandoObject();
-                            response.JsonBody.jsonStr.@params.RefID = result.Token;
-                            response.JsonBody.jsonStr.@params.Mobileap = mobileNumber;
-                            response.JsonBody.jsonStr.url = result.IpgBaseUrl;
-                            response.JsonBody.jsonStr.method = "POST";
-
-                            break;
-                        }
-                    case Enums.ProviderType.Sep:
-                        {
-                            response.JsonBody.jsonStr = new ExpandoObject();
-                            response.JsonBody.jsonStr.url = result.IpgBaseUrl;
-                            response.JsonBody.jsonStr.method = "POST";
-                            response.JsonBody.jsonStr.@params = new ExpandoObject();
-                            response.JsonBody.jsonStr.@params.Token = result.Token;
-                            response.JsonBody.jsonStr.@params.GetMethod = false;
-                            break;                    
-                        }
-                    default:
-                        break;
-                }
-
-                return Result<PaymentTokenResponseViewModel>.SuccessResult(response);
+                return CreateResponseModel(paymentRequest, companyIpg, mobileNumber, result);
             }
             else
             {
@@ -194,6 +158,57 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
         {
             return Result<PaymentTokenResponseViewModel>.Failure(new Error("1007000", GlobalResource.GetPaymentTicketUnexpectedError));
         }
+    }
+
+    private static Result<PaymentTokenResponseViewModel> CreateResponseModel(PaymentRequest paymentRequest, Domain.AggregateModels.CompanyIPGAggregate.CompanyIPG companyIpg, string mobileNumber, PaymentTokenResponse result)
+    {
+        var response = new PaymentTokenResponseViewModel()
+        {
+            Url = $"{paymentRequest.Company.SiteAddress}/redirectToBank",
+            JsonBody = new ExpandoObject(),
+            RedirectionMethodType = paymentRequest.Company.IpgRedirectionMethodType,
+        };
+
+        switch (companyIpg.Provider.ProviderType)
+        {
+            case Enums.ProviderType.Vandar:
+                break;
+            case Enums.ProviderType.AsanPardakht:
+                {
+                    response.JsonBody.jsonStr = new ExpandoObject();
+                    response.JsonBody.jsonStr.url = result.IpgBaseUrl;
+                    response.JsonBody.jsonStr.method = "POST";
+                    response.JsonBody.jsonStr.@params = new ExpandoObject();
+                    response.JsonBody.jsonStr.@params.RefID = result.Token;
+
+                    if (!string.IsNullOrEmpty(mobileNumber))
+                        response.JsonBody.jsonStr.@params.Mobileap = mobileNumber;
+                    
+                    break;
+                }
+            case Enums.ProviderType.Sep:
+                {
+                    response.JsonBody.jsonStr = new ExpandoObject();
+                    response.JsonBody.jsonStr.url = result.IpgBaseUrl;
+                    response.JsonBody.jsonStr.method = "POST";
+                    response.JsonBody.jsonStr.@params = new ExpandoObject();
+                    response.JsonBody.jsonStr.@params.Token = result.Token;
+                    response.JsonBody.jsonStr.@params.GetMethod = false;
+                    break;
+                }
+            case Enums.ProviderType.Pec:
+                {
+                    response.JsonBody.jsonStr = new ExpandoObject();
+                    response.JsonBody.jsonStr.url = result.IpgBaseUrl;
+                    response.JsonBody.jsonStr.method = "POST";
+                    response.JsonBody.jsonStr.@params = new ExpandoObject();
+                    response.JsonBody.jsonStr.@params.Token = result.Token;
+                    break;
+                }
+            default:
+                break;
+        }
+        return Result<PaymentTokenResponseViewModel>.SuccessResult(response);
     }
 }
 

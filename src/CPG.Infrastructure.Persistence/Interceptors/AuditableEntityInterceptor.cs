@@ -37,13 +37,13 @@ public class AuditableEntityInterceptor(ICurrentUser user) : SaveChangesIntercep
             if (entry.State == EntityState.Added)
             {
                 entry.Entity.CreationUserId = _user.UserId;
-                entry.Entity.CreationDate = DateTime.UtcNow;
+                entry.Entity.CreationDate = DateTime.Now;
             }
 
             if (entry.State == EntityState.Added || entry.State == EntityState.Modified || HasChangedOwnedEntities(entry))
             {
                 entry.Entity.ModificationUserId = _user.UserId;
-                entry.Entity.ModificationDate = DateTime.UtcNow;
+                entry.Entity.ModificationDate = DateTime.Now;
             }
         }
     }

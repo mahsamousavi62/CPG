@@ -47,9 +47,13 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
 
             if (paymentRequest.ApplicationId != applicationId) { throw new VerifyInvalidApplicationException(); }
 
-            if (paymentRequest.Status != PaymentStatus.TransactionWaitingForVerification) { throw new VerifyInvalidStatusException(); }
+            if (paymentRequest.Status != PaymentStatus.TransactionWaitingForVerification &&
+                paymentRequest.Status != PaymentStatus.TransactionVerificationFailed
+                ) { throw new VerifyInvalidStatusException(); }
 
             paymentRequest.Status = PaymentStatus.TransactionVerifiedByApplication;
+            paymentRequest.VerificationDateTime ??= DateTime.Now;   
+
             await _paymentRequestRepository.UpdateAsync(paymentRequest, cancellationToken);
             await _paymentRequestRepository.SaveChangesAsync(cancellationToken);
 
@@ -66,13 +70,14 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
             {
                 ProviderData = transaction.IPGTransaction.CompanyIPG.ProviderData,
                 ProviderTrackerId = transaction.IPGTransaction.ProviderTrackerId,
+                Token=transaction.IPGTransaction.IPGToken
             });
 
             transaction.IPGTransaction.Status = result.Status;
 
             if (result.Status == IPGTransactionStatus.VerificationSucceeded)
             {
-                var currentDateTime = DateTime.UtcNow.Date;
+                var currentDateTime = DateTime.Now;
                 var timeMargin = new TimeOnly(23, 45);
                 var currentTime = new TimeOnly(currentDateTime.Hour, currentDateTime.Minute);
                 var date = currentTime < timeMargin ?
@@ -83,6 +88,7 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
                 transaction.Status = TransactionStatus.TransactionSucceeded;
                 transaction.IPGTransaction.VerificationDateTime = DateTime.Now;
                 paymentRequest.Status = PaymentStatus.TransactionVerificationSucceeded;
+               
             }
             else if (result.Status == IPGTransactionStatus.VerificationFailed)
             {
@@ -101,6 +107,7 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
                 Code = paymentRequest.PaymentCode,
                 TrackerId = paymentRequest.TrackerId,
                 DestinationDepositIban = transaction.DestinationDeposit.Iban,
+                DestinationDepositAccountNumber = transaction?.DestinationDeposit?.AccountNumber,
                 ReferenceNumber = transaction.IPGTransaction.ReferenceNumber,
                 PaymentMethodType = (short)transaction?.TransactionMethodType,
                 PaymentMethodTypeTitle = transaction is null ? string.Empty : GetPaymentMethodTypeTitle(transaction.TransactionMethodType),

@@ -37,6 +37,8 @@ using CPG.Infrastructure.Providers;
 using CPG.Application.Auth;
 using CPG.Infrastructure.Logging;
 using CPG.Domain.SharedKernel.Logging;
+using CPG.Domain.SharedKernel.Communication.DirectDebit;
+using CPG.Infrastructure.Providers.DirectDebit;
 
 namespace CPG.Infrastructure;
 
@@ -47,7 +49,9 @@ public static class DependencyInjection
             .AddScoped<ICharisPayProvider, CharisPayProvider>()
             .AddScoped<IIdpProvider, IdpProvider>()
             .AddScoped<IIpgFactory, IpgFactory>()
+            .AddScoped<IDirectDebitFactory, DirectDebitFactory>()
             .AddScoped<IIpgProvider, AsanPardakhtProvider>()
+            .AddScoped<IDirectDebitProvider, VandarProvider>()
             .AddScoped<ILogService, LogService>()
             .AddTransient<ICurrentDateTime, CurrentDateTime>()
             .AddTransient<IHttpProvider, HttpProvider>()

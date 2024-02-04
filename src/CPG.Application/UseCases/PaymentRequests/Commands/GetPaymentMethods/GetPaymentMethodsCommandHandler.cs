@@ -30,14 +30,15 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
     {
         try
         {
-            var paymentRequest = await _paymentRequestRepository.FirstOrDefaultAsync(new PaymentRequestByCode(request.ViewModel.PaymentCode));
+            var paymentRequest = await _paymentRequestRepository.FirstOrDefaultAsync
+                (new PaymentRequestByCode(request.ViewModel.PaymentCode));
 
             if (paymentRequest is null)
             {
                 throw new PaymentRequestCodeNotFoundException();
             }
 
-            if (paymentRequest.UrlExpirationDateTime < DateTime.UtcNow)
+            if (paymentRequest.UrlExpirationDateTime < DateTime.Now)
             {
                 throw new PaymentRequestCodeIsExpiredException();
             }
@@ -78,6 +79,7 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
                 foreach (var companyIPGItem in company?.CompanyIPGs)
                 {
                     var defaultDeposit = companyIPGItem.IPGDeposits.FirstOrDefault(t => t.IsDefault);
+                    if (defaultDeposit == null) throw new Exception("company not found");
                     if (!defaultDeposit.IsActive)
                     {
                         toBeRemoved.Add(companyIPGItem);

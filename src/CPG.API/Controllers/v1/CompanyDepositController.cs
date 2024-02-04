@@ -1,9 +1,12 @@
 ﻿using CPG.Application.UseCases.CharisPayServices.Queries;
 using CPG.Application.UseCases.CompanyDeposits.Commands.CreateCompanyDeposit;
+using CPG.Application.UseCases.CompanyDeposits.Commands.SetAsDefaultForDD;
+using CPG.Application.UseCases.CompanyDeposits.Commands.UpdateCompanyDeposit;
 using CPG.Application.UseCases.CompanyDeposits.Queries;
 using CPG.Application.UseCases.CompanyDeposits.ViewModels;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Communication.Charispay.Models.AccountNumber;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -48,4 +51,13 @@ public class CompanyDepositController : ApiBaseController
         return await Mediator.Send(new CreateCompanyDepositCommand(model));
     }
 
+    [HttpPut]
+    public async Task<Result<Unit>> UdpateCompanyDeposit(UpdateCompanyDepositViewModel model)
+        => await Mediator.Send(new UpdateCompanyDepositCommand(model));
+    
+    [HttpPost("SetAsDefaultForDD")]
+    public async Task<Result<bool>> SetAsDefaultForDD(SetAsDefaultForDDViewModel model)
+    {
+        return await Mediator.Send(new SetAsDefaultForDDCommand(model));
+    }
 }

@@ -29,5 +29,6 @@ namespace CPG.Domain.SharedKernel.Logging
         public DateTime EndDateTime { get; set; }
         public long DurationMs { get; set; }
         public KeyValuePair<string ,object>[] RoutValues { get; set; }
+        public string MobilePhone { get; set; }
     }
 }
