@@ -1195,6 +1195,33 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ShaparakIv.
+        /// </summary>
+        public static string ShaparakIv {
+            get {
+                return ResourceManager.GetString("ShaparakIv", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ShaparakKey.
+        /// </summary>
+        public static string ShaparakKey {
+            get {
+                return ResourceManager.GetString("ShaparakKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ShaparakThirdPartyCode.
+        /// </summary>
+        public static string ShaparakThirdPartyCode {
+            get {
+                return ResourceManager.GetString("ShaparakThirdPartyCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SiteAddressCompany.
         /// </summary>
         public static string SiteAddressCompany {
