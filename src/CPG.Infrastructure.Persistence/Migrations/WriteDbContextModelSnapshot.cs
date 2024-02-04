@@ -60,8 +60,8 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<byte?>("IsDefaultForDD")
-                        .HasColumnType("tinyint")
+                    b.Property<bool?>("IsDefaultForDD")
+                        .HasColumnType("bit")
                         .HasColumnName("IsDefaultForDD");
 
                     b.Property<DateTime?>("ModificationDate")

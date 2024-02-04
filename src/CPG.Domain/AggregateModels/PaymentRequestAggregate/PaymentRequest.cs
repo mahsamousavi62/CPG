@@ -47,7 +47,7 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
 
     public static PaymentRequest Create(PaymentRequest paymentRequest, int expireTime, string clientId, string applicationEnglishName)
     {
-        paymentRequest.UrlExpirationDateTime = DateTime.UtcNow.AddMinutes(expireTime);
+        paymentRequest.UrlExpirationDateTime = DateTime.Now.AddMinutes(expireTime);
         paymentRequest.IsActive = true;
         string hexString = Guid.NewGuid().ToString("N");
         string randomString = hexString.Substring(0, 16);
@@ -62,7 +62,7 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
     {
         paymentRequest.IsUsed = true;
         paymentRequest.Status = Enums.PaymentStatus.InProgress;
-        paymentRequest.ModificationDate = DateTime.UtcNow;
+        paymentRequest.ModificationDate = DateTime.Now;
     }
 
     public static void UpdateStatus(PaymentRequest paymentRequest, Enums.PaymentStatus status)

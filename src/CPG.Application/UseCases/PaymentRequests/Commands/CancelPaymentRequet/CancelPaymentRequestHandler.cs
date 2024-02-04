@@ -26,7 +26,7 @@ namespace CPG.Application.UseCases.PaymentRequests.Commands.CancelPaymentRequet
             {
                 var paymentRequest = await paymentRequestRepository.GetBySpecAsync(new PaymentRequestByCode(request.ViewModel.PaymentCode));
                 if (paymentRequest is null) throw new PaymentRequestNotFoundByCodeException();
-                if (paymentRequest.UrlExpirationDateTime < DateTime.UtcNow)  throw new PaymentRequestCodeExpiredException(); 
+                if (paymentRequest.UrlExpirationDateTime < DateTime.Now)  throw new PaymentRequestCodeExpiredException(); 
                 if (paymentRequest.IsUsed)  throw new PaymentRequestCodeIsUsedBeforeException(); 
                 if (paymentRequest.Status != Enums.PaymentStatus.RedirectedToCpg) throw new PaymentRequestCodeInvalidStatusException(); 
 

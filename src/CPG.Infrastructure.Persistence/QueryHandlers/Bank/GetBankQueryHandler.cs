@@ -2,6 +2,7 @@
 using CPG.Application.UseCases.Banks.Exceptions;
 using CPG.Application.UseCases.Banks.Queries;
 using CPG.Application.UseCases.Banks.ViewModels;
+using CPG.Application.UseCases.Providers.ViewModels;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Minio;
 using CPG.Infrastructure.Persistence.DbContexts;
@@ -41,8 +42,7 @@ public class GetBankQueryHandler(ReadDbContext context, IMinioProvider minioProv
                 DDBankCode = bank.DirectDebitSetting.DDBankCode,
                 MaxMandateValidityDurationPerMonth = bank.DirectDebitSetting.MaxMandateValidityDurationPerMonth,
                 MaxWithdrawalAmountPerDay = bank.DirectDebitSetting.MaxWithdrawalAmountPerDay,
-                ProviderId = bank.DirectDebitSetting.ProviderId,
-                ProviderName = bank.DirectDebitSetting.Provider.PersianName,
+                Provider = new ProviderDataViewModel { Id = bank.DirectDebitSetting.ProviderId, Name = bank.DirectDebitSetting.Provider.PersianName },
                 IsActive = bank.DirectDebitSetting.IsActive,
             } : null,
         };

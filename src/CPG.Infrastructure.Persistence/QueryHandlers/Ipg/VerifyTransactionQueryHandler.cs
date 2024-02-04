@@ -77,7 +77,7 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
 
             if (result.Status == IPGTransactionStatus.VerificationSucceeded)
             {
-                var currentDateTime = DateTime.UtcNow.Date;
+                var currentDateTime = DateTime.Now;
                 var timeMargin = new TimeOnly(23, 45);
                 var currentTime = new TimeOnly(currentDateTime.Hour, currentDateTime.Minute);
                 var date = currentTime < timeMargin ?

@@ -26,7 +26,8 @@ public class IPGResultController : ApiBaseController
 
     [HttpPost("{trackId}")]
     [ProducesResponseType(typeof(Result<ValidateTokenResponseViewModel>), (int)HttpStatusCode.OK)]
-    public async Task<Result<ValidateTokenResponseViewModel>> ValidateToken(string trackId, [AllowNull][FromBody] ValidateTokenRequestViewModel model)
+    public async Task<Result<ValidateTokenResponseViewModel>> ValidateToken(string trackId,
+                                                                            [AllowNull][FromBody] ValidateTokenRequestViewModel model)
     {
         var redirectUrlData = await Mediator.Send(new ValidateTokenQuery(model, trackId));
         return redirectUrlData;
