@@ -588,4 +588,7 @@
   <data name="EmptyRefreshToken" xml:space="preserve">
     <value>مقدار RefreshToken خالی است</value>
   </data>
+  <data name="PlanNotFound" xml:space="preserve">
+    <value>طرح با شناسه {0} یافت نشد</value>
+  </data>
 </root>

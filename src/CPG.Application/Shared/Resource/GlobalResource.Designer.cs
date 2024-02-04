@@ -1058,7 +1058,18 @@ namespace CPG.Application.Shared.Resource {
                 return ResourceManager.GetString("PersianName", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Plan with Id {0} has not been found..
+        /// </summary>
+        public static string PlanNotFound
+        {
+            get
+            {
+                return ResourceManager.GetString("PlanNotFound", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to ProviderId.
         /// </summary>
