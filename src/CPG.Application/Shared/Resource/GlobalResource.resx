@@ -567,6 +567,78 @@
   <data name="EmptyRefreshToken" xml:space="preserve">
     <value>Refresh token is empty</value>
   </data>
+  <data name="AuthenticationType" xml:space="preserve">
+    <value>AuthenticationType</value>
+  </data>
+  <data name="BankIsActiveInProvider" xml:space="preserve">
+    <value>BankIsActiveInProvider</value>
+  </data>
+  <data name="BankLogo" xml:space="preserve">
+    <value>BankLogo</value>
+  </data>
+  <data name="CardInfoCOnfirmation" xml:space="preserve">
+    <value>CardInfoCOnfirmation</value>
+  </data>
+  <data name="CheckMobileAndDepositOwnershipMatching" xml:space="preserve">
+    <value>CheckMobileAndDepositOwnershipMatching</value>
+  </data>
+  <data name="DDBankCodeDirectDebit" xml:space="preserve">
+    <value>DDBankCodeDirectDebit</value>
+  </data>
+  <data name="DirectDebitProvider" xml:space="preserve">
+    <value>DirectDebitProvider</value>
+  </data>
+  <data name="FiveYears" xml:space="preserve">
+    <value>FiveYears</value>
+  </data>
+  <data name="FourYears" xml:space="preserve">
+    <value>FourYears</value>
+  </data>
+  <data name="HasDirectDebitFeature" xml:space="preserve">
+    <value>HasDirectDebitFeature</value>
+  </data>
+  <data name="IsActive" xml:space="preserve">
+    <value>IsActive</value>
+  </data>
+  <data name="MaxMandateValidityDurationPerMonth" xml:space="preserve">
+    <value>MaxMandateValidityDurationPerMonth</value>
+  </data>
+  <data name="MaxWithdrawalAmountPerDay" xml:space="preserve">
+    <value>MaxWithdrawalAmountPerDay</value>
+  </data>
+  <data name="NineMonths" xml:space="preserve">
+    <value>NineMonths</value>
+  </data>
+  <data name="OneMonth" xml:space="preserve">
+    <value>OneMonth</value>
+  </data>
+  <data name="OneYear" xml:space="preserve">
+    <value>OneYear</value>
+  </data>
+  <data name="SendOtpCode" xml:space="preserve">
+    <value>SendOtpCode</value>
+  </data>
+  <data name="ShaparakIv" xml:space="preserve">
+    <value>ShaparakIv</value>
+  </data>
+  <data name="ShaparakKey" xml:space="preserve">
+    <value>ShaparakKey</value>
+  </data>
+  <data name="ShaparakThirdPartyCode" xml:space="preserve">
+    <value>ShaparakThirdPartyCode</value>
+  </data>
+  <data name="SixMonths" xml:space="preserve">
+    <value>SixMonths</value>
+  </data>
+  <data name="ThreeMonths" xml:space="preserve">
+    <value>ThreeMonths</value>
+  </data>
+  <data name="ThreeYears" xml:space="preserve">
+    <value>ThreeYears</value>
+  </data>
+  <data name="TwoYears" xml:space="preserve">
+    <value>TwoYears</value>
+  </data>
   <data name="PlanNotFound" xml:space="preserve">
     <value>Plan with Id {0} has not been found</value>
   </data>
