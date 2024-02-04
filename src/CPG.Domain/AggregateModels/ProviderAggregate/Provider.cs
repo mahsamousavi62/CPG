@@ -1,4 +1,5 @@
 ﻿using CPG.Domain.AggregateModels.CompanyAggregate;
+using CPG.Domain.AggregateModels.DirectDebitGrantAggregate;
 using CPG.Domain.AggregateModels.ProviderAggregate.Events;
 using CPG.Domain.AggregateModels.ProviderAggregate.Exceptions;
 using CPG.Domain.SeedWork;
@@ -31,6 +32,8 @@ public class Provider : AuditableEntity<long>, IAggregateRoot
     public string Logo { get; set; }
     public string ProviderData { get; set; }
     public List<ProviderPaymentMethod> PaymentMethods { get; set; } = [];
+    public List<DirectDebitGrant> DirectDebitGrants { get; set; }
+
     public static Provider Create(PersianName persianName, EnglishName englishName, ProviderType providerType, 
         Logo logo, string providerData, Enums.PaymentMethodType[] details)
     {

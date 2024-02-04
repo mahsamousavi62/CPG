@@ -23,5 +23,11 @@ namespace CPG.API.Controllers.v1
         {
             return await Mediator.Send(new GetAvailableBankListQuery());
         }
+
+        [HttpPost("GetDirectDebitPlans")]
+        [Authorize]
+        [ProducesResponseType(typeof(Result<PlanViewModel>), 200)]
+        public async Task<Result<PlanViewModel>> GetDirectDebitPlans([FromBody] GetDirectDebitPlansViewModel request)
+            => await Mediator.Send(new GetDirectDebitPlansCommand(request));
     }
 }

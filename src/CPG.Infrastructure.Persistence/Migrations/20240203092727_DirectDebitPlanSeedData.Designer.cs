@@ -4,6 +4,7 @@ using CPG.Infrastructure.Persistence.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CPG.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(WriteDbContext))]
-    partial class WriteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240203092727_DirectDebitPlanSeedData")]
+    partial class DirectDebitPlanSeedData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -60,8 +63,8 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<bool?>("IsDefaultForDD")
-                        .HasColumnType("bit")
+                    b.Property<byte?>("IsDefaultForDD")
+                        .HasColumnType("tinyint")
                         .HasColumnName("IsDefaultForDD");
 
                     b.Property<DateTime?>("ModificationDate")
@@ -606,7 +609,7 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.Property<long>("ProviderId")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime?>("RevokeDateTime")
+                    b.Property<DateTime>("RevokeDateTime")
                         .HasColumnType("datetime2");
 
                     b.Property<byte>("Status")
