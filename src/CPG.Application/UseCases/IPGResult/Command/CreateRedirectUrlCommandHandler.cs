@@ -7,6 +7,8 @@ using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.ApplicationSettings;
 using MediatR;
 using System;
+using System.Text;
+using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,14 +19,12 @@ public class CreateRedirectUrlCommandHandler(IApplicationSettingsRepository appl
     private readonly IApplicationSettingsRepository _applicationSettingsRepository = applicationSettingsRepository;
     private readonly IAggregateRepository<Transaction> _transactionRepository = transactionRepository;
 
-    public async Task<Result<string>> Handle(CreateRedirectUrlCommnad command, CancellationToken cancellationToken)    
+    public async Task<Result<string>> Handle(CreateRedirectUrlCommnad command, CancellationToken cancellationToken)
     {
         try
         {
             var appConfig = await _applicationSettingsRepository.GetAllApplicationSettings();
-
             var transaction = await _transactionRepository.GetBySpecAsync(new TransactionByIPGTrackId(command.id));
-
             var url = string.Empty;
             switch (transaction.IPGTransaction.CompanyIPG.Provider.ProviderType)
             {
@@ -35,18 +35,23 @@ public class CreateRedirectUrlCommandHandler(IApplicationSettingsRepository appl
                         url = $"{appConfig.IPG_Callback_URL}?trackId={command.id}";
                         break;
                     }
+                case Enums.ProviderType.Pec:
                 case Enums.ProviderType.Sep:
                     {
-                        url = $"{appConfig.IPG_Callback_URL}?trackId={command.id}&MID={command.model.MID}&TerminalId={command.model.TerminalId}" +
-                            $"&RefNum={command.model.RefNum}&ResNum={command.model.ResNum}&State={command.model.State}&TraceNo={command.model.TraceNo}" +
-                            $"&Amount={command.model.Amount}&Wage={command.model.Wage}&Rrn={command.model.Rrn}&SecurePan={command.model.SecurePan}&" +
-                            $"Token={command.model.Token}&HashedCardNumber={command.model.HashedCardNumber}&Status={command.model.Status}";
+                        var encoder = UrlEncoder.Create();
+                        var urlBuilder = new StringBuilder($"{appConfig.IPG_Callback_URL}?trackId={encoder.Encode(command.id)}");
+
+                        foreach (var field in command.form)
+                        {
+                            var fieldValue = field.Value.ToString();
+                            urlBuilder.Append($"&{field.Key}={encoder.Encode(fieldValue)}");
+                        }
+                        url = urlBuilder.ToString();
                         break;
                     }
                 default:
                     break;
             }
-
             return Result<string>.SuccessResult(url);
         }
         catch (DomainException exc)

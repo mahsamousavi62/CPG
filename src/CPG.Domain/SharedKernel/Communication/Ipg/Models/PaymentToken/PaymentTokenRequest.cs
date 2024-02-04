@@ -1,6 +1,4 @@
-﻿using CPG.Domain.SharedKernel.Communication.Ipg.AsanPardakht;
-
-namespace CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentTicket;
+﻿namespace CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentTicket;
 
 public class PaymentTokenRequest : RequestBase
 {
@@ -14,5 +12,5 @@ public class PaymentTokenRequest : RequestBase
     public bool NationalCodeMatchingRequied { get; set; }
     public string ShaparakKey { get; set; }
     public string ShaparakIv { get; set; }
-    public int ThirdPartyCode { get; set; }
+    public int? ThirdPartyCode { get; set; }
 }

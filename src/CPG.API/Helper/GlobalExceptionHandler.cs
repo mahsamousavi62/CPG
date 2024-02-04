@@ -25,7 +25,7 @@ internal sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> log
 
         RequestResponseLogModel log = new ()
         {
-            AuditType = Enums.AuditType.Develop.ToString(),
+            AuditType = Enums.AuditType.Develop,
             StackTrace = exception.StackTrace,
             ResponseBody = exception.Message,
             IsSuccess = false,

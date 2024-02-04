@@ -29,9 +29,5 @@ public class CreateCompanyModel
     [Required]
     public required IFormFile File { get; set; }
 
-    public string Key { get; set; }
-
-    public string Iv { get; set; }
-
-    public int? ThirdPartyCode { get; set; }
+    public CompanyShaparakSettingModel ShaparakSetting { get; set; }
 }

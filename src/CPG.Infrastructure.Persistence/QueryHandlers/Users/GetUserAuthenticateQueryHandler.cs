@@ -16,47 +16,36 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Users
 {
-    public class GetUserAuthenticateQueryHandler(ReadDbContext context, IAuthenticationService authenticationService, IRedisCaheService cacheService) : IRequestHandler<GetUserAuthenticateQuery, UserAuthenticateViewModel>
+    public class GetUserAuthenticateQueryHandler(ReadDbContext context, IAuthenticationService authenticationService, IRedisCacheService cacheService) : IRequestHandler<GetUserAuthenticateQuery, UserAuthenticateViewModel>
     {
         private readonly ReadDbContext _context = context;
         private readonly IAuthenticationService _authenticationService = authenticationService;
-        private readonly IRedisCaheService _cacheService = cacheService;
+        private readonly IRedisCacheService _cacheService = cacheService;
         public const string CacheKey = "CurrntUser_key";
         public async Task<UserAuthenticateViewModel> Handle(GetUserAuthenticateQuery request, CancellationToken cancellationToken)
         {
-            var cacheData = _cacheService.GetData<UserAuthenticateViewModel>(CacheKey);
-
-            if (cacheData != null)
-                return cacheData;
-
             var sub = await _authenticationService.GetDataFromClaim<string>("sub", string.Empty);
-            var clientId = await _authenticationService.GetClientId( string.Empty);
+            var clientId = await _authenticationService.GetClientId(string.Empty);
 
             var user = await _context.UserReadModels.Include(u => u.UserRoles).
                        SingleOrDefaultAsync(u => u.IsActive && u.IDPId == sub);
 
-            if (user == null)
-                return null;
             var applicationIdentifier = (await _context.ApplicationIdentifierReadModels.SingleOrDefaultAsync(a => a.IdpClientId == clientId));
-            //todo :optimize 
-           var auditType = applicationIdentifier?.IdpClientId != "pay__daryaftyar_client"? Enums.AuditType.Client : Enums.AuditType.User;
 
-            cacheData = new UserAuthenticateViewModel
+            var userModel = new UserAuthenticateViewModel
             {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Id = user.Id,
-                NationalCode = user.NationalCode,
+                FirstName = user?.FirstName ?? string.Empty,
+                LastName = user?.LastName ?? string.Empty,
+                Id = user?.Id ?? 0,
+                NationalCode = user?.NationalCode ?? string.Empty,
                 IDPId = clientId,
-                PhoneNumber = user.PhoneNumber,
+                PhoneNumber = user?.PhoneNumber ?? string.Empty,
                 UserRoles = user?.UserRoles.ToDictionary(p => p.RoleType, p => ((Enums.UserRoleType)p.RoleType).ToString()),
-                CompanyId = user?.CompanyId??0,
-                ApplicationId = applicationIdentifier?.ApplicationId??0,
-                AuditType = auditType
+                CompanyId = user?.CompanyId ?? 0,
+                ApplicationId = applicationIdentifier?.ApplicationId ?? 0,
             };
-            _cacheService.SetData(CacheKey, cacheData);
 
-            return cacheData;
+            return userModel;
         }
     }
 }

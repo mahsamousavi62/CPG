@@ -51,7 +51,7 @@ namespace CPG.Infrastructure.Persistence
                 .AddScoped(typeof(IWriteRepository<>), typeof(WriteRepository<>))
                 .AddScoped(typeof(ICommonServiceRepository<>), typeof(CommonServiceRepository<>))
                 .AddScoped(typeof(IApplicationSettingsRepository), typeof(ApplicationSettingsRepository))
-                .AddScoped<IRedisCaheService, RedisCacheService>();
+                .AddScoped<IRedisCacheService, RedisCacheService>();
 
             _ = bool.TryParse(configuration["Redis:Enable"], out var enableRedis);
 

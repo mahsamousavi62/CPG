@@ -15,9 +15,9 @@ namespace CPG.Infrastructure.Persistence.QueryHandlers.ApplicationSetting
     public class GetApplicationSettingsQueryHandler : IRequestHandler<GetApplicationSettingsQuery, Result<IReadOnlyCollection<ApplicationSettingViewModel>>>
     {
         private readonly ReadDbContext _context;
-        private readonly IRedisCaheService _cacheService;
+        private readonly IRedisCacheService _cacheService;
         public const string CacheKey = "AllApplicationSetiings_key";
-        public GetApplicationSettingsQueryHandler(ReadDbContext context, IRedisCaheService cacheService)
+        public GetApplicationSettingsQueryHandler(ReadDbContext context, IRedisCacheService cacheService)
         {
             _context = context;
             _cacheService = cacheService;

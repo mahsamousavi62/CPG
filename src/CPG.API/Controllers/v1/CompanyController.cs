@@ -1,8 +1,10 @@
 ﻿using CPG.Application.UseCases.Companies.Commands.CreateCompany;
+using CPG.Application.UseCases.Companies.Commands.UpdateCompany;
 using CPG.Application.UseCases.Companies.Queries;
 using CPG.Application.UseCases.Companies.ViewModels;
 using CPG.Domain.SharedKernel;
 using CPG.Infrastructure.File;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
@@ -40,8 +42,18 @@ public class CompanyController : ApiBaseController
     {
         CreateCompanyViewModel createCompanyViewModel = new(model.PersianName, model.EnglishName,
             model.NationalCodeMatchingRequired, new FormFileProxy(model.File), model.MethodTypes.ToArray(), model.Users,
-            model.SiteAddress, model.IpgRedirectionMethodType, model.Key, model.Iv, model.ThirdPartyCode);
+            model.SiteAddress, model.IpgRedirectionMethodType, model.ShaparakSetting.Key, model.ShaparakSetting.Iv, model.ShaparakSetting.ThirdPartyCode);
 
         return await Mediator.Send(new CreateCompanyCommand(createCompanyViewModel));
+    }
+
+    [HttpPut]
+    public async Task<Result<Unit>> UpdateCompany([FromForm] UpdateCompanyModel model)
+    {
+        UpdateCompanyViewModel updateCompanyViewModel = new(model.Id, model.PersianName, model.EnglishName,
+            model.NationalCodeMatchingRequired, new FormFileProxy(model.File), model.MethodTypes.ToArray(), model.Users,
+            model.SiteAddress, model.IpgRedirectionMethodType, model.ShaparakSetting.Key, model.ShaparakSetting.Iv, model.ShaparakSetting.ThirdPartyCode);
+
+        return await Mediator.Send(new UpdateCompanyCommand(updateCompanyViewModel));
     }
 }

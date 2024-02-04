@@ -35,6 +35,7 @@ public class GetProviderQueryHandler(ReadDbContext context, IMinioProvider minio
             Logo = await _minioProvider.PresignedGetObject(provider.Logo),
             ProviderData = provider.ProviderData,
             ProviderType = provider.ProviderType,
+            IsActive = provider.IsActive,
             PaymentMethods= provider.PaymentMethods.Select(p => p.MethodType).ToList()
         };
 

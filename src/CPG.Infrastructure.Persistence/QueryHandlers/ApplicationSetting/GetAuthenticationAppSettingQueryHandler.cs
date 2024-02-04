@@ -13,11 +13,11 @@ using System.Threading.Tasks;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.ApplicationSetting;
 
-public class GetAuthenticationAppSettingQueryHandler(ReadDbContext context, IRedisCaheService cacheService, IAuthService authService) 
+public class GetAuthenticationAppSettingQueryHandler(ReadDbContext context, IRedisCacheService cacheService, IAuthService authService) 
     : IRequestHandler<GetAuthenticationAppSettingQuery, JwtConfigViewModel>
 {
     private readonly ReadDbContext _context = context;
-    private readonly IRedisCaheService _cacheService = cacheService;
+    private readonly IRedisCacheService _cacheService = cacheService;
     private readonly IAuthService _authService = authService;
     public const string CacheKey = "AuthenticationConfigApplicationSettings_key";
 

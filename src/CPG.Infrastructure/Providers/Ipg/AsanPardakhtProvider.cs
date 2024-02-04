@@ -66,13 +66,13 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
                                                         HeaderParameters = headers,
                                                         Body = new AsanPardakhtTokenRequest
                                                         {
-                                                            serviceTypeId = 1,
-                                                            paymentId = "0",
-                                                            callbackURL = callBack,
-                                                            additionalData = request.NationalCodeMatchingRequied ? CreateAdditionalData(request.NationalCode, request.ShaparakKey, request.ShaparakIv) : string.Empty,
-                                                            merchantConfigurationId = merchantConfigurationId,
-                                                            amountInRials = (long)request.PaymentRequestAmount,
-                                                            localInvoiceId = trackerId.ToString(),
+                                                            ServiceTypeId = 1,
+                                                            PaymentId = "0",
+                                                            CallbackURL = callBack,
+                                                            AdditionalData = request.NationalCodeMatchingRequied ? CreateAdditionalData(request.NationalCode, request.ShaparakKey, request.ShaparakIv) : string.Empty,
+                                                            MerchantConfigurationId = merchantConfigurationId,
+                                                            AmountInRials = (long)request.PaymentRequestAmount,
+                                                            LocalInvoiceId = trackerId.ToString(),
                                                         },
                                                         Provider = Enums.ProviderType.AsanPardakht,
                                                         Service = Enums.ServiceType.AsanPardakhtToken,
@@ -84,7 +84,6 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
 
                                                         return System.Text.Json.JsonSerializer.Deserialize<AsanPardakhtTokenResponse>(formattedResponse);
                                                     });
-
         return new PaymentTokenResponse
         {
             StatusCode = response.StatusCode,
@@ -113,7 +112,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
                                                         Provider = Enums.ProviderType.AsanPardakht,
                                                         Service = Enums.ServiceType.AsanPardakhtTransResult,
                                                     }, request, TransactionResultErrorHandler);
-        
+
         response.Status = response.StatusCode == (short)HttpStatusCode.OK ? (short)2 : response.Status;
         return response;
     }
@@ -135,8 +134,13 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
                                                         HeaderParameters = headers,
                                                         Provider = Enums.ProviderType.AsanPardakht,
                                                         Service = Enums.ServiceType.AsanPardakhtVerify,
-                                                    }, request, VerifyErrorHandler);
+                                                    }, request, VerifyErrorHandler, (string stringResponse) =>
+                                                    {
+                                                        if (string.IsNullOrEmpty(stringResponse))
+                                                            return new VerifyTransactionResponse { Status = Enums.IPGTransactionStatus.VerificationSucceeded };
 
+                                                        return System.Text.Json.JsonSerializer.Deserialize<VerifyTransactionResponse>(stringResponse);
+                                                    });
         return response;
     }
 
