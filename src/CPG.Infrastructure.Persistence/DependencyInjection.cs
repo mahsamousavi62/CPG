@@ -28,7 +28,7 @@ namespace CPG.Infrastructure.Persistence
         {
             services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
             services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
-            
+
             services
                 .AddDbContext<WriteDbContext>((sp, options) =>
                 {
