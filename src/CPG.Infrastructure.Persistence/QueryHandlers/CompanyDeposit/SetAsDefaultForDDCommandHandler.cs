@@ -28,8 +28,8 @@ public class SetAsDefaultForDDCommandHandler(IAggregateRepository<Company> compa
             throw new CompanyDepositNotBelongToCompanyException(companyDeposit.Id);
         }
 
-        company.CompanyDeposits.ForEach(t => t.IsDefaultForDD = false);
-        companyDeposit.IsDefaultForDD = true;
+        company.CompanyDeposits.ForEach(t => t.IsDefaultForDirectDebit = false);
+        companyDeposit.IsDefaultForDirectDebit = true;
 
         _context.UpdateRange(company.CompanyDeposits);
         await _context.SaveChangesAsync();

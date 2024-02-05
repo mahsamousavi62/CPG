@@ -660,4 +660,7 @@
   <data name="TwoYears" xml:space="preserve">
     <value>دو سال</value>
   </data>
+  <data name="PlanNotFound" xml:space="preserve">
+    <value>طرح با شناسه {0} یافت نشد</value>
+  </data>
 </root>

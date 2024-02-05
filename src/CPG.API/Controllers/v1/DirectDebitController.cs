@@ -8,16 +8,15 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CPG.API.Controllers.v1
 {
+    [Authorize]
     public class DirectDebitController : ApiBaseController
     {
         [HttpPost("GetDirectDebitToken")]
-        [Authorize]
         [ProducesResponseType(typeof(Result<bool>), 200)]
         public async Task<Result<bool>> GetToken([FromBody] CreateDirectDebitRequestViewModel request)
             => await Mediator.Send(new CreateDirectDebitRequestCommand(request));
 
         [HttpGet("GetAvailableBankList")]
-        [Authorize]
         [ProducesResponseType(typeof(Result<IReadOnlyCollection<BankViewModel>>), 200)]
         public async Task<Result<IReadOnlyCollection<BankViewModel>>> GetAvailableBankList()
         {
@@ -25,9 +24,18 @@ namespace CPG.API.Controllers.v1
         }
 
         [HttpPost("GetDirectDebitPlans")]
-        [Authorize]
         [ProducesResponseType(typeof(Result<PlanViewModel>), 200)]
         public async Task<Result<PlanViewModel>> GetDirectDebitPlans([FromBody] GetDirectDebitPlansViewModel request)
             => await Mediator.Send(new GetDirectDebitPlansCommand(request));
+
+        [HttpPost("GetUserPhoneNumbers")]
+        [ProducesResponseType(typeof(Result<IReadOnlyCollection<UserPhoneNumberViewModel>>), 200)]
+        public async Task<Result<IReadOnlyCollection<UserPhoneNumberViewModel>>> GetUserPhoneNumbers([FromBody] GetUserPhoneNumbersViewModel request)
+           => await Mediator.Send(new GetUserPhoneNumbersCommand(request));
+
+        [HttpPost("SetUserDirectDebitPlan")]
+        [ProducesResponseType(typeof(Result<bool>), 200)]
+        public async Task<Result<bool>> SetUserDirectDebitPlan([FromBody] SetUserDirectDebitPlanViewModel request)
+            => await Mediator.Send(new SetUserDirectDebitPlanCommand(request));
     }
 }

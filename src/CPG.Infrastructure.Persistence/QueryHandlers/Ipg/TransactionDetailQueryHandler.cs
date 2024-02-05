@@ -1,21 +1,21 @@
-﻿using CPG.Application.UseCases.Ipg.Queries;
-using CPG.Domain.SharedKernel;
-using CPG.Infrastructure.Persistence.DbContexts;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
-using CPG.Application.UseCases.Ipg.ViewModels;
+﻿using CPG.Application.Shared.Resource;
+using CPG.Application.UseCases.Exceptions;
 using CPG.Application.UseCases.Ipg.Exceptions;
+using CPG.Application.UseCases.Ipg.Queries;
+using CPG.Application.UseCases.Ipg.ViewModels;
 using CPG.Domain.AggregateModels.TransactionAggregate;
 using CPG.Domain.AggregateModels.TransactionAggregate.Specifications;
-using static CPG.Domain.SharedKernel.Enums;
-using CPG.Application.Shared.Resource;
 using CPG.Domain.Exceptions;
+using CPG.Domain.SharedKernel;
+using CPG.Infrastructure.Persistence.DbContexts;
+using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
-using CPG.Application.UseCases.Exceptions;
+using System.Threading;
+using System.Threading.Tasks;
+using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 
@@ -34,7 +34,7 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
                 throw new RequiredCodeOrTrackIdException();
             }
             var paymentRequest = await _context.PaymentRequestReadModels.FirstOrDefaultAsync(t => t.PaymentCode == request.RequestViewModel.Code ||
-                                                                                                  t.TrackerId == request.RequestViewModel.TrackerId, 
+                                                                                                  t.TrackerId == request.RequestViewModel.TrackerId,
                                                                                                   cancellationToken: cancellationToken) ?? throw new InvalidCodeOrTrackIdException();
 
             _ = long.TryParse(_httpContext.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out long applicationId);
@@ -55,7 +55,7 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
                     PaymentMethodTypeTitle = transaction is null ? string.Empty : GetPaymentMethodTypeTitle(transaction.TransactionMethodType),
                     ReferenceNumber = transaction is not null && transaction.TransactionMethodType == TransactionType.IPG ? transaction.IPGTransaction?.ReferenceNumber : string.Empty,
                     DestinationDepositIban = transaction?.DestinationDeposit?.Iban,
-                   DestinationDepositAccountNumber= transaction?.DestinationDeposit?.AccountNumber,
+                    DestinationDepositAccountNumber = transaction?.DestinationDeposit?.AccountNumber,
                     PredictedExpirationDateTime = transaction is not null && transaction.TransactionMethodType == TransactionType.IPG ? transaction.IPGTransaction?.PredicateExpirationDateTime?.ToString("yyyy-MM-dd HH:mm:ss zzz") : string.Empty,
                 });
         }

@@ -69,7 +69,7 @@ namespace CPG.Infrastructure.Authorization
             {
                 var authenticateResult = await _httpContextAccessor.HttpContext.AuthenticateAsync();
                 if (!authenticateResult.Succeeded)
-                    return default(T);
+                    return default;
 
                 claim = authenticateResult.Principal.FindFirst(c => c.Type == propertyName);
             }
@@ -77,7 +77,7 @@ namespace CPG.Infrastructure.Authorization
             if (claim != null)
                 return (T)ChangeType(typeof(T), claim.Value);
 
-            return default(T);
+            return default;
         }
 
         public async Task<Guid> GetCurrentSubject(string issuer = null)
