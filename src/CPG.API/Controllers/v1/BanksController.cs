@@ -29,7 +29,7 @@ public class BanksController : ApiBaseController
     }
 
     [HttpPut("update")]
-    public async Task<Result<bool>> UpdateBank(UpdateBankViewModel model)
+    public async Task<Result<bool>> UpdateBank([FromForm]UpdateBankViewModel model)
     {
         return await Mediator.Send(new UpdateBankCommand(model));
     }
