@@ -30,7 +30,8 @@ namespace CPG.Infrastructure.Persistence.QueryHandlers.Users
             var user = await _context.UserReadModels.Include(u => u.UserRoles).
                        SingleOrDefaultAsync(u => u.IsActive && u.IDPId == sub);
 
-            var applicationIdentifier = (await _context.ApplicationIdentifierReadModels.SingleOrDefaultAsync(a => a.IdpClientId == clientId));
+         
+            var applicationIdentifier = (await _context.ApplicationIdentifierReadModels.SingleOrDefaultAsync(a => a.IdpClientId == clientId, cancellationToken: cancellationToken));
 
             var userModel = new UserAuthenticateViewModel
             {
