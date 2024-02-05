@@ -36,7 +36,7 @@ public class GetAllCompanyDepositQueryHandler(ReadDbContext context, IMinioProvi
                 BankName = company.Bank.Name,
                 CompanyId = company.CompanyId,
                 CompanyName = company.Company.PersianName,
-                IsDefaultForDD = company.IsDefaultForDD,
+                IsDefaultForDirectDebit = company.IsDefaultForDirectDebit,
                 CreationDate = company.CreationDate,
                 IsActive = company.IsActive,
                 ModificationDate = company.ModificationDate,

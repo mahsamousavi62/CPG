@@ -32,5 +32,10 @@ namespace CPG.API.Controllers.v1
         [ProducesResponseType(typeof(Result<IReadOnlyCollection<UserPhoneNumberViewModel>>), 200)]
         public async Task<Result<IReadOnlyCollection<UserPhoneNumberViewModel>>> GetUserPhoneNumbers([FromBody] GetUserPhoneNumbersViewModel request)
            => await Mediator.Send(new GetUserPhoneNumbersCommand(request));
+
+        [HttpPost("SetUserDirectDebitPlan")]
+        [ProducesResponseType(typeof(Result<bool>), 200)]
+        public async Task<Result<bool>> SetUserDirectDebitPlan([FromBody] SetUserDirectDebitPlanViewModel request)
+            => await Mediator.Send(new SetUserDirectDebitPlanCommand(request));
     }
 }
