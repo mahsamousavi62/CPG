@@ -7,6 +7,8 @@ public class ShowResponse : ResponseBase
     public List<Data> Data { get; set; }
     public LinkData Links { get; set; }
     public MetaData Meta { get; set; }
+
+    public string RefreshToken { get; set; }
 }
 
 public class Data

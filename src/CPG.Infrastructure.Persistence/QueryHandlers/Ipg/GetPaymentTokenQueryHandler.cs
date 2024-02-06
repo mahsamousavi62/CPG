@@ -85,9 +85,6 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                 destinationDepositId = tempcompanyIpg.IPGDeposits.SingleOrDefault().CompanyDepositId;
             }
 
-            var ipg = _ipgFactory.GetInstance(companyIpg.Provider.ProviderType);
-            var mobileNumber = await _authenticationService.GetDataFromClaim<string>(ClaimTypes.MobilePhone);
-
             string ipgBaseUrl;
             short IpgVerificationTimeLimit;
             try
@@ -104,6 +101,9 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
             {
                 throw new ParseCompanyIpgProviderDataException(companyIpg.Provider.ProviderData);
             }
+
+            var ipg = _ipgFactory.GetInstance(companyIpg.Provider.ProviderType);
+            var mobileNumber = await _authenticationService.GetDataFromClaim<string>(ClaimTypes.MobilePhone);
 
             var result = await ipg.GetPaymentTokenAsync(
                 new PaymentTokenRequest

@@ -8,6 +8,7 @@ using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Show;
 using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Store;
 using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Token;
 using CPG.Domain.SharedKernel.Communication.DirectDebit.Vandar;
+using CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
 using CPG.Domain.SharedKernel.Helper;
 using CPG.Infrastructure.Persistence.DbContexts;
 using CPG.Infrastructure.Persistence.Redis;
@@ -58,18 +59,25 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
         if (data is null)
         {
             GetDataFromJsonProvider(request.ProviderData);
-            data = await _httpProvider.PostAsync<TokenRequest, VandarTokenResponse,
-                                                        VandarResponseBase, dynamic>(new HttpProviderRequest<dynamic>
-                                                        {
-                                                            BaseAddress = "https://api.vandar.io/",
-                                                            Uri = "v3/refreshtoken",
-                                                            Body = new VandarTokenRequest
-                                                            {
-                                                                RefreshToken = refreshToken,
-                                                            },
-                                                            Provider = Enums.ProviderType.Sep,
-                                                            Service = Enums.ServiceType.SepToken,
-                                                        }, request, PaymentTokenErrorHandler);
+            data = await _httpProvider.PostAsync<TokenRequest, VandarTokenResponse, VandarResponseBase, dynamic>(new HttpProviderRequest<dynamic>
+            {
+                BaseAddress = "https://api.vandar.io/",
+                Uri = "v3/refreshtoken",
+                Body = new VandarTokenRequest
+                {
+                    RefreshToken = refreshToken,
+                },
+                Provider = Enums.ProviderType.Vandar,
+                Service = Enums.ServiceType.VandarToken,
+            }, request, PaymentTokenErrorHandler, (string stringResponse) =>
+            {
+                if (stringResponse.Contains("Unauthorized"))
+                {
+                    stringResponse = "{\"status\": 0, \"error\" :\"Unauthorized\"}";
+                }
+
+                return System.Text.Json.JsonSerializer.Deserialize<VandarTokenResponse>(stringResponse);
+            });
             _cacheService.SetData(tokenCacheKey, data);
         }
         return new TokenResponse
@@ -94,7 +102,7 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
             {
                 BaseAddress = "https://api.vandar.io/",
                 Uri = $"v3/business/{businessData}/subscription/authorization/store",
-                HeaderParameters = headers,
+                HeaderParameters = headers.Item1,
                 Body = new VandarStoreRequest
                 {
                     BankCode = request.BankCode,
@@ -106,8 +114,8 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
                     NationalCode = request.NationalCode,
                     ExpirationDate = request.ExpirationDate.ToString("yyyy-MM-dd")
                 },
-                Provider = Enums.ProviderType.Sep,
-                Service = Enums.ServiceType.SepToken,
+                Provider = Enums.ProviderType.Vandar,
+                Service = Enums.ServiceType.VandarStore,
             }, request, StoreErrorHandler);
 
         return new StoreResponse
@@ -116,6 +124,7 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
             Message = data.Message,
             Token = data.Result.Authorization.Token,
             TrackerId = trackerId,
+            RefreshToken = headers.Item2
         };
     }
 
@@ -129,22 +138,51 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
             {
                 BaseAddress = "https://api.vandar.io/",
                 Uri = $"v3/business/{businessData}/subscription/authorization?mobile={request.MobileNumber}",
-                HeaderParameters = headers,
-                Provider = Enums.ProviderType.Sep,
-                Service = Enums.ServiceType.SepToken,
+                HeaderParameters = headers.Item1,
+                Provider = Enums.ProviderType.Vandar,
+                Service = Enums.ServiceType.VandarShow,
             }, request, ShowErrorHandler);
 
         return new ShowResponse
         {
             Status = data.Status,
-            Data = data.Data.Select(t => new Data { BankCode = t.BankCode, CallbackUrl = t.CallbackUrl, Count = t.Count, CreatedAt = t.CreatedAt,
-                CustomerUuid = t.CustomerUuid, Email = t.Email, ExpirationDate = t.ExpirationDate, Id = t.Id, Limit = t.Limit, Mobile = t.Mobile,
-                Name = t.Name, NationalCode = t.NationalCode, PayerAccount = t.PayerAccount, RevokedAt = t.RevokedAt, Status = t.Status,
-                Token = t.Token}).ToList(),
+            Data = data.Data.Select(t => new Data
+            {
+                BankCode = t.BankCode,
+                CallbackUrl = t.CallbackUrl,
+                Count = t.Count,
+                CreatedAt = t.CreatedAt,
+                CustomerUuid = t.CustomerUuid,
+                Email = t.Email,
+                ExpirationDate = t.ExpirationDate,
+                Id = t.Id,
+                Limit = t.Limit,
+                Mobile = t.Mobile,
+                Name = t.Name,
+                NationalCode = t.NationalCode,
+                PayerAccount = t.PayerAccount,
+                RevokedAt = t.RevokedAt,
+                Status = t.Status,
+                Token = t.Token
+            }).ToList(),
             Links = new LinkData { First = data.Links.First, Last = data.Links.Last, Prev = data.Links.Prev, Next = data.Links.Next },
-            Meta = new MetaData { CurrentPage = data.Meta.CurrentPage, From = data.Meta.From, LastPage = data.Meta.LastPage, Path = data.Meta.Path,
-                PerPage = data.Meta.PerPage, To = data.Meta.To, Total = data.Meta.Total, Links = data.Meta.Links.Select(l => new Link { Url = l.Url,
-                    Label = l.Label, Active = l.Active }).ToList() }
+            Meta = new MetaData
+            {
+                CurrentPage = data.Meta.CurrentPage,
+                From = data.Meta.From,
+                LastPage = data.Meta.LastPage,
+                Path = data.Meta.Path,
+                PerPage = data.Meta.PerPage,
+                To = data.Meta.To,
+                Total = data.Meta.Total,
+                Links = data.Meta.Links.Select(l => new Link
+                {
+                    Url = l.Url,
+                    Label = l.Label,
+                    Active = l.Active
+                }).ToList()
+            },
+            RefreshToken = headers.Item2
         };
     }
 
@@ -153,10 +191,10 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
         return $"{url}?track_id={trackerId}";
     }
 
-    private async Task<List<(string Key, string? Value)>> GetHeaders(string providerData)
+    private async Task<(List<(string Key, string? Value)>, string)> GetHeaders(string providerData)
     {
         var data = await GetTokenAsync(new TokenRequest { ProviderData = providerData });
-        return new List<(string Key, string? Value)> { ("Authorization", string.Concat("BEARER ", data.AccessToken)) };
+        return (new List<(string Key, string? Value)> { ("Authorization", string.Concat("Bearer ", data.AccessToken)) }, data.RefreshToken);
     }
 
     private async Task<TResponse> PaymentTokenErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest baseRequest, TResponse response, TError error, short statusCode)
@@ -164,10 +202,11 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
         where TError : VandarResponseBase
         where TBaseRequest : TokenRequest
     {
-        return response.StatusCode switch
+        return error.StatusCode switch
         {
             401 => await GetToken(),
             422 => throw new Exception(GlobalResource.EmptyRefreshToken),
+            101 => throw new Exception(GlobalResource.InvalidRefreshToken),
             _ => await Retry()
         };
 
@@ -193,7 +232,7 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
             where TError : VandarResponseBase
             where TBaseRequest : StoreRequest
     {
-        return response.Status switch
+        return error.StatusCode switch
         {
             0 => await GetToken(),
             _ => await Retry()
@@ -221,7 +260,7 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
             where TError : VandarResponseBase
             where TBaseRequest : ShowRequest
     {
-        return response.Status switch
+        return error.StatusCode switch
         {
             0 => await GetToken(),
             _ => await Retry()
