@@ -1,6 +1,8 @@
 ﻿using CPG.Domain.AggregateModels.ProviderAggregate;
 using CPG.Domain.SeedWork;
+using CPG.Domain.SharedKernel;
 using System;
+using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Domain.AggregateModels.DirectDebitGrantAggregate;
 
@@ -18,7 +20,7 @@ public class DirectDebitGrant : AuditableEntity<long>, IAggregateRoot
     internal long _providerId;
     internal string _grantToken;
     internal string _authorizationId;
-    internal short _status;
+    internal DirectDebitGrantStatus _status;
 
     public long UserId => _userId;
     public int BankId => _bankId;
@@ -32,7 +34,7 @@ public class DirectDebitGrant : AuditableEntity<long>, IAggregateRoot
     public long ProviderId => _providerId;
     public string GrantToken => _grantToken;
     public string AuthorizationId => _authorizationId;
-    public short Status => _status;
+    public DirectDebitGrantStatus Status => _status;
     public Provider Provider { get; set; }
 
     public DirectDebitGrant()
@@ -42,7 +44,7 @@ public class DirectDebitGrant : AuditableEntity<long>, IAggregateRoot
 
     public DirectDebitGrant(long userId, int bankId, string accountNumber, string phoneNumber, int successTransactionCountLimitPerMonth,
         decimal amountLimitPerTransaction, string trackId, DateTime expirationDate, DateTime? revokeDateTime, long providerId, string grantToken,
-        string authorizationId, short status)
+        string authorizationId, DirectDebitGrantStatus status)
     {
         _userId = userId;
         _bankId = bankId;
@@ -61,7 +63,7 @@ public class DirectDebitGrant : AuditableEntity<long>, IAggregateRoot
 
     public static DirectDebitGrant Create(long userId, int bankId, string accountNumber, string phoneNumber, int successTransactionCountLimitPerMonth,
         decimal amountLimitPerTransaction, string trackId, DateTime expirationDate, DateTime? revokeDateTime, long providerId, string grantToken,
-        string authorizationId, short status)
+        string authorizationId, DirectDebitGrantStatus status)
     {
         var directDebitGrant = new DirectDebitGrant(userId, bankId, accountNumber, phoneNumber, successTransactionCountLimitPerMonth,
             amountLimitPerTransaction, trackId, expirationDate, revokeDateTime, providerId, grantToken, authorizationId, status);
@@ -70,7 +72,7 @@ public class DirectDebitGrant : AuditableEntity<long>, IAggregateRoot
 
     public void Update(long userId, int bankId, string accountNumber, string phoneNumber, int successTransactionCountLimitPerMonth,
         decimal amountLimitPerTransaction, string trackId, DateTime expirationDate, DateTime? revokeDateTime, long providerId, string grantToken,
-        string authorizationId, short status)
+        string authorizationId, DirectDebitGrantStatus status)
     {
         _userId = userId;
         _bankId = bankId;

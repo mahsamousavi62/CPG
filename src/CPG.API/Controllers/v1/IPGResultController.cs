@@ -32,6 +32,5 @@ public class IPGResultController : ApiBaseController
         var redirectUrlData = await Mediator.Send(new ValidateTokenQuery(model, trackId));
         return redirectUrlData;
     }
-
 }
 

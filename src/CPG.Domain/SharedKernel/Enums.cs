@@ -147,6 +147,17 @@ public class Enums
         SendOtpCode = 2,
         CheckMobileAndDepositOwnershipMatching = 3
     }
+
+    public enum DirectDebitGrantStatus
+    {
+        Draft = 0,
+        WaitingForConfirmation = 1,
+        Activated = 2,
+        Voided = 3,
+        CanceledByUser = 4,
+        Removed = 5,
+        Expired = 6,
+    }
 }
 
 public struct ResultData<T>(Enums.OperationResult operationResult)
