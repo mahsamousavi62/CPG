@@ -15,5 +15,5 @@ public class VandarResponseBase : ResponseBase
     public string Error { get; set; }
 
     [JsonPropertyName("errors")]
-    public List<string> Errors { get; set; }
+    public List<dynamic> Errors { get; set; }
 }

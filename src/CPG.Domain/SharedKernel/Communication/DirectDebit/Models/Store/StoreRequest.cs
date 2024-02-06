@@ -12,4 +12,5 @@ public class StoreRequest : RequestBase
     public DateTime ExpirationDate { get; set; }
     public string FullName { get; set; }
     public string NationalCode { get; set; }
+    public string AccessToken { get; set; }
 }

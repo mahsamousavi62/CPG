@@ -55,7 +55,6 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
     public async Task<TokenResponse> GetTokenAsync(TokenRequest request)
     {
         var data = _cacheService.GetData<VandarTokenResponse>(tokenCacheKey);
-        var trackerId = RandomGenerator.GenerateRandomDigitNumber(16);
         if (data is null)
         {
             GetDataFromJsonProvider(request.ProviderData);
@@ -73,7 +72,7 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
             {
                 if (stringResponse.Contains("Unauthorized"))
                 {
-                    stringResponse = "{\"status\": 0, \"error\" :\"Unauthorized\"}";
+                    stringResponse = "{\"status\": 101, \"error\" :\"Unauthorized\"}";
                 }
 
                 return System.Text.Json.JsonSerializer.Deserialize<VandarTokenResponse>(stringResponse);
@@ -85,14 +84,13 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
             AccessToken = data.AccessToken,
             RefreshToken = data.RefreshToken,
             ExpiresIn = data.ExpiresIn,
-            TrackerId = trackerId,
         };
     }
 
     public async Task<StoreResponse> StoreAsync(StoreRequest request)
     {
         GetDataFromJsonProvider(request.ProviderData);
-        var headers = await GetHeaders(request.ProviderData);
+        var headers = await GetHeaders(request.AccessToken);
         var trackerId = RandomGenerator.GenerateRandomDigitNumber(16);
         var applicationSettings = await _applicationSettingRepositoy.GetAllApplicationSettings();
 
@@ -102,7 +100,7 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
             {
                 BaseAddress = "https://api.vandar.io/",
                 Uri = $"v3/business/{businessData}/subscription/authorization/store",
-                HeaderParameters = headers.Item1,
+                HeaderParameters = headers,
                 Body = new VandarStoreRequest
                 {
                     BankCode = request.BankCode,
@@ -124,21 +122,20 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
             Message = data.Message,
             Token = data.Result.Authorization.Token,
             TrackerId = trackerId,
-            RefreshToken = headers.Item2
         };
     }
 
     public async Task<ShowResponse> ShowAsync(ShowRequest request)
     {
         GetDataFromJsonProvider(request.ProviderData);
-        var headers = await GetHeaders(request.ProviderData);
+        var headers = await GetHeaders(request.AccessToken);
 
         var data = await _httpProvider.PostAsync<ShowRequest, VandarShowResponse, VandarResponseBase, dynamic>
             (new HttpProviderRequest<dynamic>
             {
                 BaseAddress = "https://api.vandar.io/",
                 Uri = $"v3/business/{businessData}/subscription/authorization?mobile={request.MobileNumber}",
-                HeaderParameters = headers.Item1,
+                HeaderParameters = headers,
                 Provider = Enums.ProviderType.Vandar,
                 Service = Enums.ServiceType.VandarShow,
             }, request, ShowErrorHandler);
@@ -182,7 +179,6 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
                     Active = l.Active
                 }).ToList()
             },
-            RefreshToken = headers.Item2
         };
     }
 
@@ -191,10 +187,9 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
         return $"{url}?track_id={trackerId}";
     }
 
-    private async Task<(List<(string Key, string? Value)>, string)> GetHeaders(string providerData)
-    {
-        var data = await GetTokenAsync(new TokenRequest { ProviderData = providerData });
-        return (new List<(string Key, string? Value)> { ("Authorization", string.Concat("Bearer ", data.AccessToken)) }, data.RefreshToken);
+    private async Task<List<(string Key, string? Value)>> GetHeaders(string accessToken)
+    {   
+        return new List<(string Key, string? Value)> { ("Authorization", string.Concat("Bearer ", accessToken)) };
     }
 
     private async Task<TResponse> PaymentTokenErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest baseRequest, TResponse response, TError error, short statusCode)

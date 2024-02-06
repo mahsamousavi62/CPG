@@ -41,7 +41,7 @@ public class DirectDebitGrant : AuditableEntity<long>, IAggregateRoot
     }
 
     public DirectDebitGrant(long userId, int bankId, string accountNumber, string phoneNumber, int successTransactionCountLimitPerMonth,
-        decimal amountLimitPerTransaction, string trackId, DateTime expirationDate, DateTime revokeDateTime, long providerId, string grantToken,
+        decimal amountLimitPerTransaction, string trackId, DateTime expirationDate, DateTime? revokeDateTime, long providerId, string grantToken,
         string authorizationId, short status)
     {
         _userId = userId;
@@ -59,8 +59,8 @@ public class DirectDebitGrant : AuditableEntity<long>, IAggregateRoot
         _status = status;
     }
 
-    public DirectDebitGrant Create(long userId, int bankId, string accountNumber, string phoneNumber, int successTransactionCountLimitPerMonth,
-        decimal amountLimitPerTransaction, string trackId, DateTime expirationDate, DateTime revokeDateTime, long providerId, string grantToken,
+    public static DirectDebitGrant Create(long userId, int bankId, string accountNumber, string phoneNumber, int successTransactionCountLimitPerMonth,
+        decimal amountLimitPerTransaction, string trackId, DateTime expirationDate, DateTime? revokeDateTime, long providerId, string grantToken,
         string authorizationId, short status)
     {
         var directDebitGrant = new DirectDebitGrant(userId, bankId, accountNumber, phoneNumber, successTransactionCountLimitPerMonth,
@@ -69,7 +69,7 @@ public class DirectDebitGrant : AuditableEntity<long>, IAggregateRoot
     }
 
     public void Update(long userId, int bankId, string accountNumber, string phoneNumber, int successTransactionCountLimitPerMonth,
-        decimal amountLimitPerTransaction, string trackId, DateTime expirationDate, DateTime revokeDateTime, long providerId, string grantToken,
+        decimal amountLimitPerTransaction, string trackId, DateTime expirationDate, DateTime? revokeDateTime, long providerId, string grantToken,
         string authorizationId, short status)
     {
         _userId = userId;
