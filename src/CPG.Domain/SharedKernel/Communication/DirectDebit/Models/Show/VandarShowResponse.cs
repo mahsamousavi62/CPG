@@ -1,119 +1,82 @@
 ﻿using CPG.Domain.SharedKernel.Communication.DirectDebit.Vandar;
-using System.Collections.Generic;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Show;
 
 public class VandarShowResponse : VandarResponseBase
 {
-    [JsonPropertyName("data")]
-    public List<Datum> Data { get; set; }
+    [JsonProperty("status")]
+    public int GrantStatus { get; set; }
 
-    [JsonPropertyName("links")]
-    public Link Links { get; set; }
+    [JsonProperty("message")]
+    public string GrantMessage { get; set; }
 
-    [JsonPropertyName("meta")]
-    public Meta Meta { get; set; }
+    [JsonProperty("result")]
+    public Result Result { get; set; }
 }
 
-public class Datum
+public class Authorizations
 {
-    [JsonPropertyName("id")]
+    [JsonProperty("id")]
     public string Id { get; set; }
 
-    [JsonPropertyName("customer_uuid")]
+    [JsonProperty("customer_uuid")]
     public string CustomerUuid { get; set; }
 
-    [JsonPropertyName("token")]
+    [JsonProperty("token")]
     public string Token { get; set; }
 
-    [JsonPropertyName("bank_code")]
+    [JsonProperty("bank_code")]
     public string BankCode { get; set; }
 
-    [JsonPropertyName("callback_url")]
+    [JsonProperty("callback_url")]
     public string CallbackUrl { get; set; }
 
-    [JsonPropertyName("count")]
+    [JsonProperty("count")]
     public int Count { get; set; }
 
-    [JsonPropertyName("limit")]
+    [JsonProperty("limit")]
     public string Limit { get; set; }
 
-    [JsonPropertyName("mobile")]
+    [JsonProperty("mobile")]
     public string Mobile { get; set; }
 
-    [JsonPropertyName("name")]
+    [JsonProperty("name")]
     public string Name { get; set; }
 
-    [JsonPropertyName("email")]
+    [JsonProperty("email")]
     public string Email { get; set; }
 
-    [JsonPropertyName("national_code")]
+    [JsonProperty("national_code")]
     public string NationalCode { get; set; }
 
-    [JsonPropertyName("expiration_date")]
+    [JsonProperty("expiration_date")]
     public string ExpirationDate { get; set; }
 
-    [JsonPropertyName("status")]
+    [JsonProperty("status")]
     public string Status { get; set; }
 
-    [JsonPropertyName("payer_account")]
-    public object PayerAccount { get; set; }
+    [JsonProperty("payer_account")]
+    public PayerAccount PayerAccount { get; set; }
 
-    [JsonPropertyName("created_at")]
+    [JsonProperty("created_at")]
     public string CreatedAt { get; set; }
 
-    [JsonPropertyName("revoked_at")]
-    public string RevokedAt { get; set; }
+    [JsonProperty("revoked_at")]
+    public object RevokedAt { get; set; }
 }
 
-public class Link
+public class PayerAccount
 {
-    [JsonPropertyName("url")]
-    public string Url { get; set; }
+    [JsonProperty("account_number")]
+    public string AccountNumber { get; set; }
 
-    [JsonPropertyName("label")]
-    public string Label { get; set; }
-
-    [JsonPropertyName("active")]
-    public bool Active { get; set; }
-
-    [JsonPropertyName("first")]
-    public string First { get; set; }
-
-    [JsonPropertyName("last")]
-    public string Last { get; set; }
-
-    [JsonPropertyName("prev")]
-    public object Prev { get; set; }
-
-    [JsonPropertyName("next")]
-    public object Next { get; set; }
+    [JsonProperty("pan")]
+    public string Pan { get; set; }
 }
 
-public class Meta
+public class Result
 {
-    [JsonPropertyName("current_page")]
-    public int CurrentPage { get; set; }
-
-    [JsonPropertyName("from")]
-    public int From { get; set; }
-
-    [JsonPropertyName("last_page")]
-    public int LastPage { get; set; }
-
-    [JsonPropertyName("links")]
-    public List<Link> Links { get; set; }
-
-    [JsonPropertyName("path")]
-    public string Path { get; set; }
-
-    [JsonPropertyName("per_page")]
-    public int PerPage { get; set; }
-
-    [JsonPropertyName("to")]
-    public int To { get; set; }
-
-    [JsonPropertyName("total")]
-    public int Total { get; set; }
+    [JsonProperty("authorizations")]
+    public Authorizations Authorizations { get; set; }
 }

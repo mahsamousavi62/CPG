@@ -130,55 +130,26 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
         GetDataFromJsonProvider(request.ProviderData);
         var headers = await GetHeaders(request.AccessToken);
 
-        var data = await _httpProvider.PostAsync<ShowRequest, VandarShowResponse, VandarResponseBase, dynamic>
+        var data = await _httpProvider.GetAsync<ShowRequest, VandarShowResponse, VandarResponseBase, dynamic>
             (new HttpProviderRequest<dynamic>
             {
                 BaseAddress = "https://api.vandar.io/",
-                Uri = $"v3/business/{businessData}/subscription/authorization?mobile={request.MobileNumber}",
+                Uri = $"v3/business/{businessData}/subscription/authorization/{request.AuthorizationId}",
                 HeaderParameters = headers,
                 Provider = Enums.ProviderType.Vandar,
                 Service = Enums.ServiceType.VandarShow,
             }, request, ShowErrorHandler);
 
-        return new ShowResponse
-        {
+        return new ShowResponse { 
+            GrantStatus = data.GrantStatus,
+            GrantMessage = data.GrantMessage,
             Status = data.Status,
-            Data = data.Data.Select(t => new Data
-            {
-                BankCode = t.BankCode,
-                CallbackUrl = t.CallbackUrl,
-                Count = t.Count,
-                CreatedAt = t.CreatedAt,
-                CustomerUuid = t.CustomerUuid,
-                Email = t.Email,
-                ExpirationDate = t.ExpirationDate,
-                Id = t.Id,
-                Limit = t.Limit,
-                Mobile = t.Mobile,
-                Name = t.Name,
-                NationalCode = t.NationalCode,
-                PayerAccount = t.PayerAccount,
-                RevokedAt = t.RevokedAt,
-                Status = t.Status,
-                Token = t.Token
-            }).ToList(),
-            Links = new LinkData { First = data.Links.First, Last = data.Links.Last, Prev = data.Links.Prev, Next = data.Links.Next },
-            Meta = new MetaData
-            {
-                CurrentPage = data.Meta.CurrentPage,
-                From = data.Meta.From,
-                LastPage = data.Meta.LastPage,
-                Path = data.Meta.Path,
-                PerPage = data.Meta.PerPage,
-                To = data.Meta.To,
-                Total = data.Meta.Total,
-                Links = data.Meta.Links.Select(l => new Link
-                {
-                    Url = l.Url,
-                    Label = l.Label,
-                    Active = l.Active
-                }).ToList()
-            },
+            StatusCode = data.StatusCode,
+            GrantData = new GrantData {
+                Id = data.Result?.Authorizations?.Id,
+               AccountNumber = data.Result?.Authorizations?.PayerAccount?.AccountNumber,
+               Status = data.Result?.Authorizations?.Status,
+            }
         };
     }
 
@@ -188,7 +159,7 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
     }
 
     private async Task<List<(string Key, string? Value)>> GetHeaders(string accessToken)
-    {   
+    {
         return new List<(string Key, string? Value)> { ("Authorization", string.Concat("Bearer ", accessToken)) };
     }
 
@@ -235,7 +206,7 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
 
         async Task<TResponse> GetToken()
         {
-            _cacheService.SetData<VandarStoreResponse?>(tokenCacheKey, null);
+            _cacheService.SetData<VandarTokenResponse?>(tokenCacheKey, null);
             return await GetTokenAsync(new TokenRequest { ProviderData = baseRequest.ProviderData }) as TResponse;
         }
 
@@ -263,7 +234,7 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
 
         async Task<TResponse> GetToken()
         {
-            _cacheService.SetData<VandarStoreResponse?>(tokenCacheKey, null);
+            _cacheService.SetData<VandarShowResponse?>(tokenCacheKey, null);
             return await GetTokenAsync(new TokenRequest { ProviderData = baseRequest.ProviderData }) as TResponse;
         }
 

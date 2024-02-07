@@ -7,6 +7,7 @@ public class DirectDebitGrantByTrackIdSpec : Specification<DirectDebitGrant>
 {
     public DirectDebitGrantByTrackIdSpec(string trackId)
     {
-        Query.Where(t => t.TrackId == trackId);
+        Query.Where(t => t.TrackId == trackId)
+            .Include(t => t.Provider);
     }
 }
