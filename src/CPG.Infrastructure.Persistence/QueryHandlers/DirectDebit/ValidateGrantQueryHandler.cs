@@ -18,20 +18,23 @@ using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Show;
 using System.Security.Claims;
 using Newtonsoft.Json.Linq;
 using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Token;
-using CPG.Application.UseCases.Ipg.ViewModels;
+using CPG.Domain.AggregateModels.BankAggregate.Specifications;
+using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Verify;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.DirectDebit;
 
 public class ValidateGrantQueryHandler(IDirectDebitFactory directDebitFactory,
     IAggregateRepository<DirectDebitGrant> directDebitGrantRepository,
     IAggregateRepository<Transaction> transactionRepository,
+    IAggregateRepository<Domain.AggregateModels.BankAggregate.Bank> bankRepository,
     IAuthenticationService authenticationService,
-    IAggregateRepository<CPG.Domain.AggregateModels.ProviderAggregate.Provider> providerRepository
+    IAggregateRepository<Domain.AggregateModels.ProviderAggregate.Provider> providerRepository
     ) : IRequestHandler<ValidateGrantQuery, Result<ValidateGrantResponseViewModel>>
 {
     private readonly IDirectDebitFactory _directDebitFactory = directDebitFactory;
     private readonly IAggregateRepository<DirectDebitGrant> _directDebitGrantRepository = directDebitGrantRepository;
     private readonly IAggregateRepository<Transaction> _transactionRepository = transactionRepository;
+    private readonly IAggregateRepository<Domain.AggregateModels.BankAggregate.Bank> _bankRepository = bankRepository;
     private readonly IAuthenticationService _authenticationService = authenticationService;
     private readonly IAggregateRepository<Domain.AggregateModels.ProviderAggregate.Provider> _providerRepository = providerRepository;
 
@@ -75,6 +78,13 @@ public class ValidateGrantQueryHandler(IDirectDebitFactory directDebitFactory,
                             AuthorizationId = req.AuthorizationId,
                         };
                         var result = await directDebitProvider.ShowAsync(showRequest);
+
+                        var bank = await _bankRepository.GetBySpecAsync(new BankByDirectDebitCodeSpec(result.GrantData.BankCode), cancellationToken);
+
+                        if (bank is null)
+                        {
+                            return Result<ValidateGrantResponseViewModel>.Failure(new Error("2006000", GlobalResource.UnexpectedError));
+                        }
 
                         if (!string.IsNullOrEmpty(req.AuthorizationId))
                         {
@@ -126,6 +136,38 @@ public class ValidateGrantQueryHandler(IDirectDebitFactory directDebitFactory,
                         if (!string.IsNullOrEmpty(result.GrantData.AccountNumber))
                         {
                             directDebitGrant.AccountNumber = result.GrantData.AccountNumber;
+                        }
+                        if (!string.IsNullOrEmpty(result.GrantData.Id))
+                        {
+                            directDebitGrant.AuthorizationId = result.GrantData.Id;
+                        }
+                        else if (!string.IsNullOrEmpty(req.AuthorizationId))
+                        {
+                            directDebitGrant.AuthorizationId = req.AuthorizationId;
+                        }
+                        await _directDebitGrantRepository.UpdateAsync(directDebitGrant);
+                        await _directDebitGrantRepository.SaveChangesAsync();
+
+                        if (directDebitGrant.Status == DirectDebitGrantStatus.WaitingForConfirmation)
+                        {
+                            tokenResult = await directDebitProvider.GetTokenAsync(new TokenRequest { ProviderData = provider.ProviderData });
+
+                            providerData = JObject.Parse(provider.ProviderData);
+                            if (providerData["Refresh_Token"].ToString() != tokenResult.RefreshToken)
+                            {
+                                providerData["Refresh_Token"] = tokenResult.RefreshToken;
+                                provider.ProviderData = Newtonsoft.Json.JsonConvert.SerializeObject(providerData);
+                                await _providerRepository.UpdateAsync(provider);
+                                await _providerRepository.SaveChangesAsync();
+                            }
+
+                            var verifyRequest = new VerifyRequest
+                            {
+                                AccessToken = tokenResult.AccessToken,
+                                AuthorizationId = req.AuthorizationId,
+                                ProviderData = provider.ProviderData,
+                            };
+                            var verifyResult = await directDebitProvider.VerifyAsync(verifyRequest);
                         }
 
                         break;

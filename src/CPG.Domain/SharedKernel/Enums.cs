@@ -68,6 +68,7 @@ public class Enums
         VandarToken = 8,
         VandarShow = 9,
         VandarStore = 10,
+        VandarVerify = 11,
     }
 
     public enum TransactionType : byte

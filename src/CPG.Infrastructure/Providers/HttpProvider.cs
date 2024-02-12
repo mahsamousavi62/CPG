@@ -24,14 +24,14 @@ public class HttpProvider : IHttpProvider
     private readonly ILogger<HttpProvider> _logger;
     private readonly ILogService _logService;
 
-    public HttpProvider(IHttpClientFactory httpClientFactory, ILogger<HttpProvider> logger,ILogService logService)
+    public HttpProvider(IHttpClientFactory httpClientFactory, ILogger<HttpProvider> logger, ILogService logService)
     {
         _httpClientFactory = httpClientFactory;
         _logger = logger;
         _logService = logService;
     }
 
-    public async Task<TResponse?> PostAsync<TBaseRequest, TResponse, TError, TBody>(HttpProviderRequest<TBody>? request, TBaseRequest? baseRequest, Func<TBaseRequest?, TResponse?, TError?,short, Task<TResponse?>>? errorHandler, Func<string, TResponse>? decoder = null)
+    public async Task<TResponse?> PostAsync<TBaseRequest, TResponse, TError, TBody>(HttpProviderRequest<TBody>? request, TBaseRequest? baseRequest, Func<TBaseRequest?, TResponse?, TError?, short, Task<TResponse?>>? errorHandler, Func<string, TResponse>? decoder = null)
         where TResponse : ResponseBase
         where TError : ResponseBase
         where TBaseRequest : RequestBase
@@ -100,7 +100,7 @@ public class HttpProvider : IHttpProvider
         }
     }
 
-    public async Task<TResponse?> PostAsync3<TBaseRequest, TResponse, TError, TBody>(HttpProviderRequest<TBody>? request, TBaseRequest? baseRequest, Func<TBaseRequest?, TResponse?, TError?,short, Task<TResponse?>>? errorHandler, Func<string, TResponse>? decoder = null)
+    public async Task<TResponse?> PostAsync3<TBaseRequest, TResponse, TError, TBody>(HttpProviderRequest<TBody>? request, TBaseRequest? baseRequest, Func<TBaseRequest?, TResponse?, TError?, short, Task<TResponse?>>? errorHandler, Func<string, TResponse>? decoder = null)
         where TResponse : ResponseBase
         where TError : ResponseBase
         where TBaseRequest : RequestBase
@@ -236,7 +236,7 @@ public class HttpProvider : IHttpProvider
     //    }
     //}
 
-    public async Task<TResponse?> PutAsync<TBaseRequest, TResponse, TError, TBody>(HttpProviderRequest<TBody>? request, TBaseRequest? baseRequest, Func<TBaseRequest?, TResponse?, TError?,short, Task<TResponse?>>? errorHandler, Func<string, TResponse>? decoder = null)
+    public async Task<TResponse?> PutAsync<TBaseRequest, TResponse, TError, TBody>(HttpProviderRequest<TBody>? request, TBaseRequest? baseRequest, Func<TBaseRequest?, TResponse?, TError?, short, Task<TResponse?>>? errorHandler, Func<string, TResponse>? decoder = null)
         where TResponse : ResponseBase?
         where TError : ResponseBase
         where TBaseRequest : RequestBase
@@ -277,6 +277,7 @@ public class HttpProvider : IHttpProvider
             else
             {
                 var result = await response.Content.ReadFromJsonAsync<TError>();
+                result.StatusCode = (short)response.StatusCode;
 
                 return errorHandler == null ? null :
                     await errorHandler(baseRequest, null, result, (short)response.StatusCode);
@@ -290,7 +291,76 @@ public class HttpProvider : IHttpProvider
         }
     }
 
-    public async Task<TResponse?> GetAsync<TBaseRequest, TResponse, TError>(HttpProviderRequest<dynamic>? request, TBaseRequest? baseRequest, Func<TBaseRequest?, TResponse?, TError?,short, Task<TResponse?>>? errorHandler, Func<string, TResponse>? decoder = null)
+    public async Task<TResponse?> PatchAsync<TBaseRequest, TResponse, TError, TBody>(HttpProviderRequest<TBody>? request, TBaseRequest? baseRequest, Func<TBaseRequest?, TResponse?, TError?, short, Task<TResponse?>>? errorHandler, Func<string, TResponse>? decoder = null)
+        where TResponse : ResponseBase
+        where TError : ResponseBase
+        where TBaseRequest : RequestBase
+    {
+        try
+        {
+            if (request is null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            var client = _httpClientFactory.CreateClient();
+
+            client.BaseAddress = new Uri(request.BaseAddress ?? "");
+            if (request.HeaderParameters?.Any() == true)
+            {
+                for (var i = 0; i < request.HeaderParameters.Count; i++)
+                {
+                    client.DefaultRequestHeaders.TryAddWithoutValidation(request.HeaderParameters[i].Key, request.HeaderParameters[i].Value);
+                }
+            }
+
+            if (request.QueryParameters != null)
+            {
+                var queryParams = GetQueryParameters(request.QueryParameters);
+                request.Uri += "?" + queryParams;
+            }
+
+            var response = await client.PatchAsJsonAsync(request.Uri, request.Body);
+
+            var resString = await response.Content.ReadAsStringAsync();
+            _logService.AddServiceCallLog(request, response, resString);
+
+            TResponse result = null;
+            if (decoder != null)
+            {
+                result = decoder(resString);
+            }
+            else if (response.IsSuccessStatusCode)
+            {
+                result = await response.Content.ReadFromJsonAsync<TResponse>();
+            }
+
+            TError? errorResult = result as TError;
+            if (result is null)
+            {
+                errorResult = await response.Content.ReadFromJsonAsync<TError>();
+                if (errorResult is null)
+                {
+                    throw new Exception($"value is not instance of {nameof(TResponse)}");
+                }
+            }
+
+            if (response.StatusCode != System.Net.HttpStatusCode.OK && errorHandler is not null)
+            {
+                return await errorHandler(baseRequest, result, errorResult, (short)response.StatusCode);
+            }
+            result.StatusCode = (short)response.StatusCode;
+            return result;
+        }
+        catch (Exception exc)
+        {
+            _logger.LogError(exc, nameof(PostAsync));
+
+            throw;
+        }
+    }
+
+    public async Task<TResponse?> GetAsync<TBaseRequest, TResponse, TError>(HttpProviderRequest<dynamic>? request, TBaseRequest? baseRequest, Func<TBaseRequest?, TResponse?, TError?, short, Task<TResponse?>>? errorHandler, Func<string, TResponse>? decoder = null)
         where TResponse : ResponseBase
         where TError : ResponseBase
         where TBaseRequest : RequestBase
@@ -298,7 +368,7 @@ public class HttpProvider : IHttpProvider
         return await GetAsync<TBaseRequest, TResponse, TError, dynamic>(request, baseRequest, errorHandler, decoder);
     }
 
-    public async Task<TResponse?> GetAsync<TBaseRequest, TResponse, TError, TBody>(HttpProviderRequest<TBody>? request, TBaseRequest? baseRequest, Func<TBaseRequest?, TResponse?, TError?,short, Task<TResponse?>>? errorHandler, Func<string, TResponse>? decoder = null)
+    public async Task<TResponse?> GetAsync<TBaseRequest, TResponse, TError, TBody>(HttpProviderRequest<TBody>? request, TBaseRequest? baseRequest, Func<TBaseRequest?, TResponse?, TError?, short, Task<TResponse?>>? errorHandler, Func<string, TResponse>? decoder = null)
         where TResponse : ResponseBase
         where TError : ResponseBase
         where TBaseRequest : RequestBase
@@ -382,7 +452,7 @@ public class HttpProvider : IHttpProvider
     }
 
     private void AddServiceCallLog<TBody>(HttpProviderRequest<TBody> request, HttpResponseMessage response, string resString)
-    {   
+    {
         if (!string.IsNullOrEmpty(resString))
         {
             resString = Regex.Replace(resString, Constants.Pattern, Constants.Replaceformat);

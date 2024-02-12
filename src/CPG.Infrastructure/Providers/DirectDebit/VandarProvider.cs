@@ -7,6 +7,7 @@ using CPG.Domain.SharedKernel.Communication.DirectDebit;
 using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Show;
 using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Store;
 using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Token;
+using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Verify;
 using CPG.Domain.SharedKernel.Communication.DirectDebit.Vandar;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
 using CPG.Domain.SharedKernel.Helper;
@@ -153,6 +154,30 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
         };
     }
 
+    public async Task<VerifyResponse> VerifyAsync(VerifyRequest request)
+    {
+        GetDataFromJsonProvider(request.ProviderData);
+        var headers = await GetHeaders(request.AccessToken);
+
+        var data = await _httpProvider.PatchAsync<VerifyRequest, VandarVerifyResponse, VandarResponseBase, dynamic>
+            (new HttpProviderRequest<dynamic>
+            {
+                BaseAddress = "https://api.vandar.io/",
+                Uri = $"v3/business/{businessData}/subscription/authorization/{request.AuthorizationId}/verify",
+                HeaderParameters = headers,
+                Provider = Enums.ProviderType.Vandar,
+                Service = Enums.ServiceType.VandarVerify,
+            }, request, VerifyErrorHandler);
+
+        return new VerifyResponse
+        {
+            GrantStatus = data.GrantStatus,
+            GrantMessage = data.GrantMessage,
+            Status = data.Status,
+            StatusCode = data.StatusCode,            
+        };
+    }
+
     private static string CreateCallbackUrl(string url, string trackerId)
     {
         return $"{url}?track_id={trackerId}";
@@ -249,6 +274,34 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
         }
     }
 
+    private async Task<TResponse> VerifyErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest baseRequest, TResponse response, TError error, short statusCode)
+            where TResponse : VandarVerifyResponse
+            where TError : VandarResponseBase
+            where TBaseRequest : VerifyRequest
+    {
+        return error.StatusCode switch
+        {
+            0 => await GetToken(),
+            _ => await Retry()
+        };
+
+        async Task<TResponse> GetToken()
+        {
+            _cacheService.SetData<VandarVerifyResponse?>(tokenCacheKey, null);
+            return await GetTokenAsync(new TokenRequest { ProviderData = baseRequest.ProviderData }) as TResponse;
+        }
+
+        async Task<TResponse> Retry()
+        {
+            if (verifyFailCounter < serviceCallMaxTryCounter)
+            {
+                verifyFailCounter++;
+                return await VerifyAsync(baseRequest) as TResponse;
+            }
+            return await Task.FromResult(BaseErrorHandler<TResponse, TError, TBaseRequest>(error));
+        }
+    }
+
     private TResponse BaseErrorHandler<TResponse, TError, TBaseRequest>(VandarResponseBase error)
         where TResponse : ResponseBase
         where TError : VandarResponseBase
@@ -265,6 +318,4 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
 
         throw new Exception(GlobalResource.ProviderUnexpectedError);
     }
-
-
 }
