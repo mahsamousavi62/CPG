@@ -26,6 +26,7 @@ internal class DirectDebitGrantConfiguration : IEntityTypeConfiguration<DirectDe
         entity.Property(x => x.GrantToken).HasColumnType("varchar").HasMaxLength(255);
         entity.Property(x => x.AuthorizationId).HasColumnType("varchar").HasMaxLength(255);
         entity.Property(x => x.Status).HasColumnType("tinyint").IsRequired();
+        entity.Property(x => x.DurationPerMonth).HasColumnType("tinyint").IsRequired();
 
         entity.HasOne(x => x.Provider).WithMany(x => x.DirectDebitGrants).HasForeignKey(x => x.ProviderId);
     }

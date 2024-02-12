@@ -21,5 +21,6 @@ public class DirectDebitGrantReadModel
     public bool IsActive { get; set; }
     public DateTime CreationDate { get; set; }
     public DateTime? ModificationDate { get; set; }
+    public short DurationPerMonth { get; set; }
     public ProviderReadModel Provider { get; set; }
 }

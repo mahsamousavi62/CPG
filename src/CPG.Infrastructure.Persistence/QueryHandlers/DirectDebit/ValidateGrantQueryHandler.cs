@@ -52,6 +52,7 @@ public class ValidateGrantQueryHandler(IDirectDebitFactory directDebitFactory,
                 throw new TrackIdInvalidStatusException();
 
             var provider = directDebitGrant.Provider;
+            Domain.AggregateModels.BankAggregate.Bank bank = null;
             switch (provider.ProviderType)
             {
                 case ProviderType.Vandar:
@@ -81,7 +82,7 @@ public class ValidateGrantQueryHandler(IDirectDebitFactory directDebitFactory,
                         };
                         var result = await directDebitProvider.ShowAsync(showRequest);
 
-                        var bank = await _bankRepository.GetBySpecAsync(new BankByDirectDebitCodeSpec(result.GrantData.BankCode), cancellationToken);
+                        bank = await _bankRepository.GetBySpecAsync(new BankByDirectDebitCodeSpec(result.GrantData.BankCode), cancellationToken);
 
                         if (bank is null)
                         {
@@ -194,9 +195,15 @@ public class ValidateGrantQueryHandler(IDirectDebitFactory directDebitFactory,
                     }
 
             }
+
             return Result<ValidateGrantResponseViewModel>.SuccessResult(new ValidateGrantResponseViewModel
             {
-
+                BankLogo = bank?.LogoAddress,
+                BankName = bank?.Name,
+                AccountNumber = directDebitGrant.AccountNumber,
+                Status = directDebitGrant.Status,
+                MaxWithdrawalAmountPerDay = bank.DirectDebitSetting.MaxWithdrawalAmountPerDay,
+                DurationPerMonth = directDebitGrant.DurationPerMonth,
             });
         }
         catch (DomainException exc)

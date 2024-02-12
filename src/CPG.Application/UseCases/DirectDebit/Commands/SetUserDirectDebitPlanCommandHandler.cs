@@ -121,7 +121,7 @@ public class SetUserDirectDebitPlanCommandHandler(IDirectDebitFactory DirectDebi
 
             var directDebitGrant = DirectDebitGrant.Create(_user.UserId, bank.Id, null, request.model.PhoneNumber, 1000,
                 bank.DirectDebitSetting.MaxWithdrawalAmountPerDay, result.TrackerId, storeRequest.ExpirationDate, null,
-                provider.Id, result.Token, null, 0);
+                provider.Id, result.Token, null, 0, plan.DurationPerMonth);
 
             await _DirectDebitGrantRepository.AddAsync(directDebitGrant);
             await _DirectDebitGrantRepository.SaveChangesAsync();
