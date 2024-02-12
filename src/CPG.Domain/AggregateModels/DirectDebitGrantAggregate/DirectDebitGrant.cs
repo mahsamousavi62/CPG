@@ -1,6 +1,5 @@
 ﻿using CPG.Domain.AggregateModels.ProviderAggregate;
 using CPG.Domain.SeedWork;
-using CPG.Domain.SharedKernel;
 using System;
 using static CPG.Domain.SharedKernel.Enums;
 
@@ -21,6 +20,7 @@ public class DirectDebitGrant : AuditableEntity<long>, IAggregateRoot
     public string GrantToken { get; set; }
     public string AuthorizationId { get; set; }
     public DirectDebitGrantStatus Status { get; set; }
+    public short DurationPerMonth { get; set; }
     public Provider Provider { get; set; }
 
     public DirectDebitGrant()
@@ -30,7 +30,7 @@ public class DirectDebitGrant : AuditableEntity<long>, IAggregateRoot
 
     public DirectDebitGrant(long userId, int bankId, string accountNumber, string phoneNumber, int successTransactionCountLimitPerMonth,
         decimal amountLimitPerTransaction, string trackId, DateTime expirationDate, DateTime? revokeDateTime, long providerId, string grantToken,
-        string authorizationId, DirectDebitGrantStatus status)
+        string authorizationId, DirectDebitGrantStatus status, short durationPerMonth)
     {
         UserId = userId;
         BankId = bankId;
@@ -45,14 +45,16 @@ public class DirectDebitGrant : AuditableEntity<long>, IAggregateRoot
         GrantToken = grantToken;
         AuthorizationId = authorizationId;
         Status = status;
+        DurationPerMonth = durationPerMonth;
     }
 
     public static DirectDebitGrant Create(long userId, int bankId, string accountNumber, string phoneNumber, int successTransactionCountLimitPerMonth,
         decimal amountLimitPerTransaction, string trackId, DateTime expirationDate, DateTime? revokeDateTime, long providerId, string grantToken,
-        string authorizationId, DirectDebitGrantStatus status)
+        string authorizationId, DirectDebitGrantStatus status, short durationPerMonth)
     {
         var directDebitGrant = new DirectDebitGrant(userId, bankId, accountNumber, phoneNumber, successTransactionCountLimitPerMonth,
-            amountLimitPerTransaction, trackId, expirationDate, revokeDateTime, providerId, grantToken, authorizationId, status);
+            amountLimitPerTransaction, trackId, expirationDate, revokeDateTime, providerId, grantToken, authorizationId, status,
+            durationPerMonth);
         directDebitGrant.IsActive = true;
         return directDebitGrant;
     }
