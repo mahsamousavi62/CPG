@@ -37,6 +37,8 @@ public class ValidateGrantQueryHandler(IDirectDebitFactory directDebitFactory,
     private readonly IAggregateRepository<Domain.AggregateModels.BankAggregate.Bank> _bankRepository = bankRepository;
     private readonly IAuthenticationService _authenticationService = authenticationService;
     private readonly IAggregateRepository<Domain.AggregateModels.ProviderAggregate.Provider> _providerRepository = providerRepository;
+    private const string voided = "باطل";
+    private const string activated = "تایید";
 
     public async Task<Result<ValidateGrantResponseViewModel>> Handle(ValidateGrantQuery request, CancellationToken cancellationToken)
     {
@@ -123,7 +125,7 @@ public class ValidateGrantQueryHandler(IDirectDebitFactory directDebitFactory,
                             }
                             else
                             {
-                                if (result.GrantMessage.Contains("مجوز باطل شده است"))
+                                if (result.GrantMessage.Contains(voided))
                                 {
                                     directDebitGrant.Status = DirectDebitGrantStatus.Voided;
                                 }
@@ -168,6 +170,24 @@ public class ValidateGrantQueryHandler(IDirectDebitFactory directDebitFactory,
                                 ProviderData = provider.ProviderData,
                             };
                             var verifyResult = await directDebitProvider.VerifyAsync(verifyRequest);
+
+                            if (verifyResult.GrantStatus == 1)
+                            {
+                                directDebitGrant.Status = DirectDebitGrantStatus.Activated;
+                            }
+                            else if (verifyResult.GrantStatus == 0)
+                            {
+                                if (verifyResult.GrantMessage.Contains(voided))
+                                {
+                                    directDebitGrant.Status = DirectDebitGrantStatus.Voided;
+                                }
+                                else if (verifyResult.GrantMessage.Contains(activated))
+                                {
+                                    directDebitGrant.Status = DirectDebitGrantStatus.Activated;
+                                }
+                            }
+                            await _directDebitGrantRepository.UpdateAsync(directDebitGrant);
+                            await _directDebitGrantRepository.SaveChangesAsync();
                         }
 
                         break;
