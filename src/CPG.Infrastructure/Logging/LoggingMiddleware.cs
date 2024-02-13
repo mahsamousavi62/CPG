@@ -1,5 +1,4 @@
 ﻿using CPG.Domain.SharedKernel;
-using CPG.Domain.SharedKernel.Communication;
 using CPG.Domain.SharedKernel.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -76,7 +75,7 @@ public class LoggingMiddleware(RequestDelegate next, ILoggerFactory loggerFactor
 
             var originalBodyStream = httpContext.Response.Body;
 
-            using (MemoryStream responseBody = new ())
+            using (MemoryStream responseBody = new())
             {
                 httpContext.Response.Body = responseBody;
 
