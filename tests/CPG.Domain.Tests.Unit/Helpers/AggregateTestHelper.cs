@@ -34,7 +34,7 @@ public class AggregateTestHelper : TestBase
 
         DirectoryInfo directory = new (CurrentDirectory);
 
-        var filePath = Path.Combine(directory.FullName,"Resource","test.jpg");
+        var filePath = Path.Combine(directory.FullName,"Resource","Test.jpg");
 
         using (var stream = File.OpenRead(filePath))
         {
