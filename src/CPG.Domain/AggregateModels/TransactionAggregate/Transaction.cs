@@ -23,7 +23,9 @@ public class Transaction : AuditableEntity<long>, IAggregateRoot
 
     public long PaymentRquestId { get; set; }
 
-    public long IPGTransactionId { get; set; }
+    public long? IPGTransactionId { get; set; }
+
+    public long? DirectDebitTransactionId { get; set; }
 
     public Enums.TransactionType TransactionMethodType { get; set; }
 
@@ -43,6 +45,8 @@ public class Transaction : AuditableEntity<long>, IAggregateRoot
 
     public IPGTransaction IPGTransaction { get; set; }
 
+    public DirectDebitTransaction DirectDebitTransaction { get; set; }
+
     public CompanyDeposit DestinationDeposit { get; set; }
 
     public static Transaction Create(CreateTransactionModel model)
@@ -52,11 +56,22 @@ public class Transaction : AuditableEntity<long>, IAggregateRoot
                                                   model.DestinationDepositId, model.PaymentRequest.Amount,
                                                   model.PaymentRequest.Application.Id, Enums.TransactionStatus.InPrgress);
 
-        var ipgTransaction = IPGTransaction.Create(model.TrackId, Enums.IPGTransactionStatus.WaitingForPspResponse,
+        switch (model.TransactionMethodType)
+        {
+            case Enums.TransactionType.IPG:
+                {
+                    var ipgTransaction = IPGTransaction.Create(model.TrackId, Enums.IPGTransactionStatus.WaitingForPspResponse,
                                                    model.CompanyIPG.Id, model.Token, model.IpgVerificationTimeLimit);
 
-        transaction.IPGTransaction = ipgTransaction;
-
+                    transaction.IPGTransaction = ipgTransaction;
+                    break;
+                }
+            case Enums.TransactionType.DirectDebit:
+                break;
+            default:
+                break;
+        }
+        
         return transaction;
     }
 }

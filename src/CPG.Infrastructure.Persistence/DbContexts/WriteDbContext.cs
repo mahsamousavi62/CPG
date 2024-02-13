@@ -63,6 +63,7 @@ public class WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator 
             .ApplyConfiguration(new BankDirectDebitSettingConfiguration())
             .ApplyConfiguration(new DirectDebitGrantConfiguration())
             .ApplyConfiguration(new DirectDebitPlanConfiguration())
+            .ApplyConfiguration(new DirectDebitTransactionConfiguration())
         ;
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
