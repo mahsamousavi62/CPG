@@ -642,4 +642,7 @@
   <data name="PlanNotFound" xml:space="preserve">
     <value>Plan with Id {0} has not been found</value>
   </data>
+  <data name="InvalidRefreshToken" xml:space="preserve">
+    <value>RefreshToken is invalid</value>
+  </data>
 </root>

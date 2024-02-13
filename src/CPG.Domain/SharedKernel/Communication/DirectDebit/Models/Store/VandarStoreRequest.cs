@@ -1,31 +1,32 @@
 ﻿using CPG.Domain.SharedKernel.Communication.DirectDebit.Vandar;
+using Newtonsoft.Json;
 using System.Text.Json.Serialization;
 
 namespace CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Store;
 
 public class VandarStoreRequest : VandarRequestBase
 {
-    [JsonPropertyName("bank_code")]
+    [JsonProperty("bank_code")]
     public string BankCode { get; set; }
 
-    [JsonPropertyName("mobile")]
+    [JsonProperty("mobile")]
     public string Mobile { get; set; }
 
-    [JsonPropertyName("callback_url")]
+    [JsonProperty("callback_url")]
     public string CallbackUrl { get; set; }
 
-    [JsonPropertyName("count")]
+    [JsonProperty("count")]
     public int Count { get; set; }
 
-    [JsonPropertyName("limit")]
+    [JsonProperty("limit")]
     public decimal Limit { get; set; }
 
-    [JsonPropertyName("expiration_date")]
+    [JsonProperty("expiration_date")]
     public string ExpirationDate { get; set; }
 
-    [JsonPropertyName("name")]
+    [JsonProperty("name")]
     public string Name { get; set; }
 
-    [JsonPropertyName("national_code")]
+    [JsonProperty("national_code")]
     public string NationalCode { get; set; }
 }

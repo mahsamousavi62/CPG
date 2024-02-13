@@ -663,4 +663,7 @@
   <data name="PlanNotFound" xml:space="preserve">
     <value>طرح با شناسه {0} یافت نشد</value>
   </data>
+  <data name="InvalidRefreshToken" xml:space="preserve">
+    <value>مقدار RefreshToken نامعتبر است</value>
+  </data>
 </root>
