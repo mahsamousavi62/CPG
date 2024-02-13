@@ -32,7 +32,7 @@ public class UnhandledExceptionBehaviour<TRequest, TResponse>(ILogger<TRequest> 
                 StackTrace = ex.StackTrace,
                 ResponseBody = ex.Message,
                 IsSuccess = false,
-                ErrorCode = hasCode ? (ex as dynamic)?.Code : 0
+                ErrorCode = hasCode ? (ex as dynamic)?.Code : string.Empty,
             };
 
             _logger.LogError(ex, "Request: Unhandled Exception for Request {Name} {@log}", requestName, log);
