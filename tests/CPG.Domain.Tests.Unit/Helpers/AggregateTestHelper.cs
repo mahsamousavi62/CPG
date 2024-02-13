@@ -25,7 +25,7 @@ public class AggregateTestHelper : TestBase
     protected string GetProviderData => CreateString();
     protected static PaymentMethodType[] GetPaymentMethods => Enum.GetValues(typeof(PaymentMethodType)).Cast<PaymentMethodType>().ToArray();
 
-    protected string CurrentDirectory = AppDomain.CurrentDomain.BaseDirectory;
+    protected string CurrentDirectory = AppContext.BaseDirectory;
 
     protected FormFile ReadFile()
     {
