@@ -308,7 +308,7 @@ public class ReadModelQueries
         {
             Id = entity.Id,
             CompanyId = entity.CompanyId,
-            CompanyName = entity.Company.PersianName,
+            //CompanyName = entity.Company.PersianName,
             FirstName = entity.FirstName,
             IDPId = entity.IDPId,
             IsActive = entity.IsActive,
