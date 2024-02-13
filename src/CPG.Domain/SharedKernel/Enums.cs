@@ -53,7 +53,7 @@ public class Enums
         Vandar = 1,
         AsanPardakht = 2,
         Sep = 3,
-        Pec=4,
+        Pec = 4,
     }
 
     public enum ServiceType : byte
@@ -64,7 +64,11 @@ public class Enums
         SepToken = 4,
         SepVerify = 5,
         PecToken = 6,
-        PecVerify=7,
+        PecVerify = 7,
+        VandarToken = 8,
+        VandarShow = 9,
+        VandarStore = 10,
+        VandarVerify = 11,
     }
 
     public enum TransactionType : byte
@@ -121,7 +125,7 @@ public class Enums
         Provider = 2,
         User = 3,
         Develop = 4,
-    }  
+    }
 
     public enum ProviderLogType { }
 
@@ -143,6 +147,17 @@ public class Enums
         CardInfoCOnfirmation = 1,
         SendOtpCode = 2,
         CheckMobileAndDepositOwnershipMatching = 3
+    }
+
+    public enum DirectDebitGrantStatus
+    {
+        Draft = 0,
+        WaitingForConfirmation = 1,
+        Activated = 2,
+        Voided = 3,
+        CanceledByUser = 4,
+        Removed = 5,
+        Expired = 6,
     }
 }
 

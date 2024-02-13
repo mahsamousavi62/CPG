@@ -156,6 +156,4 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
             return Result<ValidateTokenResponseViewModel>.Failure(new Error("1008000", GlobalResource.GetPaymentTicketUnexpectedError));
         }
     }
-
-
 }

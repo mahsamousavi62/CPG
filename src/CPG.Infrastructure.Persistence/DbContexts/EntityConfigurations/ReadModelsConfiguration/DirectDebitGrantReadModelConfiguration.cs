@@ -24,6 +24,7 @@ internal class DirectDebitGrantReadModelConfiguration : IEntityTypeConfiguration
         readModel.Property(x => x.GrantToken);
         readModel.Property(x => x.AuthorizationId);
         readModel.Property(x => x.Status);
+        readModel.Property(x => x.DurationPerMonth);
         readModel.Property(x => x.IsActive);
         readModel.Property(x => x.CreationDate);
         readModel.Property(x => x.ModificationDate);

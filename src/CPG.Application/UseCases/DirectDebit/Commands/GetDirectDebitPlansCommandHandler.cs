@@ -47,6 +47,7 @@ public class GetDirectDebitPlansCommandHandler(IDirectDebitFactory directDebitFa
                 Bank = new BankDataViewModel { Id = bank.Id, Name = bank.Name },
                 BankPlans = plans?.Select(t => new BankPlanViewModel
                 {
+                    PlanId = t.Id,
                     DurationPerMonth = t.DurationPerMonth,
                     MaxWithdrawalAmountPerDay = bank.DirectDebitSetting.MaxWithdrawalAmountPerDay
                 }).ToList(),
@@ -56,7 +57,7 @@ public class GetDirectDebitPlansCommandHandler(IDirectDebitFactory directDebitFa
                     CraetionDateTime = t.CreationDate,
                     AccountNumber = t.AccountNumber,
                     AmountLimitPerTransaction = t.AmountLimitPerTransaction,
-                    RemainingDays = (DateTime.Now - t.CreationDate).Days
+                    RemainingDays = (t.ExpirationDate - DateTime.Now).Days
                 }).ToList(),
             };
 
