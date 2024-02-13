@@ -1,5 +1,6 @@
 ﻿using CPG.Application.UseCases.Banks.ViewModels;
 using CPG.Application.UseCases.DirectDebit.Query;
+using CPG.Application.UseCases.DirectDebit.ViewModels;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Minio;
 using CPG.Infrastructure.Persistence.DbContexts;
@@ -12,12 +13,12 @@ using System.Threading.Tasks;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.DirectDebit;
 
-public class GetAvailableBankListQueryHandler(ReadDbContext contebankt, IMinioProvider minioProvider) : IRequestHandler<GetAvailableBankListQuery, Result<IReadOnlyCollection<BankViewModel>>>
+public class GetAvailableBankListQueryHandler(ReadDbContext contebankt, IMinioProvider minioProvider) : IRequestHandler<GetAvailableBankListQuery, Result<IReadOnlyCollection<AvailableBankViewModel>>>
 {
     private readonly ReadDbContext _contebankt = contebankt;
     private readonly IMinioProvider _minioProvider = minioProvider;
 
-    public async Task<Result<IReadOnlyCollection<BankViewModel>>> Handle(GetAvailableBankListQuery request, CancellationToken cancellationToken)
+    public async Task<Result<IReadOnlyCollection<AvailableBankViewModel>>> Handle(GetAvailableBankListQuery request, CancellationToken cancellationToken)
     {
         var banks = await _contebankt.BankReadModels.Where(t => t.IsActive && t.HasDirectDebitFeature == true && t.DirectDebitSetting.Provider.IsActive &&
             t.DirectDebitSetting.Provider.PaymentMethods.Any(q => q.MethodType == Enums.PaymentMethodType.DirectDebit) && t.DirectDebitSetting.IsActive)
@@ -27,19 +28,14 @@ public class GetAvailableBankListQueryHandler(ReadDbContext contebankt, IMinioPr
             .ToListAsync(cancellationToken);
 
         var bankViewModels = await Task.WhenAll(
-            banks.Select(async bank => new BankViewModel
+            banks.Select(async bank => new AvailableBankViewModel
             {
                 Id = bank.Id,
                 Name = bank.Name,
-                IbanPrefix = bank.IbanPrefix,
                 Logo = !string.IsNullOrEmpty(bank.LogoAddress) ? await _minioProvider.PresignedGetObject(bank.LogoAddress) : "",
-                IsActive = bank.IsActive,
-                CreationDate = bank.CreationDate,
-                ModificationDate = bank.ModificationDate,
-                HasDirectDebitFeature = bank.HasDirectDebitFeature,
             }))
             .ConfigureAwait(false);
 
-        return Result<IReadOnlyCollection<BankViewModel>>.SuccessResult(bankViewModels);
+        return Result<IReadOnlyCollection<AvailableBankViewModel>>.SuccessResult(bankViewModels);
     }
 }
