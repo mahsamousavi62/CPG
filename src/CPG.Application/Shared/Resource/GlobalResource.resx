@@ -181,7 +181,7 @@
     <value>Application with Id {0} has not been found.</value>
   </data>
   <data name="BankNotFound" xml:space="preserve">
-    <value>Bank with Id {0} has not been found.</value>
+    <value>Bank with Id {0} has not been found</value>
   </data>
   <data name="ProviderNotFound" xml:space="preserve">
     <value>Provider with Id {0} has not been found.</value>
@@ -638,5 +638,11 @@
   </data>
   <data name="TwoYears" xml:space="preserve">
     <value>TwoYears</value>
+  </data>
+  <data name="PlanNotFound" xml:space="preserve">
+    <value>Plan with Id {0} has not been found</value>
+  </data>
+  <data name="InvalidRefreshToken" xml:space="preserve">
+    <value>RefreshToken is invalid</value>
   </data>
 </root>

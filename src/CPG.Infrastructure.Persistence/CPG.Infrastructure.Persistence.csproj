@@ -37,8 +37,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="GraphQL\Types\CompanyDeposit\" />
-    <Folder Include="GraphQL\Types\CompanyIPG\" />
     <Folder Include="GraphQL\Types\Application\" />
     <Folder Include="GraphQL\Types\Provider\" />
   </ItemGroup>

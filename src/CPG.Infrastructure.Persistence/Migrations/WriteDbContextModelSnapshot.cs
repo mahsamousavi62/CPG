@@ -60,9 +60,9 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<bool?>("IsDefaultForDD")
+                    b.Property<bool?>("IsDefaultForDirectDebit")
                         .HasColumnType("bit")
-                        .HasColumnName("IsDefaultForDD");
+                        .HasColumnName("IsDefaultForDirectDebit");
 
                     b.Property<DateTime?>("ModificationDate")
                         .HasColumnType("datetime2");
@@ -581,6 +581,9 @@ namespace CPG.Infrastructure.Persistence.Migrations
 
                     b.Property<long>("CreationUserId")
                         .HasColumnType("bigint");
+
+                    b.Property<byte>("DurationPerMonth")
+                        .HasColumnType("tinyint");
 
                     b.Property<DateTime>("ExpirationDate")
                         .HasColumnType("datetime2");

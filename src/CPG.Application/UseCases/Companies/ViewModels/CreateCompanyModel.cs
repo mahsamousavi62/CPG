@@ -29,5 +29,5 @@ public class CreateCompanyModel
     [Required]
     public required IFormFile File { get; set; }
 
-    public CompanyShaparakSettingModel ShaparakSetting { get; set; }
+    public CompanyShaparakSettingModel? ShaparakSetting { get; set; }
 }

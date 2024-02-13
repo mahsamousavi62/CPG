@@ -12,7 +12,7 @@ public class CompanyDepositReadModel
     public string Iban { get; set; }
     public string AccountNumber { get; set; }
     public long CompanyId { get; set; }
-    public bool? IsDefaultForDD { get; set; }
+    public bool? IsDefaultForDirectDebit { get; set; }
     public bool IsActive { get; set; }
     public DateTime CreationDate { get; set; }
     public DateTime? ModificationDate { get; set; }
@@ -20,4 +20,7 @@ public class CompanyDepositReadModel
     public CompanyReadModel Company { get; set; }
     public List<CompanyIPGDepositReadModel> CompanyIPGDeposits { get; set; }
     public List<TransactionReadModel> Transactions { get; set; }
+    public string BankName { get; set; }
+    public string CompanyName { get; set; }
+    public string BankLogo { get; set; }
 }

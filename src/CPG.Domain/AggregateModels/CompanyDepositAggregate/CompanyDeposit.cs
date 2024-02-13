@@ -18,7 +18,7 @@ public class CompanyDeposit : AuditableEntity<long>, IAggregateRoot
     public string Iban { get; set; }
     public string AccountNumber { get; set; }
     public long CompanyId { get; set; }
-    public bool? IsDefaultForDD { get; set; }
+    public bool? IsDefaultForDirectDebit { get; set; }
 
     public Company Company { get; set; }
     public Bank Bank { get; set; }
@@ -30,7 +30,7 @@ public class CompanyDeposit : AuditableEntity<long>, IAggregateRoot
 
     }
 
-    public CompanyDeposit(PersianName name, Iban iban, int bankId, string accountNumber, long companyId, bool isDefaultForDD)
+    public CompanyDeposit(PersianName name, Iban iban, int bankId, string accountNumber, long companyId, bool isDefaultForDirectDebit)
     {
         Guard.Against.NullOrEmpty(accountNumber);
 
@@ -39,7 +39,7 @@ public class CompanyDeposit : AuditableEntity<long>, IAggregateRoot
         BankId = bankId;
         AccountNumber = accountNumber;
         CompanyId = companyId;
-        IsDefaultForDD = isDefaultForDD;
+        IsDefaultForDirectDebit = isDefaultForDirectDebit;
         IsActive = true;
     }
 

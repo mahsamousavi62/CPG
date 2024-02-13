@@ -178,7 +178,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bank with Id {0} has not been found..
+        ///   Looks up a localized string similar to Bank with Id {0} has not been found.
         /// </summary>
         public static string BankNotFound {
             get {
@@ -754,6 +754,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to RefreshToken is invalid.
+        /// </summary>
+        public static string InvalidRefreshToken {
+            get {
+                return ResourceManager.GetString("InvalidRefreshToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to IpgBaseUrl.
         /// </summary>
         public static string IpgBaseUrl {
@@ -1200,6 +1209,15 @@ namespace CPG.Application.Shared.Resource {
         public static string PersianName {
             get {
                 return ResourceManager.GetString("PersianName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Plan with Id {0} has not been found.
+        /// </summary>
+        public static string PlanNotFound {
+            get {
+                return ResourceManager.GetString("PlanNotFound", resourceCulture);
             }
         }
         

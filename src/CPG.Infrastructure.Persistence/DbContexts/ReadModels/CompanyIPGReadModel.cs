@@ -18,5 +18,11 @@ public class CompanyIPGReadModel
     public ProviderReadModel Provider { get; set; }
     public IPGTypeReadModel IPGType { get; set; }
     public ICollection<CompanyIPGDepositReadModel> CompanyIPGDeposits { get; set; }
+    public CompanyIPGDepositReadModel DefaultDeposit { get; set; }
     public ICollection<IPGTransactionReadModel> IPGTransactions { get; set; }
+    public string IPGTypeLogo { get; set; }
+    public string IPGTypeName { get; set; }
+    public string ProviderName { get; set; }
+
+
 }
