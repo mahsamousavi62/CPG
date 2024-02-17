@@ -37,7 +37,8 @@ public class Enums
     {
         InternetPaymentGateway = 1,
         DirectDebit = 2,
-        PaymentReceipt = 3
+        PaymentReceipt = 3,
+        CharismaCard=4,
     }
 
     public enum UploadFromEntityType
