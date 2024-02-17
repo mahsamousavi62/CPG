@@ -15,8 +15,7 @@ namespace CPG.Infrastructure.Persistence.Migrations
                 name: "DirectDebitTransactionId",
                 table: "Transaction",
                 type: "bigint",
-                nullable: false,
-                defaultValue: 0L);
+                nullable: true);
 
             migrationBuilder.CreateTable(
                 name: "DirectDebitTransaction",
@@ -43,14 +42,14 @@ namespace CPG.Infrastructure.Persistence.Migrations
                         column: x => x.DirectDebitGrantId,
                         principalTable: "DirectDebitGrant",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Transaction_DirectDebitTransactionId",
                 table: "Transaction",
                 column: "DirectDebitTransactionId",
-                unique: true);
+                unique: false);
 
             migrationBuilder.CreateIndex(
                 name: "IX_DirectDebitTransaction_DirectDebitGrantId",
