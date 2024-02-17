@@ -17,8 +17,8 @@ namespace CPG.API.Controllers.v1
             => await Mediator.Send(new CreateDirectDebitRequestCommand(request));
 
         [HttpGet("GetAvailableBankList")]
-        [ProducesResponseType(typeof(Result<IReadOnlyCollection<BankViewModel>>), 200)]
-        public async Task<Result<IReadOnlyCollection<BankViewModel>>> GetAvailableBankList()
+        [ProducesResponseType(typeof(Result<IReadOnlyCollection<AvailableBankViewModel>>), 200)]
+        public async Task<Result<IReadOnlyCollection<AvailableBankViewModel>>> GetAvailableBankList()
         {
             return await Mediator.Send(new GetAvailableBankListQuery());
         }
