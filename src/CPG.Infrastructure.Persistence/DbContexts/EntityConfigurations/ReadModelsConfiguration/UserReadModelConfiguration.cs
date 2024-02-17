@@ -26,7 +26,6 @@ public class UserReadModelConfiguration : IEntityTypeConfiguration<UserReadModel
         readModel.Property(x => x.LastUpdateFromIDP).HasColumnName("LastUpdateFromIDP");
         readModel.Property(x => x.CreationDate).HasColumnName("CreationDate");
         readModel.Property(x => x.ModificationDate).HasColumnName("ModificationDate");
-        readModel.Property(x => x.CompanyName).HasColumnName("CompanyName");
         readModel.HasMany(x => x.UserRoles).WithOne(x => x.User).HasForeignKey(x => x.UserId);
         readModel.HasOne(x => x.Company)
             .WithMany(x => x.Users)
