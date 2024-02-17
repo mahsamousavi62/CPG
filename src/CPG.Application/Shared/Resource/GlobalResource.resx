@@ -645,4 +645,7 @@
   <data name="InvalidRefreshToken" xml:space="preserve">
     <value>RefreshToken is invalid</value>
   </data>
+  <data name="MorethanOneDefaultDepositFoundException" xml:space="preserve">
+    <value>MorethanOneDefaultDepositFoundException</value>
+  </data>
 </root>

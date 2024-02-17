@@ -55,8 +55,8 @@ public class CompanyDepositController : ApiBaseController
     public async Task<Result<Unit>> UdpateCompanyDeposit(UpdateCompanyDepositViewModel model)
         => await Mediator.Send(new UpdateCompanyDepositCommand(model));
     
-    [HttpPost("SetAsDefaultForDD")]
-    public async Task<Result<bool>> SetAsDefaultForDD(SetAsDefaultForDDViewModel model)
+    [HttpPost("SetAsDefaultForDirecetDebit")]
+    public async Task<Result<bool>> SetAsDefaultForDirecetDebit(SetAsDefaultForDDViewModel model)
     {
         return await Mediator.Send(new SetAsDefaultForDDCommand(model));
     }
