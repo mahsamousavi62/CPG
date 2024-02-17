@@ -101,6 +101,12 @@ public class Enums
         SettlementFailed = 4,
     }
 
+    public enum DirectDebitTransactionStatus : byte
+    {
+        Waiting = 0,
+        TransactionSucceeded = 1,
+    }
+
     public enum PaymentStatus
     {
         Draft = 0,

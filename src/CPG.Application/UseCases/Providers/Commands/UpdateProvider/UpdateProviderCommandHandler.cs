@@ -30,7 +30,7 @@ public class UpdateProviderCommandHandler(IAggregateRepository<Provider> provide
             var (provider, persianName, englishName) = await Validate(request.Model);
             Logo logo = new(request.Model.File, Enums.UploadFromEntityType.Provider.ToString(), _minioProvider);
 
-             Provider.Update(provider, persianName, englishName, request.Model.ProviderType, logo, request.Model.ProviderData, request.Model.MethodTypes);
+             Provider.Update(provider, persianName, englishName, logo, request.Model.ProviderData, request.Model.MethodTypes);
 
             await _providerRepository.UpdateAsync(provider, cancellationToken);
             await _providerRepository.SaveChangesAsync(cancellationToken);
@@ -70,11 +70,6 @@ public class UpdateProviderCommandHandler(IAggregateRepository<Provider> provide
         if (sameEnglishNameProvider != null)
             throw new DuplicateProviderEnglishNameException(model.EnglishName);
 
-
-        var sameProvidertype = await _providerRepository.GetBySpecAsync(new ProviderByProviderTypeUpdateMode(model.ProviderType,model.Id));
-        if (sameProvidertype != null)
-            throw new DuplicateProviderTypeException(model.ProviderType);
-    
         return (provider, persianName, englishName);
 
     }

@@ -44,8 +44,8 @@ public class ProviderController : ApiBaseController
     public async Task<Result<Unit>> UpdateProvider([FromForm] UpdateProviderModel model)
     {
         UpdateProviderViewModel updateProviderViewModel = new(model.Id,model.PersianName, model.EnglishName,
-                                                             model.ProviderType, model.ProviderData,
-                                                             new FormFileProxy(model.File), model.MethodTypes);
+                                                              model.ProviderData,new FormFileProxy(model.File), 
+                                                              model.MethodTypes);
 
         return await Mediator.Send(new UpdateProviderCommand(updateProviderViewModel));
     }

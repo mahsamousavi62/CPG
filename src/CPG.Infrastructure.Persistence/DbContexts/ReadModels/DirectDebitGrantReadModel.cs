@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace CPG.Infrastructure.Persistence.DbContexts.ReadModels;
 
@@ -23,4 +24,5 @@ public class DirectDebitGrantReadModel
     public DateTime? ModificationDate { get; set; }
     public short DurationPerMonth { get; set; }
     public ProviderReadModel Provider { get; set; }
+    public List<DirectDebitTransactionReadModel> DirectDebitTransactions { get; set; }
 }

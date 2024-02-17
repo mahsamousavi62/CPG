@@ -29,11 +29,7 @@ public class UpdateCompanyIPGCommandHandler(IAggregateRepository<CompanyIPG> com
             CompanyIPG companyIpg = await Validate(request);
 
             var companyIPGDeposits = request.Model.CompanyIPGDeposits.Select(t => new CompanyIPGDeposit(t.DepositId, t.IsDefault)).ToArray();
-            CompanyIPG.Update(companyIpg, request.Model.CompanyId,
-                                                request.Model.ProviderId,
-                                                request.Model.IPGTypeId,
-                                                request.Model.ProviderData,
-                                                companyIPGDeposits);
+            CompanyIPG.Update(companyIpg, request.Model.ProviderData,companyIPGDeposits);
 
             await _aggregateRepository.UpdateAsync(companyIpg, cancellationToken);
             await _aggregateRepository.SaveChangesAsync(cancellationToken);
@@ -63,13 +59,17 @@ public class UpdateCompanyIPGCommandHandler(IAggregateRepository<CompanyIPG> com
         var depositsIds = request.Model.CompanyIPGDeposits.Select(t => t.DepositId).ToList();
         var deposits = await _depositRepository.ListAsync(new CompanyDepositsByIdList(depositsIds));
 
+        var defaultDepositsCount = request.Model.CompanyIPGDeposits.Count(t => t.IsDefault);
+        if (defaultDepositsCount > 1)
+            throw new MorethanOneDefaultDepositFoundException();
+
         var notFoundDeposits = depositsIds.Where(t => !deposits.Select(d => d.Id).Contains(t));
         if (notFoundDeposits?.Any() is true)
             throw new NotFoundDepositException(string.Join(',', notFoundDeposits));
 
-        var invalidDeposits = deposits.Where(t => t.CompanyId != request.Model.CompanyId).Select(t => t.Id);
+        var invalidDeposits = deposits.Where(t => t.CompanyId != companyIpg.CompanyId).Select(t => t.Id);
         if (invalidDeposits?.Any() is true)
-            throw new InvalidDepositsException(string.Join(',', invalidDeposits), request.Model.CompanyId);
+            throw new InvalidDepositsException(string.Join(',', invalidDeposits), companyIpg.CompanyId);
         return companyIpg;
     }
 }
