@@ -1,6 +1,8 @@
 ﻿using CPG.Domain.AggregateModels.ProviderAggregate;
+using CPG.Domain.AggregateModels.TransactionAggregate;
 using CPG.Domain.SeedWork;
 using System;
+using System.Collections.Generic;
 using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Domain.AggregateModels.DirectDebitGrantAggregate;
@@ -22,6 +24,7 @@ public class DirectDebitGrant : AuditableEntity<long>, IAggregateRoot
     public DirectDebitGrantStatus Status { get; set; }
     public short DurationPerMonth { get; set; }
     public Provider Provider { get; set; }
+    public List<DirectDebitTransaction> DirectDebitTransactions { get; set; }
 
     public DirectDebitGrant()
     {

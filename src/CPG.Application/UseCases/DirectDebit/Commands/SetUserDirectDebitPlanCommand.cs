@@ -4,7 +4,7 @@ using MediatR;
 
 namespace CPG.Application.UseCases.DirectDebit.Commands;
 
-public class SetUserDirectDebitPlanCommand(SetUserDirectDebitPlanViewModel model) : IRequest<Result<string>>
+public class ConfirmGrantCommand(ConfirmGrantViewModel model) : IRequest<Result<ConfirmGrantResponseViewModel>>
 {
-    public SetUserDirectDebitPlanViewModel model { get; set; } = model;
+    public ConfirmGrantViewModel model { get; set; } = model;
 }

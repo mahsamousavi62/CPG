@@ -1,6 +1,6 @@
 ﻿namespace CPG.Application.UseCases.DirectDebit.ViewModels;
 
-public class SetUserDirectDebitPlanViewModel
+public class ConfirmGrantViewModel
 {
     public int BankId { get; set; }
     public int PlanId { get; set; }
