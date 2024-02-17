@@ -53,8 +53,7 @@ public class CompanyIPGController : ApiBaseController
     public async Task<Result<Unit>> UpdateCompanyIPG(UpdateCompanyIPGModel model)
     {
         var createIpgDepositViewModels = model.CompanyIPGDeposits.Select(t => new CreateCompanyIPGDepositViewModel { DepositId = t.DepositId, IsDefault = t.IsDefault }).ToList();
-        var createViewModel = new UpdateCompanyIPGViewModel(model.Id, model.CompanyId, model.ProviderId, model.IPGTypeId,
-            model.ProviderData, createIpgDepositViewModels);
+        var createViewModel = new UpdateCompanyIPGViewModel(model.Id,model.ProviderData, createIpgDepositViewModels);
 
         return await Mediator.Send(new UpdateCompanyIPGCommand(createViewModel));
     }

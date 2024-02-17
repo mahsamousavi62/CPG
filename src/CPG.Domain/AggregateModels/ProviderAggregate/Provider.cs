@@ -44,12 +44,11 @@ public class Provider : AuditableEntity<long>, IAggregateRoot
         return provider;
     }
 
-    public static void Update(Provider provider,PersianName persianName, EnglishName englishName, ProviderType providerType,
+    public static void Update(Provider provider,PersianName persianName, EnglishName englishName,
         Logo logo, string providerData, Enums.PaymentMethodType[] details)
     {
         provider.PersianName = persianName.Value;
         provider.EnglishName = englishName.Value;
-        provider.ProviderType  = providerType;
         provider.ProviderData = providerData; 
         provider.Logo = logo.Value;
 

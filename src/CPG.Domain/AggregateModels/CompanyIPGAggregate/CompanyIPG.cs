@@ -19,7 +19,7 @@ namespace CPG.Domain.AggregateModels.CompanyIPGAggregate
         {
             CompanyId = companyId;
             ProviderId = providerId;
-            IPGTypeId = ipgTypeId;            
+            IPGTypeId = ipgTypeId;
             ProviderData = providerData;
             IsActive = true;
         }
@@ -42,13 +42,10 @@ namespace CPG.Domain.AggregateModels.CompanyIPGAggregate
             return companyIpg;
         }
 
-        public static void Update(CompanyIPG companyIpg, long companyId, long providerId, long iPGTypeId, string providerData,
+        public static void Update(CompanyIPG companyIpg, string providerData,
             CompanyIPGDeposit[] details)
         {
-            companyIpg.CompanyId=companyId;
-            companyIpg.ProviderId=providerId;
-            companyIpg.ProviderId = providerId;
-            companyIpg.IPGTypeId=iPGTypeId;
+            companyIpg.ProviderData = providerData;
 
             foreach (var newItem in details)
             {
