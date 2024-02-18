@@ -27,6 +27,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.WebUtilities;
 using CPG.Application.Shared.Resource;
+using CPG.Application.UseCases.PaymentRequests.ViewModels;
 
 namespace CPG.Infrastructure.Providers.NeoBank;
 
@@ -38,7 +39,7 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
     private readonly IAuthService authService = authService;
     private readonly IHttpContextAccessor httpContextAccessor = httpContextAccessor;
 
-    public async Task<ResultData<UserDepositBalanceResponse>> GetUserDepositBalance()
+    public async Task<Result<UserDepositBalanceResponse>> GetUserDepositBalance()
     {
         var neobankConfig = configuration.GetSection("Infrastructure:NeoBank").Get<NeoBankConfig>();
         ResultData<UserDepositBalanceResponse> resultData = new();
@@ -46,48 +47,33 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
 
         var accessTokenResult = await ExchangeToken(appConfig);
         if (accessTokenResult.OperationResult == Enums.OperationResult.Failed)
-            return new ResultData<UserDepositBalanceResponse> { OperationResult = Enums.OperationResult.Failed, Error = accessTokenResult.Error };
-
+        return Result<UserDepositBalanceResponse>.Failure(new Error("2201001",  accessTokenResult.Error));
+          
         try
         {
             var client = factory.CreateClient("neoBankClient");
             client.SetBearerToken(accessTokenResult.Data.AccessToken);
             var result = await client.GetAsync(neobankConfig.UserDepositBalanceUrl);
             if (!result.IsSuccessStatusCode)
-                return new ResultData<UserDepositBalanceResponse>
-                {
-                    OperationResult = Enums.OperationResult.Failed,
-                    Error = result.IsSuccessStatusCode ? null : ReasonPhrases.GetReasonPhrase((int)result.StatusCode)
-                };
+                return Result<UserDepositBalanceResponse>.Failure(new Error("2201001", ReasonPhrases.GetReasonPhrase((int)result.StatusCode)));
 
             var resultContent = await result.Content.ReadAsStringAsync();
             try
             {
                 var response= JsonConvert.DeserializeObject<ResultData<UserDepositBalanceResponse>>(resultContent);
-                if (response.OperationResult!=Enums.OperationResult.Succeeded)
-                {
-                    response.Error = GlobalResource.UserHasnotCharismaCart;
-                }
-                return response;
+                if (response.OperationResult != Enums.OperationResult.Succeeded)
+                    return Result<UserDepositBalanceResponse>.Failure(new Error("2201001", GlobalResource.UserHasnotCharismaCart));
+                else
+                    return Result<UserDepositBalanceResponse>.SuccessResult(new UserDepositBalanceResponse{Balance = response.Data.Balance});
             }
             catch (Exception)
             {
-                dynamic d = JObject.Parse(resultContent);
-
-                return new ResultData<UserDepositBalanceResponse>
-                {
-                    Error = d.Error,
-                    OperationResult = Enums.OperationResult.Failed,
-                };
+                return Result<UserDepositBalanceResponse>.Failure(new Error("2201000", ""));
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            return new ResultData<UserDepositBalanceResponse>
-            {
-                OperationResult = Enums.OperationResult.Failed,
-                Error = ex.Message
-            };
+            return Result<UserDepositBalanceResponse>.Failure(new Error("2201000", ""));
         }
     }
     async Task<ResultData<TokenResponse>> ExchangeToken(JwtConfigViewModel appConfig)

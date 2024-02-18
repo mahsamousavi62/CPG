@@ -5,6 +5,6 @@ namespace CPG.Domain.SharedKernel.Communication.NeoBank;
 
 public interface INeoBankService
 {
-    Task<ResultData<UserDepositBalanceResponse>> GetUserDepositBalance();
+    Task<Result<UserDepositBalanceResponse>> GetUserDepositBalance();
 
 }

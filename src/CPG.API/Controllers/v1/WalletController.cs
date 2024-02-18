@@ -19,10 +19,8 @@ public class WalletController : ApiBaseController
     /// <returns></returns>
     [Authorize]
     [HttpGet("WalletInformation")]
-    [ProducesResponseType(typeof(Result<ResultData<UserDepositBalanceResponse>>), 200)]
-    public async Task<ResultData<UserDepositBalanceResponse>> GetWalletInformation()
+    [ProducesResponseType(typeof(Result<Result<UserDepositBalanceResponse>>), 200)]
+    public async Task<Result<UserDepositBalanceResponse>> GetWalletInformation()
     => await Mediator.Send(new GetUserDepositBalanceQuery());
-
-
 
 }
