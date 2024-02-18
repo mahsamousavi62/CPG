@@ -15,7 +15,8 @@ using CPG.Domain.SharedKernel.Communication.Idp.Models.UserProfile;
 using CPG.Application.Auth;
 
 namespace CPG.Infrastructure.Providers.Idp;
-public class IdpProvider(IHttpClientFactory httpClientFactory, IApplicationSettingsRepository applicationSettingsRepository, IAuthService authService) : IIdpProvider
+public class IdpProvider(IHttpClientFactory httpClientFactory,
+    IApplicationSettingsRepository applicationSettingsRepository, IAuthService authService) : IIdpProvider
 {
     public readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
     private readonly IAuthService _authService = authService;

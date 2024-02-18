@@ -666,4 +666,7 @@
   <data name="InvalidRefreshToken" xml:space="preserve">
     <value>مقدار RefreshToken نامعتبر است</value>
   </data>
+  <data name="UserHasnotCharismaCart" xml:space="preserve">
+    <value>کاریزما کارت ندارد</value>
+  </data>
 </root>

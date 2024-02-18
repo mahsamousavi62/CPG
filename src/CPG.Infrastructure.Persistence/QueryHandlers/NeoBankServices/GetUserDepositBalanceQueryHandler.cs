@@ -12,27 +12,13 @@ using MediatR;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.NeoBankServices;
 
-public class GetUserDepositBalanceQueryHandler(INeoBankService neoBankService) : IRequestHandler<GetUserDepositBalanceQuery, Result<UserDepositBalanceResponse>>
+public class GetUserDepositBalanceQueryHandler(INeoBankService neoBankService) : IRequestHandler<GetUserDepositBalanceQuery, ResultData<UserDepositBalanceResponse>>
 {
     private readonly INeoBankService neoBankService = neoBankService;
 
-    public async Task<Result<UserDepositBalanceResponse>> Handle(GetUserDepositBalanceQuery request, CancellationToken cancellationToken)
+    public async Task<ResultData<UserDepositBalanceResponse>> Handle(GetUserDepositBalanceQuery request, CancellationToken cancellationToken)
     {
-        try
-        {
-            var result = await neoBankService.GetUserDepositBalance();
-            return Result<UserDepositBalanceResponse>.SuccessResult(result.Data);
-
-        }
-        catch (DomainException exc)
-        {
-            return Result<UserDepositBalanceResponse>.Failure(new Error(exc.Code, exc.Message));
-        }
-        
-        catch (Exception exc)
-        {
-            return Result<UserDepositBalanceResponse>.Failure(new Error(exc.Source, exc.Message));
-        }
-
+            return  await neoBankService.GetUserDepositBalance();
+       
     }
 }

@@ -9,34 +9,16 @@ namespace CPG.Domain.SharedKernel.Communication.NeoBank.Models
 {
     public class UserDepositBalanceResponse
     {
-        [JsonPropertyName("data")]
-        public ResponseData Data { get; set; }
-
-        [JsonPropertyName("message")]
-        public object Message { get; set; }
-
-        [JsonPropertyName("action")]
-        public object Action { get; set; }
-
-        [JsonPropertyName("succeeded")]
-        public bool Succeeded { get; set; }
-
-        [JsonPropertyName("errors")]
-        public object Errors { get; set; }
-    }
-
-    public class ResponseData
-    {
         [JsonPropertyName("balance")]
-        public int Balance { get; set; }
+        public decimal? Balance { get; set; }
 
         [JsonPropertyName("url")]
-        public object Url { get; set; }
+        public string? Url { get; set; }
 
         [JsonPropertyName("userName")]
-        public object UserName { get; set; }
+        public string? UserName { get; set; }
 
         [JsonPropertyName("password")]
-        public object Password { get; set; }
+        public string? Password { get; set; }
     }
 }

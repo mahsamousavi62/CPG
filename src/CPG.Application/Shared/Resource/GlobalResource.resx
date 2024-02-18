@@ -648,4 +648,7 @@
   <data name="MorethanOneDefaultDepositFoundException" xml:space="preserve">
     <value>MorethanOneDefaultDepositFoundException</value>
   </data>
+  <data name="UserHasnotCharismaCart" xml:space="preserve">
+    <value>UserHasnotCharismaCart</value>
+  </data>
 </root>

@@ -1546,6 +1546,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to UserHasnotCharismaCart.
+        /// </summary>
+        public static string UserHasnotCharismaCart {
+            get {
+                return ResourceManager.GetString("UserHasnotCharismaCart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to UserNotFound.
         /// </summary>
         public static string UserNotFound {

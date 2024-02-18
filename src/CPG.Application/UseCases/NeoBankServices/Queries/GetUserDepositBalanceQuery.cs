@@ -5,7 +5,7 @@ using MediatR;
 
 namespace CPG.Application.UseCases.NeoBankServices.Queries;
 
-public class GetUserDepositBalanceQuery:IRequest<Result<UserDepositBalanceResponse>>
+public class GetUserDepositBalanceQuery:IRequest<ResultData<UserDepositBalanceResponse>>
 {
 
 }
