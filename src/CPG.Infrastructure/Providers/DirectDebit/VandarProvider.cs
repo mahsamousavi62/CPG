@@ -182,6 +182,13 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
                 Id = t.Id,
                 AccountNumber = t.PayerAccount?.AccountNumber,
                 Status = t.Status,
+                BankCode = t.BankCode,
+                Mobile = t.Mobile,
+                Count = t.Count,
+                Limit = t.Limit,
+                ExpirationDate = t.ExpirationDate,
+                RevokedAt = t.RevokedAt,
+                Token = t.Token,                
             }).ToList(),
         };
     }

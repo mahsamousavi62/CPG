@@ -1,124 +1,123 @@
 ﻿using CPG.Domain.SharedKernel.Communication.DirectDebit.Vandar;
 using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Show;
 
 public class VandarShowMobileResponse : VandarResponseBase
 {
-    [JsonPropertyName("message")]
+    [JsonProperty("message")]
     public string GrantMessage { get; set; }
 
-    [JsonPropertyName("data")]
+    [JsonProperty("data")]
     public List<Datum> Data { get; set; }
 
-    [JsonPropertyName("links")]
+    [JsonProperty("links")]
     public Link Links { get; set; }
 
-    [JsonPropertyName("meta")]
+    [JsonProperty("meta")]
     public Meta Meta { get; set; }
 }
 
 public class Datum
 {
-    [JsonPropertyName("id")]
+    [JsonProperty("id")]
     public string Id { get; set; }
 
-    [JsonPropertyName("customer_uuid")]
+    [JsonProperty("customer_uuid")]
     public string CustomerUuid { get; set; }
 
-    [JsonPropertyName("token")]
+    [JsonProperty("token")]
     public string Token { get; set; }
 
-    [JsonPropertyName("bank_code")]
+    [JsonProperty("bank_code")]
     public string BankCode { get; set; }
 
-    [JsonPropertyName("callback_url")]
+    [JsonProperty("callback_url")]
     public string CallbackUrl { get; set; }
 
-    [JsonPropertyName("count")]
+    [JsonProperty("count")]
     public int Count { get; set; }
 
-    [JsonPropertyName("limit")]
-    public string Limit { get; set; }
+    [JsonProperty("limit")]
+    public decimal Limit { get; set; }
 
-    [JsonPropertyName("mobile")]
+    [JsonProperty("mobile")]
     public string Mobile { get; set; }
 
-    [JsonPropertyName("name")]
+    [JsonProperty("name")]
     public string Name { get; set; }
 
-    [JsonPropertyName("email")]
+    [JsonProperty("email")]
     public string Email { get; set; }
 
-    [JsonPropertyName("national_code")]
+    [JsonProperty("national_code")]
     public string NationalCode { get; set; }
 
-    [JsonPropertyName("expiration_date")]
+    [JsonProperty("expiration_date")]
     public string ExpirationDate { get; set; }
 
-    [JsonPropertyName("status")]
+    [JsonProperty("status")]
     public string Status { get; set; }
 
-    [JsonPropertyName("payer_account")]
+    [JsonProperty("payer_account")]
     public PayerAccountData PayerAccount { get; set; }
 
-    [JsonPropertyName("created_at")]
+    [JsonProperty("created_at")]
     public string CreatedAt { get; set; }
 
-    [JsonPropertyName("revoked_at")]
+    [JsonProperty("revoked_at")]
     public string RevokedAt { get; set; }
 }
 
 public class Link
 {
-    [JsonPropertyName("url")]
+    [JsonProperty("url")]
     public string Url { get; set; }
 
-    [JsonPropertyName("label")]
+    [JsonProperty("label")]
     public string Label { get; set; }
 
-    [JsonPropertyName("active")]
+    [JsonProperty("active")]
     public bool Active { get; set; }
 
-    [JsonPropertyName("first")]
+    [JsonProperty("first")]
     public string First { get; set; }
 
-    [JsonPropertyName("last")]
+    [JsonProperty("last")]
     public string Last { get; set; }
 
-    [JsonPropertyName("prev")]
+    [JsonProperty("prev")]
     public object Prev { get; set; }
 
-    [JsonPropertyName("next")]
+    [JsonProperty("next")]
     public object Next { get; set; }
 }
 
 public class Meta
 {
-    [JsonPropertyName("current_page")]
+    [JsonProperty("current_page")]
     public int CurrentPage { get; set; }
 
-    [JsonPropertyName("from")]
+    [JsonProperty("from")]
     public int From { get; set; }
 
-    [JsonPropertyName("last_page")]
+    [JsonProperty("last_page")]
     public int LastPage { get; set; }
 
-    [JsonPropertyName("links")]
+    [JsonProperty("links")]
     public List<Link> Links { get; set; }
 
-    [JsonPropertyName("path")]
+    [JsonProperty("path")]
     public string Path { get; set; }
 
-    [JsonPropertyName("per_page")]
+    [JsonProperty("per_page")]
     public int PerPage { get; set; }
 
-    [JsonPropertyName("to")]
+    [JsonProperty("to")]
     public int To { get; set; }
 
-    [JsonPropertyName("total")]
+    [JsonProperty("total")]
     public int Total { get; set; }
 }
 

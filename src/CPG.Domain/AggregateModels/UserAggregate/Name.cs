@@ -12,11 +12,13 @@ public record Name
     {
     }
 
-    public Name(string firstName, string lastName)
+    public Name(string firstName, string lastName, bool isLegal = false)
     {
         Guard.Against.NullOrWhiteSpace(firstName, nameof(firstName));
-        Guard.Against.NullOrWhiteSpace(lastName, nameof(lastName));
-
+        if (!isLegal)
+        {
+            Guard.Against.NullOrWhiteSpace(lastName, nameof(lastName));
+        }
         FirstName = firstName;
         LastName = lastName;
     }
