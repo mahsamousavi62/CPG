@@ -23,6 +23,7 @@ using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Store;
 using CPG.Domain.SharedKernel.Communication.Idp.Models.UserProfile;
 using System.Numerics;
 using static CPG.Domain.SharedKernel.Enums;
+using CPG.Domain.SharedKernel.Helper;
 
 namespace CPG.Application.UseCases.DirectDebit.Commands;
 
@@ -86,40 +87,7 @@ public class GetDirectDebitPlansCommandHandler(IDirectDebitFactory directDebitFa
 
                 foreach (var grant in grantData.Grants)
                 {
-                    DirectDebitGrantStatus status;
-                    switch (grant.Status)
-                    {
-                        case "PENDING_VERIFY":
-                            {
-                                status = DirectDebitGrantStatus.WaitingForConfirmation;
-                                break;
-                            }
-                        case "ACTIVE":
-                            {
-                                status = DirectDebitGrantStatus.Activated;
-                                break;
-                            }
-                        case "REVOKED":
-                            {
-                                status = DirectDebitGrantStatus.Removed;
-                                break;
-                            }
-                        case "REVOKED_AUTO":
-                            {
-                                status = DirectDebitGrantStatus.Removed;
-                                break;
-                            }
-                        case "EXPIRED":
-                            {
-                                status = DirectDebitGrantStatus.Expired;
-                                break;
-                            }
-                        default:
-                            {
-                                status = DirectDebitGrantStatus.Draft;
-                                break;
-                            }
-                    }
+                    var status = SharedServices.GetVandarDirectDebitGrantStatus(grant.Status);                    
                     var dbGrant = await _directDebitGrantRepository.GetBySpecAsync(new DirectDebitGrantByAuthorizationIdSpec(grant.Id), cancellationToken);
                     var expirationDate = DateTime.Parse(grant.ExpirationDate);
                     if (dbGrant is null)
