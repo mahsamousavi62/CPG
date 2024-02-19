@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using CPG.Domain.SharedKernel.Minio;
 using CPG.Domain.SharedKernel;
 using CPG.Application.UseCases.CompanyDeposits.ViewModels;
+using CPG.Application.Shared.Resource;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.CompanyIPG;
 
@@ -51,7 +52,7 @@ public class GetCompanyIPGsQueryHandler(ReadDbContext context, IMinioProvider mi
         catch (System.Exception ex)
         {
 
-            return Result<IReadOnlyCollection<CompanyIPGDataViewModel>>.Failure(new Error("", ""));
+            return Result<IReadOnlyCollection<CompanyIPGDataViewModel>>.Failure(new Error("1000000", GlobalResource.UnexpectedError));
 
         }
     }

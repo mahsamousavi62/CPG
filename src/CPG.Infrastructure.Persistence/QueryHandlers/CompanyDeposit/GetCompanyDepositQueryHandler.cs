@@ -1,4 +1,5 @@
-﻿using CPG.Application.UseCases.CompanyDeposits.Exceptions;
+﻿using CPG.Application.Shared.Resource;
+using CPG.Application.UseCases.CompanyDeposits.Exceptions;
 using CPG.Application.UseCases.CompanyDeposits.Queries;
 using CPG.Application.UseCases.CompanyDeposits.ViewModels;
 using CPG.Application.UseCases.CompanyIPGs.ViewModels;
@@ -52,7 +53,7 @@ public class GetCompanyDepositQueryHandler(ReadDbContext context, IMinioProvider
         catch (System.Exception ex)
         {
 
-            return Result<CompanyDepositViewModel>.Failure(new Error("", ""));
+            return Result<CompanyDepositViewModel>.Failure(new Error("1000000", GlobalResource.UnexpectedError));
 
         }
     }
