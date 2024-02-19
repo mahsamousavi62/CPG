@@ -9,6 +9,7 @@ using CPG.Application.UseCases.CompanyIPGs.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using CPG.Domain.SharedKernel.Minio;
 using CPG.Domain.SharedKernel;
+using CPG.Application.UseCases.CompanyDeposits.ViewModels;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.CompanyIPG;
 
@@ -19,30 +20,39 @@ public class GetCompanyIPGsQueryHandler(ReadDbContext context, IMinioProvider mi
 
     public async Task<Result<IReadOnlyCollection<CompanyIPGDataViewModel>>> Handle(GetCompanyIPGsQuery request, CancellationToken cancellationToken)
     {
-        var data = await _context.CompanyIPGReadModels
-            .Include(t => t.CompanyIPGDeposits)
-            .ThenInclude(t => t.CompanyDeposit)
-            .Include(t => t.IPGType)
-            .Include(t => t.Provider)
-            .Where(t => t.CompanyId == request.CompanyId).ToListAsync();
+		try
+		{
+            var data = await _context.CompanyIPGReadModels
+           .Include(t => t.CompanyIPGDeposits)
+           .ThenInclude(t => t.CompanyDeposit)
+           .Include(t => t.IPGType)
+           .Include(t => t.Provider)
+           .Where(t => t.CompanyId == request.CompanyId).ToListAsync();
 
-        var viewModels = await Task.WhenAll(data.Select(async entity => new CompanyIPGDataViewModel
-             {
-                 Id = entity.Id,
-                 CompanyId = entity.CompanyId,
-                 ProviderData = entity.ProviderData,
-                 IPGTypeId = entity.IPGTypeId,
-                 ProviderId = entity.ProviderId,
-                 Deposits = entity.CompanyIPGDeposits.Select(t => new CompanyIPGDepositDataViewModel { Id = t.Id, AccountNumber = t.CompanyDeposit.AccountNumber, Name = t.CompanyDeposit.Name }).ToList(),
-                 CreationDate = entity.CreationDate,
-                 ModificationDate = entity.ModificationDate,
-                 IsActive = entity.IsActive,
-                 DefaultDeposit = entity.CompanyIPGDeposits.Where(t => t.IsDefault == true).Select(t => new CompanyIPGDepositDataViewModel { Id = t.Id, AccountNumber = t.CompanyDeposit.AccountNumber, Name = t.CompanyDeposit.Name }).FirstOrDefault(),
-                 IPGTypeLogo = await _minioProvider.PresignedGetObject(entity.IPGType.Logo),
-                 IPGTypeName = entity.IPGType.PersianName,
-                 ProviderName = entity.Provider.PersianName,
-             })).ConfigureAwait(false);
+            var viewModels = await Task.WhenAll(data.Select(async entity => new CompanyIPGDataViewModel
+            {
+                Id = entity.Id,
+                CompanyId = entity.CompanyId,
+                ProviderData = entity.ProviderData,
+                IPGTypeId = entity.IPGTypeId,
+                ProviderId = entity.ProviderId,
+                Deposits = entity.CompanyIPGDeposits.Select(t => new CompanyIPGDepositDataViewModel { Id = t.Id, AccountNumber = t.CompanyDeposit.AccountNumber, Name = t.CompanyDeposit.Name }).ToList(),
+                CreationDate = entity.CreationDate,
+                ModificationDate = entity.ModificationDate,
+                IsActive = entity.IsActive,
+                DefaultDeposit = entity.CompanyIPGDeposits.Where(t => t.IsDefault == true).Select(t => new CompanyIPGDepositDataViewModel { Id = t.Id, AccountNumber = t.CompanyDeposit.AccountNumber, Name = t.CompanyDeposit.Name }).FirstOrDefault(),
+                IPGTypeLogo = await _minioProvider.PresignedGetObject(entity.IPGType.Logo),
+                IPGTypeName = entity.IPGType.PersianName,
+                ProviderName = entity.Provider.PersianName,
+            })).ConfigureAwait(false);
 
-        return Result<IReadOnlyCollection<CompanyIPGDataViewModel>>.SuccessResult(viewModels);
+            return Result<IReadOnlyCollection<CompanyIPGDataViewModel>>.SuccessResult(viewModels);
+        }
+        catch (System.Exception ex)
+        {
+
+            return Result<IReadOnlyCollection<CompanyIPGDataViewModel>>.Failure(new Error("", ""));
+
+        }
     }
 }

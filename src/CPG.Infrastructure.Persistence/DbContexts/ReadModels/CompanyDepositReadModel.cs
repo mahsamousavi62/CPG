@@ -1,6 +1,7 @@
 ﻿using CPG.Domain.AggregateModels.TransactionAggregate;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CPG.Infrastructure.Persistence.DbContexts.ReadModels;
 
@@ -20,7 +21,10 @@ public class CompanyDepositReadModel
     public CompanyReadModel Company { get; set; }
     public List<CompanyIPGDepositReadModel> CompanyIPGDeposits { get; set; }
     public List<TransactionReadModel> Transactions { get; set; }
-    public string BankName { get; set; }
-    public string CompanyName { get; set; }
-    public string BankLogo { get; set; }
+    [NotMapped]
+    public string? BankName { get; set; }
+    [NotMapped]
+    public string? CompanyName { get; set; }
+    [NotMapped]
+    public string? BankLogo { get; set; }
 }
