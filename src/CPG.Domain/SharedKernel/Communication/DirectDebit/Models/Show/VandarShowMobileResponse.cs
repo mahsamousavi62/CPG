@@ -1,4 +1,5 @@
 ﻿using CPG.Domain.SharedKernel.Communication.DirectDebit.Vandar;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
@@ -6,6 +7,9 @@ namespace CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Show;
 
 public class VandarShowMobileResponse : VandarResponseBase
 {
+    [JsonPropertyName("message")]
+    public string GrantMessage { get; set; }
+
     [JsonPropertyName("data")]
     public List<Datum> Data { get; set; }
 
@@ -58,7 +62,7 @@ public class Datum
     public string Status { get; set; }
 
     [JsonPropertyName("payer_account")]
-    public object PayerAccount { get; set; }
+    public PayerAccountData PayerAccount { get; set; }
 
     [JsonPropertyName("created_at")]
     public string CreatedAt { get; set; }
@@ -116,4 +120,13 @@ public class Meta
 
     [JsonPropertyName("total")]
     public int Total { get; set; }
+}
+
+public class PayerAccountData
+{
+    [JsonProperty("account_number")]
+    public string AccountNumber { get; set; }
+
+    [JsonProperty("pan")]
+    public string Pan { get; set; }
 }

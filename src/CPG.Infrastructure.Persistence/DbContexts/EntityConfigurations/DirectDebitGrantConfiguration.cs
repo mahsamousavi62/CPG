@@ -29,5 +29,6 @@ internal class DirectDebitGrantConfiguration : IEntityTypeConfiguration<DirectDe
         entity.Property(x => x.DurationPerMonth).HasColumnType("tinyint").IsRequired();
 
         entity.HasOne(x => x.Provider).WithMany(x => x.DirectDebitGrants).HasForeignKey(x => x.ProviderId);
+        entity.HasOne(x => x.Bank).WithMany(x => x.DirectDebitGrants).HasForeignKey(x => x.BankId);
     }
 }

@@ -24,5 +24,6 @@ public class DirectDebitGrantReadModel
     public DateTime? ModificationDate { get; set; }
     public short DurationPerMonth { get; set; }
     public ProviderReadModel Provider { get; set; }
+    public BankReadModel Bank { get; set; }
     public List<DirectDebitTransactionReadModel> DirectDebitTransactions { get; set; }
 }

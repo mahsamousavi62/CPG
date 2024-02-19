@@ -1,4 +1,5 @@
-﻿using CPG.Domain.AggregateModels.ProviderAggregate;
+﻿using CPG.Domain.AggregateModels.BankAggregate;
+using CPG.Domain.AggregateModels.ProviderAggregate;
 using CPG.Domain.AggregateModels.TransactionAggregate;
 using CPG.Domain.SeedWork;
 using System;
@@ -24,6 +25,7 @@ public class DirectDebitGrant : AuditableEntity<long>, IAggregateRoot
     public DirectDebitGrantStatus Status { get; set; }
     public short DurationPerMonth { get; set; }
     public Provider Provider { get; set; }
+    public Bank Bank { get; set; }
     public List<DirectDebitTransaction> DirectDebitTransactions { get; set; }
 
     public DirectDebitGrant()
@@ -60,5 +62,25 @@ public class DirectDebitGrant : AuditableEntity<long>, IAggregateRoot
             durationPerMonth);
         directDebitGrant.IsActive = true;
         return directDebitGrant;
+    }
+
+    public static void Update(DirectDebitGrant grant, long userId, int bankId, string accountNumber, string phoneNumber, int successTransactionCountLimitPerMonth,
+        decimal amountLimitPerTransaction, string trackId, DateTime expirationDate, DateTime? revokeDateTime, long providerId, string grantToken,
+        string authorizationId, DirectDebitGrantStatus status, short durationPerMonth)
+    {
+        grant.UserId = userId;
+        grant.BankId = bankId;
+        grant.AccountNumber = accountNumber;
+        grant.PhoneNumber = phoneNumber;
+        grant.SuccessTransactionCountLimitPerMonth = successTransactionCountLimitPerMonth;
+        grant.AmountLimitPerTransaction = amountLimitPerTransaction;
+        grant.TrackId = trackId;
+        grant.ExpirationDate = expirationDate;
+        grant.RevokeDateTime = revokeDateTime;
+        grant.ProviderId = providerId;
+        grant.GrantToken = grantToken;
+        grant.AuthorizationId = authorizationId;
+        grant.Status = status;
+        grant.DurationPerMonth = durationPerMonth;
     }
 }

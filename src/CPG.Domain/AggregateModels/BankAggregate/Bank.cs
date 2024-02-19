@@ -1,6 +1,7 @@
 ﻿using CPG.Application.UseCases.CompanyDeposits;
 using CPG.Domain.AggregateModels.BankAggregate.Events;
 using CPG.Domain.AggregateModels.BankAggregate.Exceptions;
+using CPG.Domain.AggregateModels.DirectDebitGrantAggregate;
 using CPG.Domain.SeedWork;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,7 @@ public class Bank : AuditableEntity<int>, IAggregateRoot
     public bool? HasDirectDebitFeature => _hasDirectDebitFeature;
     public BankDirectDebitSetting DirectDebitSetting { get; set; }
     public List<CompanyDeposit> CompanyDeposits { get; set; }
-
+    public List<DirectDebitGrant> DirectDebitGrants { get; set; }
     public Bank()
     {
     }
