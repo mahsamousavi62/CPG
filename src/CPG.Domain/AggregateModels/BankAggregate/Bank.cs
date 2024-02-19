@@ -3,6 +3,7 @@ using CPG.Domain.AggregateModels.BankAggregate.Events;
 using CPG.Domain.AggregateModels.BankAggregate.Exceptions;
 using CPG.Domain.AggregateModels.DirectDebitGrantAggregate;
 using CPG.Domain.SeedWork;
+using CPG.Domain.SharedKernel;
 using System;
 using System.Collections.Generic;
 using static CPG.Domain.SharedKernel.Enums;
@@ -27,12 +28,12 @@ public class Bank : AuditableEntity<int>, IAggregateRoot
     {
     }
 
-    public void Update(string name, string logoAddress, IbanPrefix ibanPrefix, bool hasDirectDebitFeature, long? providerId, string ddBankCode, decimal? maxWithdrawalAmountPerDay,
+    public void Update(string name, Logo logo, IbanPrefix ibanPrefix, bool hasDirectDebitFeature, long? providerId, string ddBankCode, decimal? maxWithdrawalAmountPerDay,
         ValidityDuration? maxMandateValidityDurationPerMonth, AuthenticationType? authenticationType)
     {
         _ibanPrefix = ibanPrefix;
         _name = name;
-        _logoAddress = logoAddress;
+        _logoAddress = logo.Value;
         _hasDirectDebitFeature = hasDirectDebitFeature;
 
         if (hasDirectDebitFeature is true)

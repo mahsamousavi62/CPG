@@ -19,4 +19,6 @@ public class CompanyReadModel
     public ICollection<CompanyDepositReadModel> CompanyDeposits { get; set; }
     public ICollection<PaymentRequestReadModel> PaymentRequests { get; set; }
     public CompanyShaparakSettingReadModel ShaparakSetting { get; set; }
+    public ICollection<UserReadModel> Users  { get; set; }
+
 }

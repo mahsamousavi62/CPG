@@ -880,6 +880,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to MorethanOneDefaultDepositFoundException.
+        /// </summary>
+        public static string MorethanOneDefaultDepositFoundException {
+            get {
+                return ResourceManager.GetString("MorethanOneDefaultDepositFoundException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
         public static string Name {

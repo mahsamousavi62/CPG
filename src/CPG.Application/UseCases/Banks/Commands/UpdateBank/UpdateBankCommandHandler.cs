@@ -7,12 +7,14 @@ using CPG.Application.UseCases.Banks.Exceptions;
 using CPG.Domain.SharedKernel.Interfaces;
 using System;
 using CPG.Domain.AggregateModels.BankAggregate.Specifications;
+using CPG.Domain.SharedKernel.Minio;
 
 namespace CPG.Application.UseCases.Banks.Commands.UpdateBank;
 
-public class UpdateBankCommandHandler(IAggregateRepository<Bank> bankRepository, ICurrentUser currentUser) : IRequestHandler<UpdateBankCommand, Result<bool>>
+public class UpdateBankCommandHandler(IAggregateRepository<Bank> bankRepository, ICurrentUser currentUser, IMinioProvider minioProvider) : IRequestHandler<UpdateBankCommand, Result<bool>>
 {
     private readonly IAggregateRepository<Bank> _bankRepository = bankRepository;
+    private readonly IMinioProvider _minioProvider = minioProvider;
 
     public async Task<Result<bool>> Handle(UpdateBankCommand command, CancellationToken cancellationToken)
     {
@@ -22,10 +24,11 @@ public class UpdateBankCommandHandler(IAggregateRepository<Bank> bankRepository,
             var bank = await _bankRepository.GetBySpecAsync(new BankByIdSpec(model.BankId), cancellationToken)
                        ?? throw new BankNotFoundException(model.BankId);
 
-            bank.Update(model.Name, model.Logo, model.IbanPrefix, model.HasDirectDebitFeature, model.DirectDebitSetting.ProviderId,
+            Logo logo = new(model.Logo, Enums.UploadFromEntityType.Bank.ToString(), _minioProvider);
+            bank.Update(model.Name, logo, model.IbanPrefix, model.HasDirectDebitFeature, model.DirectDebitSetting.ProviderId,
                 model.DirectDebitSetting.DDBankCode, model.DirectDebitSetting.MaxWithdrawalAmountPerDay,
                 model.DirectDebitSetting.MaxMandateValidityDurationPerMonth, model.DirectDebitSetting.AuthenticationType);
-
+            await _bankRepository.UpdateAsync(bank, cancellationToken);
             await _bankRepository.SaveChangesAsync(cancellationToken);
 
             return Result<bool>.Success();
