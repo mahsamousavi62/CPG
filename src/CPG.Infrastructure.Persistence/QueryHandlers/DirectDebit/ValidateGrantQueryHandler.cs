@@ -20,6 +20,7 @@ using Newtonsoft.Json.Linq;
 using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Token;
 using CPG.Domain.AggregateModels.BankAggregate.Specifications;
 using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Verify;
+using CPG.Domain.SharedKernel.Helper;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.DirectDebit;
 
@@ -93,36 +94,7 @@ public class ValidateGrantQueryHandler(IDirectDebitFactory directDebitFactory,
                         {
                             if (!string.IsNullOrEmpty(result.GrantData.Status))
                             {
-                                switch (result.GrantData.Status)
-                                {
-                                    case "PENDING_VERIFY":
-                                        {
-                                            directDebitGrant.Status = DirectDebitGrantStatus.WaitingForConfirmation;
-                                            break;
-                                        }
-                                    case "ACTIVE":
-                                        {
-                                            directDebitGrant.Status = DirectDebitGrantStatus.Activated;
-                                            break;
-                                        }
-                                    case "REVOKED":
-                                        {
-                                            directDebitGrant.Status = DirectDebitGrantStatus.Removed;
-                                            break;
-                                        }
-                                    case "REVOKED_AUTO":
-                                        {
-                                            directDebitGrant.Status = DirectDebitGrantStatus.Removed;
-                                            break;
-                                        }
-                                    case "EXPIRED":
-                                        {
-                                            directDebitGrant.Status = DirectDebitGrantStatus.Expired;
-                                            break;
-                                        }
-                                    default:
-                                        break;
-                                }
+                                directDebitGrant.Status = SharedServices.GetVandarDirectDebitGrantStatus(result.GrantData.Status);                                
                             }
                             else
                             {

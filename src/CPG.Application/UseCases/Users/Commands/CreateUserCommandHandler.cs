@@ -30,10 +30,12 @@ public class CreateUserCommandHandler(IIdpProvider idpClient, IAggregateReposito
                 throw new IdpUserProfileException(idpUserProfileResponse.Error);
 
             var idpUserProfile = idpUserProfileResponse.Data;
-            var name = new Name(idpUserProfile.Result.PrivatePerson.FirstName, idpUserProfile.Result.PrivatePerson.LastName);
+            var name = idpUserProfile.Result.IsLegal == false ? new Name(idpUserProfile.Result.PrivatePerson.FirstName, idpUserProfile.Result.PrivatePerson.LastName) :
+                    new Name(idpUserProfile.Result.LegalPerson.CompanyName, null, idpUserProfile.Result.IsLegal);
             var phoneNumber = new PhoneNumber(idpUserProfile.Result.Mobile.ToString());
-            var nationalCode = new NationalCode(idpUserProfile.Result.UniqueIdentifier);
-
+            var nationalCode = new NationalCode(idpUserProfile.Result.UniqueIdentifier, idpUserProfile.Result.IsLegal);
+            var status = await _authenticationService.GetDataFromClaim<string>("status", string.Empty);
+            var kycStatus = status is null || status == "KycVerified" ? (short)1 : (short)0;
             var spec = new UserByIDPIdSpec(sub);
             var userToUpdate = await _repository.GetBySpecAsync(spec, cancellationToken);
 
@@ -44,18 +46,19 @@ public class CreateUserCommandHandler(IIdpProvider idpClient, IAggregateReposito
 
                 if (userToUpdate == null)
                 {
-                    userToUpdate = User.Create(sub, nationalCode, name, phoneNumber, Enums.UserRoleType.CustomerUser);
+                    userToUpdate = User.Create(sub, nationalCode, name, phoneNumber, Enums.UserRoleType.CustomerUser, idpUserProfile.Result.IsLegal,
+                        kycStatus);
                     await _repository.AddAsync(userToUpdate, cancellationToken);
                 }
                 else
                 {
-                    User.Update(userToUpdate, name, phoneNumber, sub);
+                    User.Update(userToUpdate, name, phoneNumber, sub, idpUserProfile.Result.IsLegal, kycStatus);
                     await _repository.UpdateAsync(userToUpdate, cancellationToken);
                 }
             }
             else
             {
-                User.Update(userToUpdate, name, phoneNumber, sub);
+                User.Update(userToUpdate, name, phoneNumber, sub, idpUserProfile.Result.IsLegal, kycStatus);
                 await _repository.UpdateAsync(userToUpdate, cancellationToken);
             }
             await _repository.SaveChangesAsync(cancellationToken);
