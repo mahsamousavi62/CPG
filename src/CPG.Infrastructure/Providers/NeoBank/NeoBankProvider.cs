@@ -68,12 +68,12 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
             }
             catch (Exception)
             {
-                return Result<UserDepositBalanceResponse>.Failure(new Error("2201000", ""));
+                return Result<UserDepositBalanceResponse>.Failure(new Error("2201000", GlobalResource.UnexpectedError));
             }
         }
         catch (Exception)
         {
-            return Result<UserDepositBalanceResponse>.Failure(new Error("2201000", ""));
+            return Result<UserDepositBalanceResponse>.Failure(new Error("2201000", GlobalResource.UnexpectedError));
         }
     }
     async Task<ResultData<TokenResponse>> ExchangeToken(JwtConfigViewModel appConfig)
