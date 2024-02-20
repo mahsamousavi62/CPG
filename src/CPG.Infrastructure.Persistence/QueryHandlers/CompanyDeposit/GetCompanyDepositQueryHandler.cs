@@ -52,9 +52,7 @@ public class GetCompanyDepositQueryHandler(ReadDbContext context, IMinioProvider
         }
         catch (System.Exception ex)
         {
-
             return Result<CompanyDepositViewModel>.Failure(new Error("1000000", GlobalResource.UnexpectedError));
-
         }
     }
 }
