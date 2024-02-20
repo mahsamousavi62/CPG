@@ -1,4 +1,6 @@
-﻿using CPG.Infrastructure.Persistence.DbContexts.ReadModels;
+﻿using CPG.Domain.AggregateModels.TransactionAggregate;
+using CPG.Domain.SeedWork;
+using CPG.Infrastructure.Persistence.DbContexts.ReadModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -24,7 +26,10 @@ public class UserReadModelConfiguration : IEntityTypeConfiguration<UserReadModel
         readModel.Property(x => x.LastUpdateFromIDP).HasColumnName("LastUpdateFromIDP");
         readModel.Property(x => x.CreationDate).HasColumnName("CreationDate");
         readModel.Property(x => x.ModificationDate).HasColumnName("ModificationDate");
-
         readModel.HasMany(x => x.UserRoles).WithOne(x => x.User).HasForeignKey(x => x.UserId);
+        readModel.HasOne(x => x.Company)
+            .WithMany(x => x.Users)
+            .HasForeignKey(x => x.CompanyId);
+
     }
 }

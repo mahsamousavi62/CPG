@@ -1,13 +1,11 @@
-﻿using CPG.Domain.Exceptions;
+﻿using CPG.Domain.AggregateModels.UserAggregate;
+using CPG.Domain.Exceptions;
 
 namespace CPG.Domain.AggregateModels.BookAggregate.Exceptions
 {
-    public class NationalCodeInvalidFormatException : DomainException
+    public class NationalCodeInvalidFormatException(string nationalCode) : DomainException(Resource.NationalCodeInvalidFormat)
     {
         public override string Code => "invalid_nationalCode_format";
         public string NationalCode { get; }
-
-        public NationalCodeInvalidFormatException(string nationalCode) : base($"NationalCode value has to be 10 length. Passed NationalCode is: {nationalCode}.") 
-            => NationalCode =nationalCode;
     }
 }

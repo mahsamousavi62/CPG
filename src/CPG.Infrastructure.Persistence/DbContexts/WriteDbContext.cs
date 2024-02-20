@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using CPG.Domain.AggregateModels.ApplicationAggregate;
 using CPG.Domain.AggregateModels.ProviderAggregate;
 using CPG.Domain.AggregateModels.CompanyIPGAggregate;
+using CPG.Domain.AggregateModels.DirectDebitGrantAggregate;
 
 namespace CPG.Infrastructure.Persistence.DbContexts;
 
@@ -36,6 +37,8 @@ public class WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator 
     public DbSet<CompanyIPG> CompanyIPGs { get; set; }
     public DbSet<CompanyIPGDeposit> CompanyIPGDeposits { get; set; }
     public DbSet<CompanyShaparakSetting> ShaparakSettings { get; set; }
+    public DbSet<DirectDebitGrant> DirectDebitGrants { get; set; }
+    public DbSet<DirectDebitPlan> DirectDebitPlans { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
         => modelBuilder
@@ -57,6 +60,10 @@ public class WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator 
             .ApplyConfiguration(new TransactionConfiguration())
             .ApplyConfiguration(new IPGTransactionConfiguration())
             .ApplyConfiguration(new CompanyShaparakSettingConfiguration())
+            .ApplyConfiguration(new BankDirectDebitSettingConfiguration())
+            .ApplyConfiguration(new DirectDebitGrantConfiguration())
+            .ApplyConfiguration(new DirectDebitPlanConfiguration())
+            .ApplyConfiguration(new DirectDebitTransactionConfiguration())
         ;
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())

@@ -39,6 +39,26 @@ public class Logo
 
     }
 
+    public Logo(IFile file)
+    {
+        int maxFileSize = 2 * 1024 * 1024;
+
+        Guard.Against.Null(file, nameof(file));
+
+        if (file.FileName.IndexOfAny(Path.GetInvalidFileNameChars()) > -1)
+            throw new InvalidLogoException(nameof(file));
+
+        Guard.Against.NegativeOrZero(file.Length, nameof(file));
+
+        if (!Regex.IsMatch(Path.GetExtension(file.FileName), "^.*\\.(jpg|JPG|gif|jpeg|png|tiff|svg)$"))
+            throw new InvalidLogoExtentionException($"Parameter {nameof(file)} has a  invalid extention.");
+
+        if (file.Length > maxFileSize)
+            throw new MaximalFileSizeException("MaximalFileSize");
+
+         Value=file.FileName;
+
+    }
     public string UploadFile(string uploadFromEntityType, IFile file)
     {
         var result = _provider.PutObject(uploadFromEntityType, file).GetAwaiter().GetResult();

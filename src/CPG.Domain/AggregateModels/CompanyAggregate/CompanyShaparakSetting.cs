@@ -47,4 +47,23 @@ public class CompanyShaparakSetting : AuditableEntity<long>
         var setting = new CompanyShaparakSetting(key, iv, thirdPartyCode);        
         return setting;
     }
+
+    public static void Update(CompanyShaparakSetting shaparakSetting, string key, string iv, int? thirdPartyCode)
+    {
+        if (key.Length < 3 || key.Length > 255)
+            throw new InvalidKeyCharachterException(key);
+
+        if (iv.Length < 3 || iv.Length > 255)
+            throw new InvalidIvCharachterException(iv);
+
+        if (!Regex.IsMatch(key, "[A-Za-z\\d\\s]+"))
+            throw new InvalidKeyFormatException(key);
+
+        if (!Regex.IsMatch(iv, "[A-Za-z\\d\\s]+"))
+            throw new InvalidIVFormatException(iv);
+
+        shaparakSetting.Key = key;  
+         shaparakSetting.Iv=iv;
+        shaparakSetting.ThirdPartyCode=thirdPartyCode;
+    }
 }

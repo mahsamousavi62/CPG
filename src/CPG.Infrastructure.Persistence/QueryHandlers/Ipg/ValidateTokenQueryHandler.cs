@@ -33,7 +33,7 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
         try
         {
             var transaction = await _transactionRepository.GetBySpecAsync(new TransactionByIPGTrackId(request.TrackId));
-
+            var PecSuccedStatus = "0";
             if (transaction?.IPGTransaction is null)
                 throw new NotFoundTrackIdException();
             if (transaction.IPGTransaction.Status != IPGTransactionStatus.WaitingForPspResponse)
@@ -102,7 +102,29 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
                         else if (sepSuccessStatusList.Contains(req.Status))
                         {
                             transaction.IPGTransaction.Status = IPGTransactionStatus.SucceededAndWaitingForVerification;
-                            transaction.IPGTransaction.PredicateExpirationDateTime = DateTime.UtcNow.AddMinutes(transaction.IPGTransaction.VerificationTimeLimit);
+                            transaction.IPGTransaction.PredicateExpirationDateTime = DateTime.Now.AddMinutes(transaction.IPGTransaction.VerificationTimeLimit);
+                            paymentRequest.Status = PaymentStatus.TransactionWaitingForVerification;
+                        }
+                        break;
+                    }
+                case ProviderType.Pec:
+                    {
+                        var req = System.Text.Json.JsonSerializer.Deserialize<PecValidateTokenViewModel>(request.ValidateToken.Request);
+
+                        transaction.IPGTransaction.ProviderTrackerId = req.STraceNo.ToString();
+                        transaction.IPGTransaction.ReferenceNumber = req.RRN.ToString();
+                        transaction.IPGTransaction.EncryptCardNumber = req.HashCardNumber;
+
+                        if (req.Status != PecSuccedStatus)
+                        {
+                            transaction.IPGTransaction.Status = IPGTransactionStatus.Failed;
+                            transaction.Status = TransactionStatus.TransactionFailed;
+                            paymentRequest.Status = PaymentStatus.TransactionFailed;
+                        }
+                        else if (req.Status == PecSuccedStatus)
+                        {
+                            transaction.IPGTransaction.Status = IPGTransactionStatus.SucceededAndWaitingForVerification;
+                            transaction.IPGTransaction.PredicateExpirationDateTime = DateTime.Now.AddMinutes(transaction.IPGTransaction.VerificationTimeLimit);
                             paymentRequest.Status = PaymentStatus.TransactionWaitingForVerification;
                         }
                         break;
@@ -134,6 +156,4 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
             return Result<ValidateTokenResponseViewModel>.Failure(new Error("1008000", GlobalResource.GetPaymentTicketUnexpectedError));
         }
     }
-
-
 }

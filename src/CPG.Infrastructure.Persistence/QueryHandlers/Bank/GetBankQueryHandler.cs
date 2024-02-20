@@ -2,6 +2,7 @@
 using CPG.Application.UseCases.Banks.Exceptions;
 using CPG.Application.UseCases.Banks.Queries;
 using CPG.Application.UseCases.Banks.ViewModels;
+using CPG.Application.UseCases.Providers.ViewModels;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Minio;
 using CPG.Infrastructure.Persistence.DbContexts;
@@ -21,8 +22,7 @@ public class GetBankQueryHandler(ReadDbContext context, IMinioProvider minioProv
     {
         Guard.Against.NegativeOrZero(request.BankId, nameof(request.BankId));
 
-        var bank = await _context.BankReadModels.FirstOrDefaultAsync(t => t.Id == request.BankId);
-
+        var bank = await _context.BankReadModels.Include(t => t.DirectDebitSetting).ThenInclude(t => t.Provider).FirstOrDefaultAsync(t => t.Id == request.BankId);
         if (bank == null)
             throw new BankNotFoundException(request.BankId);
 
@@ -33,6 +33,18 @@ public class GetBankQueryHandler(ReadDbContext context, IMinioProvider minioProv
             IbanPrefix = bank.IbanPrefix,
             Logo = !string.IsNullOrEmpty(bank.LogoAddress) ? await _minioProvider.PresignedGetObject(bank.LogoAddress) : "",
             IsActive = bank.IsActive,
+            HasDirectDebitFeature = bank.HasDirectDebitFeature,
+            DirectDebitSetting = bank.DirectDebitSetting != null ? new BankDirectDebitSettingViewModel
+            {
+                Id = bank.DirectDebitSetting.Id,
+                AuthenticationType = bank.DirectDebitSetting.AuthenticationType,
+                BankId = bank.DirectDebitSetting.BankId,
+                DDBankCode = bank.DirectDebitSetting.DDBankCode,
+                MaxMandateValidityDurationPerMonth = bank.DirectDebitSetting.MaxMandateValidityDurationPerMonth,
+                MaxWithdrawalAmountPerDay = bank.DirectDebitSetting.MaxWithdrawalAmountPerDay,
+                Provider = new ProviderDataViewModel { Id = bank.DirectDebitSetting.ProviderId, Name = bank.DirectDebitSetting.Provider.PersianName },
+                IsActive = bank.DirectDebitSetting.IsActive,
+            } : null,
         };
 
         return Result<BankViewModel>.SuccessResult(bankModel);

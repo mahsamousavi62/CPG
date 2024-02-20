@@ -7,7 +7,7 @@ public sealed class ActiveBanksSpec : Specification<Bank>
 {
     public ActiveBanksSpec()
     {
-        Query
+        Query.Include(bank => bank.DirectDebitSetting)
             .Where(bank =>  bank.IsActive == true)
             .OrderByDescending(bank => bank.Id);
     }

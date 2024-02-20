@@ -113,7 +113,7 @@ app.UseInfrastructure(configuration, app.Environment);
 
 app.UseSerilogRequestLogging();
 app.UseExceptionHandler();
-
+app.MapGraphQL();
 
 app.UseEndpoints(endpoints =>
 {

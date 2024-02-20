@@ -13,23 +13,13 @@ namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations
 
             entity.Ignore(x => x.DomainEvents);
 
-            entity.Property(x => x.Id)
-                .HasColumnName("Id")
-                .UseIdentityColumn();
+            entity.Property(x => x.Id).HasColumnName("Id").UseIdentityColumn();
 
-            entity.Property(x => x.Name)
-                .HasColumnName("Name")
-                .HasMaxLength(256)
-                .HasColumnType("nvarchar")
-                .IsUnicode(true)
-                .UseCollation("Persian_100_CI_AI")
-                .IsRequired();
+            entity.Property(x => x.Name).HasColumnName("Name").HasMaxLength(256).HasColumnType("nvarchar").IsUnicode(true).UseCollation("Persian_100_CI_AI").IsRequired();
 
-            entity.Property(x => x.LogoAddress)
-                .HasColumnName("LogoAddress")
-                .HasMaxLength(256)
-                .HasColumnType("varchar")
-                .IsRequired();
+            entity.Property(x => x.LogoAddress).HasColumnName("LogoAddress").HasMaxLength(256).HasColumnType("varchar").IsRequired();
+
+            entity.Property(x => x.HasDirectDebitFeature).HasColumnName("HasDirectDebitFeature").HasColumnType("bit");
 
             entity.OwnsOne(x => x.IbanPrefix, x =>
             {
@@ -40,10 +30,13 @@ namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations
                     .IsRequired();
             });
 
-            entity
-          .HasMany(c => c.CompanyDeposits)
-          .WithOne(p => p.Bank)
-          .HasForeignKey(p => p.BankId);
+            entity.HasMany(c => c.CompanyDeposits)
+                .WithOne(p => p.Bank)
+                .HasForeignKey(p => p.BankId);
+
+            entity.HasOne(c => c.DirectDebitSetting)
+                .WithOne(p => p.Bank)
+                .HasForeignKey<BankDirectDebitSetting>(p => p.BankId);
         }
     }
 }

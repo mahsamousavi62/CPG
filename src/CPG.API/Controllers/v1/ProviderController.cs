@@ -1,9 +1,11 @@
 ﻿using CPG.Application.UseCases.Providers.Commands.ActivateProvider;
 using CPG.Application.UseCases.Providers.Commands.CreateProvider;
+using CPG.Application.UseCases.Providers.Commands.UpdateProvider;
 using CPG.Application.UseCases.Providers.Queries;
 using CPG.Application.UseCases.Providers.ViewModels;
 using CPG.Domain.SharedKernel;
 using CPG.Infrastructure.File;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CPG.API.Controllers.v1;
@@ -36,6 +38,16 @@ public class ProviderController : ApiBaseController
                                                              new FormFileProxy(model.File),model.MethodTypes);
 
         return await Mediator.Send(new CreateProviderCommand(createProviderViewModel));
+    }
+
+    [HttpPut]
+    public async Task<Result<Unit>> UpdateProvider([FromForm] UpdateProviderModel model)
+    {
+        UpdateProviderViewModel updateProviderViewModel = new(model.Id,model.PersianName, model.EnglishName,
+                                                              model.ProviderData,new FormFileProxy(model.File), 
+                                                              model.MethodTypes);
+
+        return await Mediator.Send(new UpdateProviderCommand(updateProviderViewModel));
     }
 
     [HttpPost("activate/{providerId:long}/{isActive:bool}")]

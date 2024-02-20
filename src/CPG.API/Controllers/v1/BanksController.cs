@@ -3,6 +3,7 @@ using CPG.Application.UseCases.Banks.Commands.UpdateBank;
 using CPG.Application.UseCases.Banks.Queries;
 using CPG.Application.UseCases.Banks.ViewModels;
 using CPG.Domain.SharedKernel;
+using CPG.Infrastructure.File;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CPG.API.Controllers;
@@ -28,10 +29,13 @@ public class BanksController : ApiBaseController
         return await Mediator.Send(new GetActiveBanksQuery());
     }
 
-    [HttpPost("update/{bankId:int}/{ibanPrefix}")]
-    public async Task<Result<bool>> UpdateBank(UpdateBankCommand command)
+    [HttpPut("update")]
+    public async Task<Result<bool>> UpdateBank([FromForm] UpdateBankModel model)
     {
-        return await Mediator.Send(command);
+        UpdateBankViewModel updatebankViewModel = new(model.Id,model.Name,
+            new FormFileProxy(model.Logo),model.IbanPrefix,model.HasDirectDebitFeature,model.DirectDebitSetting);
+
+        return await Mediator.Send(new UpdateBankCommand(updatebankViewModel));
     }
 
     [HttpPost("activate/{bankId:int}/{isActive:bool}")]

@@ -1,10 +1,13 @@
 ﻿using CPG.Domain.AggregateModels.ApplicationAggregate.Events;
 using CPG.Domain.AggregateModels.ApplicationAggregate.Exceptions;
+using CPG.Domain.AggregateModels.CompanyAggregate;
+using CPG.Domain.AggregateModels.PaymentRequestAggregate;
 using CPG.Domain.SeedWork;
 using CPG.Domain.SharedKernel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace CPG.Domain.AggregateModels.ApplicationAggregate;
 
@@ -23,20 +26,13 @@ public class Application : AuditableEntity<long>, IAggregateRoot
         ApplicationIdentifiers = [];
     }
 
-    public string PersianName { get; }
-
-    public string EnglishName { get; }
-
-    public string Logo { get; }
-
-    public string ResponseApiUrl { get; }
-
+    public string PersianName { get; set; }
+    public string EnglishName { get; set; }
+    public string Logo { get; set; }
+    public string ResponseApiUrl { get; set; }
     public List<ApplicationIdentifier> ApplicationIdentifiers { get; set; } = [];
-
     public List<ApplicationCallbackUrl> ApplicationCallbackUrls { get; set; } = [];
-
     public List<PaymentRequest> PaymentRequests { get; set; } = [];
-
     public static Application Create(PersianName persianName, EnglishName englishName, Url responseApiUrl, Logo logo, string[] details, Url[] callbackUrls)
     {
         var application = new Application(persianName, englishName, logo, responseApiUrl);
@@ -49,7 +45,7 @@ public class Application : AuditableEntity<long>, IAggregateRoot
             var applicationCallbackUrls = ApplicationCallbackUrl.Create(callbackUrls);
             application.ApplicationCallbackUrls.AddRange(applicationCallbackUrls);
         }
-        application.IsActive = true;        
+        application.IsActive = true;
 
         return application;
     }
@@ -79,5 +75,41 @@ public class Application : AuditableEntity<long>, IAggregateRoot
         return obj is Application application &&
                base.Equals(obj) &&
                EnglishName == application.EnglishName;
+    }
+
+    public static void Update(Application application, PersianName persianName, EnglishName englishName, Url responseUrl, Logo logo,
+        string[] idpClientIds, Url[] urls)
+    {
+        application.PersianName = persianName.Value;
+        application.EnglishName = englishName.Value;
+        application.ResponseApiUrl = responseUrl.Value;
+        application.Logo = logo.Value;
+
+        foreach (var newItem in idpClientIds)
+        {
+            if (!application.ApplicationIdentifiers.Any(p => p.IdpClientId== newItem))
+                application.ApplicationIdentifiers.Add(ApplicationIdentifier.Create(newItem));
+        }
+
+        foreach (var currnetItem in application.ApplicationIdentifiers)
+        {
+            if (!idpClientIds.Any(p => p == currnetItem.IdpClientId))
+                currnetItem.IsActive = false;
+        }
+
+        if (urls !=null)
+        {
+            foreach (var newItem in urls)
+            {
+                if (!application.ApplicationCallbackUrls.Any(p => p.CallbackUrl == newItem))
+                    application.ApplicationCallbackUrls.Add(ApplicationCallbackUrl.Create(newItem));
+            }
+
+            foreach (var currnetItem in application.ApplicationCallbackUrls)
+            {
+                if (!urls.Any(p => p == currnetItem.CallbackUrl))
+                    currnetItem.IsActive = false;
+            }
+        }
     }
 }

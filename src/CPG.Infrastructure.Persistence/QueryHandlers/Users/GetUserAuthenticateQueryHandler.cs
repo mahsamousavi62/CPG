@@ -16,11 +16,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Users
 {
-    public class GetUserAuthenticateQueryHandler(ReadDbContext context, IAuthenticationService authenticationService, IRedisCaheService cacheService) : IRequestHandler<GetUserAuthenticateQuery, UserAuthenticateViewModel>
+    public class GetUserAuthenticateQueryHandler(ReadDbContext context, IAuthenticationService authenticationService, IRedisCacheService cacheService) : IRequestHandler<GetUserAuthenticateQuery, UserAuthenticateViewModel>
     {
         private readonly ReadDbContext _context = context;
         private readonly IAuthenticationService _authenticationService = authenticationService;
-        private readonly IRedisCaheService _cacheService = cacheService;
+        private readonly IRedisCacheService _cacheService = cacheService;
         public const string CacheKey = "CurrntUser_key";
         public async Task<UserAuthenticateViewModel> Handle(GetUserAuthenticateQuery request, CancellationToken cancellationToken)
         {
@@ -30,7 +30,8 @@ namespace CPG.Infrastructure.Persistence.QueryHandlers.Users
             var user = await _context.UserReadModels.Include(u => u.UserRoles).
                        SingleOrDefaultAsync(u => u.IsActive && u.IDPId == sub);
 
-            var applicationIdentifier = (await _context.ApplicationIdentifierReadModels.SingleOrDefaultAsync(a => a.IdpClientId == clientId));
+         
+            var applicationIdentifier = (await _context.ApplicationIdentifierReadModels.SingleOrDefaultAsync(a => a.IdpClientId == clientId, cancellationToken: cancellationToken));
 
             var userModel = new UserAuthenticateViewModel
             {

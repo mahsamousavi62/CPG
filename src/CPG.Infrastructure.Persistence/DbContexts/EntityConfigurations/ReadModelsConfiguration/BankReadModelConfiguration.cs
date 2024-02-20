@@ -1,7 +1,6 @@
 ﻿using CPG.Infrastructure.Persistence.DbContexts.ReadModels;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
-using CPG.Domain.SeedWork;
 
 namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations.ReadModelsConfiguration;
 
@@ -15,13 +14,17 @@ public class BankReadModelConfiguration : IEntityTypeConfiguration<BankReadModel
         readModel.Property(x => x.Name).HasColumnName("Name");
         readModel.Property(x => x.IbanPrefix).HasColumnName("IbanPrefix");
         readModel.Property(x => x.LogoAddress).HasColumnName("LogoAddress");
+        readModel.Property(x => x.HasDirectDebitFeature).HasColumnName("HasDirectDebitFeature");
         readModel.Property(x => x.IsActive);
         readModel.Property(x => x.CreationDate);
         readModel.Property(x => x.ModificationDate);
 
-        readModel
-          .HasMany(c => c.CompanyDeposits)
-          .WithOne(p => p.Bank)
-          .HasForeignKey(p => p.BankId);
+        readModel.HasMany(c => c.CompanyDeposits)
+            .WithOne(p => p.Bank)
+            .HasForeignKey(p => p.BankId);
+
+        readModel.HasOne(c => c.DirectDebitSetting)
+            .WithOne(p => p.Bank)
+            .HasForeignKey<BankDirectDebitSettingReadModel>(p => p.BankId);
     }
 }

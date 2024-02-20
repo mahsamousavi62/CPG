@@ -9,4 +9,6 @@ public class PaymentTokenResponse
     public string IpgBaseUrl { get; set; }
 
     public short StatusCode { get; set; }
+   
+    public string Message { get; set; }
 }

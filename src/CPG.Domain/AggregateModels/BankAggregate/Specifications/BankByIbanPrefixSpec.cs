@@ -1,10 +1,5 @@
 ﻿using Ardalis.Specification;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CPG.Domain.AggregateModels.BankAggregate.Specifications
 {
@@ -12,7 +7,7 @@ namespace CPG.Domain.AggregateModels.BankAggregate.Specifications
     {
         public BankByIbanPrefixSpec(string ibanPrefix)
         {
-            Query
+            Query.Include(bank => bank.DirectDebitSetting)
                 .Where(bank => bank.IbanPrefix.Value == ibanPrefix);
         }
     }

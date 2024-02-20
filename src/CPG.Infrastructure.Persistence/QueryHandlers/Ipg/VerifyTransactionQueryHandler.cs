@@ -70,13 +70,14 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
             {
                 ProviderData = transaction.IPGTransaction.CompanyIPG.ProviderData,
                 ProviderTrackerId = transaction.IPGTransaction.ProviderTrackerId,
+                Token=transaction.IPGTransaction.IPGToken
             });
 
             transaction.IPGTransaction.Status = result.Status;
 
             if (result.Status == IPGTransactionStatus.VerificationSucceeded)
             {
-                var currentDateTime = DateTime.UtcNow.Date;
+                var currentDateTime = DateTime.Now;
                 var timeMargin = new TimeOnly(23, 45);
                 var currentTime = new TimeOnly(currentDateTime.Hour, currentDateTime.Minute);
                 var date = currentTime < timeMargin ?

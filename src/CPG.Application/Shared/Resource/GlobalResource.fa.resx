@@ -187,7 +187,7 @@
     <value>نام لاتین</value>
   </data>
   <data name="False" xml:space="preserve">
-    <value>غیر</value>
+    <value>خیر</value>
   </data>
   <data name="Filter" xml:space="preserve">
     <value>فیلتر</value>
@@ -409,7 +409,7 @@
     <value>محدودیت زمانی تایید درگاه</value>
   </data>
   <data name="VerificationTimeLimitIPG" xml:space="preserve">
-    <value>محدودیت زمانی تایید تراکنش درگاه</value>
+    <value>IPG_Verification_Time_Limit</value>
   </data>
   <data name="PaymentRequestNotFound" xml:space="preserve">
     <value>درخواست پرداخت  با شناسه {0} یافت نشد </value>
@@ -538,7 +538,7 @@
     <value>درخواست پرداخت مورد نظر در وضعیت مجاز برای تایید قرار ندارد</value>
   </data>
   <data name="IpgBaseUrl" xml:space="preserve">
-    <value>نشانی صفحه درگاه پرداخت</value>
+    <value>IPG_Base_URL</value>
   </data>
   <data name="Validation_MaxLength" xml:space="preserve">
     <value>{0} نمی‌تواند بیشتر از {1} کاراکتر باشد</value>
@@ -557,5 +557,113 @@
   </data>
   <data name="RequiredShaparakSettings" xml:space="preserve">
     <value>وارد نمودن تنظیمات شاپرک الزامیست</value>
+  </data>
+  <data name="CompanyDepositNotBelongToCompany" xml:space="preserve">
+    <value>حساب متعلق به شرکت نمی باشد</value>
+  </data>
+  <data name="BusinessID" xml:space="preserve">
+    <value>Business_ID</value>
+  </data>
+  <data name="DDGrantBaseURL" xml:space="preserve">
+    <value>DD_Grant_Base_URL</value>
+  </data>
+  <data name="DDNotifyWebhookURL" xml:space="preserve">
+    <value>DD_Notify_Webhook_URL</value>
+  </data>
+  <data name="DirectDebitSetting" xml:space="preserve">
+    <value>تنظیمات برداشت مستقیم</value>
+  </data>
+  <data name="IPGSetting" xml:space="preserve">
+    <value>تنظیمات درگاه پرداخت</value>
+  </data>
+  <data name="Pec" xml:space="preserve">
+    <value>تجارت الکترونیک پارسیان</value>
+  </data>
+  <data name="RefreshToken" xml:space="preserve">
+    <value>Refresh_Token</value>
+  </data>
+  <data name="Sep" xml:space="preserve">
+    <value>پرداخت الکترونیک سامان</value>
+  </data>
+  <data name="EmptyRefreshToken" xml:space="preserve">
+    <value>مقدار RefreshToken خالی است</value>
+  </data>
+  <data name="AuthenticationType" xml:space="preserve">
+    <value>نحوه احراز هویت</value>
+  </data>
+  <data name="BankIsActiveInProvider" xml:space="preserve">
+    <value>آیا بانک مورد نظر در حال حاضر در سرویس دهنده فعال است</value>
+  </data>
+  <data name="BankLogo" xml:space="preserve">
+    <value>لوگوی بانک</value>
+  </data>
+  <data name="CardInfoCOnfirmation" xml:space="preserve">
+    <value>تایید اطلاعات کارت</value>
+  </data>
+  <data name="CheckMobileAndDepositOwnershipMatching" xml:space="preserve">
+    <value>تطبیق مالکیت موبایل ارسال شده و حساب بانکی پرداخت‌کننده</value>
+  </data>
+  <data name="DDBankCodeDirectDebit" xml:space="preserve">
+    <value>شناسه بانک برای برداشت مستقیم در سرویس دهنده مورد نظر</value>
+  </data>
+  <data name="DirectDebitProvider" xml:space="preserve">
+    <value>نوع سرویس‌دهنده برداشت مستقیم</value>
+  </data>
+  <data name="FiveYears" xml:space="preserve">
+    <value>پنج سال</value>
+  </data>
+  <data name="FourYears" xml:space="preserve">
+    <value>چهار سال</value>
+  </data>
+  <data name="HasDirectDebitFeature" xml:space="preserve">
+    <value>امکان برداشت مستقیم دارد</value>
+  </data>
+  <data name="IsActive" xml:space="preserve">
+    <value>وضعیت</value>
+  </data>
+  <data name="MaxMandateValidityDurationPerMonth" xml:space="preserve">
+    <value>حداکثر مدت اعتبار مجوز پرداخت از حساب</value>
+  </data>
+  <data name="MaxWithdrawalAmountPerDay" xml:space="preserve">
+    <value>سقف مجاز برداشت روزانه</value>
+  </data>
+  <data name="NineMonths" xml:space="preserve">
+    <value>نه ماه</value>
+  </data>
+  <data name="OneMonth" xml:space="preserve">
+    <value>یک ماه</value>
+  </data>
+  <data name="OneYear" xml:space="preserve">
+    <value>یک سال</value>
+  </data>
+  <data name="SendOtpCode" xml:space="preserve">
+    <value>ارسال رمز یکبار مصرف به شماره موبایلی که در بانک تعریف شده</value>
+  </data>
+  <data name="ShaparakIv" xml:space="preserve">
+    <value>بردار اولیه شاپرک (Shaparak_IV)</value>
+  </data>
+  <data name="ShaparakKey" xml:space="preserve">
+    <value>کلید شاپرک (Shaparak_Key)</value>
+  </data>
+  <data name="ShaparakThirdPartyCode" xml:space="preserve">
+    <value>کد شخص ثالث شاپرک (Shaparak_Thirdparty_Code)</value>
+  </data>
+  <data name="SixMonths" xml:space="preserve">
+    <value>شش ماه</value>
+  </data>
+  <data name="ThreeMonths" xml:space="preserve">
+    <value>سه ماه</value>
+  </data>
+  <data name="ThreeYears" xml:space="preserve">
+    <value>سه سال</value>
+  </data>
+  <data name="TwoYears" xml:space="preserve">
+    <value>دو سال</value>
+  </data>
+  <data name="PlanNotFound" xml:space="preserve">
+    <value>طرح با شناسه {0} یافت نشد</value>
+  </data>
+  <data name="InvalidRefreshToken" xml:space="preserve">
+    <value>مقدار RefreshToken نامعتبر است</value>
   </data>
 </root>

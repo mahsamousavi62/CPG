@@ -1,6 +1,7 @@
 ﻿using CPG.Domain.AggregateModels.TransactionAggregate;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CPG.Infrastructure.Persistence.DbContexts.ReadModels;
 
@@ -12,6 +13,7 @@ public class CompanyDepositReadModel
     public string Iban { get; set; }
     public string AccountNumber { get; set; }
     public long CompanyId { get; set; }
+    public bool? IsDefaultForDirectDebit { get; set; }
     public bool IsActive { get; set; }
     public DateTime CreationDate { get; set; }
     public DateTime? ModificationDate { get; set; }
@@ -19,4 +21,10 @@ public class CompanyDepositReadModel
     public CompanyReadModel Company { get; set; }
     public List<CompanyIPGDepositReadModel> CompanyIPGDeposits { get; set; }
     public List<TransactionReadModel> Transactions { get; set; }
+    [NotMapped]
+    public string? BankName { get; set; }
+    [NotMapped]
+    public string? CompanyName { get; set; }
+    [NotMapped]
+    public string? BankLogo { get; set; }
 }

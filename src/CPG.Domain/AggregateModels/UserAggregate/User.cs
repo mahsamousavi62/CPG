@@ -13,24 +13,25 @@ namespace CPG.Domain.AggregateModels.UserAggregate
         {
 
         }
-        public User(string idpId, string nationalCode, string firstName, string lastName, string phoneNumber)
+        public User(string idpId, string nationalCode, string firstName, string lastName, string phoneNumber, bool isLegal, short kycStatus)
         {
             IdpId = idpId;
             NationalCode = nationalCode;
             FirstName = firstName;
             LastName = lastName;
             PhoneNumber = phoneNumber;
-            KYCStatus = 1;
+            KYCStatus = kycStatus;
             IsActive = true;
-            IsLegal = false;
+            IsLegal = isLegal;
         }
 
-        public User(string firstName, string lastName, string phoneNumber)
+        public User(string firstName, string lastName, string phoneNumber, bool isLegal, short kycStatus)
         {
             FirstName = firstName;
             LastName = lastName;
             PhoneNumber = phoneNumber;
-            KYCStatus = 1;
+            KYCStatus = kycStatus;
+            IsLegal = isLegal;
         }
 
         #region [ Fields And Properties ]
@@ -60,23 +61,24 @@ namespace CPG.Domain.AggregateModels.UserAggregate
         #endregion
 
         public static User Create(string idpId, NationalCode nationalCode, Name name,
-            PhoneNumber phoneNumber, UserRoleType userRoleType)
+            PhoneNumber phoneNumber, UserRoleType userRoleType, bool isLegal, short kycStatus)
         {
-            var user = new User(idpId, nationalCode.Value, name.FirstName, name.LastName, phoneNumber.Value);
+            var user = new User(idpId, nationalCode.Value, name.FirstName, name.LastName, phoneNumber.Value, isLegal, kycStatus);
             user.UserRoles.Add(new UserRole(userRoleType));
-            user.LastUpdateFromIDP = DateTime.UtcNow;
+            user.LastUpdateFromIDP = DateTime.Now;
 
             return user;
         }
 
-        public static User Update(User user, Name name, string phoneNumber, string sub)
+        public static User Update(User user, Name name, string phoneNumber, string sub, bool isLegal, short kycStatus)
         {
             user.FirstName = name.FirstName;
             user.LastName = name.LastName;
             user.PhoneNumber = phoneNumber;
-            user.KYCStatus = 1;
-            user.LastUpdateFromIDP = DateTime.UtcNow;
+            user.KYCStatus = kycStatus;
+            user.LastUpdateFromIDP = DateTime.Now;
             user.IdpId = sub;
+            user.IsLegal = isLegal;
 
             return user;
         }
@@ -87,7 +89,5 @@ namespace CPG.Domain.AggregateModels.UserAggregate
         {
             return Task.FromResult("CPG Test");
         }
-
-
     }
 }
