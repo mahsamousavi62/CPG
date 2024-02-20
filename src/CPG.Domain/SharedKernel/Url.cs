@@ -1,11 +1,6 @@
 ﻿using Ardalis.GuardClauses;
 using CPG.Domain.SharedKernel.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace CPG.Domain.SharedKernel;
 
@@ -31,6 +26,8 @@ public class Url
     }
 
     public static implicit operator string(Url url) => url.Value;
+
     public static implicit operator Url(string value) => new(value);
+
     public override string ToString() => Value;
 }

@@ -1,45 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using CPG.Domain.AggregateModels.UserAggregate;
-using CPG.Domain.SharedKernel;
+﻿using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Communication;
-using CPG.Domain.SharedKernel.Interfaces;
 using CPG.Domain.SharedKernel.Logging;
-using HotChocolate.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
-using Serilog;
 using Serilog.Context;
+using System;
+using System.Linq;
+using System.Net.Http;
+using System.Text.RegularExpressions;
 //using Microsoft.Extensions.Logging;
 
 namespace CPG.Infrastructure.Logging;
 
-public class LogService(ILogger<LogService> logger , IHttpContextAccessor httpContextAccessor) : ILogService 
+public partial class LogService(ILogger<LogService> logger, IHttpContextAccessor httpContextAccessor) : ILogService
 {
-  
+
     private readonly ILogger<LogService> _logger = logger;
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     public string ServiceName { get; set; }
     public Enums.ServiceType ServiceType { get; set; }
-    public Enums.ProviderType ProviderType{ get; set; }
+    public Enums.ProviderType ProviderType { get; set; }
 
     public void AddServiceCallLog<TBody>(HttpProviderRequest<TBody> request, HttpResponseMessage response, string resString)
     {
         if (!string.IsNullOrEmpty(resString))
         {
-            resString = Regex.Replace(resString, Constants.Pattern, Constants.Replaceformat);
+            resString = MyRegex().Replace(resString, Constants.Replaceformat);
         }
         string reqString = System.Text.Json.JsonSerializer.Serialize(request);
         if (!string.IsNullOrEmpty(reqString))
         {
-            reqString = Regex.Replace(reqString, Constants.Pattern, Constants.Replaceformat);
+            reqString = MyRegex().Replace(reqString, Constants.Replaceformat);
         }
         _ = long.TryParse(_httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value, out long UserId);
 
@@ -56,7 +49,7 @@ public class LogService(ILogger<LogService> logger , IHttpContextAccessor httpCo
             ErrorCode = response.IsSuccessStatusCode ? null : ReasonPhrases.GetReasonPhrase((int)response.StatusCode),
             ErrorType = response.IsSuccessStatusCode ? null : response.StatusCode.ToString(),
             ProviderType = request.Provider,
-            AuditType=Enums.AuditType.Provider
+            AuditType = Enums.AuditType.Provider
         };
 
         using (LogContext.PushProperty("CallLog", callLog, true))
@@ -65,7 +58,7 @@ public class LogService(ILogger<LogService> logger , IHttpContextAccessor httpCo
         }
     }
 
-public void AddServiceCallLog(string request,string response,short status,string message)
+    public void AddServiceCallLog(string request, string response, short status, string message)
     {
         _ = long.TryParse(_httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value, out long UserId);
 
@@ -75,11 +68,11 @@ public void AddServiceCallLog(string request,string response,short status,string
             ResponseBody = response,
             ServiceCallDate = DateTime.Now,
             ServiceCallUrl = ServiceName,
-            ServiceCallStatus = status == 0 ? true : false,
+            ServiceCallStatus = status == 0,
             ServiceType = ServiceType,
             CreationDate = DateTime.Now,
             CreationUserId = UserId == 0 ? 1 : UserId,
-            ErrorCode = status<0 ? message:"",
+            ErrorCode = status < 0 ? message : "",
             ErrorType = status < 0 ? status.ToString() : "",
             ProviderType = ProviderType,
             AuditType = Enums.AuditType.Provider
@@ -90,4 +83,7 @@ public void AddServiceCallLog(string request,string response,short status,string
             _logger.LogInformation("[CallLog] {@CallLog}", callLog);
         }
     }
+
+    [GeneratedRegex(Constants.Pattern)]
+    private static partial Regex MyRegex();
 }
