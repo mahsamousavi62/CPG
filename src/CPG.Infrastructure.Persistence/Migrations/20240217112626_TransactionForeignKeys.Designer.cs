@@ -4,6 +4,7 @@ using CPG.Infrastructure.Persistence.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CPG.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(WriteDbContext))]
-    partial class WriteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240217112626_TransactionForeignKeys")]
+    partial class TransactionForeignKeys
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -627,8 +630,6 @@ namespace CPG.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BankId");
-
                     b.HasIndex("ProviderId");
 
                     b.ToTable("DirectDebitGrant", (string)null);
@@ -1060,7 +1061,7 @@ namespace CPG.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("NationalCode")
                         .IsRequired()
-                        .HasColumnType("char(11)")
+                        .HasColumnType("char(10)")
                         .HasColumnName("NationalCode");
 
                     b.Property<string>("PhoneNumber")
@@ -1413,19 +1414,11 @@ namespace CPG.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("CPG.Domain.AggregateModels.DirectDebitGrantAggregate.DirectDebitGrant", b =>
                 {
-                    b.HasOne("CPG.Domain.AggregateModels.BankAggregate.Bank", "Bank")
-                        .WithMany("DirectDebitGrants")
-                        .HasForeignKey("BankId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("CPG.Domain.AggregateModels.ProviderAggregate.Provider", "Provider")
                         .WithMany("DirectDebitGrants")
                         .HasForeignKey("ProviderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Bank");
 
                     b.Navigation("Provider");
                 });
@@ -1554,8 +1547,6 @@ namespace CPG.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("CPG.Domain.AggregateModels.BankAggregate.Bank", b =>
                 {
                     b.Navigation("CompanyDeposits");
-
-                    b.Navigation("DirectDebitGrants");
 
                     b.Navigation("DirectDebitSetting");
                 });

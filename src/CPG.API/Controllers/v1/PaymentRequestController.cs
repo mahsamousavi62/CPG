@@ -62,7 +62,7 @@ public class PaymentRequestController : ApiBaseController
     {
         return await Mediator.Send(new GetPaymentTransactionInfoQuery(paymentTransactionRequest));
     }
-
+    [Authorize]
     [HttpPost("TransactionDetail")]
     [ProducesResponseType(typeof(Result<TransactionDetailResponseViewModel>), 200)]
     public async Task<Result<TransactionDetailResponseViewModel>> TransactionDetail([Required] TransactionDetailRequestViewModel model)
