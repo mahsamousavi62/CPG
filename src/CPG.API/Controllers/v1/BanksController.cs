@@ -32,7 +32,7 @@ public class BanksController : ApiBaseController
     [HttpPut("update")]
     public async Task<Result<bool>> UpdateBank([FromForm] UpdateBankModel model)
     {
-        UpdateBankViewModel updatebankViewModel = new(model.BankId,model.Name,
+        UpdateBankViewModel updatebankViewModel = new(model.Id,model.Name,
             new FormFileProxy(model.Logo),model.IbanPrefix,model.HasDirectDebitFeature,model.DirectDebitSetting);
 
         return await Mediator.Send(new UpdateBankCommand(updatebankViewModel));
