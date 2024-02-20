@@ -14,7 +14,7 @@ public class GrantData
     public string BankCode { get; set; }
     public string CallbackUrl { get; set; }
     public int Count { get; set; }
-    public string Limit { get; set; }
+    public decimal Limit { get; set; }
     public string Mobile { get; set; }
     public string Name { get; set; }
     public string Email { get; set; }
@@ -24,5 +24,5 @@ public class GrantData
     public string AccountNumber { get; set; }
     public string Pan { get; set; }
     public string CreatedAt { get; set; }
-    public object RevokedAt { get; set; }
+    public string RevokedAt { get; set; }
 }

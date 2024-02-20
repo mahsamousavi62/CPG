@@ -24,7 +24,7 @@ public class DirectDebitInfo
 {
     public AvailableBankViewModel BankInfo { get; set; }
 
-    public DirectDebitGrantInfo GrantInfo { get; set; }
+    public List<DirectDebitGrantInfo> GrantInfo { get; set; }
 }
 
 public class DirectDebitGrantInfo
