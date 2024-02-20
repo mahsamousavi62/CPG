@@ -51,9 +51,7 @@ public class GetCompanyIPGsQueryHandler(ReadDbContext context, IMinioProvider mi
         }
         catch (System.Exception ex)
         {
-
             return Result<IReadOnlyCollection<CompanyIPGDataViewModel>>.Failure(new Error("1000000", GlobalResource.UnexpectedError));
-
         }
     }
 }
