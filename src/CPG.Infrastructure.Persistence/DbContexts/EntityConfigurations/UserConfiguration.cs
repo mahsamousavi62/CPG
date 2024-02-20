@@ -15,7 +15,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         entity.Property(x => x.Id).HasColumnName("Id").UseIdentityColumn();
         entity.Property(x => x.IdpId).HasColumnName("IDPId").HasColumnType("varchar(255)");
-        entity.Property(x => x.NationalCode).HasColumnName("NationalCode").HasColumnType("char(10)").IsRequired();
+        entity.Property(x => x.NationalCode).HasColumnName("NationalCode").HasColumnType("char(11)").IsRequired();
         entity.Property(x => x.PhoneNumber).HasColumnName("PhoneNumber").HasColumnType("char(11)").IsRequired();
         entity.Property(x => x.FirstName).HasColumnName("FirstName").HasColumnType("nvarchar(255)").IsRequired();
         entity.Property(x => x.LastName).HasColumnName("LastName").HasColumnType("nvarchar(255)").IsRequired();

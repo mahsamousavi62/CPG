@@ -86,6 +86,11 @@ public class PrivatePerson
     public string FullName { get; set; }
 }
 
+public class LegalPerson
+{
+    public string CompanyName { get; set; }
+}
+
 public class Result
 {
     public string Id { get; set; }
@@ -94,8 +99,9 @@ public class Result
     public object Email { get; set; }
     public string Type { get; set; }
     public string Status { get; set; }
+    public bool IsLegal { get; set; }
     public PrivatePerson PrivatePerson { get; set; }
-    public object legalPerson { get; set; }
+    public LegalPerson LegalPerson { get; set; }
     public List<Address> Addresses { get; set; }
     public List<TradingCode> TradingCodes { get; set; }
     public object Agent { get; set; }
