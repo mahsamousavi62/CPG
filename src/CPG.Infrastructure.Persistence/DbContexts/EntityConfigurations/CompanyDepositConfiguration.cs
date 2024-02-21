@@ -1,4 +1,4 @@
-﻿using CPG.Application.UseCases.CompanyDeposits;
+﻿using CPG.Domain.AggregateModels.CompanyDepositAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

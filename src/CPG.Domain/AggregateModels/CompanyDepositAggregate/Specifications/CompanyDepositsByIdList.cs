@@ -1,5 +1,5 @@
 ﻿using Ardalis.Specification;
-using CPG.Application.UseCases.CompanyDeposits;
+using CPG.Domain.AggregateModels.CompanyDepositAggregate;
 using System.Collections.Generic;
 using System.Linq;
 
