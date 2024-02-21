@@ -80,11 +80,15 @@ public class LoggingMiddleware(RequestDelegate next, ILoggerFactory loggerFactor
                 httpContext.Response.Body = responseBody;
 
                 log.StartDateTime = DateTime.Now;
+
                 await next(httpContext);
+
                 log.EndDateTime = DateTime.Now;
+
                 TimeSpan timeDifference = log.EndDateTime - log.StartDateTime;
                 log.DurationMs = (long)timeDifference.TotalMilliseconds;
                 log.ResponseStatus = httpContext.Response.StatusCode.ToString();
+
                 string text;
                 using var reader = new StreamReader(httpContext.Response.Body);
                 _ = httpContext.Response.Body.Seek(0, SeekOrigin.Begin);

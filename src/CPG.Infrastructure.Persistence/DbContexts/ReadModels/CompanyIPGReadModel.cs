@@ -1,6 +1,7 @@
 ﻿using CPG.Domain.AggregateModels.TransactionAggregate;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CPG.Infrastructure.Persistence.DbContexts.ReadModels;
 
@@ -20,9 +21,10 @@ public class CompanyIPGReadModel
     public ICollection<CompanyIPGDepositReadModel> CompanyIPGDeposits { get; set; }
     public CompanyIPGDepositReadModel DefaultDeposit { get; set; }
     public ICollection<IPGTransactionReadModel> IPGTransactions { get; set; }
+    [NotMapped]
     public string IPGTypeLogo { get; set; }
+    [Newtonsoft.Json.JsonIgnore]
     public string IPGTypeName { get; set; }
+    [NotMapped]
     public string ProviderName { get; set; }
-
-
 }
