@@ -1,9 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Ardalis.GuardClauses;
-using CPG.Application.Shared.Exceptions;
+﻿using CPG.Application.Shared.Exceptions;
 using CPG.Application.UseCases.Application.Exceptions;
 using CPG.Application.UseCases.Applications.ViewModels;
 using CPG.Domain.AggregateModels.CompanyDepositAggregate;
@@ -16,6 +11,10 @@ using CPG.Domain.Exceptions;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Minio;
 using MediatR;
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace CPG.Application.UseCases.Applications.Commands.UpdateApplication;
 
@@ -30,34 +29,19 @@ public class UpdateApplicationCommandHandlerr(IAggregateRepository<Domain.Aggreg
     public async Task<Result<Unit>> Handle(UpdateApplicationCommand request, CancellationToken cancellationToken)
     {
 
-        try
-        {
-            var(application, persianName, englishName) = await Validate(request.Model);
+            var (application, persianName, englishName) = await Validate(request.Model);
 
-           Url responseUrl = new(request.Model.ResponseApiUrl);
+            Url responseUrl = new(request.Model.ResponseApiUrl);
             var urls = request.Model.CallbackUrls?.Select(t => new Url(t)).ToArray();
 
             Logo logo = new(request.Model.File, Enums.UploadFromEntityType.Application.ToString(), _minioProvider);
-             Domain.AggregateModels.ApplicationAggregate.Application.Update(application, persianName, englishName, responseUrl, 
-                                                                                             logo, request.Model.IdpClientIds, urls);
+            Domain.AggregateModels.ApplicationAggregate.Application.Update(application, persianName, englishName, responseUrl,
+                                                                                            logo, request.Model.IdpClientIds, urls);
 
             await _applicationRepository.UpdateAsync(application, cancellationToken);
             await _applicationRepository.SaveChangesAsync(cancellationToken);
 
             return Result<Unit>.SuccessResult(Unit.Value);
-        }
-        catch (DomainException exc)
-        {
-            return Result<Unit>.Failure(new Error(exc.Code, exc.Message));
-        }
-        catch (AppException exc)
-        {
-            return Result<Unit>.Failure(new Error(exc.Code, exc.Message));
-        }
-        catch (Exception exc)
-        {
-            return Result<Unit>.Failure(new Error(exc.Source, exc.Message));
-        }
 
     }
 
@@ -70,11 +54,11 @@ public class UpdateApplicationCommandHandlerr(IAggregateRepository<Domain.Aggreg
         if (application == null)
             throw new ApplicationNotFoundException(model.Id);
 
-        var samePersianNameApplication = await _applicationRepository.GetBySpecAsync(new ApplicationByPersianNameUpdateMode(model.PersianName,model.Id));
+        var samePersianNameApplication = await _applicationRepository.GetBySpecAsync(new ApplicationByPersianNameUpdateMode(model.PersianName, model.Id));
         if (samePersianNameApplication != null)
             throw new DuplicatePersianNameException(model.PersianName);
 
-        var sameEnglishNameApplication = await _applicationRepository.GetBySpecAsync(new ApplicationByEnglishNameUpdateMode(model.EnglishName,model.Id));
+        var sameEnglishNameApplication = await _applicationRepository.GetBySpecAsync(new ApplicationByEnglishNameUpdateMode(model.EnglishName, model.Id));
         if (sameEnglishNameApplication != null)
             throw new DuplicateEnglishNameException(model.EnglishName);
 

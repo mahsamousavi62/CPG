@@ -2,7 +2,7 @@
 using CPG.Application.UseCases.DirectDebit.Query;
 using CPG.Application.UseCases.DirectDebit.ViewModels;
 using CPG.Domain.SharedKernel;
-using HotChocolate.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 

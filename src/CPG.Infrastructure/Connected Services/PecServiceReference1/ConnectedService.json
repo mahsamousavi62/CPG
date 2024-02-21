@@ -105,7 +105,6 @@
       "Microsoft.IdentityModel.Tokens, {Microsoft.IdentityModel.Tokens, 6.32.2}",
       "Microsoft.IdentityModel.Tokens.Saml, {Microsoft.IdentityModel.Tokens.Saml, 6.8.0}",
       "Microsoft.IdentityModel.Xml, {Microsoft.IdentityModel.Xml, 6.8.0}",
-      "Microsoft.IO.RecyclableMemoryStream, {Microsoft.IO.RecyclableMemoryStream, 3.0.0}",
       "Microsoft.Net.Http.Headers, {Microsoft.Net.Http.Headers, 8.0.0}",
       "Microsoft.SqlServer.Server, {Microsoft.SqlServer.Server, 1.0.0}",
       "Minio, {Minio, 6.0.1}",

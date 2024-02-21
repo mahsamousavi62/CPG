@@ -1,8 +1,13 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 using System.Net;
+using System.Reactive;
+using System.Text;
 using System.Threading.Tasks;
 using CPG.Application.UseCases.Exceptions;
 using CPG.Domain.Exceptions;
+using CPG.Domain.SharedKernel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -27,7 +32,7 @@ public class ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandling
         }
     }
 
-    private static Task HandleExceptionAsync(HttpContext context, Exception ex)
+    private static async Task HandleExceptionAsync(HttpContext context, Exception ex)
     {
         var response = ex switch
         {
@@ -37,10 +42,18 @@ public class ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandling
         };
 
         var result = JsonConvert.SerializeObject(response);
+        using MemoryStream responseBody = new();
+
+        byte[] messageBytes = Encoding.UTF8.GetBytes(result);
+        responseBody.Write(messageBytes, 0, messageBytes.Length);
+
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)response.HttpStatusCode;
-
-        return context.Response.WriteAsync(result);
+        context.Response.Body = new MemoryStream(messageBytes);
+        var writer = context.Response.BodyWriter;
+        await writer.WriteAsync(messageBytes);
+        await writer.CompleteAsync();
+        
     }
 
     public class ExceptionResponse(string code, string message, HttpStatusCode httpStatusCode)

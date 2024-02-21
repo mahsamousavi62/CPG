@@ -97,16 +97,19 @@ public class Application : AuditableEntity<long>, IAggregateRoot
                 currnetItem.IsActive = false;
         }
 
-        foreach (var newItem in urls)
+        if (urls !=null)
         {
-            if (!application.ApplicationCallbackUrls.Any(p => p.CallbackUrl == newItem))
-                application.ApplicationCallbackUrls.Add(ApplicationCallbackUrl.Create(newItem));
-        }
+            foreach (var newItem in urls)
+            {
+                if (!application.ApplicationCallbackUrls.Any(p => p.CallbackUrl == newItem))
+                    application.ApplicationCallbackUrls.Add(ApplicationCallbackUrl.Create(newItem));
+            }
 
-        foreach (var currnetItem in application.ApplicationCallbackUrls)
-        {
-            if (!urls.Any(p => p == currnetItem.CallbackUrl))
-                currnetItem.IsActive = false;
+            foreach (var currnetItem in application.ApplicationCallbackUrls)
+            {
+                if (!urls.Any(p => p == currnetItem.CallbackUrl))
+                    currnetItem.IsActive = false;
+            }
         }
     }
 }
