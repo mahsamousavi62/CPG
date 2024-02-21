@@ -1,6 +1,5 @@
 ﻿using CPG.Domain.SharedKernel.Communication.DirectDebit.Vandar;
 using Newtonsoft.Json;
-using System.Text.Json.Serialization;
 
 namespace CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Store;
 

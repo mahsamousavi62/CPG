@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CPG.Application.UseCases.CompanyDeposits.Exceptions;
 using CPG.Application.UseCases.CompanyDeposits.ViewModels;
 using CPG.Application.UseCases.Exceptions;
+using CPG.Domain.AggregateModels.CompanyDepositAggregate;
 using CPG.Domain.AggregateModels.CompanyDepositAggregate.Specifications;
 using CPG.Domain.Exceptions;
 using CPG.Domain.SharedKernel;

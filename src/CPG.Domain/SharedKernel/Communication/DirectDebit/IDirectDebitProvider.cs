@@ -17,4 +17,6 @@ public interface IDirectDebitProvider
     Task<VerifyResponse> VerifyAsync(VerifyRequest request);
 
     Task<UserGrantsResponse> GetUserGrants(UserGrantsRequest request);
+
+    Task<WithdrawalResponse> WithdrawAsync(WithdrawalRequest request);
 }

@@ -162,11 +162,11 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
         GetDataFromJsonProvider(request.ProviderData);
         var headers = await GetHeaders(request.AccessToken);
 
-        var data = await _httpProvider.PostAsync<UserGrantsRequest, VandarShowMobileResponse, VandarResponseBase, dynamic>
+        var data = await _httpProvider.GetAsync<UserGrantsRequest, VandarShowMobileResponse, VandarResponseBase, dynamic>
             (new HttpProviderRequest<dynamic>
             {
                 BaseAddress = "https://api.vandar.io/",
-                Uri = $"v3/business/{businessData}/subscription/authorization?{request.MobileNumber}",
+                Uri = $"v3/business/{businessData}/subscription/authorization?mobile={request.MobileNumber}",
                 HeaderParameters = headers,
                 Provider = Enums.ProviderType.Vandar,
                 Service = Enums.ServiceType.VandarShow,
@@ -174,7 +174,7 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
 
         return new UserGrantsResponse
         {
-            GrantMessage = data.GrantMessage,
+            GrantMessage = data.Message,
             Status = data.Status,
             StatusCode = data.StatusCode,
             Grants = data.Data.Select(t => new GrantData
@@ -384,5 +384,10 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
         }
 
         throw new Exception(GlobalResource.ProviderUnexpectedError);
+    }
+
+    public Task<WithdrawalResponse> WithdrawAsync(WithdrawalRequest request)
+    {
+        throw new NotImplementedException();
     }
 }
