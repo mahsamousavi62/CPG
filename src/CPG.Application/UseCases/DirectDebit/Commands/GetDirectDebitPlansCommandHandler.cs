@@ -106,7 +106,7 @@ public class GetDirectDebitPlansCommandHandler(IDirectDebitFactory directDebitFa
                     else
                     {
                         DirectDebitGrant.Update(dbGrant, _user.UserId, bank.Id, grant.AccountNumber, grant.Mobile, grant.Count, grant.Limit, dbGrant.TrackId,
-                            expirationDate, DateTime.Parse(grant.RevokedAt), provider.Id, grant.Token, grant.Id, status, dbGrant.DurationPerMonth);
+                            expirationDate, revokedDate, provider.Id, grant.Token, grant.Id, status, dbGrant.DurationPerMonth);
 
                         await _directDebitGrantRepository.UpdateAsync(dbGrant);
                         await _directDebitGrantRepository.SaveChangesAsync();
