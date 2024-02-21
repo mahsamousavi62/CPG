@@ -70,6 +70,7 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                 throw new PaymentTokenNullKeyOrIvException();
             }
 
+            var company = await _companyRepository.GetBySpecAsync(new CompanyByIdSpec(paymentRequest.CompanyId), cancellationToken);
             if (request.PaymentToken.CompanyIPGId is not null)
             {
                 var companyIpg = await _companyIPGRepository.GetBySpecAsync(new CompanyIPGIncludeProvider((long)request.PaymentToken.CompanyIPGId), cancellationToken);
@@ -96,7 +97,6 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
 
                 if (!companyDeposit.IsActive) { throw new PaymentTokenInactiveDepositException(); }
                 if (!companyDeposit.Bank.IsActive) { throw new PaymentTokenInactiveBankException(); }
-                var company = await _companyRepository.GetBySpecAsync(new CompanyByIdSpec(paymentRequest.CompanyId), cancellationToken);
                 if (company.PaymentMethods?.Any(t => t.MethodType == Enums.PaymentMethodType.InternetPaymentGateway) is false) throw new PaymentRequestCompanyHasNoIPGMethodException();
                 destinationDepositId = companyDeposit.Id;
 
@@ -186,6 +186,8 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                 if (!bank.DirectDebitSetting.Provider.IsActive) { throw new PaymentTokenInactiveProviderException(); }
                 if (!bank.DirectDebitSetting.IsActive) { throw new PaymentRequestInactiveDirectDebitSettingException(); }
                 if (bank.DirectDebitSetting.Provider.PaymentMethods?.Any(t => t.MethodType == Enums.PaymentMethodType.DirectDebit) is false) { throw new PaymentRequestProviderHasNoDDMethodException(); }
+                if (company.PaymentMethods?.Any(t => t.MethodType == Enums.PaymentMethodType.DirectDebit) is false) { throw new PaymentRequestCompanyHasNoDDMethodException(); }
+
                 if (paymentRequest.Amount > bank.DirectDebitSetting.MaxWithdrawalAmountPerDay) throw new PaymentRequestAmountBankLimitException();
                 if (paymentRequest.Company.NationalCodeMatchingRequied && bank.DirectDebitSetting.AuthenticationType != Enums.AuthenticationType.CheckMobileAndDepositOwnershipMatching) throw new PaymentRequestAuthenticationTypeException();
                 if (bank.DirectDebitSetting.ProviderId != grant.ProviderId) throw new PaymentRequestNotEqualProviderIdException();
