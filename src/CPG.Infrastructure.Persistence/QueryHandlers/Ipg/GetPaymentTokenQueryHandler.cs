@@ -58,11 +58,11 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
         try
         {
             var paymentRequest = await _paymentRequestRepository.GetBySpecAsync(new PaymentRequestByCode(request.PaymentToken.PaymentRequestCode), cancellationToken);
-            if (paymentRequest is null) { throw new PaymentRequestNotFoundByCodeException(); }
-            if (!paymentRequest.Company.IsActive) { throw new PaymentTokenInactiveCompanyException(); }
-            if (paymentRequest.UrlExpirationDateTime < DateTime.Now) { throw new PaymentRequestCodeExpiredException(); }
-            if (paymentRequest.IsUsed) { throw new PaymentRequestCodeIsUsedBeforeException(); }
-            if (paymentRequest.Status != Enums.PaymentStatus.RedirectedToCpg) { throw new PaymentRequestCodeInvalidStatusException(); }
+            if (paymentRequest is null) throw new PaymentRequestNotFoundByCodeException();
+            if (!paymentRequest.Company.IsActive) throw new PaymentTokenInactiveCompanyException();
+            if (paymentRequest.UrlExpirationDateTime < DateTime.Now) throw new PaymentRequestCodeExpiredException();
+            if (paymentRequest.IsUsed) throw new PaymentRequestCodeIsUsedBeforeException();
+            if (paymentRequest.Status != Enums.PaymentStatus.RedirectedToCpg) throw new PaymentRequestCodeInvalidStatusException();
 
             if (paymentRequest.Company.NationalCodeMatchingRequied is true &&
                 (string.IsNullOrEmpty(paymentRequest.Company.ShaparakSetting?.Iv) || string.IsNullOrEmpty(paymentRequest.Company.ShaparakSetting?.Key)))
@@ -74,11 +74,11 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
             if (request.PaymentToken.CompanyIPGId is not null)
             {
                 var companyIpg = await _companyIPGRepository.GetBySpecAsync(new CompanyIPGIncludeProvider((long)request.PaymentToken.CompanyIPGId), cancellationToken);
-                if (companyIpg is null) { throw new CompanyIPGNotFoundException((long)request.PaymentToken.CompanyIPGId); }
-                if (!companyIpg.IsActive) { throw new PaymentTokenInactiveIPGException(); }
-                if (!companyIpg.IPGType.IsActive) { throw new PaymentTokenInactiveIPGTypeException(); }
-                if (!companyIpg.Provider.IsActive) { throw new PaymentTokenInactiveProviderException(); }
-
+                if (companyIpg is null) throw new CompanyIPGNotFoundException((long)request.PaymentToken.CompanyIPGId);
+                if (!companyIpg.IsActive) throw new PaymentTokenInactiveIPGException();
+                if (!companyIpg.IPGType.IsActive) throw new PaymentTokenInactiveIPGTypeException();
+                if (!companyIpg.Provider.IsActive) throw new PaymentTokenInactiveProviderException();
+                if (!companyIpg.Provider.PaymentMethods.Any(t => t.MethodType == Enums.PaymentMethodType.InternetPaymentGateway)) throw new PaymentRequestProviderHasNoIPGMethodException();
 
                 long destinationDepositId;
                 Domain.AggregateModels.CompanyDepositAggregate.CompanyDeposit companyDeposit;
@@ -95,8 +95,8 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                     if (companyDeposit is null) throw new Exception("CompanyDeposit not found!");
                 }
 
-                if (!companyDeposit.IsActive) { throw new PaymentTokenInactiveDepositException(); }
-                if (!companyDeposit.Bank.IsActive) { throw new PaymentTokenInactiveBankException(); }
+                if (!companyDeposit.IsActive) throw new PaymentTokenInactiveDepositException();
+                if (!companyDeposit.Bank.IsActive) throw new PaymentTokenInactiveBankException();
                 if (company.PaymentMethods?.Any(t => t.MethodType == Enums.PaymentMethodType.InternetPaymentGateway) is false) throw new PaymentRequestCompanyHasNoIPGMethodException();
                 destinationDepositId = companyDeposit.Id;
 
@@ -152,7 +152,6 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                     PaymentRequest.Update(paymentRequest);
                     await _paymentRequestRepository.UpdateAsync(paymentRequest);
                     await _paymentRequestRepository.SaveChangesAsync();
-
                 }
                 else
                 {
@@ -195,8 +194,8 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                 var currentDayTransactions = await _transactionRepository.ListAsync(new CurrentDayTransactionByGrantIdSpec(grant.Id), cancellationToken);
                 var currentMonthTransactions = await _transactionRepository.ListAsync(new CurrentMonthTransactionByGrantIdSpec(grant.Id), cancellationToken);
 
-                if (paymentRequest.Amount > grant.Bank.DirectDebitSetting.MaxWithdrawalAmountPerDay - currentDayTransactions.Sum(t => t.Amount)) throw new PaymentRequestNotEqualProviderIdException();
-                if (grant.SuccessTransactionCountLimitPerMonth - currentMonthTransactions.Count() <= 0) throw new PaymentRequestNotEqualProviderIdException();
+                if (paymentRequest.Amount > grant.Bank.DirectDebitSetting.MaxWithdrawalAmountPerDay - currentDayTransactions.Sum(t => t.Amount)) throw new PaymentRequestDayTransactionsLimitException();
+                if (grant.SuccessTransactionCountLimitPerMonth - currentMonthTransactions.Count() <= 0) throw new PaymentRequestMonthTransactionsLimitException();
 
                 var mobileNumber = await _authenticationService.GetDataFromClaim<string>(ClaimTypes.MobilePhone);
 
