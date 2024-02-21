@@ -1,6 +1,8 @@
 ﻿using CPG.Application.Shared.Exceptions;
 using CPG.Application.UseCases.Application.Exceptions;
 using CPG.Application.UseCases.Applications.ViewModels;
+using CPG.Domain.AggregateModels.CompanyDepositAggregate;
+using CPG.Application.UseCases.CompanyDeposits.Exceptions;
 using CPG.Application.UseCases.Exceptions;
 using CPG.Domain.AggregateModels.ApplicationAggregate;
 using CPG.Domain.AggregateModels.ApplicationAggregate.Exceptions;

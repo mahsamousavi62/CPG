@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using CPG.Infrastructure.Persistence.DbContexts;
 using System.Linq;
 using CPG.Domain.AggregateModels.CompanyAggregate.Specifications;
+using CPG.Domain.AggregateModels.CompanyDepositAggregate;
 
 namespace CPG.Application.UseCases.CompanyDeposits.Commands.SetAsDefaultForDD;
 
