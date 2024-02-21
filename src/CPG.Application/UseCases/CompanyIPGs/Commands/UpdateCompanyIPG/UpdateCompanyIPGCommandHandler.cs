@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CPG.Application.UseCases.CompanyDeposits;
+using CPG.Domain.AggregateModels.CompanyDepositAggregate;
 using CPG.Application.UseCases.CompanyIPGs.Exceptions;
 using CPG.Application.UseCases.Exceptions;
 using CPG.Domain.AggregateModels.CompanyDepositAggregate.Specifications;

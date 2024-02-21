@@ -1,4 +1,4 @@
-﻿using CPG.Application.UseCases.CompanyDeposits;
+﻿using CPG.Domain.AggregateModels.CompanyDepositAggregate;
 using CPG.Domain.AggregateModels.CompanyIPGAggregate;
 using System;
 using System.Collections.Generic;

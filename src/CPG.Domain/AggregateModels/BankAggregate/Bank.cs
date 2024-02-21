@@ -1,4 +1,4 @@
-﻿using CPG.Application.UseCases.CompanyDeposits;
+﻿using CPG.Domain.AggregateModels.CompanyDepositAggregate;
 using CPG.Domain.AggregateModels.BankAggregate.Events;
 using CPG.Domain.AggregateModels.BankAggregate.Exceptions;
 using CPG.Domain.AggregateModels.DirectDebitGrantAggregate;

@@ -1,6 +1,6 @@
 ﻿using CPG.Application.Auth;
 using CPG.Application.Shared.Resource;
-using CPG.Application.UseCases.CompanyDeposits;
+using CPG.Domain.AggregateModels.CompanyDepositAggregate;
 using CPG.Application.UseCases.Exceptions;
 using CPG.Application.UseCases.PaymentRequests.Exceptions;
 using CPG.Application.UseCases.PaymentRequests.ViewModels;
