@@ -24,6 +24,7 @@ using CPG.Domain.SharedKernel.Communication.Idp.Models.UserProfile;
 using System.Numerics;
 using static CPG.Domain.SharedKernel.Enums;
 using CPG.Domain.SharedKernel.Helper;
+using System.Globalization;
 
 namespace CPG.Application.UseCases.DirectDebit.Commands;
 
@@ -87,14 +88,17 @@ public class GetDirectDebitPlansCommandHandler(IDirectDebitFactory directDebitFa
 
                 foreach (var grant in grantData.Grants)
                 {
-                    var status = SharedServices.GetVandarDirectDebitGrantStatus(grant.Status);                    
+                    var status = SharedServices.GetVandarDirectDebitGrantStatus(grant.Status);
                     var dbGrant = await _directDebitGrantRepository.GetBySpecAsync(new DirectDebitGrantByAuthorizationIdSpec(grant.Id), cancellationToken);
-                    var expirationDate = DateTime.Parse(grant.ExpirationDate);
+                    var expirationDate = DateTime.ParseExact(grant.ExpirationDate, "yyyy/MM/dd HH:mm:ss", new CultureInfo("fa-IR"));
+                    DateTime? revokedDate = null;
+                    if (!string.IsNullOrEmpty(grant.RevokedAt))
+                        revokedDate = DateTime.ParseExact(grant.RevokedAt, "yyyy/MM/dd HH:mm:ss", new CultureInfo("fa-IR"));
                     if (dbGrant is null)
                     {
                         var durationPerMonth = (expirationDate.Year - DateTime.Now.Year) * 12 + expirationDate.Month - DateTime.Now.Month;
                         var newGrant = DirectDebitGrant.Create(_user.UserId, bank.Id, grant.AccountNumber, grant.Mobile, grant.Count, grant.Limit,
-                            null, DateTime.Parse(grant.ExpirationDate), DateTime.Parse(grant.RevokedAt), provider.Id, grant.Token, grant.Id, status, (short)durationPerMonth);
+                            null, expirationDate, revokedDate, provider.Id, grant.Token, grant.Id, status, (short)durationPerMonth);
 
                         await _directDebitGrantRepository.AddAsync(newGrant);
                         await _directDebitGrantRepository.SaveChangesAsync();
