@@ -50,23 +50,27 @@ public class Transaction : AuditableEntity<long>, IAggregateRoot
 
     public static Transaction Create(CreateTransactionModel model)
     {
-        Transaction transaction = new(model.PaymentRequest.Id,
-                                                  model.TransactionMethodType, model.PaymentRequest.Company.Id,
-                                                  model.DestinationDepositId, model.PaymentRequest.Amount,
-                                                  model.PaymentRequest.Application.Id, Enums.TransactionStatus.InPrgress);
+        Transaction transaction = new(model.PaymentRequest.Id, model.TransactionMethodType, model.PaymentRequest.Company.Id,
+                                      model.DestinationDepositId, model.PaymentRequest.Amount, model.PaymentRequest.Application.Id,
+                                      model.Status);
 
         switch (model.TransactionMethodType)
         {
             case Enums.TransactionType.IPG:
                 {
-                    var ipgTransaction = IPGTransaction.Create(model.TrackId, Enums.IPGTransactionStatus.WaitingForPspResponse,
-                                                   model.CompanyIPG.Id, model.Token, model.IpgVerificationTimeLimit);
+                    var ipgTransaction = IPGTransaction.Create(model.IPGTransactionModel.TrackId, Enums.IPGTransactionStatus.WaitingForPspResponse,
+                        model.IPGTransactionModel.CompanyIPG.Id, model.IPGTransactionModel.Token, model.IPGTransactionModel.IpgVerificationTimeLimit);
 
                     transaction.IPGTransaction = ipgTransaction;
                     break;
                 }
             case Enums.TransactionType.DirectDebit:
-                break;
+                {
+                    var ddTransaction = DirectDebitTransaction.Create(model.DDTransactionModel.GrantId, model.DDTransactionModel.Status,
+                        model.DDTransactionModel.TrackId, model.DDTransactionModel.ProviderTrackId, model.DDTransactionModel.ProviderData);
+                    transaction.DirectDebitTransaction = ddTransaction;
+                    break;
+                }
             default:
                 break;
         }

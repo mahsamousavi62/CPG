@@ -59,9 +59,7 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
     }
 
     public static void Update(PaymentRequest paymentRequest)
-    {
-        paymentRequest.IsUsed = true;
-        paymentRequest.Status = Enums.PaymentStatus.InProgress;
+    {   
         paymentRequest.ModificationDate = DateTime.Now;
     }
 
