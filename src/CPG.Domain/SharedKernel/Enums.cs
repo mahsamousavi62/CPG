@@ -11,6 +11,15 @@ public class Enums
         Minio = 3,
     }
 
+    public enum NeoBankDepositStatus : byte
+    {
+        NotCustomer = 0,
+        NoDeposite = 1,
+        PendingActivation = 2,
+        Active = 3,
+        DeActive = 4,
+
+    }
     public enum IpgRedirectionMethodType : byte
     {
         CPGReferencePage = 1,

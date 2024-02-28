@@ -41,30 +41,41 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
 
     public async Task<Result<UserDepositBalanceResponse>> GetUserDepositBalance()
     {
+
         var neobankConfig = configuration.GetSection("Infrastructure:NeoBank").Get<NeoBankConfig>();
         ResultData<UserDepositBalanceResponse> resultData = new();
         var appConfig = authService.GetJwtConfig();
 
         var accessTokenResult = await ExchangeToken(appConfig);
         if (accessTokenResult.OperationResult == Enums.OperationResult.Failed)
-        return Result<UserDepositBalanceResponse>.Failure(new Error("2201001",  accessTokenResult.Error));
-          
+            return Result<UserDepositBalanceResponse>.Failure(new Error("2201001", accessTokenResult.Error));
+
         try
         {
             var client = factory.CreateClient("neoBankClient");
             client.SetBearerToken(accessTokenResult.Data.AccessToken);
-            var result = await client.GetAsync(neobankConfig.UserDepositBalanceUrl);
+            var result = await client.PostAsync(neobankConfig.UserDepositBalanceUrl,null);
             if (!result.IsSuccessStatusCode)
                 return Result<UserDepositBalanceResponse>.Failure(new Error("2201001", ReasonPhrases.GetReasonPhrase((int)result.StatusCode)));
 
             var resultContent = await result.Content.ReadAsStringAsync();
             try
             {
-                var response= JsonConvert.DeserializeObject<ResultData<UserDepositBalanceResponse>>(resultContent);
+                var response = JsonConvert.DeserializeObject<ResultData<UserDepositBalanceResponse>>(resultContent);
                 if (response.OperationResult != Enums.OperationResult.Succeeded)
                     return Result<UserDepositBalanceResponse>.Failure(new Error("2201001", GlobalResource.UserHasnotCharismaCart));
                 else
-                    return Result<UserDepositBalanceResponse>.SuccessResult(new UserDepositBalanceResponse{Balance = response.Data.Balance});
+                    return Result<UserDepositBalanceResponse>.SuccessResult(new UserDepositBalanceResponse
+                    {
+                        Balance = response.Data.Balance,
+                        CardNumber = response.Data.CardNumber,
+                        CustomerFirstName = response.Data.CustomerFirstName,
+                        CustomerLastName = response.Data.CustomerLastName,  
+                        DepositNumber   = response.Data.DepositNumber,
+                        DepositStatus = response.Data.DepositStatus,
+                        ExpirationDate = response.Data.ExpirationDate,
+                        Iban=response.Data.Iban,
+                    });
             }
             catch (Exception)
             {
@@ -80,10 +91,8 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
 
     {
         var token = await httpContextAccessor.HttpContext.GetTokenAsync("access_token");
-        var client = new HttpClient();
-
+        var client = factory.CreateClient();
         var httpClient = factory.CreateClient("idpClient");
-
         var disco = await httpClient.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
         {
             Address = appConfig.Authority,

@@ -20,5 +20,16 @@ namespace CPG.Domain.SharedKernel.Communication.NeoBank.Models
 
         [JsonPropertyName("password")]
         public string? Password { get; set; }
+
+        public string? CustomerFirstName { get; set; }
+
+        public string? CustomerLastName { get; set; }
+
+        public string? Iban { get; set; }
+
+        public string? CardNumber { get; set; }
+        public DateTime ExpirationDate { get; set; }
+        public string? DepositNumber { get; set; }
+        public Enums.NeoBankDepositStatus DepositStatus { get; set; }
     }
 }
