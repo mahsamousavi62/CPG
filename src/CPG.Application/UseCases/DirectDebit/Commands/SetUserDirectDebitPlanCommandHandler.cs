@@ -20,6 +20,7 @@ using System.Security.Claims;
 using Newtonsoft.Json.Linq;
 using CPG.Domain.AggregateModels.ProviderAggregate;
 using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Token;
+using CPG.Application.UseCases.DirectDebit.ViewModels;
 
 namespace CPG.Application.UseCases.DirectDebit.Commands;
 
@@ -32,7 +33,7 @@ public class SetUserDirectDebitPlanCommandHandler(IDirectDebitFactory DirectDebi
     IAuthenticationService authenticationService,
     ICurrentUser user,
     IDirectDebitFactory directDebitFactory
-    ) : IRequestHandler<SetUserDirectDebitPlanCommand, Result<string>>
+    ) : IRequestHandler<ConfirmGrantCommand, Result<ConfirmGrantResponseViewModel>>
 {
     private readonly IAggregateRepository<Bank> _bankRepository = bankRepository;
     private readonly IAggregateRepository<Provider> _providerRepository = providerRepository;
@@ -43,7 +44,7 @@ public class SetUserDirectDebitPlanCommandHandler(IDirectDebitFactory DirectDebi
     private readonly ICurrentUser _user = user;
     private readonly IDirectDebitFactory _directDebitFactory = directDebitFactory;
 
-    public async Task<Result<string>> Handle(SetUserDirectDebitPlanCommand request, CancellationToken cancellationToken)
+    public async Task<Result<ConfirmGrantResponseViewModel>> Handle(ConfirmGrantCommand request, CancellationToken cancellationToken)
     {
         try
         {
@@ -126,24 +127,24 @@ public class SetUserDirectDebitPlanCommandHandler(IDirectDebitFactory DirectDebi
             await _DirectDebitGrantRepository.AddAsync(directDebitGrant);
             await _DirectDebitGrantRepository.SaveChangesAsync();
 
-            var directDebitGrantBaseUrl = $"{providerData["DD_Grant_Base_URL"]}/{result.Token}";
+            var response = new ConfirmGrantResponseViewModel { Url = $"{providerData["DD_Grant_Base_URL"]}/{result.Token}" };
 
-            return Result<string>.SuccessResult(directDebitGrantBaseUrl);
+            return Result<ConfirmGrantResponseViewModel>.SuccessResult(response);
         }
         catch (DomainException exc)
         {
             _logger.LogError(exc.Message, exc);
-            return Result<string>.Failure(new Error(exc.Code, exc.Message));
+            return Result<ConfirmGrantResponseViewModel>.Failure(new Error(exc.Code, exc.Message));
         }
         catch (AppException exc)
         {
             _logger.LogError(exc.Message, exc);
-            return Result<string>.Failure(new Error(exc.Code, exc.Message));
+            return Result<ConfirmGrantResponseViewModel>.Failure(new Error(exc.Code, exc.Message));
         }
         catch (Exception exc)
         {
             _logger.LogError(exc.Message, exc);
-            return Result<string>.Failure(new Error("1009000", GlobalResource.UnexpectedError));
+            return Result<ConfirmGrantResponseViewModel>.Failure(new Error("1009000", GlobalResource.UnexpectedError));
         }
     }
 }

@@ -58,7 +58,8 @@ public class GetUserPhoneNumbersCommandHandler(IDirectDebitFactory DirectDebitFa
             var grants = await _DirectDebitGrantRepository.ListAsync(new UserDirectDebitGrantSpec(_user.UserId), cancellationToken);
             if (grants?.Any() is true)
             {
-                response.AddRange(grants.Where(t => t.PhoneNumber != mobileNumber).Select(t => new UserPhoneNumberViewModel { PhoneNumber = t.PhoneNumber }).Distinct());
+                var phoneNumbers = grants.Where(t => t.PhoneNumber != mobileNumber).Select(t => t.PhoneNumber).Distinct();
+                response.AddRange(phoneNumbers.Select(t => new UserPhoneNumberViewModel { PhoneNumber = t }));
                 var defaultNumber = grants.FirstOrDefault(t => t.BankId == request.model.BankId);
                 if (defaultNumber != null)
                 {

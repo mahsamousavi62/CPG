@@ -666,6 +666,9 @@
   <data name="InvalidRefreshToken" xml:space="preserve">
     <value>مقدار RefreshToken نامعتبر است</value>
   </data>
+  <data name="DirectDebitGrantNotFoundException" xml:space="preserve">
+    <value>رکوردی با این authorizationId یافت نشد</value>
+  </data>
   <data name="UserHasnotCharismaCart" xml:space="preserve">
     <value>کاریزما کارت ندارد</value>
   </data>

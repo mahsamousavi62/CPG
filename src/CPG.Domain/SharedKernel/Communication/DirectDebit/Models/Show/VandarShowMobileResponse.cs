@@ -37,7 +37,7 @@ public class Datum
     public int Count { get; set; }
 
     [JsonPropertyName("limit")]
-    public string Limit { get; set; }
+    public decimal Limit { get; set; }
 
     [JsonPropertyName("mobile")]
     public string Mobile { get; set; }
@@ -58,7 +58,7 @@ public class Datum
     public string Status { get; set; }
 
     [JsonPropertyName("payer_account")]
-    public object PayerAccount { get; set; }
+    public PayerAccountData PayerAccount { get; set; }
 
     [JsonPropertyName("created_at")]
     public string CreatedAt { get; set; }
@@ -116,4 +116,13 @@ public class Meta
 
     [JsonPropertyName("total")]
     public int Total { get; set; }
+}
+
+public class PayerAccountData
+{
+    [JsonPropertyName("account_number")]
+    public string AccountNumber { get; set; }
+
+    [JsonPropertyName("pan")]
+    public string Pan { get; set; }
 }

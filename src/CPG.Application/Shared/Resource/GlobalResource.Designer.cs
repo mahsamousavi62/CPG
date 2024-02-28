@@ -538,6 +538,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No record found with this authorizationId.
+        /// </summary>
+        public static string DirectDebitGrantNotFoundException {
+            get {
+                return ResourceManager.GetString("DirectDebitGrantNotFoundException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to DirectDebitProvider.
         /// </summary>
         public static string DirectDebitProvider {

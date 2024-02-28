@@ -1,16 +1,8 @@
-﻿using CPG.Domain.AggregateModels.BankAggregate;
-using CPG.Domain.AggregateModels.ProviderAggregate;
-using CPG.Domain.AggregateModels.UserAggregate;
-using CPG.Domain.SharedKernel;
-using CPG.Tests.Base;
+﻿using CPG.Tests.Base;
 using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xunit;
 using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Domain.Tests.Unit.Helpers;

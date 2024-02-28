@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CPG.Domain.AggregateModels.CompanyIPGAggregate;
-using CPG.Application.UseCases.CompanyDeposits;
+using CPG.Domain.AggregateModels.CompanyDepositAggregate;
 using CPG.Domain.AggregateModels.CompanyDepositAggregate.Specifications;
 using CPG.Domain.AggregateModels.CompanyIPGAggregate.Exceptions;
 using System;

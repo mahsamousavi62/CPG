@@ -53,9 +53,7 @@ public class GetCompanyDepositsByCompanyIdQueryHandler(ReadDbContext context, IM
         }
         catch (System.Exception ex)
         {
-
-            return Result<IReadOnlyCollection<CompanyDepositViewModel>>.SuccessResult(new List<CompanyDepositViewModel> { });
-
+            return Result<IReadOnlyCollection<CompanyDepositViewModel>>.Failure(new Error("",""));
         }
     }
 }

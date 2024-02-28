@@ -1,6 +1,5 @@
 ﻿
 using System;
-using CPG.Domain.SeedWork;
 using CPG.Domain.SharedKernel;
 using CPG.Infrastructure.Persistence.DbContexts.ReadModels;
 
@@ -11,6 +10,7 @@ public class TransactionReadModel
     public long Id { get; set; }
     public long PaymentRquestId { get; set; }
     public long IPGTransactionId { get; set; }
+    public long DirectDebitTransactionId { get; set; }
     public Enums.TransactionType TransactionMethodType { get; set; }
     public long CompanyId { get; set; }
     public long DestinationDepositId { get; set; }
@@ -20,6 +20,7 @@ public class TransactionReadModel
     public Enums.TransactionStatus Status { get; set; }
     public PaymentRequestReadModel PaymentRequest { get; set; }
     public IPGTransactionReadModel IPGTransaction { get; set; }
+    public DirectDebitTransactionReadModel DirectDebitTransaction { get; set; }
     public CompanyDepositReadModel DestinationDeposit { get; set; }
 
 }

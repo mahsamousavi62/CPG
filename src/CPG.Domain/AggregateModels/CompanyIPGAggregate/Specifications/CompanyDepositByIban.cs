@@ -7,9 +7,10 @@ namespace CPG.Domain.AggregateModels.CompanyIPGAggregate.Specifications
     {
         public CompanyIPGByIpgDeposit(long id)
         {
-            Query.Where(c=>c.IsActive & c.Id==id)
+            Query.Where(c => c.IsActive & c.Id == id)
              .Include(c => c.IPGDeposits.Where(d => d.IsActive && d.IsDefault))
-             .ThenInclude(d => d.CompanyDeposit);
+             .ThenInclude(d => d.CompanyDeposit)
+             .ThenInclude(d => d.Bank);
         }
     }
 }

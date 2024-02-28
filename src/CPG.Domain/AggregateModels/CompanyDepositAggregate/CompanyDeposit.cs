@@ -9,7 +9,7 @@ using CPG.Domain.SharedKernel;
 using System;
 using System.Collections.Generic;
 
-namespace CPG.Application.UseCases.CompanyDeposits;
+namespace CPG.Domain.AggregateModels.CompanyDepositAggregate;
 
 public class CompanyDeposit : AuditableEntity<long>, IAggregateRoot
 {

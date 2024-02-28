@@ -1,10 +1,9 @@
-﻿
-using System;
-using CPG.Domain.SeedWork;
+﻿using System;
 using CPG.Domain.SharedKernel;
 using CPG.Infrastructure.Persistence.DbContexts.ReadModels;
 
 namespace CPG.Domain.AggregateModels.TransactionAggregate;
+
 public class IPGTransactionReadModel
 {
     public long Id { get; set; }
@@ -21,4 +20,3 @@ public class IPGTransactionReadModel
     public TransactionReadModel Transaction { get; set; }
     public CompanyIPGReadModel CompanyIPG { get; set; }
 }
-

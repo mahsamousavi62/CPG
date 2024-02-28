@@ -14,6 +14,7 @@ public class TransactionReadModelConfiguration : IEntityTypeConfiguration<Transa
         entity.Property(x => x.Id).HasColumnName("Id");
         entity.Property(x => x.PaymentRquestId).HasColumnName("PaymentRquestId");
         entity.Property(x => x.IPGTransactionId).HasColumnName("IPGTransactionId");
+        entity.Property(x => x.DirectDebitTransactionId).HasColumnName("DirectDebitTransactionId");
         entity.Property(x => x.TransactionMethodType).HasColumnName("TransactionMethodType");
         entity.Property(x => x.CompanyId).HasColumnName("CompanyId");
         entity.Property(x => x.DestinationDepositId).HasColumnName("DestinationDepositId");
@@ -24,6 +25,7 @@ public class TransactionReadModelConfiguration : IEntityTypeConfiguration<Transa
 
         entity.HasOne(p => p.PaymentRequest).WithOne(t => t.Transaction).HasForeignKey<TransactionReadModel>(b => b.PaymentRquestId);
         entity.HasOne(t => t.IPGTransaction).WithOne(t => t.Transaction).HasForeignKey<TransactionReadModel>(t => t.IPGTransactionId);
+        entity.HasOne(t => t.DirectDebitTransaction).WithOne(t => t.Transaction).HasForeignKey<TransactionReadModel>(t => t.DirectDebitTransactionId);
         entity.HasOne(t => t.DestinationDeposit).WithMany(t => t.Transactions).HasForeignKey(t => t.DestinationDepositId);
     }
 }

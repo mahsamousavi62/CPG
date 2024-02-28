@@ -7,7 +7,7 @@ namespace CPG.Application.UseCases.Banks.ViewModels;
 public class UpdateBankModel
 {
     [Required]
-    public int BankId { get; set; }
+    public int Id { get; set; }
     [Required]
     public string Name { get; set; }
     [Required]

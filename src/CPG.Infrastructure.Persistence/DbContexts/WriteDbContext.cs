@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using CPG.Application.UseCases.CompanyDeposits;
+using CPG.Domain.AggregateModels.CompanyDepositAggregate;
 using CPG.Domain.AggregateModels.BankAggregate;
 using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Domain.AggregateModels.IPGTypeAggregate;
@@ -63,6 +63,7 @@ public class WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator 
             .ApplyConfiguration(new BankDirectDebitSettingConfiguration())
             .ApplyConfiguration(new DirectDebitGrantConfiguration())
             .ApplyConfiguration(new DirectDebitPlanConfiguration())
+            .ApplyConfiguration(new DirectDebitTransactionConfiguration())
         ;
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())

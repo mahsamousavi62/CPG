@@ -1,5 +1,4 @@
-﻿
-using CPG.Application.UseCases.CompanyDeposits;
+﻿using CPG.Domain.AggregateModels.CompanyDepositAggregate;
 using CPG.Domain.SeedWork;
 using CPG.Domain.SharedKernel;
 using System;
@@ -23,7 +22,9 @@ public class Transaction : AuditableEntity<long>, IAggregateRoot
 
     public long PaymentRquestId { get; set; }
 
-    public long IPGTransactionId { get; set; }
+    public long? IPGTransactionId { get; set; }
+
+    public long? DirectDebitTransactionId { get; set; }
 
     public Enums.TransactionType TransactionMethodType { get; set; }
 
@@ -43,20 +44,37 @@ public class Transaction : AuditableEntity<long>, IAggregateRoot
 
     public IPGTransaction IPGTransaction { get; set; }
 
+    public DirectDebitTransaction DirectDebitTransaction { get; set; }
+
     public CompanyDeposit DestinationDeposit { get; set; }
 
     public static Transaction Create(CreateTransactionModel model)
     {
-        Transaction transaction = new(model.PaymentRequest.Id,
-                                                  model.TransactionMethodType, model.PaymentRequest.Company.Id,
-                                                  model.DestinationDepositId, model.PaymentRequest.Amount,
-                                                  model.PaymentRequest.Application.Id, Enums.TransactionStatus.InPrgress);
+        Transaction transaction = new(model.PaymentRequest.Id, model.TransactionMethodType, model.PaymentRequest.Company.Id,
+                                      model.DestinationDepositId, model.PaymentRequest.Amount, model.PaymentRequest.Application.Id,
+                                      model.Status);
 
-        var ipgTransaction = IPGTransaction.Create(model.TrackId, Enums.IPGTransactionStatus.WaitingForPspResponse,
-                                                   model.CompanyIPG.Id, model.Token, model.IpgVerificationTimeLimit);
+        switch (model.TransactionMethodType)
+        {
+            case Enums.TransactionType.IPG:
+                {
+                    var ipgTransaction = IPGTransaction.Create(model.IPGTransactionModel.TrackId, Enums.IPGTransactionStatus.WaitingForPspResponse,
+                        model.IPGTransactionModel.CompanyIPG.Id, model.IPGTransactionModel.Token, model.IPGTransactionModel.IpgVerificationTimeLimit);
 
-        transaction.IPGTransaction = ipgTransaction;
-
+                    transaction.IPGTransaction = ipgTransaction;
+                    break;
+                }
+            case Enums.TransactionType.DirectDebit:
+                {
+                    var ddTransaction = DirectDebitTransaction.Create(model.DDTransactionModel.GrantId, model.DDTransactionModel.Status,
+                        model.DDTransactionModel.TrackId, model.DDTransactionModel.ProviderTrackId, model.DDTransactionModel.ProviderData);
+                    transaction.DirectDebitTransaction = ddTransaction;
+                    break;
+                }
+            default:
+                break;
+        }
+        
         return transaction;
     }
 }

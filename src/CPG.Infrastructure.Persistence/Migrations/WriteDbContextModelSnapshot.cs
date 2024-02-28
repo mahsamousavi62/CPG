@@ -627,6 +627,8 @@ namespace CPG.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BankId");
+
                     b.HasIndex("ProviderId");
 
                     b.ToTable("DirectDebitGrant", (string)null);
@@ -800,6 +802,52 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.ToTable("ProviderPaymentMethod");
                 });
 
+            modelBuilder.Entity("CPG.Domain.AggregateModels.TransactionAggregate.DirectDebitTransaction", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("CreationUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("DirectDebitGrantId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModificationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("ModificationUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("ProviderData")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProviderTrackerId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<byte>("Status")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("TrackId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DirectDebitGrantId");
+
+                    b.ToTable("DirectDebitTransaction", (string)null);
+                });
+
             modelBuilder.Entity("CPG.Domain.AggregateModels.TransactionAggregate.IPGTransaction", b =>
                 {
                     b.Property<long>("Id")
@@ -905,7 +953,11 @@ namespace CPG.Infrastructure.Persistence.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("DestinationDepositId");
 
-                    b.Property<long>("IPGTransactionId")
+                    b.Property<long?>("DirectDebitTransactionId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("DirectDebitTransactionId");
+
+                    b.Property<long?>("IPGTransactionId")
                         .HasColumnType("bigint")
                         .HasColumnName("IPGTransactionId");
 
@@ -938,8 +990,13 @@ namespace CPG.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("DestinationDepositId");
 
+                    b.HasIndex("DirectDebitTransactionId")
+                        .IsUnique()
+                        .HasFilter("[DirectDebitTransactionId] IS NOT NULL");
+
                     b.HasIndex("IPGTransactionId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[IPGTransactionId] IS NOT NULL");
 
                     b.HasIndex("PaymentRquestId")
                         .IsUnique();
@@ -1003,7 +1060,7 @@ namespace CPG.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("NationalCode")
                         .IsRequired()
-                        .HasColumnType("char(10)")
+                        .HasColumnType("char(11)")
                         .HasColumnName("NationalCode");
 
                     b.Property<string>("PhoneNumber")
@@ -1356,11 +1413,19 @@ namespace CPG.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("CPG.Domain.AggregateModels.DirectDebitGrantAggregate.DirectDebitGrant", b =>
                 {
+                    b.HasOne("CPG.Domain.AggregateModels.BankAggregate.Bank", "Bank")
+                        .WithMany("DirectDebitGrants")
+                        .HasForeignKey("BankId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("CPG.Domain.AggregateModels.ProviderAggregate.Provider", "Provider")
                         .WithMany("DirectDebitGrants")
                         .HasForeignKey("ProviderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Bank");
 
                     b.Navigation("Provider");
                 });
@@ -1374,6 +1439,17 @@ namespace CPG.Infrastructure.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Provider");
+                });
+
+            modelBuilder.Entity("CPG.Domain.AggregateModels.TransactionAggregate.DirectDebitTransaction", b =>
+                {
+                    b.HasOne("CPG.Domain.AggregateModels.DirectDebitGrantAggregate.DirectDebitGrant", "DirectDebitGrant")
+                        .WithMany("DirectDebitTransactions")
+                        .HasForeignKey("DirectDebitGrantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DirectDebitGrant");
                 });
 
             modelBuilder.Entity("CPG.Domain.AggregateModels.TransactionAggregate.IPGTransaction", b =>
@@ -1395,11 +1471,15 @@ namespace CPG.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("CPG.Domain.AggregateModels.TransactionAggregate.DirectDebitTransaction", "DirectDebitTransaction")
+                        .WithOne("Transaction")
+                        .HasForeignKey("CPG.Domain.AggregateModels.TransactionAggregate.Transaction", "DirectDebitTransactionId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("CPG.Domain.AggregateModels.TransactionAggregate.IPGTransaction", "IPGTransaction")
                         .WithOne("Transaction")
                         .HasForeignKey("CPG.Domain.AggregateModels.TransactionAggregate.Transaction", "IPGTransactionId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("PaymentRequest", "PaymentRequest")
                         .WithOne("Transaction")
@@ -1408,6 +1488,8 @@ namespace CPG.Infrastructure.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("DestinationDeposit");
+
+                    b.Navigation("DirectDebitTransaction");
 
                     b.Navigation("IPGTransaction");
 
@@ -1473,6 +1555,8 @@ namespace CPG.Infrastructure.Persistence.Migrations
                 {
                     b.Navigation("CompanyDeposits");
 
+                    b.Navigation("DirectDebitGrants");
+
                     b.Navigation("DirectDebitSetting");
                 });
 
@@ -1498,11 +1582,21 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.Navigation("IPGTransactions");
                 });
 
+            modelBuilder.Entity("CPG.Domain.AggregateModels.DirectDebitGrantAggregate.DirectDebitGrant", b =>
+                {
+                    b.Navigation("DirectDebitTransactions");
+                });
+
             modelBuilder.Entity("CPG.Domain.AggregateModels.ProviderAggregate.Provider", b =>
                 {
                     b.Navigation("DirectDebitGrants");
 
                     b.Navigation("PaymentMethods");
+                });
+
+            modelBuilder.Entity("CPG.Domain.AggregateModels.TransactionAggregate.DirectDebitTransaction", b =>
+                {
+                    b.Navigation("Transaction");
                 });
 
             modelBuilder.Entity("CPG.Domain.AggregateModels.TransactionAggregate.IPGTransaction", b =>
