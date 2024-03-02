@@ -167,6 +167,11 @@ public class Enums
         Removed = 5,
         Expired = 6,
     }
+
+    public enum PaymentReceiptStatus : byte
+    {
+        Draft = 0,
+    }
 }
 
 public struct ResultData<T>(Enums.OperationResult operationResult)
