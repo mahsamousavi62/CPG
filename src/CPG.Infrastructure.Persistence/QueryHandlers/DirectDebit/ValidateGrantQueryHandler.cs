@@ -90,6 +90,10 @@ public class ValidateGrantQueryHandler(IDirectDebitFactory directDebitFactory,
                             return Result<ValidateGrantResponseViewModel>.Failure(new Error("2006000", GlobalResource.UnexpectedError));
                         }
 
+                        if (!string.IsNullOrEmpty(result.GrantData.AccountNumber))
+                        {
+                            directDebitGrant.AccountNumber = result.GrantData.AccountNumber;
+                        }
                         if (!string.IsNullOrEmpty(req.AuthorizationId))
                         {
                             if (!string.IsNullOrEmpty(result.GrantData.Status))
@@ -107,10 +111,9 @@ public class ValidateGrantQueryHandler(IDirectDebitFactory directDebitFactory,
                         else
                         {
                             directDebitGrant.Status = DirectDebitGrantStatus.CanceledByUser;
-                        }
-                        if (!string.IsNullOrEmpty(result.GrantData.AccountNumber))
-                        {
-                            directDebitGrant.AccountNumber = result.GrantData.AccountNumber;
+                            await _directDebitGrantRepository.UpdateAsync(directDebitGrant);
+                            await _directDebitGrantRepository.SaveChangesAsync();
+                            break;
                         }
                         if (!string.IsNullOrEmpty(result.GrantData.Id))
                         {
@@ -165,7 +168,6 @@ public class ValidateGrantQueryHandler(IDirectDebitFactory directDebitFactory,
 
                         break;
                     }
-
             }
 
             return Result<ValidateGrantResponseViewModel>.SuccessResult(new ValidateGrantResponseViewModel
