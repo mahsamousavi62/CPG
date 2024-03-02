@@ -53,10 +53,10 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
                     StatusTitle = GetStatusTitle(paymentRequest.Status),
                     PaymentMethodType = (short)transaction?.TransactionMethodType,
                     PaymentMethodTypeTitle = transaction is null ? string.Empty : GetPaymentMethodTypeTitle(transaction.TransactionMethodType),
-                    ReferenceNumber = transaction is not null && transaction.TransactionMethodType == TransactionType.IPG ? transaction.IPGTransaction?.ReferenceNumber : string.Empty,
+                    ReferenceNumber = transaction is null ? string.Empty : GetTransactionRefrenceNumber(transaction.TransactionMethodType, transaction),
                     DestinationDepositIban = transaction?.DestinationDeposit?.Iban,
                     DestinationDepositAccountNumber = transaction?.DestinationDeposit?.AccountNumber,
-                    PredictedExpirationDateTime = transaction is not null && transaction.TransactionMethodType == TransactionType.IPG ? transaction.IPGTransaction?.PredicateExpirationDateTime?.ToString("yyyy-MM-dd HH:mm:ss zzz") : string.Empty,
+                    PredictedExpirationDateTime = transaction is null ? string.Empty : GetTransactionPredictedExpirationDateTime(transaction.TransactionMethodType, transaction),
                 });
         }
         catch (DomainException exc)
@@ -101,5 +101,31 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
             TransactionType.DirectDebit => "DIRECT_DEBIT",
             _ => string.Empty
         };
+    }
+
+    private string GetTransactionRefrenceNumber(TransactionType type, Transaction transaction)
+    {
+        switch (type)
+        {
+            case TransactionType.IPG:
+                return transaction.IPGTransaction.ReferenceNumber;
+            case TransactionType.DirectDebit:
+                return string.Empty;
+            default:
+                return string.Empty;
+        }
+    }
+
+    private string GetTransactionPredictedExpirationDateTime(TransactionType type, Transaction transaction)
+    {
+        switch (type)
+        {
+            case TransactionType.IPG:
+                return transaction.IPGTransaction?.PredicateExpirationDateTime?.ToString("yyyy-MM-dd HH:mm:ss zzz");
+            case TransactionType.DirectDebit:
+                return string.Empty;
+            default:
+                return string.Empty;
+        }
     }
 }
