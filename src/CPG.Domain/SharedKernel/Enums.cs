@@ -103,8 +103,10 @@ public class Enums
 
     public enum DirectDebitTransactionStatus : byte
     {
-        Waiting = 0,
-        TransactionSucceeded = 1,
+        WaitingForSendToBank = 0,
+        WaitingForBankResponse = 1,
+        TransactionSucceeded = 2,
+        UnSuccessful = 3,
     }
 
     public enum PaymentStatus

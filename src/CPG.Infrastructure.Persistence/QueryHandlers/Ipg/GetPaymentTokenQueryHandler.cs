@@ -13,12 +13,17 @@ using CPG.Domain.AggregateModels.CompanyIPGAggregate.Specifications;
 using CPG.Domain.AggregateModels.DirectDebitGrantAggregate;
 using CPG.Domain.AggregateModels.DirectDebitGrantAggregate.Specifications;
 using CPG.Domain.AggregateModels.PaymentRequestAggregate.Specifications;
+using CPG.Domain.AggregateModels.ProviderAggregate;
 using CPG.Domain.AggregateModels.TransactionAggregate;
 using CPG.Domain.AggregateModels.TransactionAggregate.Specifications;
 using CPG.Domain.Exceptions;
 using CPG.Domain.SharedKernel;
+using CPG.Domain.SharedKernel.Communication.DirectDebit;
+using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Store;
+using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Token;
 using CPG.Domain.SharedKernel.Communication.Ipg;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentTicket;
+using CPG.Domain.SharedKernel.Helper;
 using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
 using Newtonsoft.Json.Linq;
@@ -27,6 +32,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Net;
 using System.Security.Claims;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -39,7 +45,9 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
     IAggregateRepository<Domain.AggregateModels.CompanyIPGAggregate.CompanyIPG> companyIPGRepository,
     IAggregateRepository<Domain.AggregateModels.CompanyAggregate.Company> companyRepository,
     IAggregateRepository<Domain.AggregateModels.BankAggregate.Bank> bankRepository,
+    IAggregateRepository<Domain.AggregateModels.ProviderAggregate.Provider> providerRepository,
     IAggregateRepository<DirectDebitGrant> grantRepository,
+    IDirectDebitFactory directDebitFactory,
     IAuthenticationService authenticationService,
     ReadDbContext context) : IRequestHandler<GetPaymentTokenCommand, Result<PaymentTokenResponseViewModel>>
 {
@@ -48,7 +56,9 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
     private readonly IAggregateRepository<Domain.AggregateModels.CompanyIPGAggregate.CompanyIPG> _companyIPGRepository = companyIPGRepository;
     private readonly IAggregateRepository<Domain.AggregateModels.CompanyAggregate.Company> _companyRepository = companyRepository;
     private readonly IAggregateRepository<Domain.AggregateModels.BankAggregate.Bank> _bankRepository = bankRepository;
+    private readonly IAggregateRepository<Domain.AggregateModels.ProviderAggregate.Provider> _providerRepository = providerRepository;
     private readonly IAggregateRepository<DirectDebitGrant> _grantRepository = grantRepository;
+    private readonly IDirectDebitFactory _directDebitFactory = directDebitFactory;
     private readonly IAggregateRepository<Transaction> _transactionRepository = transactionRepository;
     private readonly IAggregateRepository<Domain.AggregateModels.CompanyDepositAggregate.CompanyDeposit> _companyDepositRepository = companyDepositRepository;
     private readonly IAuthenticationService _authenticationService = authenticationService;
@@ -139,16 +149,22 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                 {
                     Transaction transaction = Transaction.Create(new CreateTransactionModel
                     {
-                        IpgVerificationTimeLimit = IpgVerificationTimeLimit,
-                        CompanyIPG = companyIpg,
                         DestinationDepositId = destinationDepositId,
                         PaymentRequest = paymentRequest,
-                        Token = result.Token,
-                        TrackId = result.TrackerId = result.TrackerId,
-                        TransactionMethodType = Enums.TransactionType.IPG
+                        TransactionMethodType = Enums.TransactionType.IPG,
+                        Status = Enums.TransactionStatus.InPrgress,
+                        IPGTransactionModel = new CreateIPGTransactionModel
+                        {
+                            Token = result.Token,
+                            TrackId = result.TrackerId = result.TrackerId,
+                            IpgVerificationTimeLimit = IpgVerificationTimeLimit,
+                            CompanyIPG = companyIpg,
+                        }
                     });
                     await _transactionRepository.AddAsync(transaction);
-                    await _transactionRepository.SaveChangesAsync();
+                    await _transactionRepository.SaveChangesAsync();           
+                    paymentRequest.IsUsed = true;
+                    paymentRequest.Status = Enums.PaymentStatus.InProgress;
                     PaymentRequest.Update(paymentRequest);
                     await _paymentRequestRepository.UpdateAsync(paymentRequest);
                     await _paymentRequestRepository.SaveChangesAsync();
@@ -182,14 +198,15 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                 if (!companyDeposit.IsActive) { throw new PaymentTokenInactiveDepositException(); }
                 if (!companyDeposit.Bank.IsActive) { throw new PaymentTokenInactiveBankException(); }
                 var bank = await _bankRepository.GetBySpecAsync(new BankByIdSpec(companyDeposit.BankId), cancellationToken);
-                if (!bank.DirectDebitSetting.Provider.IsActive) { throw new PaymentTokenInactiveProviderException(); }
+                var provider = bank.DirectDebitSetting.Provider;
+                if (!provider.IsActive) { throw new PaymentTokenInactiveProviderException(); }
                 if (!bank.DirectDebitSetting.IsActive) { throw new PaymentRequestInactiveDirectDebitSettingException(); }
-                if (bank.DirectDebitSetting.Provider.PaymentMethods?.Any(t => t.MethodType == Enums.PaymentMethodType.DirectDebit) is false) { throw new PaymentRequestProviderHasNoDDMethodException(); }
+                if (provider.PaymentMethods?.Any(t => t.MethodType == Enums.PaymentMethodType.DirectDebit) is false) { throw new PaymentRequestProviderHasNoDDMethodException(); }
                 if (company.PaymentMethods?.Any(t => t.MethodType == Enums.PaymentMethodType.DirectDebit) is false) { throw new PaymentRequestCompanyHasNoDDMethodException(); }
 
                 if (paymentRequest.Amount > bank.DirectDebitSetting.MaxWithdrawalAmountPerDay) throw new PaymentRequestAmountBankLimitException();
                 if (paymentRequest.Company.NationalCodeMatchingRequied && bank.DirectDebitSetting.AuthenticationType != Enums.AuthenticationType.CheckMobileAndDepositOwnershipMatching) throw new PaymentRequestAuthenticationTypeException();
-                if (bank.DirectDebitSetting.ProviderId != grant.ProviderId) throw new PaymentRequestNotEqualProviderIdException();
+                if (provider.Id != grant.ProviderId) throw new PaymentRequestNotEqualProviderIdException();
 
                 var currentDayTransactions = await _transactionRepository.ListAsync(new CurrentDayTransactionByGrantIdSpec(grant.Id), cancellationToken);
                 var currentMonthTransactions = await _transactionRepository.ListAsync(new CurrentMonthTransactionByGrantIdSpec(grant.Id), cancellationToken);
@@ -199,10 +216,67 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
 
                 var mobileNumber = await _authenticationService.GetDataFromClaim<string>(ClaimTypes.MobilePhone);
 
-                return CreateResponseModel(paymentRequest, mobileNumber, null, null, grant);
+                var directDebitProvider = _directDebitFactory.GetInstance(provider.ProviderType);
 
+                var tokenResult = await directDebitProvider.GetTokenAsync(new TokenRequest { ProviderData = provider.ProviderData });
+                var providerData = JObject.Parse(provider.ProviderData);
+                if (providerData["Refresh_Token"].ToString() != tokenResult.RefreshToken)
+                {
+                    providerData["Refresh_Token"] = tokenResult.RefreshToken;
+                    provider.ProviderData = Newtonsoft.Json.JsonConvert.SerializeObject(providerData);
+                    await _providerRepository.UpdateAsync(provider);
+                    await _providerRepository.SaveChangesAsync();
+                }
+
+                var withdrawRequest = new WithdrawalRequest
+                {
+                    AccessToken = tokenResult.AccessToken,
+                    ProviderData = provider.ProviderData,
+                    Amount = paymentRequest.Amount,
+                    Description = string.Empty,
+                    GrantAuthorizationId = grant.AuthorizationId,
+                    IsInstant = true,
+                    MaxRetryCount = 16,
+                };
+                var result = await directDebitProvider.WithdrawAsync(withdrawRequest);
 
                 destinationDepositId = companyDeposit.Id;
+
+                var serializedData = JsonSerializer.Serialize(result.Data);
+                var resultStatus = SharedServices.GetDirectDebitTransactionStatus(result.Data.Status);
+                if (result.StatusCode == (short)HttpStatusCode.OK)
+                {
+                    Transaction transaction = Transaction.Create(new CreateTransactionModel
+                    {
+                        DestinationDepositId = destinationDepositId,
+                        PaymentRequest = paymentRequest,
+                        TransactionMethodType = Enums.TransactionType.DirectDebit,     
+                        Status = resultStatus == Enums.DirectDebitTransactionStatus.UnSuccessful ?
+                            Enums.TransactionStatus.TransactionFailed : Enums.TransactionStatus.InPrgress,
+                        DDTransactionModel = new CreateDDTransactionModel
+                        {
+                            GrantId = grant.Id,
+                            Status = SharedServices.GetDirectDebitTransactionStatus(result.Data.Status),
+                            TrackId = result.TrackerId,
+                            ProviderTrackId = result.Data.TrackId,
+                            ProviderData = serializedData
+                        }
+                    });
+                    await _transactionRepository.AddAsync(transaction);
+                    await _transactionRepository.SaveChangesAsync();
+                    paymentRequest.IsUsed = true;
+                    paymentRequest.Status = resultStatus == Enums.DirectDebitTransactionStatus.TransactionSucceeded ? Enums.PaymentStatus.TransactionWaitingForVerification :
+                        resultStatus == Enums.DirectDebitTransactionStatus.UnSuccessful ? Enums.PaymentStatus.TransactionFailed : Enums.PaymentStatus.InProgress;
+                    PaymentRequest.Update(paymentRequest);
+                    await _paymentRequestRepository.UpdateAsync(paymentRequest);
+                    await _paymentRequestRepository.SaveChangesAsync();
+                }
+                else
+                {
+                    return Result<PaymentTokenResponseViewModel>.Failure(new Error("2009000", GlobalResource.GetPaymentTicketUnexpectedError));
+                }
+
+                return CreateResponseModel(paymentRequest, mobileNumber, null, null, grant);
             }
             return Result<PaymentTokenResponseViewModel>.Failure(new Error("1007000", GlobalResource.GetPaymentTicketUnexpectedError));
 
@@ -273,6 +347,3 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
         return Result<PaymentTokenResponseViewModel>.SuccessResult(response);
     }
 }
-
-
-
