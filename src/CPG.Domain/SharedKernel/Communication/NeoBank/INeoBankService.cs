@@ -6,5 +6,5 @@ namespace CPG.Domain.SharedKernel.Communication.NeoBank;
 public interface INeoBankService
 {
     Task<Result<UserDepositBalanceResponse>> GetUserDepositBalance();
-
+    Task<Result<ClientDirectDebitResponse>> ClientDirectDebit();
 }

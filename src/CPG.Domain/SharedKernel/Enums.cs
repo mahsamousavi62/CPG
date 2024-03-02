@@ -18,8 +18,20 @@ public class Enums
         PendingActivation = 2,
         Active = 3,
         DeActive = 4,
-
     }
+
+    public enum NeoBankTransferType
+    {
+        Internal = 0,
+        External = 1,
+    }
+
+    public enum NeoBankTransferStatus
+    {
+        Failed = 0,
+        Done = 1
+    }
+
     public enum IpgRedirectionMethodType : byte
     {
         CPGReferencePage = 1,

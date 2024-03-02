@@ -39,6 +39,56 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
     private readonly IAuthService authService = authService;
     private readonly IHttpContextAccessor httpContextAccessor = httpContextAccessor;
 
+    public async Task<Result<ClientDirectDebitResponse>> ClientDirectDebit()
+    {
+        var neobankConfig = configuration.GetSection("Infrastructure:NeoBank").Get<NeoBankConfig>();
+        ResultData<ClientDirectDebitResponse> resultData = new();
+        var appConfig = authService.GetJwtConfig();
+
+        var accessTokenResult = await ExchangeToken(appConfig);
+        if (accessTokenResult.OperationResult == Enums.OperationResult.Failed)
+            return Result<ClientDirectDebitResponse>.Failure(new Error("2201001", accessTokenResult.Error));
+
+        try
+        {
+            var client = factory.CreateClient("neoBankClient");
+            client.SetBearerToken(accessTokenResult.Data.AccessToken);
+            var result = await client.PostAsync(neobankConfig.UserDepositBalanceUrl, null);
+            if (!result.IsSuccessStatusCode)
+                return Result<ClientDirectDebitResponse>.Failure(new Error("2201001", ReasonPhrases.GetReasonPhrase((int)result.StatusCode)));
+
+            var resultContent = await result.Content.ReadAsStringAsync();
+            try
+            {
+                var response = JsonConvert.DeserializeObject<ResultData<ClientDirectDebitResponse>>(resultContent);
+                if (response.OperationResult != Enums.OperationResult.Succeeded)
+                    return Result<ClientDirectDebitResponse>.Failure(new Error("2201001", GlobalResource.UserHasnotCharismaCart));
+                else
+                    return Result<ClientDirectDebitResponse>.SuccessResult(new ClientDirectDebitResponse
+                    {
+                        AccountNumber=response.Data.AccountNumber,
+                        Amount=response.Data.Amount,
+                        Name=response.Data.Name,
+                        ReferenceNumber=response.Data.ReferenceNumber,  
+                        TrackerId=response.Data.TrackerId,  
+                        TranactionDate=response.Data.TranactionDate,    
+                        TransferStatus=response.Data.TransferStatus,
+                        TransferType=response.Data.TransferType,
+                        TranactionId    =response.Data.TranactionId,
+                        UserDepositId=response.Data.UserDepositId,
+                    });
+            }
+            catch (Exception)
+            {
+                return Result<ClientDirectDebitResponse>.Failure(new Error("2201000", GlobalResource.UnexpectedError));
+            }
+        }
+        catch (Exception)
+        {
+            return Result<ClientDirectDebitResponse>.Failure(new Error("2201000", GlobalResource.UnexpectedError));
+        }
+    }
+
     public async Task<Result<UserDepositBalanceResponse>> GetUserDepositBalance()
     {
 
@@ -122,6 +172,9 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
 
         return new ResultData<TokenResponse> { Data = response, OperationResult = Enums.OperationResult.Succeeded };
     }
+
+
+
 }
 
 

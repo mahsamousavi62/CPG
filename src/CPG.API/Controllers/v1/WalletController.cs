@@ -11,16 +11,26 @@ namespace CPG.API.Controllers.v1;
 /// <summary>
 /// 
 /// </summary>
+[Authorize]
 public class WalletController : ApiBaseController
 {
     /// <summary>
     /// GetUserDepositBalance From NeoBank
     /// </summary>
     /// <returns></returns>
-    [Authorize]
+   
     [HttpGet("WalletInformation")]
     [ProducesResponseType(typeof(Result<Result<UserDepositBalanceResponse>>), 200)]
     public async Task<Result<UserDepositBalanceResponse>> GetWalletInformation()
     => await Mediator.Send(new GetUserDepositBalanceQuery());
+
+    /// <summary>
+    ///  
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet("ClientDirectDebit")]
+    [ProducesResponseType(typeof(Result<Result<ClientDirectDebitResponse>>), 200)]
+    public async Task<Result<ClientDirectDebitResponse>> GetClientDirectDebit()
+    => await Mediator.Send(new GetClientDirectDebitQuery());
 
 }
