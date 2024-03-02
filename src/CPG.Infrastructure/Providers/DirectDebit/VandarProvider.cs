@@ -9,7 +9,6 @@ using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Store;
 using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Token;
 using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Verify;
 using CPG.Domain.SharedKernel.Communication.DirectDebit.Vandar;
-using CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
 using CPG.Domain.SharedKernel.Helper;
 using CPG.Infrastructure.Persistence.DbContexts;
 using CPG.Infrastructure.Persistence.Redis;
@@ -147,8 +146,8 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
 
         return new ShowResponse
         {
-            GrantStatus = data.GrantStatus,
-            GrantMessage = data.GrantMessage,
+            GrantStatus = data.Status,
+            GrantMessage = data.Message,
             Status = data.Status,
             StatusCode = data.StatusCode,
             GrantData = new GrantData
@@ -156,6 +155,7 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
                 Id = data.Result?.Authorizations?.Id,
                 AccountNumber = data.Result?.Authorizations?.PayerAccount?.AccountNumber,
                 Status = data.Result?.Authorizations?.Status,
+                BankCode = data.Result?.Authorizations?.BankCode,
             }
         };
     }
@@ -214,8 +214,8 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
 
         return new VerifyResponse
         {
-            GrantStatus = data.GrantStatus,
-            GrantMessage = data.GrantMessage,
+            GrantStatus = data.Status,
+            GrantMessage = data.Message,
             Status = data.Status,
             StatusCode = data.StatusCode,
         };
@@ -318,7 +318,7 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
     {
         return error.StatusCode switch
         {
-            0 => await GetToken(),
+            401 => await GetToken(),
             _ => await Retry()
         };
 
@@ -346,7 +346,7 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
     {
         return error.StatusCode switch
         {
-            0 => await GetToken(),
+            401 => await GetToken(),
             _ => await Retry()
         };
 
@@ -374,13 +374,13 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
     {
         return error.StatusCode switch
         {
-            0 => await GetToken(),
+            401 => await GetToken(),
             _ => await Retry()
         };
 
         async Task<TResponse> GetToken()
         {
-            _cacheService.SetData<VandarShowResponse?>(tokenCacheKey, null);
+            _cacheService.SetData<VandarTokenResponse?>(tokenCacheKey, null);
             return await GetTokenAsync(new TokenRequest { ProviderData = baseRequest.ProviderData }) as TResponse;
         }
 
@@ -402,13 +402,13 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
     {
         return error.StatusCode switch
         {
-            0 => await GetToken(),
+            401 => await GetToken(),
             _ => await Retry()
         };
 
         async Task<TResponse> GetToken()
         {
-            _cacheService.SetData<VandarShowResponse?>(tokenCacheKey, null);
+            _cacheService.SetData<VandarTokenResponse?>(tokenCacheKey, null);
             return await GetTokenAsync(new TokenRequest { ProviderData = baseRequest.ProviderData }) as TResponse;
         }
 
@@ -430,13 +430,14 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
     {
         return error.StatusCode switch
         {
-            0 => await GetToken(),
+            0 => new VandarVerifyResponse { Status = error.Status, Message = error.Message } as TResponse,
+            401 => await GetToken(),
             _ => await Retry()
         };
 
         async Task<TResponse> GetToken()
         {
-            _cacheService.SetData<VandarVerifyResponse?>(tokenCacheKey, null);
+            _cacheService.SetData<VandarTokenResponse?>(tokenCacheKey, null);
             return await GetTokenAsync(new TokenRequest { ProviderData = baseRequest.ProviderData }) as TResponse;
         }
 
