@@ -14,6 +14,8 @@ using CPG.Domain.AggregateModels.ApplicationAggregate;
 using CPG.Domain.AggregateModels.ProviderAggregate;
 using CPG.Domain.AggregateModels.CompanyIPGAggregate;
 using CPG.Domain.AggregateModels.DirectDebitGrantAggregate;
+using CPG.Domain.AggregateModels.PaymentReceiptAggregate;
+using CPG.Application.UseCases.PaymentRequests.ViewModels;
 
 namespace CPG.Infrastructure.Persistence.DbContexts;
 
@@ -39,7 +41,8 @@ public class WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator 
     public DbSet<CompanyShaparakSetting> ShaparakSettings { get; set; }
     public DbSet<DirectDebitGrant> DirectDebitGrants { get; set; }
     public DbSet<DirectDebitPlan> DirectDebitPlans { get; set; }
-
+    public DbSet<PaymentReceiptTransaction> paymentReceiptTransactions { get; set; }
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
         => modelBuilder
             .ApplyConfiguration(new ApplicationSettingsConfiguration())
@@ -64,6 +67,7 @@ public class WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator 
             .ApplyConfiguration(new DirectDebitGrantConfiguration())
             .ApplyConfiguration(new DirectDebitPlanConfiguration())
             .ApplyConfiguration(new DirectDebitTransactionConfiguration())
+            .ApplyConfiguration(new PaymentReceiptTransactionConfiguration())
         ;
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())

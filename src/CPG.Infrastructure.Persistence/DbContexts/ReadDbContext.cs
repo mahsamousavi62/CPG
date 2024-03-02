@@ -52,6 +52,7 @@ public class ReadDbContext(DbContextOptions<ReadDbContext> options) : DbContext(
     public IQueryable<DirectDebitPlanReadModel> DirectDebitPlanReadModels => Set<DirectDebitPlanReadModel>().AsNoTracking();
 
     public IQueryable<DirectDebitTransactionReadModel> DebitTransactionReadModels => Set<DirectDebitTransactionReadModel>().AsNoTracking();
+    public IQueryable<PaymentReceiptTransactionReadModel> paymentReceiptTransactionReadModels => Set<PaymentReceiptTransactionReadModel>().AsNoTracking();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -79,6 +80,7 @@ public class ReadDbContext(DbContextOptions<ReadDbContext> options) : DbContext(
             .ApplyConfiguration(new DirectDebitGrantReadModelConfiguration())
             .ApplyConfiguration(new DirectDebitPlanReadModelConfiguration())
             .ApplyConfiguration(new DirectDebitTransactionReadModelConfiguration())
+            .ApplyConfiguration(new PaymentReceiptTransactionReadModelConfiguration())
             ;
     }
 
