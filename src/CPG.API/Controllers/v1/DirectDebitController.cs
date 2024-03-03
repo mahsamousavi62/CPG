@@ -14,10 +14,8 @@ public class DirectDebitController : ApiBaseController
     [HttpGet("GetAvailableBankList")]
     [ProducesResponseType(typeof(Result<IReadOnlyCollection<AvailableBankViewModel>>), 200)]
     public async Task<Result<IReadOnlyCollection<AvailableBankViewModel>>> GetAvailableBankList()
-    {
-        return await Mediator.Send(new GetAvailableBankListQuery());
-    }
-
+        => await Mediator.Send(new GetAvailableBankListQuery());
+    
     [HttpPost("GetPlans")]
     [ProducesResponseType(typeof(Result<PlanViewModel>), 200)]
     public async Task<Result<PlanViewModel>> GetPlans([FromBody] GetDirectDebitPlansViewModel request)
@@ -26,13 +24,10 @@ public class DirectDebitController : ApiBaseController
     [HttpPost("GetUserPhoneNumbers")]
     [ProducesResponseType(typeof(Result<IReadOnlyCollection<UserPhoneNumberViewModel>>), 200)]
     public async Task<Result<IReadOnlyCollection<UserPhoneNumberViewModel>>> GetUserPhoneNumbers([FromBody] GetUserPhoneNumbersViewModel request)
-       => await Mediator.Send(new GetUserPhoneNumbersCommand(request));
+        => await Mediator.Send(new GetUserPhoneNumbersCommand(request));
 
     [HttpPost("ConfirmGrant")]
     [ProducesResponseType(typeof(Result<ConfirmGrantResponseViewModel>), (int)HttpStatusCode.OK)]
     public async Task<Result<ConfirmGrantResponseViewModel>> ConfirmGrant([FromBody] ConfirmGrantViewModel request)
-    {
-        var response = await Mediator.Send(new ConfirmGrantCommand(request));
-        return response;
-    }
+        => await Mediator.Send(new ConfirmGrantCommand(request));
 }
