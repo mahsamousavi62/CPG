@@ -20,17 +20,17 @@ public class WalletController : ApiBaseController
     /// <returns></returns>
    
     [HttpGet("WalletInformation")]
-    [ProducesResponseType(typeof(Result<Result<UserDepositBalanceResponse>>), 200)]
-    public async Task<Result<UserDepositBalanceResponse>> GetWalletInformation()
+    [ProducesResponseType(typeof(Result<UserDepositBalanceViewModel>), 200)]
+    public async Task<Result<UserDepositBalanceViewModel>> GetWalletInformation()
     => await Mediator.Send(new GetUserDepositBalanceQuery());
 
     /// <summary>
     ///  
     /// </summary>
     /// <returns></returns>
-    [HttpGet("ClientDirectDebit")]
-    [ProducesResponseType(typeof(Result<Result<ClientDirectDebitResponse>>), 200)]
-    public async Task<Result<ClientDirectDebitResponse>> GetClientDirectDebit()
-    => await Mediator.Send(new GetClientDirectDebitQuery());
+    [HttpPost("ClientDirectDebit")]
+    [ProducesResponseType(typeof(Result<ClientDirectDebitResponse>), 200)]
+    public async Task<Result<ClientDirectDebitResponse>> GetClientDirectDebit(ClientDirectDebitRequest model)
+    => await Mediator.Send(new GetClientDirectDebitQuery(model));
 
 }

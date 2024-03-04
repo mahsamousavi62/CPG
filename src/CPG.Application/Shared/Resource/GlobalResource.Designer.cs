@@ -61,6 +61,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dear user, your account does not have enough balance to pay the amount. If possible, use other available methods to pay the desired amount..
+        /// </summary>
+        public static string AccountDoesNotHaveEnoughBalance {
+            get {
+                return ResourceManager.GetString("AccountDoesNotHaveEnoughBalance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to AccountNumber.
         /// </summary>
         public static string AccountNumber {
@@ -529,6 +538,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dear user, it is not possible to transfer money to the destination account. If possible, use other available methods to pay the desired amount..
+        /// </summary>
+        public static string DestinationAccountDoesNotBelong {
+            get {
+                return ResourceManager.GetString("DestinationAccountDoesNotBelong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to DirectDebit.
         /// </summary>
         public static string DirectDebit {
@@ -759,6 +777,15 @@ namespace CPG.Application.Shared.Resource {
         public static string InvalidCodeOrTrackIdException {
             get {
                 return ResourceManager.GetString("InvalidCodeOrTrackIdException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  Format must be ****/**/***/*********.
+        /// </summary>
+        public static string InvalidDepositNumber {
+            get {
+                return ResourceManager.GetString("InvalidDepositNumber", resourceCulture);
             }
         }
         
@@ -1362,6 +1389,15 @@ namespace CPG.Application.Shared.Resource {
         public static string SendOtpCode {
             get {
                 return ResourceManager.GetString("SendOtpCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dear user, the service has been disrupted and we are fixing the problem. If possible, use other available methods to pay the desired amount..
+        /// </summary>
+        public static string ServiceDisrupted {
+            get {
+                return ResourceManager.GetString("ServiceDisrupted", resourceCulture);
             }
         }
         
