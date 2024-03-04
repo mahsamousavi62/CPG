@@ -39,6 +39,8 @@ using CPG.Infrastructure.Logging;
 using CPG.Domain.SharedKernel.Logging;
 using CPG.Domain.SharedKernel.Communication.DirectDebit;
 using CPG.Infrastructure.Providers.DirectDebit;
+using CPG.Infrastructure.Providers.NeoBank;
+using CPG.Domain.SharedKernel.Communication.NeoBank;
 
 namespace CPG.Infrastructure;
 
@@ -47,6 +49,7 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         => services
             .AddScoped<ICharisPayProvider, CharisPayProvider>()
+            .AddScoped<INeoBankService,NeoBankProvider>()
             .AddScoped<IIdpProvider, IdpProvider>()
             .AddScoped<IIpgFactory, IpgFactory>()
             .AddScoped<IDirectDebitFactory, DirectDebitFactory>()
@@ -114,7 +117,7 @@ public static class DependencyInjection
         var authService = serviceProvider.GetRequiredService<IAuthService>();
         var jwtConfig = authService.GetJwtConfig();
         var charisPayConfig = configuration.GetSection("Infrastructure:CharisPay").Get<CharisPayConfig>();
-
+        var neoBankConfig = configuration.GetSection("Infrastructure:NeoBank").Get<NeoBankConfig>();
         services.AddHttpClient("charisPayClient", c =>
         {
             c.BaseAddress = new Uri(charisPayConfig.BaseUrl);
@@ -125,6 +128,13 @@ public static class DependencyInjection
         services.AddHttpClient("idpClient", c =>
         {
             c.BaseAddress = new Uri(jwtConfig.Authority);
+            c.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
+            c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        });
+
+        services.AddHttpClient("neoBankClient", c =>
+        {
+            c.BaseAddress = new Uri(neoBankConfig.BaseUrl);
             c.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         });

@@ -15,6 +15,8 @@ using CPG.Infrastructure.Persistence.QueryHandlers.DirectDebit;
 using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Store;
 using CPG.Application.UseCases.DirectDebit.Queries;
 using CPG.Application.UseCases.DirectDebit.ViewModels;
+using CPG.Application.UseCases.NeoBankServices.Queries;
+using CPG.Domain.SharedKernel.Communication.NeoBank.Models;
 
 namespace CPG.API.Controllers.v1;
 
@@ -69,5 +71,10 @@ public class PaymentRequestController : ApiBaseController
     [HttpPost("TransactionVerify")]
     [ProducesResponseType(typeof(Result<VerifyTransactionResponseViewModel>), 200)]
     public async Task<Result<VerifyTransactionResponseViewModel>> TransactionVerify([Required] VerifyTransactionViewModel model)
-        => await Mediator.Send(new VerifyTransactionQuery(model));    
+        => await Mediator.Send(new VerifyTransactionQuery(model));
+
+    [HttpPost("CreateCharismaCardRequest")]
+    [ProducesResponseType(typeof(Result<ClientDirectDebitResponse>), 200)]
+    public async Task<Result<ClientDirectDebitResponse>> GetClientDirectDebit(ClientDirectDebitRequest model)
+       => await Mediator.Send(new GetClientDirectDebitQuery(model));
 }
