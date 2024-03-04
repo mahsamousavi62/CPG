@@ -666,7 +666,76 @@
   <data name="InvalidRefreshToken" xml:space="preserve">
     <value>مقدار RefreshToken نامعتبر است</value>
   </data>
+  <data name="BankAmountLimit" xml:space="preserve">
+    <value>کاربر گرامی، سقف مجاز مبلغ در بانک به اتمام رسیده است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید</value>
+  </data>
+  <data name="BankMalfunction" xml:space="preserve">
+    <value>کاربر گرامی، این بانک و مجوز دچار اختلال شده است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید.</value>
+  </data>
+  <data name="BlockedAccount" xml:space="preserve">
+    <value>کاربر گرامی، حساب مربوط به این مجوز مسدود شده است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید</value>
+  </data>
+  <data name="DailyTransactionAmount" xml:space="preserve">
+    <value>کاربر گرامی، مبلغ تراکنش بیشتر از حد مجاز روزانه این مجوز است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید</value>
+  </data>
+  <data name="DailyTransactionLimit" xml:space="preserve">
+    <value>کاربر گرامی، سقف مجاز تعداد تراکنش روزانه این مجوز به اتمام رسیده، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید.</value>
+  </data>
+  <data name="DepositProblem" xml:space="preserve">
+    <value>کاربر گرامی، در سپرده بانکی مربوط به این مجوز مشکلی رخ داده است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید</value>
+  </data>
+  <data name="DiffrentNumber" xml:space="preserve">
+    <value>کاربر گرامی، با شماره ای متفاوت قبلا مجوزی در سیستم ثبت شده است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید</value>
+  </data>
   <data name="DirectDebitGrantNotFoundException" xml:space="preserve">
     <value>رکوردی با این authorizationId یافت نشد</value>
+  </data>
+  <data name="ExpiredCard" xml:space="preserve">
+    <value>کاربر گرامی، کارت مربوط به این مجوز منقضی شده است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید</value>
+  </data>
+  <data name="ExpiredGrant" xml:space="preserve">
+    <value>کاربر گرامی، این مجوز منقضی شده است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید</value>
+  </data>
+  <data name="IllegalTransactionAmount" xml:space="preserve">
+    <value>کاربر گرامی، مبلغ تراکنش غیرمجاز است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید</value>
+  </data>
+  <data name="InactiveCard" xml:space="preserve">
+    <value>کاربر گرامی، کارت مربوط به این مجوز غیرفعال شده است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید</value>
+  </data>
+  <data name="InactiveGrant" xml:space="preserve">
+    <value>کاربر گرامی، این مجوز در بانک غیرفعال شده است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید</value>
+  </data>
+  <data name="InvalidCardData" xml:space="preserve">
+    <value>کاربر گرامی، اطلاعات کارت مربوط به این مجوز نامعتبر است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید</value>
+  </data>
+  <data name="InvalidCardOrDeposit" xml:space="preserve">
+    <value>کاربر گرامی، کارت یا سپرده مربوط به این مجوز نامعتبر میباشد، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید</value>
+  </data>
+  <data name="InvalidDeposit" xml:space="preserve">
+    <value>کاربر گرامی، سپرده مربوط به این مجوز متعلق به شما نیست یا امکان برداشت از آن موجود نمی باشد، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید</value>
+  </data>
+  <data name="InvalidDepositNumber" xml:space="preserve">
+    <value>کاربر گرامی، شماره سپرده مربوط به این مجوز نامعتبر است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنیدs</value>
+  </data>
+  <data name="InvalidGrant" xml:space="preserve">
+    <value>کاربر گرامی، این مجوز نامعتبر است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید</value>
+  </data>
+  <data name="InvalidTransactionTime" xml:space="preserve">
+    <value>کاربر گرامی، زمان انجام تراکنش برای این مجوز نامعتبر است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید</value>
+  </data>
+  <data name="MonthlyTransactionNumber" xml:space="preserve">
+    <value>کاربر گرامی، سقف مجاز تعداد تراکنش ماهانه این مجوز به اتمام رسیده، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید</value>
+  </data>
+  <data name="NoShahabCode" xml:space="preserve">
+    <value>کاربر گرامی، حساب مربوط به این مجوز فاقد کد شهاب میباشد، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید</value>
+  </data>
+  <data name="NotEnoughBalance" xml:space="preserve">
+    <value>کاربر گرامی، حساب انتخاب شده دارای موجودی لازم جهت پرداخت نمی باشد. در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید.</value>
+  </data>
+  <data name="ServerMalfunction" xml:space="preserve">
+    <value>کاربر گرامی سرویس دهنده/بانک دچار اختلال شده و ما در حال رفع مشکل هستیم. در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید</value>
+  </data>
+  <data name="UseOtherBanks" xml:space="preserve">
+    <value>کاربر گرامی به منظور انجام عملیات برداشت مستقیم، در صورت امکان از سایر بانک ها جهت پرداخت مبلغ مورد نظر اقدام کنید</value>
   </data>
 </root>

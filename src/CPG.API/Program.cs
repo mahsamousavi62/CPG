@@ -1,9 +1,8 @@
 using CPG.API.Helper;
 using CPG.Application;
-using CPG.Domain.SharedKernel;
+using CPG.Application.Shared;
 using CPG.Infrastructure;
 using CPG.Infrastructure.Persistence;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Globalization;
@@ -46,11 +45,12 @@ builder.Services.AddSwaggerGen(opt =>
         }
     });
 });
+
 builder.Services.AddControllers();
 builder.Services.AddHealthChecks();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
-
+builder.Services.AddSignalR();
 builder.Services
     .AddApplication(configuration)
     .AddInfrastructure(configuration);
@@ -104,7 +104,7 @@ app.UseRequestLocalization(new RequestLocalizationOptions
     SupportedCultures = supportedLanguages,
     SupportedUICultures = supportedLanguages
 });
-
+app.MapHub<NotificationHub>("/Notify");
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseFileServer();

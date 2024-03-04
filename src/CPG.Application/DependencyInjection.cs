@@ -5,24 +5,23 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
 
-namespace CPG.Application
+namespace CPG.Application;
+
+public static class DependencyInjection
 {
-    public static class DependencyInjection
+    public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
     {
-        public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
-        {
-            var applicationAssemblies = AppDomain.CurrentDomain.GetAssemblies();
-            var infrastructureAssembly = AppDomain.CurrentDomain.Load("CPG.Infrastructure.Persistence");
+        var applicationAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+        var infrastructureAssembly = AppDomain.CurrentDomain.Load("CPG.Infrastructure.Persistence");
 
-            var allAssemblies = applicationAssemblies.Append(infrastructureAssembly).ToArray();
+        var allAssemblies = applicationAssemblies.Append(infrastructureAssembly).ToArray();
 
-            return services
-                .AddMediatR(cfg => {
-                    cfg.RegisterServicesFromAssemblies(allAssemblies);
-                    cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
-                    cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(AuthorizationBehaviour<,>));
-                    cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
-                });
-        }
+        return services                
+            .AddMediatR(cfg => {
+                cfg.RegisterServicesFromAssemblies(allAssemblies);
+                cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
+                cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(AuthorizationBehaviour<,>));
+                cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
+            });
     }
 }

@@ -17,17 +17,25 @@ using CPG.Domain.Exceptions;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
 using CPG.Application.UseCases.Exceptions;
+using CPG.Domain.SharedKernel.Communication.DirectDebit;
+using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Verify;
+using CPG.Domain.AggregateModels.ProviderAggregate;
+using Newtonsoft.Json.Linq;
+using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Token;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 
 public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
+    IDirectDebitFactory directDebitFactory,
     IAggregateRepository<PaymentRequest> paymentRequestRepository,
+    IAggregateRepository<CPG.Domain.AggregateModels.ProviderAggregate.Provider> providerRepository,
     IAggregateRepository<Transaction> transactionRepository,
     IHttpContextAccessor httpContext) : IRequestHandler<VerifyTransactionQuery, Result<VerifyTransactionResponseViewModel>>
 {
-
     private readonly IIpgFactory _ipgFactory = ipgFactory;
+    private readonly IDirectDebitFactory _directDebitFactory = directDebitFactory;
     private readonly IAggregateRepository<PaymentRequest> _paymentRequestRepository = paymentRequestRepository;
+    private readonly IAggregateRepository<Domain.AggregateModels.ProviderAggregate.Provider> _providerRepository = providerRepository;
     private readonly IAggregateRepository<Transaction> _transactionRepository = transactionRepository;
     private readonly IHttpContextAccessor _httpContext = httpContext;
 
@@ -58,42 +66,60 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
             await _paymentRequestRepository.SaveChangesAsync(cancellationToken);
 
             var transaction = await _transactionRepository.GetBySpecAsync(new TransactionByPaymentRequestId(paymentRequest.Id), cancellationToken);
-            if (transaction is null || transaction.IPGTransaction is null)
+            if (transaction is null || (transaction.IPGTransaction is null && transaction.DirectDebitTransaction is null))
             {
-                throw new Exception("transaction or ipgTransaction not found");
+                throw new Exception("transaction or transactionDetail not found");
             }
 
-            var providerType = transaction.IPGTransaction.CompanyIPG.Provider.ProviderType;
-
-            var ipg = _ipgFactory.GetInstance(providerType);
-            var result = await ipg.Verify(new VerifyTransactionRequest
+            switch (transaction.TransactionMethodType)
             {
-                ProviderData = transaction.IPGTransaction.CompanyIPG.ProviderData,
-                ProviderTrackerId = transaction.IPGTransaction.ProviderTrackerId,
-                Token=transaction.IPGTransaction.IPGToken
-            });
+                case TransactionType.IPG:
+                    {
+                        var providerType = transaction.IPGTransaction.CompanyIPG.Provider.ProviderType;
 
-            transaction.IPGTransaction.Status = result.Status;
+                        var ipg = _ipgFactory.GetInstance(providerType);
+                        var result = await ipg.Verify(new VerifyTransactionRequest
+                        {
+                            ProviderData = transaction.IPGTransaction.CompanyIPG.ProviderData,
+                            ProviderTrackerId = transaction.IPGTransaction.ProviderTrackerId,
+                            Token = transaction.IPGTransaction.IPGToken
+                        });
 
-            if (result.Status == IPGTransactionStatus.VerificationSucceeded)
-            {
-                var currentDateTime = DateTime.Now;
-                var timeMargin = new TimeOnly(23, 45);
-                var currentTime = new TimeOnly(currentDateTime.Hour, currentDateTime.Minute);
-                var date = currentTime < timeMargin ?
-                    new DateTime(currentDateTime.AddDays(1).Year, currentDateTime.AddDays(1).Month, currentDateTime.AddDays(1).Day, 7, 0, 0) :
-                    new DateTime(currentDateTime.AddDays(2).Year, currentDateTime.AddDays(2).Month, currentDateTime.AddDays(2).Day, 7, 0, 0);
+                        transaction.IPGTransaction.Status = result.Status;
 
-                transaction.PredictedSettlementDateTime = date;
-                transaction.Status = TransactionStatus.TransactionSucceeded;
-                transaction.IPGTransaction.VerificationDateTime = DateTime.Now;
-                paymentRequest.Status = PaymentStatus.TransactionVerificationSucceeded;
-               
-            }
-            else if (result.Status == IPGTransactionStatus.VerificationFailed)
-            {
-                transaction.Status = TransactionStatus.TransactionFailed;
-                paymentRequest.Status = PaymentStatus.TransactionVerificationFailed;
+                        if (result.Status == IPGTransactionStatus.VerificationSucceeded)
+                        {
+                            var currentDateTime = DateTime.Now;
+                            var timeMargin = new TimeOnly(23, 45);
+                            var currentTime = new TimeOnly(currentDateTime.Hour, currentDateTime.Minute);
+                            var date = currentTime < timeMargin ?
+                                new DateTime(currentDateTime.AddDays(1).Year, currentDateTime.AddDays(1).Month, currentDateTime.AddDays(1).Day, 7, 0, 0) :
+                                new DateTime(currentDateTime.AddDays(2).Year, currentDateTime.AddDays(2).Month, currentDateTime.AddDays(2).Day, 7, 0, 0);
+
+                            transaction.PredictedSettlementDateTime = date;
+                            transaction.Status = TransactionStatus.TransactionSucceeded;
+                            transaction.IPGTransaction.VerificationDateTime = DateTime.Now;
+                            paymentRequest.Status = PaymentStatus.TransactionVerificationSucceeded;
+
+                        }
+                        else if (result.Status == IPGTransactionStatus.VerificationFailed)
+                        {
+                            transaction.Status = TransactionStatus.TransactionFailed;
+                            paymentRequest.Status = PaymentStatus.TransactionVerificationFailed;
+                        }
+                        break;
+                    }
+                case TransactionType.DirectDebit:
+                    {
+                        var date = DateTime.Now.AddDays(1);
+                        transaction.PredictedSettlementDateTime = new DateTime(date.Year, date.Month, date.Day, 0, 0, 0);
+                        transaction.Status = TransactionStatus.TransactionSucceeded;
+                        paymentRequest.Status = PaymentStatus.TransactionVerificationSucceeded;
+
+                        break;
+                    }
+                default:
+                    break;
             }
 
             await _transactionRepository.UpdateAsync(transaction);
@@ -108,13 +134,13 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
                 TrackerId = paymentRequest.TrackerId,
                 DestinationDepositIban = transaction.DestinationDeposit.Iban,
                 DestinationDepositAccountNumber = transaction?.DestinationDeposit?.AccountNumber,
-                ReferenceNumber = transaction.IPGTransaction.ReferenceNumber,
+                ReferenceNumber = GetTransactionRefrenceNumber(transaction),
                 PaymentMethodType = (short)transaction?.TransactionMethodType,
                 PaymentMethodTypeTitle = transaction is null ? string.Empty : GetPaymentMethodTypeTitle(transaction.TransactionMethodType),
                 Status = (short)paymentRequest.Status,
-                StatusTitle = GetStatusTitle(paymentRequest.Status),
+                StatusTitle = General.GetPaymentStatusTitle(paymentRequest.Status),
                 PredictedSettlementDateTime = transaction.PredictedSettlementDateTime?.ToString("yyyy-MM-dd HH:mm:ss zzz"),
-                CPGVerificationDateTime = transaction.IPGTransaction.VerificationDateTime?.ToString("yyyy-MM-dd HH:mm:ss zzz"),
+                CPGVerificationDateTime = GetTransactionVerificationDateTime(transaction),
             };
 
             return Result<VerifyTransactionResponseViewModel>.SuccessResult(response);
@@ -133,28 +159,6 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
         }
     }
 
-    private string GetStatusTitle(PaymentStatus status)
-    {
-        return status switch
-        {
-            PaymentStatus.Draft => "DRAFT",
-            PaymentStatus.RedirectedToCpg => "REDIRECTED_TO_CPG",
-            PaymentStatus.CanceledByUser => "CANCELLED_BY_USER",
-            PaymentStatus.InProgress => "TRANSACTION_IN_PROGRESS",
-            PaymentStatus.TransactionWaitingForVerification => "TRANSACTION_WAITING_FOR_VERIFICATION",
-            PaymentStatus.TransactionFailed => "TRANSACTION_FAILED",
-            PaymentStatus.TransactionVerifiedByApplication => "TRANSACTION_VERIFIED_BY_APPLICATION",
-            PaymentStatus.TransactionCanceledByApplication => "TRANSACTION_CANCELLED_BY_APPLICATION",
-            PaymentStatus.TransactionVerificationSucceeded => "TRANSACTION_VERIFICATION_SUCCEEDED",
-            PaymentStatus.TransactionVerificationFailed => "TRANSACTION_VERIFICATION_FAILED",
-            PaymentStatus.TransactionCancellationSucceeded => "TRANSACTION_CANCELLATION_SUCCEEDED",
-            PaymentStatus.TransactionCancellationFailed => "TRANSACTION_CANCELLATION_FAILED",
-            PaymentStatus.SettlementSucceeded => "SETTLEMENT_SUCCEEDED",
-            PaymentStatus.SettlementFailed => "SETTLEMENT_FAILED",
-            _ => string.Empty
-        };
-    }
-
     private string GetPaymentMethodTypeTitle(TransactionType type)
     {
         return type switch
@@ -163,5 +167,31 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
             TransactionType.DirectDebit => "DIRECT_DEBIT",
             _ => string.Empty
         };
+    }
+
+    private string GetTransactionRefrenceNumber(Transaction transaction)
+    {
+        switch (transaction.TransactionMethodType)
+        {
+            case TransactionType.IPG:
+                return transaction.IPGTransaction.ReferenceNumber;
+            case TransactionType.DirectDebit:
+                return string.Empty;
+            default:
+                return string.Empty;
+        }
+    }
+
+    private string GetTransactionVerificationDateTime(Transaction transaction)
+    {
+        switch (transaction.TransactionMethodType)
+        {
+            case TransactionType.IPG:
+                return transaction.IPGTransaction.VerificationDateTime?.ToString("yyyy-MM-dd HH:mm:ss zzz");
+            case TransactionType.DirectDebit:
+                return DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss zzz");
+            default:
+                return string.Empty;
+        }
     }
 }

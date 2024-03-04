@@ -151,6 +151,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dear user, the amount allowed in the bank has been reached, if possible, use other banks or available methods to pay the desired amount.
+        /// </summary>
+        public static string BankAmountLimit {
+            get {
+                return ResourceManager.GetString("BankAmountLimit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to BankIsActiveInProvider.
         /// </summary>
         public static string BankIsActiveInProvider {
@@ -165,6 +174,15 @@ namespace CPG.Application.Shared.Resource {
         public static string BankLogo {
             get {
                 return ResourceManager.GetString("BankLogo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dear user, this bank and license have been disrupted, if possible, use other banks or available methods to pay the desired amount.
+        /// </summary>
+        public static string BankMalfunction {
+            get {
+                return ResourceManager.GetString("BankMalfunction", resourceCulture);
             }
         }
         
@@ -210,6 +228,15 @@ namespace CPG.Application.Shared.Resource {
         public static string Before {
             get {
                 return ResourceManager.GetString("Before", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dear user, the account related to this license has been blocked, if possible, use other banks or available methods to pay the desired amount.
+        /// </summary>
+        public static string BlockedAccount {
+            get {
+                return ResourceManager.GetString("BlockedAccount", resourceCulture);
             }
         }
         
@@ -448,6 +475,24 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dear user, the transaction amount is more than the daily limit of this license, if possible, use other banks or available methods to pay the desired amount.
+        /// </summary>
+        public static string DailyTransactionAmount {
+            get {
+                return ResourceManager.GetString("DailyTransactionAmount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dear user, the daily transaction limit of this license has been reached. If possible, use other banks or available methods to pay the desired amount..
+        /// </summary>
+        public static string DailyTransactionLimit {
+            get {
+                return ResourceManager.GetString("DailyTransactionLimit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to DDBankCodeDirectDebit.
         /// </summary>
         public static string DDBankCodeDirectDebit {
@@ -520,11 +565,29 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dear user, there is a problem with the bank deposit related to this license, if possible, use other banks or available methods to pay the desired amount..
+        /// </summary>
+        public static string DepositProblem {
+            get {
+                return ResourceManager.GetString("DepositProblem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Deposits.
         /// </summary>
         public static string Deposits {
             get {
                 return ResourceManager.GetString("Deposits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dear user, a license has already been registered in the system with a different number, if possible, use other banks or available methods to pay the desired amount.
+        /// </summary>
+        public static string DiffrentNumber {
+            get {
+                return ResourceManager.GetString("DiffrentNumber", resourceCulture);
             }
         }
         
@@ -646,6 +709,24 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dear user, the card related to this license has expired, if possible, use other banks or available methods to pay the desired amount..
+        /// </summary>
+        public static string ExpiredCard {
+            get {
+                return ResourceManager.GetString("ExpiredCard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dear user, this license has expired, if possible, use other banks or available methods to pay the desired amount.
+        /// </summary>
+        public static string ExpiredGrant {
+            get {
+                return ResourceManager.GetString("ExpiredGrant", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to False.
         /// </summary>
         public static string False {
@@ -745,11 +826,56 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dear user, the transaction amount is illegal, if possible, use other banks or available methods to pay the desired amount.
+        /// </summary>
+        public static string IllegalTransactionAmount {
+            get {
+                return ResourceManager.GetString("IllegalTransactionAmount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dear user, the card related to this license has been deactivated, if possible, use other banks or available methods to pay the desired amount..
+        /// </summary>
+        public static string InactiveCard {
+            get {
+                return ResourceManager.GetString("InactiveCard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dear user, this permission has been disabled in the bank, if possible, use other banks or available methods to pay the desired amount.
+        /// </summary>
+        public static string InactiveGrant {
+            get {
+                return ResourceManager.GetString("InactiveGrant", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to InternetPaymentGateway.
         /// </summary>
         public static string InternetPaymentGateway {
             get {
                 return ResourceManager.GetString("InternetPaymentGateway", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dear user, the card information related to this license is invalid, if possible, use other banks or available methods to pay the desired amount..
+        /// </summary>
+        public static string InvalidCardData {
+            get {
+                return ResourceManager.GetString("InvalidCardData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dear user, the card or deposit related to this license is invalid, if possible, use other banks or available methods to pay the desired amount.
+        /// </summary>
+        public static string InvalidCardOrDeposit {
+            get {
+                return ResourceManager.GetString("InvalidCardOrDeposit", resourceCulture);
             }
         }
         
@@ -763,11 +889,47 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dear user, the deposit related to this license does not belong to you or it is not possible to withdraw from it, if possible, use other banks or available methods to pay the desired amount.
+        /// </summary>
+        public static string InvalidDeposit {
+            get {
+                return ResourceManager.GetString("InvalidDeposit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dear user, the deposit number related to this license is invalid, if possible, use other banks or available methods to pay the desired amount.
+        /// </summary>
+        public static string InvalidDepositNumber {
+            get {
+                return ResourceManager.GetString("InvalidDepositNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dear user, this license is invalid, if possible, use other banks or available methods to pay the desired amount.
+        /// </summary>
+        public static string InvalidGrant {
+            get {
+                return ResourceManager.GetString("InvalidGrant", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to RefreshToken is invalid.
         /// </summary>
         public static string InvalidRefreshToken {
             get {
                 return ResourceManager.GetString("InvalidRefreshToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dear user, the transaction time for this license is invalid, if possible, use other banks or available methods to pay the desired amount.
+        /// </summary>
+        public static string InvalidTransactionTime {
+            get {
+                return ResourceManager.GetString("InvalidTransactionTime", resourceCulture);
             }
         }
         
@@ -889,6 +1051,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dear user, the limit of the number of monthly transactions of this license has been reached. If possible, use other banks or available methods to pay the desired amount.
+        /// </summary>
+        public static string MonthlyTransactionNumber {
+            get {
+                return ResourceManager.GetString("MonthlyTransactionNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to MorethanOneDefaultDepositFoundException.
         /// </summary>
         public static string MorethanOneDefaultDepositFoundException {
@@ -930,6 +1101,24 @@ namespace CPG.Application.Shared.Resource {
         public static string NineMonths {
             get {
                 return ResourceManager.GetString("NineMonths", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dear user, the account related to this license does not have Shahab code, if possible, use other banks or available methods to pay the desired amount.
+        /// </summary>
+        public static string NoShahabCode {
+            get {
+                return ResourceManager.GetString("NoShahabCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dear user, the selected account does not have the necessary balance for payment. If possible, use other banks or available methods to pay the desired amount.
+        /// </summary>
+        public static string NotEnoughBalance {
+            get {
+                return ResourceManager.GetString("NotEnoughBalance", resourceCulture);
             }
         }
         
@@ -1366,6 +1555,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dear user, the service provider/bank has a problem and we are trying to fix it. If possible, use other banks or available methods to pay the desired amount.
+        /// </summary>
+        public static string ServerMalfunction {
+            get {
+                return ResourceManager.GetString("ServerMalfunction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SetActive.
         /// </summary>
         public static string SetActive {
@@ -1551,6 +1749,15 @@ namespace CPG.Application.Shared.Resource {
         public static string UnexpectedError {
             get {
                 return ResourceManager.GetString("UnexpectedError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dear user, in order to carry out direct withdrawal operations, if possible, pay the desired amount from other banks.
+        /// </summary>
+        public static string UseOtherBanks {
+            get {
+                return ResourceManager.GetString("UseOtherBanks", resourceCulture);
             }
         }
         
