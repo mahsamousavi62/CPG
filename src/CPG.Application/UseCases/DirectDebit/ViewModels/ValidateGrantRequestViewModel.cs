@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace CPG.Application.UseCases.DirectDebit.ViewModels;
 
@@ -9,10 +9,10 @@ public class ValidateGrantRequestViewModel
 
 public class VandarValidateGrantViewModel
 {
-    [JsonProperty("token")]
+    [JsonPropertyName("token")]
     public string Token { get; set; }
-    [JsonProperty("status")]
+    [JsonPropertyName("status")]
     public string Status { get; set; }
-    [JsonProperty("authorization_id")]
+    [JsonPropertyName("authorization_id")]
     public string AuthorizationId { get; set; }
 }

@@ -1,5 +1,4 @@
-﻿using CPG.Application.UseCases.Banks.ViewModels;
-using CPG.Application.UseCases.DirectDebit.ViewModels;
+﻿using CPG.Application.UseCases.DirectDebit.ViewModels;
 using CPG.Domain.SharedKernel;
 using MediatR;
 using System.Collections.Generic;
