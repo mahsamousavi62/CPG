@@ -651,4 +651,19 @@
   <data name="DirectDebitGrantNotFoundException" xml:space="preserve">
     <value>No record found with this authorizationId</value>
   </data>
+  <data name="UserHasnotCharismaCart" xml:space="preserve">
+    <value>UserHasnotCharismaCart</value>
+  </data>
+  <data name="AccountDoesNotHaveEnoughBalance" xml:space="preserve">
+    <value>Dear user, your account does not have enough balance to pay the amount. If possible, use other available methods to pay the desired amount.</value>
+  </data>
+  <data name="DestinationAccountDoesNotBelong" xml:space="preserve">
+    <value>Dear user, it is not possible to transfer money to the destination account. If possible, use other available methods to pay the desired amount.</value>
+  </data>
+  <data name="InvalidDepositNumber" xml:space="preserve">
+    <value> Format must be ****/**/***/*********</value>
+  </data>
+  <data name="ServiceDisrupted" xml:space="preserve">
+    <value>Dear user, the service has been disrupted and we are fixing the problem. If possible, use other available methods to pay the desired amount.</value>
+  </data>
 </root>
