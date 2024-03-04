@@ -24,13 +24,6 @@ public class WalletController : ApiBaseController
     public async Task<Result<UserDepositBalanceViewModel>> GetWalletInformation()
     => await Mediator.Send(new GetUserDepositBalanceQuery());
 
-    /// <summary>
-    ///  
-    /// </summary>
-    /// <returns></returns>
-    [HttpPost("ClientDirectDebit")]
-    [ProducesResponseType(typeof(Result<ClientDirectDebitResponse>), 200)]
-    public async Task<Result<ClientDirectDebitResponse>> GetClientDirectDebit(ClientDirectDebitRequest model)
-    => await Mediator.Send(new GetClientDirectDebitQuery(model));
+  
 
 }
