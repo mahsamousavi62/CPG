@@ -62,5 +62,6 @@
     <Folder Include="UseCases\PaymentRequests\EventHandler\" />
     <Folder Include="UseCases\CompanyIPGs\EventHandler\" />
     <Folder Include="UseCases\Providers\EventHandlers\" />
+    <Folder Include="UseCases\Wallet\Commands\" />
   </ItemGroup>
 </Project>

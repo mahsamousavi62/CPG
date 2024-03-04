@@ -690,6 +690,21 @@
   <data name="DirectDebitGrantNotFoundException" xml:space="preserve">
     <value>رکوردی با این authorizationId یافت نشد</value>
   </data>
+  <data name="UserHasnotCharismaCart" xml:space="preserve">
+    <value>کاریزما کارت ندارد</value>
+  </data>
+  <data name="AccountDoesNotHaveEnoughBalance" xml:space="preserve">
+    <value>کاربر گرامی، حساب شما موجودی لازم جهت پرداخت مبلغ را ندارد. در صورت امکان از سایر روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید.</value>
+  </data>
+  <data name="DestinationAccountDoesNotBelong" xml:space="preserve">
+    <value>کاربر گرامی امکان انتقال وجه به حساب مقصد موجود نیست. در صورت امکان از سایر روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید.</value>
+  </data>
+  <data name="InvalidDepositNumber" xml:space="preserve">
+    <value>فرمت شماره حساب ****/**/***/********* می باشد</value>
+  </data>
+  <data name="ServiceDisrupted" xml:space="preserve">
+    <value>کاربر گرامی سرویس دهنده دچار اختلال شده و ما در حال رفع مشکل هستیم. در صورت امکان از سایر روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید.</value>
+  </data>
   <data name="ExpiredCard" xml:space="preserve">
     <value>کاربر گرامی، کارت مربوط به این مجوز منقضی شده است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید</value>
   </data>
