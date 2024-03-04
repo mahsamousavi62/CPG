@@ -28,16 +28,19 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.WebUtilities;
 using CPG.Application.Shared.Resource;
 using CPG.Application.UseCases.PaymentRequests.ViewModels;
+using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace CPG.Infrastructure.Providers.NeoBank;
 
 public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configuration, IAuthService authService,
-    IHttpContextAccessor httpContextAccessor) : INeoBankService
+    IHttpContextAccessor httpContextAccessor,ILogger<NeoBankProvider> logger) : INeoBankService
 {
     private readonly IHttpClientFactory factory = factory;
     private readonly IConfiguration configuration = configuration;
     private readonly IAuthService authService = authService;
     private readonly IHttpContextAccessor httpContextAccessor = httpContextAccessor;
+    private readonly ILogger<NeoBankProvider> logger = logger=logger;
 
     public async Task<Result<ClientDirectDebitResponse>> ClientDirectDebit(ClientDirectDebitRequest model)
     {
@@ -77,13 +80,16 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
                         return Result<ClientDirectDebitResponse>.SuccessResult(response.Data);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                logger.LogError(ex, $"Request: Unhandled Exception for Request {nameof(ClientDirectDebit)}");
                 return Result<ClientDirectDebitResponse>.Failure(new Error("2201000", GlobalResource.UnexpectedError));
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            logger.LogError(ex, $"Request: Unhandled Exception for Request {nameof(ClientDirectDebit)}");
+
             return Result<ClientDirectDebitResponse>.Failure(new Error("2201000", GlobalResource.UnexpectedError));
         }
     }
@@ -124,13 +130,15 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
                     Iban = response.Data.Iban,
                 });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                logger.LogError(ex, $"Request: Unhandled Exception for Request {nameof(GetUserDepositBalance)}");
                 return Result<UserDepositBalanceResponse>.Failure(new Error("2201000", GlobalResource.UnexpectedError));
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            logger.LogError(ex, $"Request: Unhandled Exception for Request {nameof(GetUserDepositBalance)}");
             return Result<UserDepositBalanceResponse>.Failure(new Error("2201000", GlobalResource.UnexpectedError));
         }
     }
