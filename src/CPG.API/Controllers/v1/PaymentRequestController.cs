@@ -1,7 +1,6 @@
 ﻿using CPG.Application.UseCases.Ipg.Commands;
 using CPG.Application.UseCases.PaymentRequests.Commands.CreatePaymentRequest;
 using CPG.Application.UseCases.PaymentRequests.Commands.GetPaymentMethods;
-using CPG.Application.UseCases.PaymentRequests.Queries;
 using CPG.Application.UseCases.PaymentRequests.ViewModels;
 using CPG.Domain.SharedKernel;
 using Microsoft.AspNetCore.Authorization;
@@ -11,8 +10,6 @@ using CPG.Application.UseCases.Ipg.Queries;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.TransactionResult;
 using CPG.Application.UseCases.PaymentRequests.Commands.CancelPaymentRequet;
 using System.ComponentModel.DataAnnotations;
-using CPG.Infrastructure.Persistence.QueryHandlers.DirectDebit;
-using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Store;
 using CPG.Application.UseCases.DirectDebit.Queries;
 using CPG.Application.UseCases.DirectDebit.ViewModels;
 using CPG.Application.UseCases.NeoBankServices.Queries;
@@ -22,10 +19,10 @@ namespace CPG.API.Controllers.v1;
 
 public class PaymentRequestController : ApiBaseController
 {
-    [HttpGet]
-    [ProducesResponseType(typeof(Result<IReadOnlyCollection<PaymentRequestViewModel>>), 200)]
-    public async Task<Result<IReadOnlyCollection<PaymentRequestViewModel>>> Get()
-        => await Mediator.Send(new GetPaymentRequestQuery());
+    //[HttpGet]
+    //[ProducesResponseType(typeof(Result<IReadOnlyCollection<PaymentRequestViewModel>>), 200)]
+    //public async Task<Result<IReadOnlyCollection<PaymentRequestViewModel>>> Get()
+    //    => await Mediator.Send(new GetPaymentRequestQuery());
            
     [Authorize]
     [HttpPost]

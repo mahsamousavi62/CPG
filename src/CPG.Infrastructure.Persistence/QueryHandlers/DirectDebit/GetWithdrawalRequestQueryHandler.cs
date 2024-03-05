@@ -152,7 +152,7 @@ public class GetWithdrawalRequestQueryHandler(
                         GrantId = grant.Id,
                         Status = SharedServices.GetDirectDebitTransactionStatus(result.Data.Status),
                         TrackId = result.TrackerId,
-                        ProviderTrackId = result.Data.TrackId,
+                        ProviderTrackId = result.Data.Id,
                         ProviderData = serializedData
                     }
                 });

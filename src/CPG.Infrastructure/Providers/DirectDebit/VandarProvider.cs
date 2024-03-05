@@ -253,6 +253,7 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
         {
             GrantStatus = data.Status,
             GrantMessage = data.Message, 
+            StatusCode = data.StatusCode,
             TrackerId = trackerId,
             Data = new WithdrawData
             {

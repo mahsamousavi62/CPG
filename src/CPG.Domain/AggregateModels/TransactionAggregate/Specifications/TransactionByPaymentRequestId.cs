@@ -11,6 +11,7 @@ public class TransactionByPaymentRequestId : Specification<Transaction>, ISingle
             .Include(t => t.DestinationDeposit)
             .Include(t => t.IPGTransaction)
             .ThenInclude(t => t.CompanyIPG)
-            .ThenInclude(t => t.Provider);
+            .ThenInclude(t => t.Provider)
+            .Include(t => t.DirectDebitTransaction);
     }
 }
