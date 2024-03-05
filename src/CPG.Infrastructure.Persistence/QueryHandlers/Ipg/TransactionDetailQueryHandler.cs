@@ -50,13 +50,13 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
                     TrackerId = paymentRequest.TrackerId,
                     Amount = paymentRequest.Amount,
                     Status = (short)paymentRequest.Status,
-                    StatusTitle = GetStatusTitle(paymentRequest.Status),
+                    StatusTitle = General.GetPaymentStatusTitle(paymentRequest.Status),
                     PaymentMethodType = (short)transaction?.TransactionMethodType,
                     PaymentMethodTypeTitle = transaction is null ? string.Empty : GetPaymentMethodTypeTitle(transaction.TransactionMethodType),
-                    ReferenceNumber = transaction is null ? string.Empty : GetTransactionRefrenceNumber(transaction.TransactionMethodType, transaction),
+                    ReferenceNumber = transaction is null ? string.Empty : GetTransactionRefrenceNumber(transaction),
                     DestinationDepositIban = transaction?.DestinationDeposit?.Iban,
                     DestinationDepositAccountNumber = transaction?.DestinationDeposit?.AccountNumber,
-                    PredictedExpirationDateTime = transaction is null ? string.Empty : GetTransactionPredictedExpirationDateTime(transaction.TransactionMethodType, transaction),
+                    PredictedExpirationDateTime = transaction is null ? string.Empty : GetTransactionPredictedExpirationDateTime(transaction),
                 });
         }
         catch (DomainException exc)
@@ -73,26 +73,6 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
         }
     }
 
-    private string GetStatusTitle(PaymentStatus status)
-    {
-        return status switch
-        {
-            PaymentStatus.Draft => "DRAFT",
-            PaymentStatus.RedirectedToCpg => "REDIRECTED_TO_CPG",
-            PaymentStatus.CanceledByUser => "CANCELLED_BY_USER",
-            PaymentStatus.InProgress => "TRANSACTION_IN_PROGRESS",
-            PaymentStatus.TransactionWaitingForVerification => "TRANSACTION_WAITING_FOR_VERIFICATION",
-            PaymentStatus.TransactionFailed => "TRANSACTION_FAILED",
-            PaymentStatus.TransactionVerifiedByApplication => "TRANSACTION_VERIFIED_BY_APPLICATION",
-            PaymentStatus.TransactionCanceledByApplication => "TRANSACTION_CANCELLED_BY_APPLICATION",
-            PaymentStatus.TransactionVerificationSucceeded => "TRANSACTION_VERIFICATION_SUCCEEDED",
-            PaymentStatus.TransactionVerificationFailed => "TRANSACTION_VERIFICATION_FAILED",
-            PaymentStatus.SettlementSucceeded => "SETTLEMENT_SUCCEEDED",
-            PaymentStatus.SettlementFailed => "SETTLEMENT_FAILED",
-            _ => string.Empty
-        };
-    }
-
     private string GetPaymentMethodTypeTitle(TransactionType type)
     {
         return type switch
@@ -103,9 +83,9 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
         };
     }
 
-    private string GetTransactionRefrenceNumber(TransactionType type, Transaction transaction)
+    private string GetTransactionRefrenceNumber(Transaction transaction)
     {
-        switch (type)
+        switch (transaction.TransactionMethodType)
         {
             case TransactionType.IPG:
                 return transaction.IPGTransaction.ReferenceNumber;
@@ -116,9 +96,9 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
         }
     }
 
-    private string GetTransactionPredictedExpirationDateTime(TransactionType type, Transaction transaction)
+    private string GetTransactionPredictedExpirationDateTime(Transaction transaction)
     {
-        switch (type)
+        switch (transaction.TransactionMethodType)
         {
             case TransactionType.IPG:
                 return transaction.IPGTransaction?.PredicateExpirationDateTime?.ToString("yyyy-MM-dd HH:mm:ss zzz");

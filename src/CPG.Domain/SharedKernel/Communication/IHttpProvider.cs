@@ -15,6 +15,11 @@ namespace CPG.Domain.SharedKernel.Communication
            where TError : ResponseBase
            where TBaseRequest : RequestBase;
 
+        Task<TResponse?> PostAsync4<TBaseRequest, TResponse, TError, TBody>(HttpProviderRequest<TBody>? request, TBaseRequest? baseRequest, Func<TBaseRequest?, TResponse?, TError?, short, Task<TResponse?>>? errorHandler, Func<string, TResponse>? decoder = null)
+          where TResponse : ResponseBase
+          where TError : ResponseBase
+          where TBaseRequest : RequestBase;
+
         Task<TResponse?> PutAsync<TBaseRequest, TResponse, TError, TBody>(HttpProviderRequest<TBody>? request, TBaseRequest? baseRequest, Func<TBaseRequest?, TResponse?, TError?, short, Task<TResponse?>>? errorHandler, Func<string, TResponse>? decoder = null)
             where TResponse : ResponseBase?
             where TError : ResponseBase

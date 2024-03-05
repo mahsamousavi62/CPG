@@ -12,20 +12,30 @@ using CPG.Application.UseCases.DirectDebit.Exceptions;
 using System.Text.Json;
 using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Store;
 using CPG.Domain.SharedKernel.Helper;
+using Microsoft.AspNetCore.SignalR;
+using CPG.Application.Shared.Resource;
+using System.Collections.Generic;
+using CPG.Application.UseCases.DirectDebit.ViewModels;
+using CPG.Application.Shared.Interfaces;
+using CPG.Application.Shared;
 
 namespace CPG.Application.UseCases.DirectDebit.Commands;
 
 public class SetVandarWithdrawalDataCommandHandler(
     IAggregateRepository<Transaction> transactionRepository,
     IAggregateRepository<DirectDebitGrant> grantRepository,
-    ILogger<GetDirectDebitPlansCommandHandler> logger    
-    ) : IRequestHandler<SetVandarWithdrawalDataCommand, Result<bool>>
+    ILogger<GetDirectDebitPlansCommandHandler> logger,
+    IHubContext<NotificationHub, INotificationHub> notificationHub
+    ) : IRequestHandler<SetVandarWithdrawalDataCommand>
 {
     private readonly IAggregateRepository<Transaction> _transactionRepository = transactionRepository;
     private readonly IAggregateRepository<DirectDebitGrant> _directDebitGrantRepository = grantRepository;
     private readonly ILogger<GetDirectDebitPlansCommandHandler> _logger = logger;
-    
-    public async Task<Result<bool>> Handle(SetVandarWithdrawalDataCommand request, CancellationToken cancellationToken)
+    private readonly IHubContext<NotificationHub, INotificationHub> _notificationHub = notificationHub;
+    private readonly List<string> failedStatusArray = ["FAILED", "CANCELED", "REVERSED"];
+    private readonly string SuccessStatus = "DONE";
+
+    public async Task Handle(SetVandarWithdrawalDataCommand request, CancellationToken cancellationToken)
     {
         try
         {
@@ -98,12 +108,95 @@ public class SetVandarWithdrawalDataCommandHandler(
             await _directDebitGrantRepository.UpdateAsync(grant);
             await _directDebitGrantRepository.SaveChangesAsync();
 
-            return Result<bool>.SuccessResult(true);
+            await _notificationHub.Clients.All.SendMessage(GetNotificationData(withdrawData, transaction));
         }
         catch (Exception exc)
         {
             _logger.LogError(exc.Message, exc);
-            return Result<bool>.FailureResult(false, new Error(exc.Source, exc.Message));
+        }
+    }
+
+    private Result<WithdrawalDataResponseViewModel> GetNotificationData(WithdrawData withdrawData, Transaction transaction)
+    {
+        switch (withdrawData.ErrorCode)
+        {
+            case "00":
+                return Result<WithdrawalDataResponseViewModel>.Failure(new Error("2010001", GlobalResource.ServerMalfunction));
+            case "01":
+                return Result<WithdrawalDataResponseViewModel>.Failure(new Error("2010002", GlobalResource.NotEnoughBalance));
+            case "02":
+                return Result<WithdrawalDataResponseViewModel>.Failure(new Error("2010003", GlobalResource.ServerMalfunction));
+            case "03":
+                return Result<WithdrawalDataResponseViewModel>.Failure(new Error("2010004", GlobalResource.ServerMalfunction));
+            case "04":
+                return Result<WithdrawalDataResponseViewModel>.Failure(new Error("2010005", GlobalResource.DailyTransactionLimit));
+            case "05":
+                return Result<WithdrawalDataResponseViewModel>.Failure(new Error("2010006", GlobalResource.MonthlyTransactionNumber));
+            case "06":
+                return Result<WithdrawalDataResponseViewModel>.Failure(new Error("2010007", GlobalResource.MonthlyTransactionNumber));
+            case "07":
+                return Result<WithdrawalDataResponseViewModel>.Failure(new Error("2010008", GlobalResource.InvalidTransactionTime));
+            case "08":
+                return Result<WithdrawalDataResponseViewModel>.Failure(new Error("2010009", GlobalResource.IllegalTransactionAmount));
+            case "09":
+                return Result<WithdrawalDataResponseViewModel>.Failure(new Error("2010010", GlobalResource.DailyTransactionAmount));
+            case "10":
+                return Result<WithdrawalDataResponseViewModel>.Failure(new Error("2010011", GlobalResource.BankMalfunction));
+            case "11":
+                return Result<WithdrawalDataResponseViewModel>.Failure(new Error("2010012", GlobalResource.BankAmountLimit));
+            case "12":
+                return Result<WithdrawalDataResponseViewModel>.Failure(new Error("2010013", GlobalResource.DiffrentNumber));
+            case "13":
+                return Result<WithdrawalDataResponseViewModel>.Failure(new Error("2010014", GlobalResource.InvalidGrant));
+            case "14":
+                return Result<WithdrawalDataResponseViewModel>.Failure(new Error("2010015", GlobalResource.ExpiredGrant));
+            case "15":
+                return Result<WithdrawalDataResponseViewModel>.Failure(new Error("2010016", GlobalResource.InvalidTransactionTime));
+            case "16":
+                return Result<WithdrawalDataResponseViewModel>.Failure(new Error("2010017", GlobalResource.DepositProblem));
+            case "17":
+                return Result<WithdrawalDataResponseViewModel>.Failure(new Error("2010018", GlobalResource.InactiveGrant));
+            case "18":
+                return Result<WithdrawalDataResponseViewModel>.Failure(new Error("2010019", GlobalResource.InactiveCard));
+            case "19":
+                return Result<WithdrawalDataResponseViewModel>.Failure(new Error("2010020", GlobalResource.ExpiredCard));
+            case "20":
+                return Result<WithdrawalDataResponseViewModel>.Failure(new Error("2010021", GlobalResource.InvalidCardData));
+            case "21":
+                return Result<WithdrawalDataResponseViewModel>.Failure(new Error("2010022", GlobalResource.InvalidDeposit));
+            case "22":
+                return Result<WithdrawalDataResponseViewModel>.Failure(new Error("2010023", GlobalResource.InvalidDepositNumber));
+            case "23":
+                return Result<WithdrawalDataResponseViewModel>.Failure(new Error("2010024", GlobalResource.ServerMalfunction));
+            case "24":
+                return Result<WithdrawalDataResponseViewModel>.Failure(new Error("2010025", GlobalResource.InvalidCardOrDeposit));
+            case "26":
+                return Result<WithdrawalDataResponseViewModel>.Failure(new Error("2010026", GlobalResource.NoShahabCode));
+            case "28":
+                return Result<WithdrawalDataResponseViewModel>.Failure(new Error("2010027", GlobalResource.BlockedAccount));
+            case null or "":
+                {
+                    if (withdrawData.Status == SuccessStatus)
+                    {
+                        return Result<WithdrawalDataResponseViewModel>.SuccessResult(new WithdrawalDataResponseViewModel
+                        {
+                            CallbackUrl = $"{transaction.PaymentRequest.CallBackUrl}/paymentResult?paymentCode={transaction.PaymentRequest.PaymentCode}&paymentStatus={General.GetPaymentStatusTitle(transaction.PaymentRequest.Status)}"
+                        });
+                    }
+                    else if (failedStatusArray.Contains(withdrawData.Status))
+                    {
+                        return Result<WithdrawalDataResponseViewModel>.Failure(new Error("2010028", GlobalResource.UseOtherBanks));
+                    }
+                    return Result<WithdrawalDataResponseViewModel>.Failure(new Error("2010000", GlobalResource.UnexpectedError));
+                }
+            default:
+                {
+                    if (failedStatusArray.Contains(withdrawData.Status))
+                    {
+                        return Result<WithdrawalDataResponseViewModel>.Failure(new Error("2010028", GlobalResource.UseOtherBanks));
+                    }
+                    return Result<WithdrawalDataResponseViewModel>.Failure(new Error("2010000", GlobalResource.UnexpectedError));
+                }
         }
     }
 }

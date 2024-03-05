@@ -14,12 +14,9 @@ namespace CPG.API.Controllers.v1
         {
             if (webhookData is null)
                 return BadRequest();
-            
-            var data = await Mediator.Send(new SetVandarWithdrawalDataCommand(webhookData));
-            if (data.IsSuccess)
-                return Ok();
 
-            return Problem();
+            await Mediator.Send(new SetVandarWithdrawalDataCommand(webhookData));
+            return Ok();
         }
     }
 }
