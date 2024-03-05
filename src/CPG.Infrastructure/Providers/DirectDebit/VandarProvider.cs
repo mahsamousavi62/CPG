@@ -228,7 +228,7 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
         var applicationSettings = await _applicationSettingRepositoy.GetAllApplicationSettings();
         var trackerId = RandomGenerator.GenerateRandomDigitNumber(16);
 
-        var data = await _httpProvider.PostAsync<WithdrawalRequest, VandarWithdrawalResponse, VandarResponseBase, dynamic>
+        var data = await _httpProvider.PostAsync4<WithdrawalRequest, VandarWithdrawalResponse, VandarResponseBase, dynamic>
             (new HttpProviderRequest<dynamic>
             {
                 BaseAddress = "https://api.vandar.io/",
@@ -243,7 +243,7 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
                     MaxRetryCount = request.MaxRetryCount,
                     NotifyUrl = notifyUrl,
                     TrackId = trackerId,
-                    WithdrawalDate = request.WithdrawalDate?.ToString("yyyy-MM-dd")
+                    WithdrawalDate = request.WithdrawalDate != null ? request.WithdrawalDate?.ToString("yyyy-MM-dd") : ""
                 },
                 Provider = Enums.ProviderType.Vandar,
                 Service = Enums.ServiceType.VandarStore,

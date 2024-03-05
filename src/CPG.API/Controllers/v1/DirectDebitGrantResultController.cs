@@ -11,15 +11,14 @@ namespace CPG.API.Controllers.v1
 
     [Authorize]
     [Route("DDGrantResult")]
-    public class DirectDebitGrantResultController: ApiBaseController
+    public class DirectDebitGrantResultController : ApiBaseController
     {
         [HttpPost("{trackId}")]
         [ProducesResponseType(typeof(Result<ValidateGrantResponseViewModel>), (int)HttpStatusCode.OK)]
         public async Task<Result<ValidateGrantResponseViewModel>> ValidateGrant(string trackId,
                                                                             [AllowNull][FromBody] ValidateGrantRequestViewModel model)
-        {
-            var redirectUrlData = await Mediator.Send(new ValidateGrantQuery(model, trackId));
-            return redirectUrlData;
-        }
+            => await Mediator.Send(new ValidateGrantQuery(model, trackId));
+
+
     }
 }

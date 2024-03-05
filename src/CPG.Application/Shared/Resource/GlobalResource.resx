@@ -648,6 +648,27 @@
   <data name="MorethanOneDefaultDepositFoundException" xml:space="preserve">
     <value>MorethanOneDefaultDepositFoundException</value>
   </data>
+  <data name="BankAmountLimit" xml:space="preserve">
+    <value>Dear user, the amount allowed in the bank has been reached, if possible, use other banks or available methods to pay the desired amount</value>
+  </data>
+  <data name="BankMalfunction" xml:space="preserve">
+    <value>Dear user, this bank and license have been disrupted, if possible, use other banks or available methods to pay the desired amount</value>
+  </data>
+  <data name="BlockedAccount" xml:space="preserve">
+    <value>Dear user, the account related to this license has been blocked, if possible, use other banks or available methods to pay the desired amount</value>
+  </data>
+  <data name="DailyTransactionAmount" xml:space="preserve">
+    <value>Dear user, the transaction amount is more than the daily limit of this license, if possible, use other banks or available methods to pay the desired amount</value>
+  </data>
+  <data name="DailyTransactionLimit" xml:space="preserve">
+    <value>Dear user, the daily transaction limit of this license has been reached. If possible, use other banks or available methods to pay the desired amount.</value>
+  </data>
+  <data name="DepositProblem" xml:space="preserve">
+    <value>Dear user, there is a problem with the bank deposit related to this license, if possible, use other banks or available methods to pay the desired amount.</value>
+  </data>
+  <data name="DiffrentNumber" xml:space="preserve">
+    <value>Dear user, a license has already been registered in the system with a different number, if possible, use other banks or available methods to pay the desired amount</value>
+  </data>
   <data name="DirectDebitGrantNotFoundException" xml:space="preserve">
     <value>No record found with this authorizationId</value>
   </data>
@@ -665,5 +686,53 @@
   </data>
   <data name="ServiceDisrupted" xml:space="preserve">
     <value>Dear user, the service has been disrupted and we are fixing the problem. If possible, use other available methods to pay the desired amount.</value>
+  </data>
+  <data name="ExpiredCard" xml:space="preserve">
+    <value>Dear user, the card related to this license has expired, if possible, use other banks or available methods to pay the desired amount.</value>
+  </data>
+  <data name="ExpiredGrant" xml:space="preserve">
+    <value>Dear user, this license has expired, if possible, use other banks or available methods to pay the desired amount</value>
+  </data>
+  <data name="IllegalTransactionAmount" xml:space="preserve">
+    <value>Dear user, the transaction amount is illegal, if possible, use other banks or available methods to pay the desired amount</value>
+  </data>
+  <data name="InactiveCard" xml:space="preserve">
+    <value>Dear user, the card related to this license has been deactivated, if possible, use other banks or available methods to pay the desired amount.</value>
+  </data>
+  <data name="InactiveGrant" xml:space="preserve">
+    <value>Dear user, this permission has been disabled in the bank, if possible, use other banks or available methods to pay the desired amount</value>
+  </data>
+  <data name="InvalidCardData" xml:space="preserve">
+    <value>Dear user, the card information related to this license is invalid, if possible, use other banks or available methods to pay the desired amount.</value>
+  </data>
+  <data name="InvalidCardOrDeposit" xml:space="preserve">
+    <value>Dear user, the card or deposit related to this license is invalid, if possible, use other banks or available methods to pay the desired amount</value>
+  </data>
+  <data name="InvalidDeposit" xml:space="preserve">
+    <value>Dear user, the deposit related to this license does not belong to you or it is not possible to withdraw from it, if possible, use other banks or available methods to pay the desired amount</value>
+  </data>
+  <data name="InvalidDepositNumber" xml:space="preserve">
+    <value>Dear user, the deposit number related to this license is invalid, if possible, use other banks or available methods to pay the desired amount</value>
+  </data>
+  <data name="InvalidGrant" xml:space="preserve">
+    <value>Dear user, this license is invalid, if possible, use other banks or available methods to pay the desired amount</value>
+  </data>
+  <data name="InvalidTransactionTime" xml:space="preserve">
+    <value>Dear user, the transaction time for this license is invalid, if possible, use other banks or available methods to pay the desired amount</value>
+  </data>
+  <data name="MonthlyTransactionNumber" xml:space="preserve">
+    <value>Dear user, the limit of the number of monthly transactions of this license has been reached. If possible, use other banks or available methods to pay the desired amount</value>
+  </data>
+  <data name="NoShahabCode" xml:space="preserve">
+    <value>Dear user, the account related to this license does not have Shahab code, if possible, use other banks or available methods to pay the desired amount</value>
+  </data>
+  <data name="NotEnoughBalance" xml:space="preserve">
+    <value>Dear user, the selected account does not have the necessary balance for payment. If possible, use other banks or available methods to pay the desired amount</value>
+  </data>
+  <data name="ServerMalfunction" xml:space="preserve">
+    <value>Dear user, the service provider/bank has a problem and we are trying to fix it. If possible, use other banks or available methods to pay the desired amount</value>
+  </data>
+  <data name="UseOtherBanks" xml:space="preserve">
+    <value>Dear user, in order to carry out direct withdrawal operations, if possible, pay the desired amount from other banks</value>
   </data>
 </root>

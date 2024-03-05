@@ -90,9 +90,9 @@ public class GetWithdrawalRequestQueryHandler(
             }
 
             if (!companyDeposit.IsActive) { throw new PaymentTokenInactiveDepositException(); }
-            if (!companyDeposit.Bank.IsActive) { throw new PaymentTokenInactiveBankException(); }
-            var bank = await _bankRepository.GetBySpecAsync(new BankByIdSpec(companyDeposit.BankId), cancellationToken);
-            var provider = bank.DirectDebitSetting.Provider;
+            var bank = grant.Bank;
+            if (!bank.IsActive) { throw new PaymentTokenInactiveBankException(); }
+            var provider =  bank.DirectDebitSetting.Provider;
             if (!provider.IsActive) { throw new PaymentTokenInactiveProviderException(); }
             if (!bank.DirectDebitSetting.IsActive) { throw new PaymentRequestInactiveDirectDebitSettingException(); }
             if (provider.PaymentMethods?.Any(t => t.MethodType == Enums.PaymentMethodType.DirectDebit) is false) { throw new PaymentRequestProviderHasNoDDMethodException(); }
@@ -127,7 +127,7 @@ public class GetWithdrawalRequestQueryHandler(
                 AccessToken = tokenResult.AccessToken,
                 ProviderData = provider.ProviderData,
                 Amount = paymentRequest.Amount,
-                Description = string.Empty,
+                Description = "",
                 GrantAuthorizationId = grant.AuthorizationId,
                 IsInstant = true,
                 MaxRetryCount = 16,
