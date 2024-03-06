@@ -23,12 +23,14 @@ namespace CPG.Application.UseCases.DirectDebit.Commands;
 
 public class SetVandarWithdrawalDataCommandHandler(
     IAggregateRepository<Transaction> transactionRepository,
+    IAggregateRepository<PaymentRequest> paymentRequestRepository,
     IAggregateRepository<DirectDebitGrant> grantRepository,
     ILogger<GetDirectDebitPlansCommandHandler> logger,
     IHubContext<NotificationHub, INotificationHub> notificationHub
     ) : IRequestHandler<SetVandarWithdrawalDataCommand>
 {
     private readonly IAggregateRepository<Transaction> _transactionRepository = transactionRepository;
+    private readonly IAggregateRepository<PaymentRequest> _paymentRequestRepository = paymentRequestRepository;
     private readonly IAggregateRepository<DirectDebitGrant> _directDebitGrantRepository = grantRepository;
     private readonly ILogger<GetDirectDebitPlansCommandHandler> _logger = logger;
     private readonly IHubContext<NotificationHub, INotificationHub> _notificationHub = notificationHub;
@@ -45,9 +47,7 @@ public class SetVandarWithdrawalDataCommandHandler(
                 throw new DirectDebitGrantNotFoundException();
             }
 
-            var transaction = await _transactionRepository.GetBySpecAsync(new TransactionByDDGrantIdSpec(grant.Id), cancellationToken);
-            var status = SharedServices.GetDirectDebitTransactionStatus(request.model.Status);
-            transaction.DirectDebitTransaction.Status = status;
+            var transaction = await _transactionRepository.GetBySpecAsync(new TransactionByProviderTrackerIdSpec(request.model.WithdrawalId), cancellationToken);            
             var withdrawData = JsonSerializer.Deserialize<WithdrawData>(transaction.DirectDebitTransaction.ProviderData);
             if (!string.IsNullOrEmpty(request.model.WithdrawalId))
             {
@@ -94,19 +94,23 @@ public class SetVandarWithdrawalDataCommandHandler(
                 };
             }
 
+            var status = SharedServices.GetDirectDebitTransactionStatus(request.model.Status);
+            transaction.DirectDebitTransaction.Status = status;
             transaction.DirectDebitTransaction.ProviderData = JsonSerializer.Serialize(withdrawData);
             transaction.Status = status == Enums.DirectDebitTransactionStatus.UnSuccessful ? Enums.TransactionStatus.TransactionFailed : transaction.Status;
             transaction.PaymentRequest.Status = status == Enums.DirectDebitTransactionStatus.UnSuccessful ? Enums.PaymentStatus.TransactionFailed :
-                status == Enums.DirectDebitTransactionStatus.TransactionSucceeded ? Enums.PaymentStatus.TransactionVerificationSucceeded : transaction.PaymentRequest.Status;
+                status == Enums.DirectDebitTransactionStatus.TransactionSucceeded ? Enums.PaymentStatus.TransactionWaitingForVerification : transaction.PaymentRequest.Status;
             await _transactionRepository.UpdateAsync(transaction);
             await _transactionRepository.SaveChangesAsync();
+            await _paymentRequestRepository.UpdateAsync(transaction.PaymentRequest);
+            await _paymentRequestRepository.SaveChangesAsync();
 
             if (string.IsNullOrEmpty(grant.AccountNumber) && !string.IsNullOrEmpty(request.model.PayerAccount?.AccountNumber))
             {
                 grant.AccountNumber = request.model.PayerAccount.AccountNumber;
+                await _directDebitGrantRepository.UpdateAsync(grant);
+                await _directDebitGrantRepository.SaveChangesAsync();
             }
-            await _directDebitGrantRepository.UpdateAsync(grant);
-            await _directDebitGrantRepository.SaveChangesAsync();
 
             await _notificationHub.Clients.All.SendMessage(GetNotificationData(withdrawData, transaction));
         }
