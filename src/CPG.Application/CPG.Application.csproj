@@ -25,6 +25,7 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CPG.Domain\CPG.Domain.csproj" />
@@ -61,5 +62,6 @@
     <Folder Include="UseCases\PaymentRequests\EventHandler\" />
     <Folder Include="UseCases\CompanyIPGs\EventHandler\" />
     <Folder Include="UseCases\Providers\EventHandlers\" />
+    <Folder Include="UseCases\Wallet\Commands\" />
   </ItemGroup>
 </Project>

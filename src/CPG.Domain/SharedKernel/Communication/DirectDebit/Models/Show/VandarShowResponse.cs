@@ -1,82 +1,76 @@
 ﻿using CPG.Domain.SharedKernel.Communication.DirectDebit.Vandar;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Show;
 
 public class VandarShowResponse : VandarResponseBase
 {
-    [JsonProperty("status")]
-    public int GrantStatus { get; set; }
-
-    [JsonProperty("message")]
-    public string GrantMessage { get; set; }
-
-    [JsonProperty("result")]
+    [JsonPropertyName("result")]
     public Result Result { get; set; }
 }
 
 public class Authorizations
 {
-    [JsonProperty("id")]
+    [JsonPropertyName("id")]
     public string Id { get; set; }
 
-    [JsonProperty("customer_uuid")]
+    [JsonPropertyName("customer_uuid")]
     public string CustomerUuid { get; set; }
 
-    [JsonProperty("token")]
+    [JsonPropertyName("token")]
     public string Token { get; set; }
 
-    [JsonProperty("bank_code")]
+    [JsonPropertyName("bank_code")]
     public string BankCode { get; set; }
 
-    [JsonProperty("callback_url")]
+    [JsonPropertyName("callback_url")]
     public string CallbackUrl { get; set; }
 
-    [JsonProperty("count")]
+    [JsonPropertyName("count")]
     public int Count { get; set; }
 
-    [JsonProperty("limit")]
+    [JsonPropertyName("limit")]
     public string Limit { get; set; }
 
-    [JsonProperty("mobile")]
+    [JsonPropertyName("mobile")]
     public string Mobile { get; set; }
 
-    [JsonProperty("name")]
+    [JsonPropertyName("name")]
     public string Name { get; set; }
 
-    [JsonProperty("email")]
+    [JsonPropertyName("email")]
     public string Email { get; set; }
 
-    [JsonProperty("national_code")]
+    [JsonPropertyName("national_code")]
     public string NationalCode { get; set; }
 
-    [JsonProperty("expiration_date")]
+    [JsonPropertyName("expiration_date")]
     public string ExpirationDate { get; set; }
 
-    [JsonProperty("status")]
+    [JsonPropertyName("status")]
     public string Status { get; set; }
 
-    [JsonProperty("payer_account")]
+    [JsonPropertyName("payer_account")]
     public PayerAccount PayerAccount { get; set; }
 
-    [JsonProperty("created_at")]
+    [JsonPropertyName("created_at")]
     public string CreatedAt { get; set; }
 
-    [JsonProperty("revoked_at")]
+    [JsonPropertyName("revoked_at")]
     public object RevokedAt { get; set; }
 }
 
 public class PayerAccount
 {
-    [JsonProperty("account_number")]
+    [JsonPropertyName("account_number")]
     public string AccountNumber { get; set; }
 
-    [JsonProperty("pan")]
+    [JsonPropertyName("pan")]
     public string Pan { get; set; }
 }
 
 public class Result
 {
-    [JsonProperty("authorizations")]
+    [JsonPropertyName("authorizations")]
     public Authorizations Authorizations { get; set; }
 }

@@ -9,6 +9,7 @@ public class CompanyIPGIncludeProvider : Specification<CompanyIPG>, ISingleResul
     {
         Query.Where(c => c.Id == id)
          .Include(c => c.Provider)
+         .ThenInclude(c => c.PaymentMethods)
          .Include(c => c.IPGType);
     }
 }

@@ -47,5 +47,26 @@ namespace CPG.Domain.SharedKernel.Helper
             }
             return status;
         }
+
+        public static DirectDebitTransactionStatus GetDirectDebitTransactionStatus(string vandarStatus)
+        {
+            switch (vandarStatus)
+            {
+                case "PENDING":
+                    return DirectDebitTransactionStatus.WaitingForSendToBank;
+                case "INIT":
+                    return DirectDebitTransactionStatus.WaitingForBankResponse;
+                case "DONE":
+                    return DirectDebitTransactionStatus.TransactionSucceeded;
+                case "FAILED":
+                    return DirectDebitTransactionStatus.UnSuccessful;
+                case "CANCELED":
+                    return DirectDebitTransactionStatus.UnSuccessful;
+                case "REVERSED":
+                    return DirectDebitTransactionStatus.UnSuccessful;
+                default:
+                    return DirectDebitTransactionStatus.WaitingForSendToBank;
+            }
+        }
     }
 }

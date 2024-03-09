@@ -111,8 +111,8 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
                     {
                         var req = System.Text.Json.JsonSerializer.Deserialize<PecValidateTokenViewModel>(request.ValidateToken.Request);
 
-                        transaction.IPGTransaction.ProviderTrackerId = req.STraceNo.ToString();
-                        transaction.IPGTransaction.ReferenceNumber = req.RRN.ToString();
+                        transaction.IPGTransaction.ProviderTrackerId = req.STraceNo;
+                        transaction.IPGTransaction.ReferenceNumber = req.RRN;
                         transaction.IPGTransaction.EncryptCardNumber = req.HashCardNumber;
 
                         if (req.Status != PecSuccedStatus)

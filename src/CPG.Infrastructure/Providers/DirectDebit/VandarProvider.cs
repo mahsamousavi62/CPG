@@ -9,7 +9,6 @@ using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Store;
 using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Token;
 using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Verify;
 using CPG.Domain.SharedKernel.Communication.DirectDebit.Vandar;
-using CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
 using CPG.Domain.SharedKernel.Helper;
 using CPG.Infrastructure.Persistence.DbContexts;
 using CPG.Infrastructure.Persistence.Redis;
@@ -32,11 +31,13 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
     private byte tokenFailCounter = 0;
     private byte storeFailCounter = 0;
     private byte showFailCounter = 0;
+    private byte withdrawalFailCounter = 0;
     private byte getUserGrantsFailCounter = 0;
     private byte verifyFailCounter = 0;
     private byte transactionResultFailCounter = 0;
     private string refreshToken;
     private string businessData;
+    private string notifyUrl;
     public const string tokenCacheKey = "vandar_token_key";
 
     private void GetDataFromJsonProvider(string providerData)
@@ -47,6 +48,7 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
             jsonObjectProviderData = JObject.Parse(providerData);
             refreshToken = jsonObjectProviderData["Refresh_Token"] is not null ? jsonObjectProviderData["Refresh_Token"] : throw new Exception("Invalid Refresh_Token");
             businessData = jsonObjectProviderData["Business_ID"] is not null ? jsonObjectProviderData["Business_ID"] : throw new Exception("Invalid Business_ID");
+            notifyUrl = jsonObjectProviderData["Direct_Debit_Withdrawal_Notify_Webhook_URL"] is not null ? jsonObjectProviderData["Direct_Debit_Withdrawal_Notify_Webhook_URL"] : throw new Exception("Invalid Direct_Debit_Withdrawal_Notify_Webhook_URL");
         }
         catch
         {
@@ -120,8 +122,8 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
 
         return new StoreResponse
         {
-            Status = data.Status,
-            Message = data.Message,
+            GrantStatus = data.Status,
+            GrantMessage = data.Message,
             Token = data.Result.Authorization.Token,
             TrackerId = trackerId,
         };
@@ -144,8 +146,8 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
 
         return new ShowResponse
         {
-            GrantStatus = data.GrantStatus,
-            GrantMessage = data.GrantMessage,
+            GrantStatus = data.Status,
+            GrantMessage = data.Message,
             Status = data.Status,
             StatusCode = data.StatusCode,
             GrantData = new GrantData
@@ -153,6 +155,7 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
                 Id = data.Result?.Authorizations?.Id,
                 AccountNumber = data.Result?.Authorizations?.PayerAccount?.AccountNumber,
                 Status = data.Result?.Authorizations?.Status,
+                BankCode = data.Result?.Authorizations?.BankCode,
             }
         };
     }
@@ -188,7 +191,8 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
                 Limit = t.Limit,
                 ExpirationDate = t.ExpirationDate,
                 RevokedAt = t.RevokedAt,
-                Token = t.Token,                
+                Token = t.Token,         
+                CreatedAt = t.CreatedAt,
             }).ToList(),
         };
     }
@@ -210,10 +214,61 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
 
         return new VerifyResponse
         {
-            GrantStatus = data.GrantStatus,
-            GrantMessage = data.GrantMessage,
+            GrantStatus = data.Status,
+            GrantMessage = data.Message,
             Status = data.Status,
             StatusCode = data.StatusCode,
+        };
+    }
+
+    public async Task<WithdrawalResponse> WithdrawAsync(WithdrawalRequest request)
+    {
+        GetDataFromJsonProvider(request.ProviderData);
+        var headers = await GetHeaders(request.AccessToken);
+        var applicationSettings = await _applicationSettingRepositoy.GetAllApplicationSettings();
+        var trackerId = RandomGenerator.GenerateRandomDigitNumber(16);
+
+        var data = await _httpProvider.PostAsync4<WithdrawalRequest, VandarWithdrawalResponse, VandarResponseBase, dynamic>
+            (new HttpProviderRequest<dynamic>
+            {
+                BaseAddress = "https://api.vandar.io/",
+                Uri = $"v3/business/{businessData}/subscription/withdrawal/store",
+                HeaderParameters = headers,
+                Body = new VandarWithdrawalRequest
+                {
+                    Amount = request.Amount,
+                    Description = request.Description,
+                    AuthorizationId = request.GrantAuthorizationId,
+                    IsInstant = request.IsInstant,
+                    MaxRetryCount = request.MaxRetryCount,
+                    NotifyUrl = notifyUrl,
+                    TrackId = trackerId,
+                    WithdrawalDate = request.WithdrawalDate != null ? request.WithdrawalDate?.ToString("yyyy-MM-dd") : ""
+                },
+                Provider = Enums.ProviderType.Vandar,
+                Service = Enums.ServiceType.VandarStore,
+            }, request, WithdrawalErrorHandler);
+
+        return new WithdrawalResponse
+        {
+            GrantStatus = data.Status,
+            GrantMessage = data.Message, 
+            StatusCode = data.StatusCode,
+            TrackerId = trackerId,
+            Data = new WithdrawData
+            {
+                Id = data.Result.Withdrawal.Id,
+                AuthorizationId = data.Result.Withdrawal.AuthorizationId,
+                RetryCount = data.Result.Withdrawal.RetryCount,
+                GatewayTransactionId = data.Result.Withdrawal.GatewayTransactionId,
+                Amount = data.Result.Withdrawal.Amount,
+                TrackId = data.Result.Withdrawal.TrackId,
+                Status = data.Result.Withdrawal.Status,
+                WithdrawalDate = data.Result.Withdrawal.WithdrawalDate,
+                NotifyUrl = data.Result.Withdrawal.NotifyUrl,
+                ErrorCode = data.Result.Withdrawal.ErrorCode,
+                ErrorMessage = data.Result.Withdrawal.ErrorMessage,                
+            }
         };
     }
 
@@ -264,7 +319,7 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
     {
         return error.StatusCode switch
         {
-            0 => await GetToken(),
+            401 => await GetToken(),
             _ => await Retry()
         };
 
@@ -285,6 +340,34 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
         }
     }
 
+    private async Task<TResponse> WithdrawalErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest baseRequest, TResponse response, TError error, short statusCode)
+            where TResponse : VandarWithdrawalResponse
+            where TError : VandarResponseBase
+            where TBaseRequest : WithdrawalRequest
+    {
+        return error.StatusCode switch
+        {
+            401 => await GetToken(),
+            _ => await Retry()
+        };
+
+        async Task<TResponse> GetToken()
+        {
+            _cacheService.SetData<VandarTokenResponse?>(tokenCacheKey, null);
+            return await GetTokenAsync(new TokenRequest { ProviderData = baseRequest.ProviderData }) as TResponse;
+        }
+
+        async Task<TResponse> Retry()
+        {
+            if (withdrawalFailCounter < serviceCallMaxTryCounter)
+            {
+                withdrawalFailCounter++;
+                return await WithdrawAsync(baseRequest) as TResponse;
+            }
+            return await Task.FromResult(BaseErrorHandler<TResponse, TError, TBaseRequest>(error));
+        }
+    }
+
     private async Task<TResponse> ShowErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest baseRequest, TResponse response, TError error, short statusCode)
             where TResponse : VandarShowResponse
             where TError : VandarResponseBase
@@ -292,13 +375,13 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
     {
         return error.StatusCode switch
         {
-            0 => await GetToken(),
+            401 => await GetToken(),
             _ => await Retry()
         };
 
         async Task<TResponse> GetToken()
         {
-            _cacheService.SetData<VandarShowResponse?>(tokenCacheKey, null);
+            _cacheService.SetData<VandarTokenResponse?>(tokenCacheKey, null);
             return await GetTokenAsync(new TokenRequest { ProviderData = baseRequest.ProviderData }) as TResponse;
         }
 
@@ -320,13 +403,13 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
     {
         return error.StatusCode switch
         {
-            0 => await GetToken(),
+            401 => await GetToken(),
             _ => await Retry()
         };
 
         async Task<TResponse> GetToken()
         {
-            _cacheService.SetData<VandarShowResponse?>(tokenCacheKey, null);
+            _cacheService.SetData<VandarTokenResponse?>(tokenCacheKey, null);
             return await GetTokenAsync(new TokenRequest { ProviderData = baseRequest.ProviderData }) as TResponse;
         }
 
@@ -348,13 +431,14 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
     {
         return error.StatusCode switch
         {
-            0 => await GetToken(),
+            0 => new VandarVerifyResponse { Status = error.Status, Message = error.Message } as TResponse,
+            401 => await GetToken(),
             _ => await Retry()
         };
 
         async Task<TResponse> GetToken()
         {
-            _cacheService.SetData<VandarVerifyResponse?>(tokenCacheKey, null);
+            _cacheService.SetData<VandarTokenResponse?>(tokenCacheKey, null);
             return await GetTokenAsync(new TokenRequest { ProviderData = baseRequest.ProviderData }) as TResponse;
         }
 
@@ -384,10 +468,5 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
         }
 
         throw new Exception(GlobalResource.ProviderUnexpectedError);
-    }
-
-    public Task<WithdrawalResponse> WithdrawAsync(WithdrawalRequest request)
-    {
-        throw new NotImplementedException();
     }
 }

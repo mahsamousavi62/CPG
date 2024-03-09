@@ -5,9 +5,6 @@ namespace CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Store;
 
 public class VandarStoreResponse : VandarResponseBase
 {
-    [JsonPropertyName("message")]
-    public string Message { get; set; }
-
     [JsonPropertyName("result")]
     public ResultData Result { get; set; }
 }

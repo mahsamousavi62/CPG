@@ -71,9 +71,10 @@ public class GetDirectDebitPlansCommandHandler(IDirectDebitFactory directDebitFa
             }
 
             var grants = await _directDebitGrantRepository.ListAsync(new DirectDebitGrantByUserAndBankSpec(bank.Id, _user.UserId, bank.DirectDebitSetting.ProviderId), cancellationToken);
+            var allGrants = await _directDebitGrantRepository.ListAsync(new AllDirectDebitGrantByUserSpec(_user.UserId), cancellationToken);
             var mobileNumber = await _authenticationService.GetDataFromClaim<string>(ClaimTypes.MobilePhone);
 
-            var phoneNumbers = grants.Where(t => t.PhoneNumber != mobileNumber).Select(t => t.PhoneNumber).Distinct().ToList();
+            var phoneNumbers = allGrants.Where(t => t.PhoneNumber != mobileNumber).Select(t => t.PhoneNumber).Distinct().ToList();
             if (phoneNumbers?.Any(t => t == mobileNumber) is false)
                 phoneNumbers?.Add(mobileNumber);
 
@@ -91,12 +92,13 @@ public class GetDirectDebitPlansCommandHandler(IDirectDebitFactory directDebitFa
                     var status = SharedServices.GetVandarDirectDebitGrantStatus(grant.Status);
                     var dbGrant = await _directDebitGrantRepository.GetBySpecAsync(new DirectDebitGrantByAuthorizationIdSpec(grant.Id), cancellationToken);
                     var expirationDate = DateTime.ParseExact(grant.ExpirationDate, "yyyy/MM/dd HH:mm:ss", new CultureInfo("fa-IR"));
+                    var creationDate = DateTime.ParseExact(grant.CreatedAt, "yyyy/MM/dd HH:mm:ss", new CultureInfo("fa-IR"));
                     DateTime? revokedDate = null;
                     if (!string.IsNullOrEmpty(grant.RevokedAt))
                         revokedDate = DateTime.ParseExact(grant.RevokedAt, "yyyy/MM/dd HH:mm:ss", new CultureInfo("fa-IR"));
                     if (dbGrant is null)
                     {
-                        var durationPerMonth = (expirationDate.Year - DateTime.Now.Year) * 12 + expirationDate.Month - DateTime.Now.Month;
+                        var durationPerMonth = (expirationDate.Year - creationDate.Year) * 12 + expirationDate.Month - creationDate.Month;
                         var newGrant = DirectDebitGrant.Create(_user.UserId, bank.Id, grant.AccountNumber, grant.Mobile, grant.Count, grant.Limit,
                             null, expirationDate, revokedDate, provider.Id, grant.Token, grant.Id, status, (short)durationPerMonth);
 

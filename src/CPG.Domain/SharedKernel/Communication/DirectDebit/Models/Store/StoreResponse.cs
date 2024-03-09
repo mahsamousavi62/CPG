@@ -6,7 +6,7 @@ public class StoreResponse : ResponseBase
 
     public string Token { get; set; }
 
-    public short Status { get; set; }
+    public short GrantStatus { get; set; }
 
-    public string Message { get; set; }
+    public string GrantMessage { get; set; }
 }

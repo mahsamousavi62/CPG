@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.WebUtilities;
 using System.Text.RegularExpressions;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Logging;
+using CPG.Domain.SharedKernel.Communication.Idp.Models.UserProfile;
+using System.Diagnostics.CodeAnalysis;
 
 namespace CPG.Infrastructure.Providers;
 
@@ -146,7 +148,77 @@ public class HttpProvider : IHttpProvider
                 result = await response.Content.ReadFromJsonAsync<TResponse>();
             }
 
-            //var result = await response.Content.ReadFromJsonAsync<TResponse>();
+            TError? errorResult = result as TError;
+            if (result is null)
+            {
+                errorResult = await response.Content.ReadFromJsonAsync<TError>();
+                if (errorResult is null)
+                {
+                    throw new Exception($"value is not instance of {nameof(TResponse)}");
+                }
+            }
+
+            if (response.StatusCode != System.Net.HttpStatusCode.OK && errorHandler is not null)
+            {
+                return await errorHandler(baseRequest, result, errorResult, (short)response.StatusCode);
+            }
+            result.StatusCode = (short)response.StatusCode;
+            return result;
+        }
+        catch (Exception exc)
+        {
+            _logger.LogError(exc, nameof(PostAsync));
+
+            throw;
+        }
+    }
+
+    public async Task<TResponse?> PostAsync4<TBaseRequest, TResponse, TError, TBody>(HttpProviderRequest<TBody>? request, TBaseRequest? baseRequest, Func<TBaseRequest?, TResponse?, TError?, short, Task<TResponse?>>? errorHandler, Func<string, TResponse>? decoder = null)
+        where TResponse : ResponseBase
+        where TError : ResponseBase
+        where TBaseRequest : RequestBase
+    {
+        try
+        {
+            if (request is null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            var client = _httpClientFactory.CreateClient();
+
+            client.BaseAddress = new Uri(request.BaseAddress ?? "");
+            if (request.HeaderParameters?.Any() == true)
+            {
+                for (var i = 0; i < request.HeaderParameters.Count; i++)
+                {
+                    client.DefaultRequestHeaders.TryAddWithoutValidation(request.HeaderParameters[i].Key, request.HeaderParameters[i].Value);
+                }
+            }
+
+            if (request.QueryParameters != null)
+            {
+                var queryParams = GetQueryParameters(request.QueryParameters);
+                request.Uri += "?" + queryParams;
+            }
+
+            string json = System.Text.Json.JsonSerializer.Serialize(request.Body);
+            var content = new StringContent(json, null, "application/json");
+            var response = await client.PostAsync(request.Uri, content);
+
+            var resString = await response.Content.ReadAsStringAsync();
+            _logService.AddServiceCallLog(request, response, resString);
+
+            TResponse result = null;
+            if (decoder != null)
+            {
+                result = decoder(resString);
+            }
+            else if (response.IsSuccessStatusCode)
+            {
+                result = await response.Content.ReadFromJsonAsync<TResponse>();
+            }
+
             TError? errorResult = result as TError;
             if (result is null)
             {
@@ -429,6 +501,51 @@ public class HttpProvider : IHttpProvider
             throw;
         }
     }
+
+    public async Task<TResponse?> GetAsync<TRequest, TResponse, TBody>([NotNull] HttpProviderRequest<TBody, TRequest> request, Func<HttpResponseMessage, Task>? postCallHandler = null,
+               Func<HttpResponseMessage, Task<TResponse?>>? decodeHandler = null, Func<TRequest?, TResponse?, Task<TResponse?>>? failHandler = null)
+               where TRequest : IHttpRequest
+               where TResponse : IHttpResponse
+    {
+        var client = _httpClientFactory.CreateClient();
+        if (!string.IsNullOrEmpty(request.BaseAddress))
+        {
+            client!.BaseAddress = new Uri(request.BaseAddress);
+        }
+
+        if (request.HeaderParameters?.Count > 0)
+        {
+            for (int i = 0; i < request.HeaderParameters.Count; i++)
+            {
+                client!.DefaultRequestHeaders.Add(request.HeaderParameters[i].Key, request.HeaderParameters[i].Value);
+            }
+        }
+
+        HttpResponseMessage response = await client!.GetAsync(request.Uri);
+        var resString = await response.Content.ReadAsStringAsync();
+        if (postCallHandler is not null)
+        {
+            await postCallHandler(response);
+        }
+
+        TResponse? result;
+        try
+        {
+            result = decodeHandler is not null ? await decodeHandler(response) : await response.Content.ReadFromJsonAsync<TResponse>();
+            return response.StatusCode is not System.Net.HttpStatusCode.OK && failHandler is not null ? await failHandler(request.Request, result) : result;
+        }
+        catch (Exception exc)
+        {
+            _logger.LogError(exc, nameof(GetAsync));
+            throw;
+        }
+        finally
+        {
+            await _logService.AddServiceCallLogAsync(request, response);
+            client?.Dispose();
+        }
+    }
+
 
     private static string GetPropertyName(PropertyInfo property)
     {
