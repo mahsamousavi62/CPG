@@ -8,7 +8,9 @@ using Serilog.Context;
 using System;
 using System.Linq;
 using System.Net.Http;
+using System.Reactive.Joins;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 //using Microsoft.Extensions.Logging;
 
 namespace CPG.Infrastructure.Logging;
@@ -75,6 +77,42 @@ public partial class LogService(ILogger<LogService> logger, IHttpContextAccessor
             ErrorCode = status < 0 ? message : "",
             ErrorType = status < 0 ? status.ToString() : "",
             ProviderType = ProviderType,
+            AuditType = Enums.AuditType.Provider
+        };
+
+        using (LogContext.PushProperty("CallLog", callLog, true))
+        {
+            _logger.LogInformation("[CallLog] {@CallLog}", callLog);
+        }
+    }
+
+    public async Task AddServiceCallLogAsync<TBody, TRequest>(HttpProviderRequest<TBody, TRequest> request, HttpResponseMessage response)
+    {
+        string resString = await response.Content.ReadAsStringAsync();
+        if (!string.IsNullOrEmpty(resString))
+        {
+            resString = MyRegex().Replace(resString, Constants.Replaceformat);
+        }
+        string reqString = System.Text.Json.JsonSerializer.Serialize(request);
+        if (!string.IsNullOrEmpty(reqString))
+        {
+            reqString = MyRegex().Replace(reqString, Constants.Replaceformat);
+        }
+        _ = long.TryParse(_httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value, out long UserId);
+        
+        var callLog = new CallLogModel
+        {
+            RequestBody = reqString,
+            ResponseBody = resString,
+            ServiceCallDate = DateTime.Now,
+            ServiceCallUrl = request.Uri,
+            ServiceCallStatus = response.StatusCode == System.Net.HttpStatusCode.OK,
+            ServiceType = request.Service,
+            CreationDate = DateTime.Now,
+            CreationUserId = UserId == 0 ? 1 : UserId,
+            ErrorCode = response.IsSuccessStatusCode ? null : ReasonPhrases.GetReasonPhrase((int)response.StatusCode),
+            ErrorType = response.IsSuccessStatusCode ? null : response.StatusCode.ToString(),
+            ProviderType = request.ProviderType,
             AuditType = Enums.AuditType.Provider
         };
 
