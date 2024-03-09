@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Net.Http;
 using System.Threading.Tasks;
+using CPG.Domain.SharedKernel.Communication.Idp.Models.UserProfile;
+using Microsoft.AspNetCore.Http;
 
 namespace CPG.Domain.SharedKernel.Communication
 {
@@ -39,5 +43,10 @@ namespace CPG.Domain.SharedKernel.Communication
             where TResponse : ResponseBase
             where TError : ResponseBase
             where TBaseRequest : RequestBase;
+
+        Task<TResponse?> GetAsync<TRequest, TResponse, TBody>([NotNull] HttpProviderRequest<TBody, TRequest> request, Func<HttpResponseMessage, Task>? postCallHandler = null,
+                 Func<HttpResponseMessage, Task<TResponse?>>? decodeHandler = null, Func<TRequest?, TResponse?, Task<TResponse?>>? failHandler = null)
+                 where TRequest : IHttpRequest
+                 where TResponse : IHttpResponse;
     }
 }

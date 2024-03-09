@@ -130,9 +130,9 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                     NationalCode = paymentRequest.NationalCode,
                     MobileNumber = mobileNumber,
                     NationalCodeMatchingRequied = paymentRequest.Company.NationalCodeMatchingRequied,
-                    ShaparakIv = paymentRequest.Company.ShaparakSetting.Iv,
-                    ShaparakKey = paymentRequest.Company.ShaparakSetting.Key,
-                    ThirdPartyCode = paymentRequest.Company.ShaparakSetting.ThirdPartyCode,
+                    ShaparakIv = paymentRequest.Company.NationalCodeMatchingRequied ? paymentRequest.Company.ShaparakSetting.Iv : string.Empty,
+                    ShaparakKey = paymentRequest.Company.NationalCodeMatchingRequied ? paymentRequest.Company.ShaparakSetting.Key : string.Empty,
+                    ThirdPartyCode = paymentRequest.Company.NationalCodeMatchingRequied ? paymentRequest.Company.ShaparakSetting.ThirdPartyCode : null,
                 });
 
             if (result.StatusCode == (short)HttpStatusCode.OK)
