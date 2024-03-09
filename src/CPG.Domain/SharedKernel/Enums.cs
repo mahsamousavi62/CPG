@@ -76,6 +76,7 @@ public class Enums
         AsanPardakht = 2,
         Sep = 3,
         Pec = 4,
+        Idp=5,
     }
 
     public enum ServiceType : byte
@@ -91,6 +92,8 @@ public class Enums
         VandarShow = 9,
         VandarStore = 10,
         VandarVerify = 11,
+        GetIdpToken=12,
+        GetIdpProfile= 13,
     }
 
     public enum TransactionType : byte

@@ -112,7 +112,7 @@ public class Result
     public List<object> LegalPersonStakeholders { get; set; }
 }
 
-public class UserProfileResponse
+public class UserProfileResponse: IHttpResponse
 {
     public Result Result { get; set; }
 }
@@ -124,5 +124,17 @@ public class TradingCode
     public object SecondtPart { get; set; }
     public string ThirdPart { get; set; }
     public string Code { get; set; }
+}
+public class IdpProfileRequest : IHttpRequest
+{
+    public string? IdpId { get; set; }
+}
+
+public interface IHttpRequest
+{
+}
+
+public interface IHttpResponse
+{
 }
 
