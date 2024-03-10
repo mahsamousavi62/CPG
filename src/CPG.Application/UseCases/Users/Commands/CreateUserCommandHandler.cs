@@ -27,7 +27,7 @@ public class CreateUserCommandHandler(IIdpProvider idpClient, IAggregateReposito
             var idpUserProfileResponse = await _idpClient.GetUserProfile(sub);
 
             if (idpUserProfileResponse.OperationResult == Enums.OperationResult.Failed)
-                throw new IdpUserProfileException(idpUserProfileResponse.Error);
+                throw new IdpUserProfileException("");
 
             var idpUserProfile = idpUserProfileResponse.Data;
             var name = idpUserProfile.Result.IsLegal == false ? new Name(idpUserProfile.Result.PrivatePerson.FirstName, idpUserProfile.Result.PrivatePerson.LastName) :

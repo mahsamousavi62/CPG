@@ -3,8 +3,11 @@ using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using System;
+using System.Net.Http;
+using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace CPG.Infrastructure.Authorization;
 
@@ -22,6 +25,22 @@ public class AuthenticationMiddleware(IAuthenticationSchemeProvider schemes, Req
             if (defaultAuthenticate != null)
             {
                 var result = await context.AuthenticateAsync(defaultAuthenticate.Name);
+                string? kycStatus = context.User.Claims.SingleOrDefault(c => c.Type == "status")?.Value;
+
+                if (kycStatus != "KycVerified")
+                {
+                    context.Response.Clear();
+                    context.Response.StatusCode = (int)HttpStatusCode.OK;
+                    await context.Response.WriteAsJsonAsync(new
+                    {
+                        Data = "",
+                        Message = "",
+                        Action = "IdpProfileNotFound",
+                        Errors = "",
+                    });
+                    return;
+                }
+
                 if (result?.Principal != null)
                     context.User = await ClonePrincipal(result.Principal, mediator);
             }
