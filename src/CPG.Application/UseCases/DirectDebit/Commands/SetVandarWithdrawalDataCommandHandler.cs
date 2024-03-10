@@ -65,9 +65,9 @@ public class SetVandarWithdrawalDataCommandHandler(
             {
                 withdrawData.Status = request.model.Status;
             }
-            if (!string.IsNullOrEmpty(request.model.Amount))
+            if (request.model.Amount is not null)
             {
-                withdrawData.Amount = request.model.Amount;
+                withdrawData.Amount = request.model.Amount.ToString();
             }
             if (!string.IsNullOrEmpty(request.model.WageAmount))
             {
