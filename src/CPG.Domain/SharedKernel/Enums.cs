@@ -202,7 +202,8 @@ public class Enums
 
     public enum CharismaCardStatus:byte
     {
-        Draft=0,
+        Failed = 0,
+        Done = 1
     }
 }
 
