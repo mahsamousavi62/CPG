@@ -199,6 +199,12 @@ public class Enums
     {
         SucceededAndWaitingForVerification = 1,
     }
+
+    public enum CharismaCardStatus:byte
+    {
+        Failed = 0,
+        Done = 1
+    }
 }
 
 public struct ResultData<T>(Enums.OperationResult operationResult)

@@ -13,7 +13,7 @@ public class BankReadModelConfiguration : IEntityTypeConfiguration<BankReadModel
         readModel.Property(x => x.Id).HasColumnName("Id");
         readModel.Property(x => x.Name).HasColumnName("Name");
         readModel.Property(x => x.IbanPrefix).HasColumnName("IbanPrefix");
-        readModel.Property(x => x.LogoAddress).HasColumnName("LogoAddress");
+        readModel.Property(x => x.Logo).HasColumnName("LogoAddress");
         readModel.Property(x => x.HasDirectDebitFeature).HasColumnName("HasDirectDebitFeature");
         readModel.Property(x => x.IsActive);
         readModel.Property(x => x.CreationDate);
@@ -22,7 +22,7 @@ public class BankReadModelConfiguration : IEntityTypeConfiguration<BankReadModel
         readModel.HasMany(c => c.CompanyDeposits)
             .WithOne(p => p.Bank)
             .HasForeignKey(p => p.BankId);
-
+        
         readModel.HasOne(c => c.DirectDebitSetting)
             .WithOne(p => p.Bank)
             .HasForeignKey<BankDirectDebitSettingReadModel>(p => p.BankId);

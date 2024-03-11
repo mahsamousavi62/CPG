@@ -15,6 +15,7 @@ public class CreateTransactionModel
     public CreateIPGTransactionModel IPGTransactionModel { get; set; }
     public CreateDDTransactionModel DDTransactionModel { get; set; }
     public PaymentReceiptTransactionModel PaymentReceiptModel { get; set; }
+    public CharismaCardTransaction CharismaCardModel { get; set; }
 }
 
 public class CreateIPGTransactionModel
@@ -42,4 +43,12 @@ public class PaymentReceiptTransactionModel
     public string Description { get; set; }
     public Logo ReceiptImage { get; set; }
     public PaymentReceiptStatus Status { get; set; }
+}
+
+public class CharismaCardTransactionModel
+{
+    public string TrackId { get; set; }
+    public string ProviderTrackId { get; set; }
+    public string ReferenceNumber { get; set; }
+    public Enums.CharismaCardStatus Status { get; set; }
 }

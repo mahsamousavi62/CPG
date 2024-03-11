@@ -32,7 +32,7 @@ public class CompanyDepositReadModelQueries
                  AccountNumber = company.AccountNumber,
                  Iban = company.Iban,
                  BankId = company.BankId,
-                 BankLogo = minioProvider.PresignedGetObject(company.Bank.LogoAddress).GetAwaiter().GetResult(),
+                 BankLogo = minioProvider.PresignedGetObject(company.Bank.Logo).GetAwaiter().GetResult(),
                  BankName = company.Bank.Name,
                  CompanyId = company.CompanyId,
                  CompanyName = company.Company.PersianName,
