@@ -24,7 +24,7 @@ public class GetCompanyDepositsByPaymentCodeQueryHandler(ReadDbContext context, 
         {
             var paymentRequestCompanyId = await _context.PaymentRequestReadModels.Where(t => t.PaymentCode == request.PaymentCode)
                 .Select(t => t.CompanyId).FirstOrDefaultAsync();
-            var companyDeposits = await _context.CompanyDepositReadModels.Include(c => c.Bank).Where(t => t.CompanyId == paymentRequestCompanyId)
+            var companyDeposits = await _context.CompanyDepositReadModels.Include(c=>c.Company).Include(c => c.Bank).Where(t => t.CompanyId == paymentRequestCompanyId)
                 .ToListAsync();
 
             var companyViewModels = await Task.WhenAll(
