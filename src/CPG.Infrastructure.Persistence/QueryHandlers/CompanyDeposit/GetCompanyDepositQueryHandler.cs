@@ -38,7 +38,7 @@ public class GetCompanyDepositQueryHandler(ReadDbContext context, IMinioProvider
                 AccountNumber = companyDeposit.AccountNumber,
                 Iban = companyDeposit.Iban,
                 BankId = companyDeposit.BankId,
-                BankLogo = await _minioProvider.PresignedGetObject(companyDeposit.Bank.LogoAddress),
+                BankLogo = await _minioProvider.PresignedGetObject(companyDeposit.Bank.Logo),
                 BankName = companyDeposit.Bank.Name,
                 CompanyId = companyDeposit.CompanyId,
                 CompanyName = companyDeposit.Company.PersianName,
