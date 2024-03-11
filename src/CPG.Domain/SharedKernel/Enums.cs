@@ -197,7 +197,7 @@ public class Enums
 
     public enum PaymentReceiptStatus : byte
     {
-        Draft = 0,
+        SucceededAndWaitingForVerification = 1,
     }
 }
 

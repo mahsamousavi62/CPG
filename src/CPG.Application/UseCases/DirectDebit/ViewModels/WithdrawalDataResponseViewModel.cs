@@ -1,7 +1,6 @@
-﻿namespace CPG.Application.UseCases.DirectDebit.ViewModels
+﻿namespace CPG.Application.UseCases.DirectDebit.ViewModels;
+
+public class WithdrawalDataResponseViewModel
 {
-    public class WithdrawalDataResponseViewModel
-    {
-        public string CallbackUrl { get; set; }
-    }
+    public string CallbackUrl { get; set; }
 }
