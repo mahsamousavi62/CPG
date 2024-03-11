@@ -26,6 +26,8 @@ public class Transaction : AuditableEntity<long>, IAggregateRoot
 
     public long? DirectDebitTransactionId { get; set; }
 
+    public long? PaymentReceiptTransactionId { get; set; }
+
     public Enums.TransactionType TransactionMethodType { get; set; }
 
     public long CompanyId { get; set; }
@@ -45,6 +47,8 @@ public class Transaction : AuditableEntity<long>, IAggregateRoot
     public IPGTransaction IPGTransaction { get; set; }
 
     public DirectDebitTransaction DirectDebitTransaction { get; set; }
+
+    public PaymentReceiptTransaction PaymentReceiptTransaction { get; set; }
 
     public CompanyDeposit DestinationDeposit { get; set; }
 
@@ -71,10 +75,18 @@ public class Transaction : AuditableEntity<long>, IAggregateRoot
                     transaction.DirectDebitTransaction = ddTransaction;
                     break;
                 }
+            case Enums.TransactionType.PaymentReceipt:
+                {
+                    var paymentReceipt = PaymentReceiptTransaction.Create(model.PaymentReceiptModel.SourceIban, model.PaymentReceiptModel.ReferenceNumber,
+                        model.PaymentReceiptModel.ReceiptDateTime, model.PaymentReceiptModel.Description, model.PaymentReceiptModel.ReceiptImage,
+                        model.PaymentReceiptModel.Status);
+                    transaction.PaymentReceiptTransaction = paymentReceipt;
+                    break;
+                }
             default:
                 break;
         }
-        
+
         return transaction;
     }
 }

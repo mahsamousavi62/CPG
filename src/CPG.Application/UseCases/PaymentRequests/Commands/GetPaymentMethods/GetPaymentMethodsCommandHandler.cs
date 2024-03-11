@@ -62,11 +62,12 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
             paymentRequest.Status = Enums.PaymentStatus.RedirectedToCpg;
             await _paymentRequestRepository.UpdateAsync(paymentRequest);
 
+            List<long> availablePaymentMethodTypes = new List<long>();
             Company company = null;
             if (!string.IsNullOrEmpty(paymentRequest.DestinationDepositIban))
             {
                 company = await _companyRepository.GetBySpecAsync(new CompanyPaymentMethodsByIbanSpec(paymentRequest.CompanyId,
-                    paymentRequest.DestinationDepositIban), cancellationToken);
+                                paymentRequest.DestinationDepositIban), cancellationToken);
 
                 var toBeRemoved = new List<CompanyIPG>();
                 foreach (var companyIPGItem in company?.CompanyIPGs)
@@ -81,10 +82,12 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
                 {
                     company.CompanyIPGs.Remove(companyIPGItem);
                 }
+                availablePaymentMethodTypes = company.PaymentMethods.Select(p => p.Id).ToList();
             }
             else
             {
                 company = await _companyRepository.GetBySpecAsync(new CompanyPaymentMethodsByIdSpec(paymentRequest.CompanyId), cancellationToken);
+                availablePaymentMethodTypes = company.PaymentMethods.Select(p => p.Id).ToList();
 
                 var toBeRemoved = new List<CompanyIPG>();
                 foreach (var companyIPGItem in company?.CompanyIPGs)
@@ -195,6 +198,8 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
             return Result<PaymentMethodsViewModel>.SuccessResult(new PaymentMethodsViewModel
             {
                 Amount = paymentRequest.Amount,
+                AvailablePaymentMethodTypes=availablePaymentMethodTypes,
+                PaymentCode=paymentRequest.PaymentCode,
                 IPGs = ipgResult?.ToList(),
                 DirectDebits = directDebits?.ToList(),
                 CompanyName = company.PersianName,

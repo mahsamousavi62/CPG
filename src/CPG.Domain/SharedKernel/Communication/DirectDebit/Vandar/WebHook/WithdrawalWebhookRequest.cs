@@ -17,7 +17,7 @@ public class WithdrawalWebhookRequest
     public string Status { get; set; }
 
     [JsonPropertyName("amount")]
-    public string Amount { get; set; }
+    public decimal? Amount { get; set; }
 
     [JsonPropertyName("wage_amount")]
     public string WageAmount { get; set; }
