@@ -22,7 +22,7 @@ public class BankReadModelConfiguration : IEntityTypeConfiguration<BankReadModel
         readModel.HasMany(c => c.CompanyDeposits)
             .WithOne(p => p.Bank)
             .HasForeignKey(p => p.BankId);
-
+        
         readModel.HasOne(c => c.DirectDebitSetting)
             .WithOne(p => p.Bank)
             .HasForeignKey<BankDirectDebitSettingReadModel>(p => p.BankId);
