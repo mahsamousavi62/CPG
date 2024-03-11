@@ -17,6 +17,7 @@ public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
         entity.Property(x => x.PaymentRquestId).HasColumnName("PaymentRquestId").HasColumnType("bigint").IsRequired();
         entity.Property(x => x.IPGTransactionId).HasColumnName("IPGTransactionId").HasColumnType("bigint");
         entity.Property(x => x.DirectDebitTransactionId).HasColumnName("DirectDebitTransactionId").HasColumnType("bigint");
+        entity.Property(x => x.CharismaCardTransactionId).HasColumnName("CharismaCardTransactionId").HasColumnType("bigint");
         entity.Property(x => x.TransactionMethodType).HasColumnName("TransactionMethodType").HasColumnType("tinyint").IsRequired();
         entity.Property(x => x.CompanyId).HasColumnName("CompanyId").HasColumnType("bigint").IsRequired();
         entity.Property(x => x.DestinationDepositId).HasColumnName("DestinationDepositId").HasColumnType("bigint").IsRequired();

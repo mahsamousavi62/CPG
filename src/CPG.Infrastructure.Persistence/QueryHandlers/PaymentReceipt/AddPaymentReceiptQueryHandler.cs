@@ -11,10 +11,12 @@ using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
 using System;
 using System.Linq;
-using System.Security.Claims;
 using CPG.Application.UseCases.PaymentReceipt.Queries;
 using System.Threading.Tasks;
 using System.Threading;
+using System.Collections.Generic;
+using CPG.Domain.AggregateModels.BankAggregate;
+using CPG.Application.UseCases.PaymentReceipt.ViewModels;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.PaymentReceipt;
 
@@ -23,20 +25,14 @@ public class AddPaymentReceiptQueryHandler(
     IAggregateRepository<Transaction> transactionRepository,
     IAggregateRepository<Domain.AggregateModels.CompanyDepositAggregate.CompanyDeposit> companyDepositRepository,
     IAggregateRepository<Domain.AggregateModels.CompanyAggregate.Company> companyRepository,
-    IAggregateRepository<Domain.AggregateModels.BankAggregate.Bank> bankRepository,
-    IAggregateRepository<Domain.AggregateModels.ProviderAggregate.Provider> providerRepository,
-    IAuthenticationService authenticationService,
-    ReadDbContext context) : IRequestHandler<AddPaymentReceiptQuery, Result<bool>>
+    ReadDbContext context) : IRequestHandler<AddPaymentReceiptQuery, Result<PaymentReceiptResponseViewModel>>
 {
     private readonly IAggregateRepository<PaymentRequest> _paymentRequestRepository = paymentRequestAggregateRepository;
     private readonly IAggregateRepository<Transaction> _transactionRepository = transactionRepository;
     private readonly IAggregateRepository<Domain.AggregateModels.CompanyAggregate.Company> _companyRepository = companyRepository;
-    private readonly IAggregateRepository<Domain.AggregateModels.BankAggregate.Bank> _bankRepository = bankRepository;
-    private readonly IAggregateRepository<Domain.AggregateModels.ProviderAggregate.Provider> _providerRepository = providerRepository;    
     private readonly IAggregateRepository<Domain.AggregateModels.CompanyDepositAggregate.CompanyDeposit> _companyDepositRepository = companyDepositRepository;
-    private readonly IAuthenticationService _authenticationService = authenticationService;
 
-    public async Task<Result<bool>> Handle(AddPaymentReceiptQuery request, CancellationToken cancellationToken)
+    public async Task<Result<PaymentReceiptResponseViewModel>> Handle(AddPaymentReceiptQuery request, CancellationToken cancellationToken)
     {
         try
         {
@@ -46,12 +42,6 @@ public class AddPaymentReceiptQueryHandler(
             if (paymentRequest.UrlExpirationDateTime < DateTime.Now) throw new PaymentRequestCodeExpiredException();
             if (paymentRequest.IsUsed) throw new PaymentRequestCodeIsUsedBeforeException();
             if (paymentRequest.Status != Enums.PaymentStatus.RedirectedToCpg) throw new PaymentRequestCodeInvalidStatusException();
-
-            if (paymentRequest.Company.NationalCodeMatchingRequied is true &&
-                (string.IsNullOrEmpty(paymentRequest.Company.ShaparakSetting?.Iv) || string.IsNullOrEmpty(paymentRequest.Company.ShaparakSetting?.Key)))
-            {
-                throw new PaymentTokenNullKeyOrIvException();
-            }
 
             var company = await _companyRepository.GetBySpecAsync(new CompanyByIdSpec(paymentRequest.CompanyId), cancellationToken);
 
@@ -65,31 +55,57 @@ public class AddPaymentReceiptQueryHandler(
             }
             else
             {
-                companyDeposit = await _companyDepositRepository.GetBySpecAsync(new DefaultDirectDebitDepositSpec(paymentRequest.CompanyId), cancellationToken);
+                companyDeposit = await _companyDepositRepository.GetBySpecAsync(new CompanyDepositsByIdList(new List<long> { request.viewModel.CompanyDepositId }), cancellationToken);
                 if (companyDeposit is null) throw new Exception("Default CompanyDeposit for DirectDebit not found!");
             }
+            destinationDepositId = companyDeposit.Id;
 
             if (!companyDeposit.IsActive) { throw new PaymentTokenInactiveDepositException(); }
             var bank = companyDeposit.Bank;
             if (!bank.IsActive) { throw new PaymentTokenInactiveBankException(); }            
-            if (company.PaymentMethods?.Any(t => t.MethodType == Enums.PaymentMethodType.DirectDebit) is false) { throw new PaymentRequestCompanyHasNoDDMethodException(); }
+            if (company.PaymentMethods?.Any(t => t.MethodType == Enums.PaymentMethodType.PaymentReceipt) is false) { throw new PaymentRequestCompanyHasNoReceiptMethodException(); }
 
-            var mobileNumber = await _authenticationService.GetDataFromClaim<string>(ClaimTypes.MobilePhone);
-            destinationDepositId = companyDeposit.Id;
+            var transaction = Transaction.Create(new CreateTransactionModel
+            {
+                DestinationDepositId = destinationDepositId,
+                PaymentRequest = paymentRequest,
+                TransactionMethodType = Enums.TransactionType.PaymentReceipt,                
+                Status = Enums.TransactionStatus.InPrgress,                
+                PaymentReceiptModel = new PaymentReceiptTransactionModel
+                {
+                    Description = paymentRequest.Description,
+                    Status = Enums.PaymentReceiptStatus.SucceededAndWaitingForVerification,
+                    ReceiptDateTime = request.viewModel.SettlementDateTime,
+                    ReceiptImage = new Logo (request.viewModel.File),
+                    ReferenceNumber = request.viewModel.ReceiptIdentifier,
+                    SourceIban = new Iban(request.viewModel.Iban)
+                }
+            });
 
-            return Result<bool>.SuccessResult(true);
+            await _transactionRepository.AddAsync(transaction);
+            await _transactionRepository.SaveChangesAsync();
+            paymentRequest.IsUsed = true;
+            paymentRequest.Status = Enums.PaymentStatus.TransactionWaitingForVerification;
+            PaymentRequest.Update(paymentRequest);
+            await _paymentRequestRepository.UpdateAsync(paymentRequest);
+            await _paymentRequestRepository.SaveChangesAsync();
+
+            return Result<PaymentReceiptResponseViewModel>.SuccessResult(new PaymentReceiptResponseViewModel
+            {
+                CallbackUrl = $"{transaction.PaymentRequest.CallBackUrl}/paymentResult?paymentCode={transaction.PaymentRequest.PaymentCode}&paymentStatus={General.GetPaymentStatusTitle(transaction.PaymentRequest.Status)}"
+            });
         }
         catch (DomainException exc)
         {
-            return Result<bool>.Failure(new Error((exc as dynamic).Code, exc.Message));
+            return Result<PaymentReceiptResponseViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
         }
         catch (AppException exc)
         {
-            return Result<bool>.Failure(new Error((exc as dynamic).Code, exc.Message));
+            return Result<PaymentReceiptResponseViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
         }
         catch (Exception)
         {
-            return Result<bool>.Failure(new Error("2009000", GlobalResource.GetPaymentTicketUnexpectedError));
+            return Result<PaymentReceiptResponseViewModel>.Failure(new Error("2009000", GlobalResource.GetPaymentTicketUnexpectedError));
         }
     }
 }

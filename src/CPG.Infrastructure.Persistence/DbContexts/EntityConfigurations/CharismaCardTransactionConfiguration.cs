@@ -1,6 +1,4 @@
-﻿using System;
-using CPG.Domain.AggregateModels.TransactionAggregate;
-using CPG.Domain.SeedWork;
+﻿using CPG.Domain.AggregateModels.TransactionAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -15,9 +13,9 @@ public class CharismaCardTransactionConfiguration : IEntityTypeConfiguration<Cha
 
         entity.Ignore(x => x.DomainEvents);
         entity.Property(x => x.Id).UseIdentityColumn();
-        entity.Property(x => x.TrackId).HasColumnName("TrackId").HasMaxLength(255).HasColumnType("nvarchar").IsRequired();
-        entity.Property(x => x.ProviderTrackId).HasColumnName("ProviderTrackId").HasMaxLength(255).HasColumnType("nvarchar").IsRequired();
-        entity.Property(x => x.ReferenceNumber).HasColumnName("ReferenceNumber").HasMaxLength(255).HasColumnType("nvarchar").IsRequired();
-        entity.Property(x => x.Status).HasColumnName("Status").HasColumnType("tinyint").IsRequired();
+        entity.Property(x => x.TrackId).HasMaxLength(255).HasColumnType("varchar").IsRequired();
+        entity.Property(x => x.ProviderTrackId).HasMaxLength(255).HasColumnType("nvarchar").IsRequired();
+        entity.Property(x => x.ReferenceNumber).HasMaxLength(255).HasColumnType("varchar").IsRequired();
+        entity.Property(x => x.Status).HasColumnType("tinyint").IsRequired();
     }
 }
