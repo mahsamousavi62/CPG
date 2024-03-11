@@ -6,5 +6,6 @@ public class ApplicationConfigViewModel
     public string IPG_Callback_URL { get; set; }
     public string CPG_BackEnd { get; set; }
     public string Direct_Debit_Grant_Result_URL { get; set; }
+    public string ExpireTime { get; set; }
 }
 
