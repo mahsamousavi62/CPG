@@ -179,7 +179,7 @@ public class Enums
 
     public enum AuthenticationType
     {
-        CardInfoCOnfirmation = 1,
+        CardInfoConfirmation = 1,
         SendOtpCode = 2,
         CheckMobileAndDepositOwnershipMatching = 3
     }
