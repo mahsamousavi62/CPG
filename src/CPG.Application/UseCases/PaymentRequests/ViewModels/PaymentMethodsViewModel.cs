@@ -7,10 +7,10 @@ namespace CPG.Application.UseCases.PaymentRequests.ViewModels;
 public class PaymentMethodsViewModel
 {
     public decimal Amount { get; set; }
-    public List<long> AvailablePaymentMethodTypes { get; set; }
     public string PaymentCode { get; set; }
     public List<IPGInfo> IPGs { get; set; }
     public List<DirectDebitInfo> DirectDebits { get; set; }
+    public Receipt Receipt { get; set; }
     public string CompanyName { get; set; }
 }
 
@@ -36,9 +36,9 @@ public class DirectDebitGrantInfo
     public string AccountNumber { get; set; }
 }
 
-public class PaymentReceipt
+public class Receipt
 {
-    public long DestinationDepositId { get; set; }
+    public long? DestinationDepositId { get; set; }
     public string BankName { get; set; }
     public string AccountNumber { get; set; }
 }
