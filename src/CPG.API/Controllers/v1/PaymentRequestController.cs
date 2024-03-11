@@ -14,6 +14,8 @@ using CPG.Application.UseCases.DirectDebit.Queries;
 using CPG.Application.UseCases.DirectDebit.ViewModels;
 using CPG.Application.UseCases.NeoBankServices.Queries;
 using CPG.Domain.SharedKernel.Communication.NeoBank.Models;
+using CPG.Application.UseCases.PaymentReceipt.ViewModels;
+using CPG.Application.UseCases.PaymentReceipt.Queries;
 
 namespace CPG.API.Controllers.v1;
 
@@ -51,8 +53,14 @@ public class PaymentRequestController : ApiBaseController
     [HttpPost("CreateWithdrawalRequest")]
     [Authorize]
     [ProducesResponseType(typeof(ResultData<bool>), 200)]
-    public async Task<Result<bool>> GetAsanPardakhatPaymentTicket([FromBody] WithdrawalRequestViewModel withdrawalRequest)
+    public async Task<Result<bool>> CreateWithdrawalRequest([FromBody] WithdrawalRequestViewModel withdrawalRequest)
        => await Mediator.Send(new GetWithdrawalRequestQuery(withdrawalRequest));
+
+    [HttpPost("CreatePaymentReceiptRequest")]
+    [Authorize]
+    [ProducesResponseType(typeof(ResultData<bool>), 200)]
+    public async Task<Result<bool>> CreatePaymentReceiptRequest([FromForm] PaymentReceiptRequestViewModel paymentReceiptRequest)
+       => await Mediator.Send(new AddPaymentReceiptQuery(paymentReceiptRequest));
 
     [HttpPost("GetPaymentTransactionInfo")]
     [ProducesResponseType(typeof(Result<TransactionResultResponse>), 200)]
