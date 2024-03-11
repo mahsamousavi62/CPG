@@ -1,4 +1,5 @@
 ﻿using CPG.Application.UseCases.DirectDebit.ViewModels;
+using CPG.Domain.SharedKernel;
 using System;
 using System.Collections.Generic;
 
@@ -11,6 +12,7 @@ public class PaymentMethodsViewModel
     public List<IPGInfo> IPGs { get; set; }
     public List<DirectDebitInfo> DirectDebits { get; set; }
     public Receipt Receipt { get; set; }
+    public CharismaCard CharismaCard { get; set; }
     public string CompanyName { get; set; }
 }
 
@@ -47,6 +49,7 @@ public class CharismaCard
 {
     public long BalanceAmount { get; set; }
     public string CustomerSurname { get; set; }
-    public string VardNumber { get; set; }
+    public string CardNumber { get; set; }
     public DateTime ExpirationDate { get; set; }
+    public Enums.NeoBankDepositStatus DepositStatus { get; set; }
 }

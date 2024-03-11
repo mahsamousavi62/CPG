@@ -45,6 +45,11 @@ public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
             .HasForeignKey<Transaction>(t => t.PaymentReceiptTransactionId)
             .OnDelete(DeleteBehavior.NoAction);
 
+        entity.HasOne(t => t.CharismaCardTransaction)
+            .WithOne(t => t.Transaction)
+            .HasForeignKey<Transaction>(t => t.CharismaCardTransactionId)
+            .OnDelete(DeleteBehavior.NoAction);
+
         entity.HasOne(t => t.DestinationDeposit)
             .WithMany(t => t.Transactions)
             .HasForeignKey(t => t.DestinationDepositId)
