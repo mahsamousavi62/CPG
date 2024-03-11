@@ -8,6 +8,10 @@ namespace CPG.Domain.AggregateModels.TransactionAggregate;
 
 public class PaymentReceiptTransaction : AuditableEntity<long>
 {
+    public PaymentReceiptTransaction()
+    {
+        
+    }
     public PaymentReceiptTransaction(Iban sourceIban, string referenceNumber, DateTime receiptDateTime, string description, Logo receiptImage,
         PaymentReceiptStatus status)
     {
