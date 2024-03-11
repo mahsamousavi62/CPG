@@ -60,13 +60,15 @@ public class CreateCharismaCardTransactionCommandHandler(INeoBankService neoBank
         else
         {
             companyDeposit = await _companyDepositRepository.GetBySpecAsync(new DefaultDirectDebitDepositSpec(paymentRequest.CompanyId), cancellationToken);
-            if (companyDeposit is null) throw new Exception("Default CompanyDeposit for DirectDebit not found!");
+            if (companyDeposit is null) throw new Exception("Default CompanyDeposit for charismCard not found!");
         }
 
         if (!companyDeposit.IsActive) { throw new PaymentTokenInactiveDepositException(); }
         var bank = companyDeposit.Bank;
         if (!bank.IsActive) { throw new PaymentTokenInactiveBankException(); }
-        if (company.PaymentMethods?.Any(t => t.MethodType == Enums.PaymentMethodType.DirectDebit) is false) { throw new PaymentRequestCompanyHasNoDDMethodException(); }
+        if (company.PaymentMethods?.Any(t => t.MethodType == Enums.PaymentMethodType.CharismaCard) is false)
+        { throw new PaymentRequestCompanyHasNoCharismaCardMethodException(); }
+
 
         var mobileNumber = await _authenticationService.GetDataFromClaim<string>(ClaimTypes.MobilePhone);
         destinationDepositId = companyDeposit.Id;
@@ -84,23 +86,27 @@ public class CreateCharismaCardTransactionCommandHandler(INeoBankService neoBank
         if (clientDirectDebitResponse.IsSuccess)
         {
             ClientDirectDebitResponse clientDirectDebit = clientDirectDebitResponse.Data;
-           
+
+            var CharismaCardstatus = clientDirectDebit.TransferStatus == NeoBankTransferStatus.Failed ?
+                CharismaCardStatus.Failed : CharismaCardStatus.Done;
             Transaction transaction = Transaction.Create(new CreateTransactionModel
             {
-                DestinationDepositId = destinationDepositId,
-                PaymentRequest = paymentRequest,
-                TransactionMethodType = Enums.TransactionType.CharismaCard,
-                Status = Enums.TransactionStatus.InPrgress,
-
                 CharismaCardModel = new CharismaCardTransactionModel
                 {
                     TrackId = trackId,
                     ProviderTrackId = clientDirectDebit.TranactionId,
                     ReferenceNumber = clientDirectDebit.ReferenceNumber,
-                    Status = clientDirectDebit.TransferStatus == NeoBankTransferStatus.Failed ?
-                    CharismaCardStatus.Failed : CharismaCardStatus.Done
-                }
-            });
+                    Status = CharismaCardstatus
+                },
+
+                DestinationDepositId = destinationDepositId,
+                PaymentRequest = paymentRequest,
+                TransactionMethodType = Enums.TransactionType.CharismaCard,
+                Status = CharismaCardstatus== CharismaCardStatus.Done?
+                Enums.TransactionStatus.TransactionSucceeded:
+                Enums.TransactionStatus.TransactionFailed
+
+            }); 
             await transactionRepository.AddAsync(transaction);
             await transactionRepository.SaveChangesAsync();
             return Result<Unit>.SuccessResult(Unit.Value);
