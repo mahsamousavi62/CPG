@@ -4,7 +4,7 @@ using MediatR;
 
 namespace CPG.Application.UseCases.PaymentReceipt.Queries;
 
-public class AddPaymentReceiptQuery(PaymentReceiptRequestViewModel model) : IRequest<Result<bool>>
+public class AddPaymentReceiptQuery(CreatePaymentReceiptModel model) : IRequest<Result<PaymentReceiptResponseViewModel>>
 {
-    public PaymentReceiptRequestViewModel viewModel { get; set; } = model;
+    public CreatePaymentReceiptModel viewModel { get; set; } = model;
 }

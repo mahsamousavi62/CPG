@@ -64,12 +64,6 @@ public class GetWithdrawalRequestQueryHandler(
             if (paymentRequest.IsUsed) throw new PaymentRequestCodeIsUsedBeforeException();
             if (paymentRequest.Status != Enums.PaymentStatus.RedirectedToCpg) throw new PaymentRequestCodeInvalidStatusException();
 
-            if (paymentRequest.Company.NationalCodeMatchingRequied is true &&
-                (string.IsNullOrEmpty(paymentRequest.Company.ShaparakSetting?.Iv) || string.IsNullOrEmpty(paymentRequest.Company.ShaparakSetting?.Key)))
-            {
-                throw new PaymentTokenNullKeyOrIvException();
-            }
-
             var company = await _companyRepository.GetBySpecAsync(new CompanyByIdSpec(paymentRequest.CompanyId), cancellationToken);
 
             var grant = await _grantRepository.GetBySpecAsync(new DirectDebitGrantByIdSpec((long)request.PaymentToken.GrantId), cancellationToken);
