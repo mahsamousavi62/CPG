@@ -11,14 +11,18 @@ using CPG.Domain.AggregateModels.DirectDebitGrantAggregate.Specifications;
 using CPG.Domain.AggregateModels.PaymentRequestAggregate.Specifications;
 using CPG.Domain.AggregateModels.TransactionAggregate;
 using CPG.Domain.AggregateModels.TransactionAggregate.Specifications;
+using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Domain.Exceptions;
 using CPG.Domain.SharedKernel;
+using CPG.Domain.SharedKernel.Communication.NeoBank;
 using CPG.Domain.SharedKernel.Interfaces;
 using CPG.Domain.SharedKernel.Minio;
 using MediatR;
 using System;
+using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using static CPG.Domain.SharedKernel.Enums;
@@ -29,8 +33,7 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
     IAggregateRepository<Company> companyRepository,
     IAggregateRepository<DirectDebitGrant> grantRepository,
     IAggregateRepository<Transaction> transactionRepository,
-    ICurrentUser user,
-    IMinioProvider minioProvider) : IRequestHandler<GetPaymentMethodsCommand, Result<PaymentMethodsViewModel>>
+    ICurrentUser user, IMinioProvider minioProvider, INeoBankService neoBankService) : IRequestHandler<GetPaymentMethodsCommand, Result<PaymentMethodsViewModel>>
 {
     private readonly IAggregateRepository<PaymentRequest> _paymentRequestRepository = paymentRequestRepository;
     private readonly IAggregateRepository<Company> _companyRepository = companyRepository;
@@ -38,7 +41,7 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
     private readonly IAggregateRepository<Transaction> _transactionRepository = transactionRepository;
     private readonly ICurrentUser _user = user;
     private readonly IMinioProvider _minioProvider = minioProvider;
-
+    private readonly INeoBankService _neoBankService = neoBankService;
     public async Task<Result<PaymentMethodsViewModel>> Handle(GetPaymentMethodsCommand request, CancellationToken cancellationToken)
     {
         try
@@ -66,6 +69,8 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
             Company company = null;
             List<PaymentMethodType> availablePaymentMethodTypes = null;
             Receipt receipt = null;
+            ViewModels.CharismaCard charismaCard = null;
+
             if (!string.IsNullOrEmpty(paymentRequest.DestinationDepositIban))
             {
                 company = await _companyRepository.GetBySpecAsync(new CompanyPaymentMethodsByIbanSpec(paymentRequest.CompanyId,
@@ -133,6 +138,28 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
                         DestinationDepositId = null
                     };
                 }
+
+            }
+
+
+            if (availablePaymentMethodTypes?.Contains(PaymentMethodType.CharismaCard) is true)
+            {
+                var userDepositBalance = await _neoBankService.GetUserDepositBalance();
+
+                charismaCard = userDepositBalance.Data.DepositStatus switch
+                {
+                    NeoBankDepositStatus.PendingActivation or NeoBankDepositStatus.DeActive
+                    or NeoBankDepositStatus.NoDeposite or NeoBankDepositStatus.NotCustomer =>
+                        new ViewModels.CharismaCard { MustActiveCard = true },
+                    _ => new ViewModels.CharismaCard
+                    {
+                        BalanceAmount = userDepositBalance.Data.Balance,
+                        CardNumber = userDepositBalance.Data.CardNumber,
+                        CustomerSurname = $"{userDepositBalance.Data.CustomerFirstName} {userDepositBalance.Data.CustomerLastName}",
+                        DepositStatus = userDepositBalance.Data.DepositStatus,
+                        ExpirationDate = userDepositBalance.Data.ExpirationDate
+                    }
+                };
             }
 
             IPGInfo[] ipgResult = null;

@@ -47,9 +47,10 @@ public class Receipt
 
 public class CharismaCard
 {
-    public long BalanceAmount { get; set; }
+    public decimal? BalanceAmount { get; set; }
     public string CustomerSurname { get; set; }
     public string CardNumber { get; set; }
-    public DateTime ExpirationDate { get; set; }
+    public DateTime? ExpirationDate { get; set; }
     public Enums.NeoBankDepositStatus DepositStatus { get; set; }
+    public bool MustActiveCard { get; set; } = false;
 }
