@@ -16,6 +16,7 @@ using MediatR;
 using CPG.Domain.SharedKernel.Helper;
 using static CPG.Domain.SharedKernel.Enums;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace CPG.Application.UseCases.CharismaCard.Commands;
 
@@ -45,7 +46,7 @@ public class CreateCharismaCardTransactionCommandHandler(INeoBankService neoBank
         if (paymentRequest.UrlExpirationDateTime < DateTime.Now) throw new PaymentRequestCodeExpiredException();
         if (paymentRequest.IsUsed) throw new PaymentRequestCodeIsUsedBeforeException();
         if (paymentRequest.Status != Enums.PaymentStatus.RedirectedToCpg) throw new PaymentRequestCodeInvalidStatusException();
-        
+
         var company = await _companyRepository.GetBySpecAsync(new CompanyByIdSpec(paymentRequest.CompanyId), cancellationToken);
 
         long destinationDepositId;
@@ -71,22 +72,19 @@ public class CreateCharismaCardTransactionCommandHandler(INeoBankService neoBank
         destinationDepositId = companyDeposit.Id;
 
         var trackId = RandomGenerator.GenerateRandomDigitNumber(16);
+        var iban = Regex.Replace(companyDeposit.Iban, @"(\d{4})(\d{2})(\d{3})(\d+)", "$1/$2/$3/$4");
         var clientDirectDebitResponse = await neoBankService.ClientDirectDebit(new ClientDirectDebitRequest
         {
             Amount = paymentRequest.Amount,
             Description = paymentRequest.Description,
-            DestinationDepositNumber = companyDeposit.Iban,
+            DestinationDepositNumber = iban,
             TrackerId = trackId,
         });
 
         if (clientDirectDebitResponse.IsSuccess)
         {
             ClientDirectDebitResponse clientDirectDebit = clientDirectDebitResponse.Data;
-            CharismaCardStatus status = CharismaCardStatus.Done;
-            if (clientDirectDebit.TransferStatus == NeoBankTransferStatus.Failed)
-            {
-                status = CharismaCardStatus.Failed;
-            }
+           
             Transaction transaction = Transaction.Create(new CreateTransactionModel
             {
                 DestinationDepositId = destinationDepositId,
@@ -99,7 +97,8 @@ public class CreateCharismaCardTransactionCommandHandler(INeoBankService neoBank
                     TrackId = trackId,
                     ProviderTrackId = clientDirectDebit.TranactionId,
                     ReferenceNumber = clientDirectDebit.ReferenceNumber,
-                    Status = status
+                    Status = clientDirectDebit.TransferStatus == NeoBankTransferStatus.Failed ?
+                    CharismaCardStatus.Failed : CharismaCardStatus.Done
                 }
             });
             await transactionRepository.AddAsync(transaction);
