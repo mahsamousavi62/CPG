@@ -38,6 +38,13 @@ public class CompanyDepositController : ApiBaseController
         return await Mediator.Send(new GetCompanyDepositsByCompanyIdQuery(companyId));
     }
 
+    [HttpGet("Company/{paymentCode}")]
+    [ProducesResponseType(typeof(Result<IReadOnlyCollection<CompanyDepositViewModel>>), (int)HttpStatusCode.OK)]
+    public async Task<Result<IReadOnlyCollection<CompanyDepositViewModel>>> GetByPaymentCode(string paymentCode)
+    {
+        return await Mediator.Send(new GetCompanyDepositsByPaymentCodeQuery(paymentCode));
+    }
+
     [HttpPost("GetAccountNumber")]
     [ProducesResponseType(typeof(Result<AccountNumberResponse>), (int)HttpStatusCode.OK)]
     public async Task<Result<AccountNumberResponse>> GetAccoutnNumber([FromBody] IbanViewModel model)

@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Application.UseCases.PaymentRequests.Commands.GetPaymentMethods;
 
@@ -62,147 +63,182 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
             paymentRequest.Status = Enums.PaymentStatus.RedirectedToCpg;
             await _paymentRequestRepository.UpdateAsync(paymentRequest);
 
-            List<long> availablePaymentMethodTypes = new List<long>();
             Company company = null;
+            List<PaymentMethodType> availablePaymentMethodTypes = null;
+            Receipt receipt = null;
             if (!string.IsNullOrEmpty(paymentRequest.DestinationDepositIban))
             {
                 company = await _companyRepository.GetBySpecAsync(new CompanyPaymentMethodsByIbanSpec(paymentRequest.CompanyId,
                                 paymentRequest.DestinationDepositIban), cancellationToken);
+                availablePaymentMethodTypes = company?.PaymentMethods?.Select(p => p.MethodType).ToList();
 
-                var toBeRemoved = new List<CompanyIPG>();
-                foreach (var companyIPGItem in company?.CompanyIPGs)
+                if (availablePaymentMethodTypes?.Contains(PaymentMethodType.InternetPaymentGateway) is true)
                 {
-                    var found = companyIPGItem.IPGDeposits.Any(t => t.CompanyDeposit.Iban == paymentRequest.DestinationDepositIban);
-                    if (!found)
+                    var toBeRemoved = new List<CompanyIPG>();
+                    foreach (var companyIPGItem in company?.CompanyIPGs)
                     {
-                        toBeRemoved.Add(companyIPGItem);
+                        var found = companyIPGItem.IPGDeposits.Any(t => t.CompanyDeposit.Iban == paymentRequest.DestinationDepositIban);
+                        if (!found)
+                        {
+                            toBeRemoved.Add(companyIPGItem);
+                        }
+                    }
+                    foreach (var companyIPGItem in toBeRemoved)
+                    {
+                        company.CompanyIPGs.Remove(companyIPGItem);
                     }
                 }
-                foreach (var companyIPGItem in toBeRemoved)
+                if (availablePaymentMethodTypes?.Contains(PaymentMethodType.PaymentReceipt) is true)
                 {
-                    company.CompanyIPGs.Remove(companyIPGItem);
+                    var companyDeposit = company.CompanyDeposits?.Where(t => t.Iban == paymentRequest.DestinationDepositIban).FirstOrDefault();
+                    if (companyDeposit is not null)
+                    {
+                        receipt = new Receipt
+                        {
+                            AccountNumber = companyDeposit?.AccountNumber,
+                            BankName = companyDeposit?.Bank?.Name,
+                            DestinationDepositId = companyDeposit?.Id
+                        };
+                    }
                 }
-                availablePaymentMethodTypes = company.PaymentMethods.Select(p => p.Id).ToList();
             }
             else
             {
                 company = await _companyRepository.GetBySpecAsync(new CompanyPaymentMethodsByIdSpec(paymentRequest.CompanyId), cancellationToken);
-                availablePaymentMethodTypes = company.PaymentMethods.Select(p => p.Id).ToList();
+                availablePaymentMethodTypes = company?.PaymentMethods?.Select(p => p.MethodType).ToList();
 
-                var toBeRemoved = new List<CompanyIPG>();
-                foreach (var companyIPGItem in company?.CompanyIPGs)
+                if (availablePaymentMethodTypes?.Contains(PaymentMethodType.InternetPaymentGateway) is true)
                 {
-                    var defaultDeposit = companyIPGItem.IPGDeposits.FirstOrDefault(t => t.IsDefault);
-                    if (defaultDeposit == null) throw new Exception("company not found");
-                    if (!defaultDeposit.IsActive)
+                    var toBeRemoved = new List<CompanyIPG>();
+                    foreach (var companyIPGItem in company?.CompanyIPGs)
                     {
-                        toBeRemoved.Add(companyIPGItem);
+                        var defaultDeposit = companyIPGItem.IPGDeposits.FirstOrDefault(t => t.IsDefault);
+                        if (defaultDeposit == null) throw new Exception("company not found");
+                        if (!defaultDeposit.IsActive)
+                        {
+                            toBeRemoved.Add(companyIPGItem);
+                        }
+                    }
+                    foreach (var companyIPGItem in toBeRemoved)
+                    {
+                        company.CompanyIPGs.Remove(companyIPGItem);
                     }
                 }
-                foreach (var companyIPGItem in toBeRemoved)
+                if (availablePaymentMethodTypes?.Contains(PaymentMethodType.PaymentReceipt) is true)
                 {
-                    company.CompanyIPGs.Remove(companyIPGItem);
+                    receipt = new Receipt
+                    {
+                        AccountNumber = string.Empty,
+                        BankName = string.Empty,
+                        DestinationDepositId = null
+                    };
                 }
             }
 
             IPGInfo[] ipgResult = null;
+            DirectDebitInfo[] directDebits = null;
             if (company != null && company.IsActive)
             {
-                ipgResult = await Task.WhenAll(company.CompanyIPGs?.Select(t => new { t.IPGType, t.Id }).Select(async t => new IPGInfo
+                if (availablePaymentMethodTypes?.Contains(PaymentMethodType.InternetPaymentGateway) is true)
                 {
-                    Id = t.Id,
-                    Logo = await _minioProvider.PresignedGetObject(t.IPGType.Logo),
-                    PersianName = t.IPGType.PersianName,
-                })).ConfigureAwait(false);
-            }
-
-            var userGrants = await _grantRepository.ListAsync(new DirectDebitGrantByUserSpec(_user.UserId, paymentRequest.Amount, company.NationalCodeMatchingRequied), cancellationToken);
-
-            foreach (var item in userGrants)
-            {
-                if (item.Bank?.DirectDebitSetting.ProviderId != item.ProviderId)
-                {
-                    userGrants.Remove(item);
+                    ipgResult = await Task.WhenAll(company.CompanyIPGs?.Select(t => new { t.IPGType, t.Id }).Select(async t => new IPGInfo
+                    {
+                        Id = t.Id,
+                        Logo = await _minioProvider.PresignedGetObject(t.IPGType.Logo),
+                        PersianName = t.IPGType.PersianName,
+                    })).ConfigureAwait(false);
                 }
-                else
+                if (availablePaymentMethodTypes?.Contains(PaymentMethodType.DirectDebit) is true)
                 {
-                    var currentDayTransactions = await _transactionRepository.ListAsync(new CurrentDayTransactionByGrantIdSpec(item.Id), cancellationToken);
-                    var currentMonthTransactions = await _transactionRepository.ListAsync(new CurrentMonthTransactionByGrantIdSpec(item.Id), cancellationToken);
+                    var userGrants = await _grantRepository.ListAsync(new DirectDebitGrantByUserSpec(_user.UserId, paymentRequest.Amount, company.NationalCodeMatchingRequied), cancellationToken);
 
-                    if (paymentRequest.Amount > item.Bank.DirectDebitSetting.MaxWithdrawalAmountPerDay - currentDayTransactions.Sum(t => t.Amount))
+                    foreach (var item in userGrants)
                     {
-                        userGrants.Remove(item);
-                    }
-                    else if (item.SuccessTransactionCountLimitPerMonth - currentMonthTransactions.Count() <= 0)
-                    {
-                        userGrants.Remove(item);
-                    }
-                }
-            }
-
-            var groupedGrants = userGrants.GroupBy(t => t.AccountNumber).ToList();
-            var grants = new List<DirectDebitGrant>();
-            foreach (var group in groupedGrants)
-            {
-                var selectedItems = group.ToList();
-                if (selectedItems.Count() > 1)
-                {
-                    var maxAmountLimit = selectedItems.Max(t => t.AmountLimitPerTransaction);
-                    selectedItems = selectedItems.Where(t => t.AmountLimitPerTransaction == maxAmountLimit).ToList();
-                    if (selectedItems.Count() > 1)
-                    {
-                        var amountlist = new Dictionary<long, decimal>();
-                        foreach (var item in selectedItems)
+                        if (item.Bank?.DirectDebitSetting.ProviderId != item.ProviderId)
+                        {
+                            userGrants.Remove(item);
+                        }
+                        else
                         {
                             var currentDayTransactions = await _transactionRepository.ListAsync(new CurrentDayTransactionByGrantIdSpec(item.Id), cancellationToken);
+                            var currentMonthTransactions = await _transactionRepository.ListAsync(new CurrentMonthTransactionByGrantIdSpec(item.Id), cancellationToken);
 
-                            var remainedAmount = item.Bank.DirectDebitSetting.MaxWithdrawalAmountPerDay - currentDayTransactions.Sum(t => t.Amount);
-                            amountlist.Add(item.Id, remainedAmount);
-                        }
-                        var minRemainedAmount = amountlist.Min(t => t.Value);
-                        selectedItems = selectedItems.Where(t => amountlist.Where(l => l.Value == minRemainedAmount).Select(l => l.Key).Contains(t.Id)).ToList();
-
-                        if (selectedItems.Count() > 1)
-                        {
-                            var countlist = new Dictionary<long, decimal>();
-                            foreach (var item in selectedItems)
+                            if (paymentRequest.Amount > item.Bank.DirectDebitSetting.MaxWithdrawalAmountPerDay - currentDayTransactions.Sum(t => t.Amount))
                             {
-                                var currentMonthTransactions = await _transactionRepository.ListAsync(new CurrentMonthTransactionByGrantIdSpec(item.Id), cancellationToken);
-
-                                var remainedCount = item.SuccessTransactionCountLimitPerMonth - currentMonthTransactions.Count();
-                                countlist.Add(item.Id, remainedCount);
+                                userGrants.Remove(item);
                             }
-                            var minRemainedCount = countlist.Min(t => t.Value);
-                            selectedItems = selectedItems.Where(t => countlist.Where(l => l.Value == minRemainedCount).Select(l => l.Key).Contains(t.Id)).ToList();
+                            else if (item.SuccessTransactionCountLimitPerMonth - currentMonthTransactions.Count() <= 0)
+                            {
+                                userGrants.Remove(item);
+                            }
                         }
                     }
-                }
-                grants.Add(selectedItems.OrderBy(t => t.ExpirationDate).FirstOrDefault());
 
+                    var groupedGrants = userGrants.GroupBy(t => t.AccountNumber).ToList();
+                    var grants = new List<DirectDebitGrant>();
+                    foreach (var group in groupedGrants)
+                    {
+                        var selectedItems = group.ToList();
+                        if (selectedItems.Count() > 1)
+                        {
+                            var maxAmountLimit = selectedItems.Max(t => t.AmountLimitPerTransaction);
+                            selectedItems = selectedItems.Where(t => t.AmountLimitPerTransaction == maxAmountLimit).ToList();
+                            if (selectedItems.Count() > 1)
+                            {
+                                var amountlist = new Dictionary<long, decimal>();
+                                foreach (var item in selectedItems)
+                                {
+                                    var currentDayTransactions = await _transactionRepository.ListAsync(new CurrentDayTransactionByGrantIdSpec(item.Id), cancellationToken);
+
+                                    var remainedAmount = item.Bank.DirectDebitSetting.MaxWithdrawalAmountPerDay - currentDayTransactions.Sum(t => t.Amount);
+                                    amountlist.Add(item.Id, remainedAmount);
+                                }
+                                var minRemainedAmount = amountlist.Min(t => t.Value);
+                                selectedItems = selectedItems.Where(t => amountlist.Where(l => l.Value == minRemainedAmount).Select(l => l.Key).Contains(t.Id)).ToList();
+
+                                if (selectedItems.Count() > 1)
+                                {
+                                    var countlist = new Dictionary<long, decimal>();
+                                    foreach (var item in selectedItems)
+                                    {
+                                        var currentMonthTransactions = await _transactionRepository.ListAsync(new CurrentMonthTransactionByGrantIdSpec(item.Id), cancellationToken);
+
+                                        var remainedCount = item.SuccessTransactionCountLimitPerMonth - currentMonthTransactions.Count();
+                                        countlist.Add(item.Id, remainedCount);
+                                    }
+                                    var minRemainedCount = countlist.Min(t => t.Value);
+                                    selectedItems = selectedItems.Where(t => countlist.Where(l => l.Value == minRemainedCount).Select(l => l.Key).Contains(t.Id)).ToList();
+                                }
+                            }
+                        }
+                        grants.Add(selectedItems.OrderBy(t => t.ExpirationDate).FirstOrDefault());
+
+                    }
+                    directDebits = await Task.WhenAll(grants?.GroupBy(t => t.BankId).Select(async t => new DirectDebitInfo
+                    {
+                        BankInfo = new DirectDebit.ViewModels.AvailableBankViewModel
+                        {
+                            Id = t.Key,
+                            Name = t.FirstOrDefault().Bank.Name,
+                            Logo = await _minioProvider.PresignedGetObject(t.FirstOrDefault().Bank.LogoAddress)
+                        },
+                        GrantInfo = t.Select(q => new DirectDebitGrantInfo
+                        {
+                            AccountNumber = q.AccountNumber,
+                            Id = q.Id,
+                        }).ToList(),
+                    })).ConfigureAwait(false);
+                }
             }
-            var directDebits = await Task.WhenAll(grants?.GroupBy(t => t.BankId).Select(async t => new DirectDebitInfo
-            {
-                BankInfo = new DirectDebit.ViewModels.AvailableBankViewModel
-                {
-                    Id = t.Key,
-                    Name = t.FirstOrDefault().Bank.Name,
-                    Logo = await _minioProvider.PresignedGetObject(t.FirstOrDefault().Bank.LogoAddress)
-                },
-                GrantInfo = t.Select(q => new DirectDebitGrantInfo
-                {
-                    AccountNumber = q.AccountNumber,
-                    Id = q.Id,
-                }).ToList(),
-            })).ConfigureAwait(false);
 
             return Result<PaymentMethodsViewModel>.SuccessResult(new PaymentMethodsViewModel
             {
                 Amount = paymentRequest.Amount,
-                AvailablePaymentMethodTypes=availablePaymentMethodTypes,
-                PaymentCode=paymentRequest.PaymentCode,
+                PaymentCode = paymentRequest.PaymentCode,
                 IPGs = ipgResult?.ToList(),
                 DirectDebits = directDebits?.ToList(),
-                CompanyName = company.PersianName,
+                Receipt = receipt,
+                CompanyName = company?.PersianName,
             });
         }
         catch (DomainException exc)
