@@ -199,6 +199,11 @@ public class Enums
     {
         Draft = 0,
     }
+
+    public enum CharismaCardStatus:byte
+    {
+        Draft=0,
+    }
 }
 
 public struct ResultData<T>(Enums.OperationResult operationResult)
