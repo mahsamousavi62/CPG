@@ -1,19 +1,21 @@
 ﻿using System;
+using CPG.Domain.AggregateModels.BankAggregate;
 using CPG.Domain.SeedWork;
+using CPG.Domain.SharedKernel;
 using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Domain.AggregateModels.TransactionAggregate;
 
 public class PaymentReceiptTransaction : AuditableEntity<long>
 {
-    public PaymentReceiptTransaction(string sourceIban, string referenceNumber, DateTime receiptDateTime, string description, string receiptImage,
+    public PaymentReceiptTransaction(Iban sourceIban, string referenceNumber, DateTime receiptDateTime, string description, Logo receiptImage,
         PaymentReceiptStatus status)
     {
-        SourceIban = sourceIban;
+        SourceIban = sourceIban.Value;
         ReferenceNumber = referenceNumber;
         ReceiptDateTime = receiptDateTime;
         Description = description;
-        ReceiptImage = receiptImage;
+        ReceiptImage = receiptImage.Value;
         Status = status;
     }
 
@@ -25,8 +27,8 @@ public class PaymentReceiptTransaction : AuditableEntity<long>
     public PaymentReceiptStatus Status { get; set; }
     public Transaction Transaction { get; set; }
 
-    public static PaymentReceiptTransaction Create(string sourceIban, string referenceNumber, DateTime receiptDateTime, string description,
-        string receiptImage, PaymentReceiptStatus status)
+    public static PaymentReceiptTransaction Create(Iban sourceIban, string referenceNumber, DateTime receiptDateTime, string description,
+        Logo receiptImage, PaymentReceiptStatus status)
     {
         var paymentReceipt = new PaymentReceiptTransaction(sourceIban, referenceNumber, receiptDateTime, description, receiptImage, status);
         return paymentReceipt;
