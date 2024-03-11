@@ -99,7 +99,9 @@ public class Enums
     public enum TransactionType : byte
     {
         IPG = 1,
-        DirectDebit = 2
+        DirectDebit = 2,
+        PaymentReceipt = 3,
+        CharismaCard = 4,
     }
 
     public enum IPGTransactionStatus : byte
@@ -191,6 +193,11 @@ public class Enums
         CanceledByUser = 4,
         Removed = 5,
         Expired = 6,
+    }
+
+    public enum PaymentReceiptStatus : byte
+    {
+        Draft = 0,
     }
 }
 

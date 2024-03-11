@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using CPG.Domain.SharedKernel;
 using CPG.Infrastructure.Persistence.DbContexts.ReadModels;
 
@@ -21,6 +20,6 @@ public class TransactionReadModel
     public PaymentRequestReadModel PaymentRequest { get; set; }
     public IPGTransactionReadModel IPGTransaction { get; set; }
     public DirectDebitTransactionReadModel DirectDebitTransaction { get; set; }
+    public PaymentReceiptTransactionReadModel PaymentReceiptTransaction { get; set; }
     public CompanyDepositReadModel DestinationDeposit { get; set; }
-
 }
