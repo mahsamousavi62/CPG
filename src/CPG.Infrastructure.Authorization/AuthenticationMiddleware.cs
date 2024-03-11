@@ -8,13 +8,14 @@ using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Linq;
+using CPG.Domain.SharedKernel;
 
 namespace CPG.Infrastructure.Authorization;
 
 public class AuthenticationMiddleware(IAuthenticationSchemeProvider schemes, RequestDelegate next)
 {
     private readonly RequestDelegate _next = next ?? throw new ArgumentNullException(nameof(next));
-
+    private readonly string userKycStatus="KycVerified";
     public IAuthenticationSchemeProvider Schemes { get; set; } = schemes ?? throw new ArgumentNullException(nameof(schemes));
 
     public async Task Invoke(HttpContext context, IMediator mediator)
@@ -27,16 +28,16 @@ public class AuthenticationMiddleware(IAuthenticationSchemeProvider schemes, Req
                 var result = await context.AuthenticateAsync(defaultAuthenticate.Name);
                 string? kycStatus = context.User.Claims.SingleOrDefault(c => c.Type == "status")?.Value;
 
-                if (kycStatus != "KycVerified")
+                if (kycStatus != userKycStatus)
                 {
                     context.Response.Clear();
-                    context.Response.StatusCode = (int)HttpStatusCode.OK;
+                    context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                     await context.Response.WriteAsJsonAsync(new
                     {
-                        Data = "",
-                        Message = "",
+                        Data = string.Empty,
+                        Message = string.Empty,
                         Action = "IdpProfileNotFound",
-                        Errors = "",
+                        Errors = string.Empty,
                     });
                     return;
                 }
