@@ -45,7 +45,7 @@ public class CreateCharismaCardTransactionCommandHandler(INeoBankService neoBank
         if (!paymentRequest.Company.IsActive) throw new PaymentTokenInactiveCompanyException();
         if (paymentRequest.UrlExpirationDateTime < DateTime.Now) throw new PaymentRequestCodeExpiredException();
         if (paymentRequest.IsUsed) throw new PaymentRequestCodeIsUsedBeforeException();
-        if (paymentRequest.Status != Enums.PaymentStatus.RedirectedToCpg) throw new PaymentRequestCodeInvalidStatusException();
+        //if (paymentRequest.Status != Enums.PaymentStatus.RedirectedToCpg) throw new PaymentRequestCodeInvalidStatusException();
 
         var company = await _companyRepository.GetBySpecAsync(new CompanyByIdSpec(paymentRequest.CompanyId), cancellationToken);
 
@@ -102,13 +102,31 @@ public class CreateCharismaCardTransactionCommandHandler(INeoBankService neoBank
                 DestinationDepositId = destinationDepositId,
                 PaymentRequest = paymentRequest,
                 TransactionMethodType = Enums.TransactionType.CharismaCard,
-                Status = CharismaCardstatus== CharismaCardStatus.Done?
-                Enums.TransactionStatus.TransactionSucceeded:
+                Status = CharismaCardstatus == CharismaCardStatus.Done ?
+                Enums.TransactionStatus.TransactionSucceeded :
                 Enums.TransactionStatus.TransactionFailed
 
-            }); 
+            });
             await transactionRepository.AddAsync(transaction);
             await transactionRepository.SaveChangesAsync();
+
+            switch (CharismaCardstatus)
+            {
+                case CharismaCardStatus.Done:
+                    paymentRequest.Status = Enums.PaymentStatus.TransactionWaitingForVerification;
+                    break;
+                case CharismaCardStatus.Failed:
+                    paymentRequest.Status = Enums.PaymentStatus.TransactionFailed;
+                    break;
+                default:
+                    // Handle any other cases here if needed
+                    break;
+            }
+            paymentRequest.IsUsed = true;
+            PaymentRequest.Update(paymentRequest);
+            await _paymentRequestRepository.UpdateAsync(paymentRequest);
+            await _paymentRequestRepository.SaveChangesAsync();
+
             return Result<Unit>.SuccessResult(Unit.Value);
         }
         else

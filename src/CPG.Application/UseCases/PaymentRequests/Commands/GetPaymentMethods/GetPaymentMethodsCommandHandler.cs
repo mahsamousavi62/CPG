@@ -5,6 +5,8 @@ using CPG.Application.UseCases.PaymentRequests.ViewModels;
 using CPG.Domain.AggregateModels.BankAggregate;
 using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Domain.AggregateModels.CompanyAggregate.Specifications;
+using CPG.Domain.AggregateModels.CompanyDepositAggregate;
+using CPG.Domain.AggregateModels.CompanyDepositAggregate.Specifications;
 using CPG.Domain.AggregateModels.CompanyIPGAggregate;
 using CPG.Domain.AggregateModels.DirectDebitGrantAggregate;
 using CPG.Domain.AggregateModels.DirectDebitGrantAggregate.Specifications;
@@ -18,6 +20,7 @@ using CPG.Domain.SharedKernel.Communication.NeoBank;
 using CPG.Domain.SharedKernel.Interfaces;
 using CPG.Domain.SharedKernel.Minio;
 using MediatR;
+using Microsoft.AspNetCore.Server.HttpSys;
 using System;
 using System.Buffers.Text;
 using System.Collections.Generic;
@@ -33,7 +36,9 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
     IAggregateRepository<Company> companyRepository,
     IAggregateRepository<DirectDebitGrant> grantRepository,
     IAggregateRepository<Transaction> transactionRepository,
-    ICurrentUser user, IMinioProvider minioProvider, INeoBankService neoBankService) : IRequestHandler<GetPaymentMethodsCommand, Result<PaymentMethodsViewModel>>
+    ICurrentUser user, IMinioProvider minioProvider, INeoBankService neoBankService,
+    IAggregateRepository<Bank> bankRepository,
+    IAggregateRepository<CompanyDeposit> companyDepositRepository) : IRequestHandler<GetPaymentMethodsCommand, Result<PaymentMethodsViewModel>>
 {
     private readonly IAggregateRepository<PaymentRequest> _paymentRequestRepository = paymentRequestRepository;
     private readonly IAggregateRepository<Company> _companyRepository = companyRepository;
@@ -42,6 +47,10 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
     private readonly ICurrentUser _user = user;
     private readonly IMinioProvider _minioProvider = minioProvider;
     private readonly INeoBankService _neoBankService = neoBankService;
+    private readonly IAggregateRepository<Bank> _bankRepository = bankRepository;
+    private readonly IAggregateRepository<CompanyDeposit> _companyDepositRepository = companyDepositRepository;
+    private readonly string MiddleEastIbanPrefix = "078";
+
     public async Task<Result<PaymentMethodsViewModel>> Handle(GetPaymentMethodsCommand request, CancellationToken cancellationToken)
     {
         try
@@ -93,9 +102,9 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
                         company.CompanyIPGs.Remove(companyIPGItem);
                     }
                 }
+                var companyDeposit = company.CompanyDeposits?.Where(t => t.Iban == paymentRequest.DestinationDepositIban).FirstOrDefault();
                 if (availablePaymentMethodTypes?.Contains(PaymentMethodType.PaymentReceipt) is true)
                 {
-                    var companyDeposit = company.CompanyDeposits?.Where(t => t.Iban == paymentRequest.DestinationDepositIban).FirstOrDefault();
                     if (companyDeposit is not null)
                     {
                         receipt = new Receipt
@@ -105,6 +114,24 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
                             DestinationDepositId = companyDeposit?.Id
                         };
                     }
+                }
+
+                if (availablePaymentMethodTypes?.Contains(PaymentMethodType.CharismaCard) is true &&
+                     companyDeposit.Bank.IbanPrefix == MiddleEastIbanPrefix)
+                {
+                    var userDepositBalance = await _neoBankService.GetUserDepositBalance();
+
+                    charismaCard = userDepositBalance.Data.DepositStatus switch
+                    {
+                        _ => new ViewModels.CharismaCard
+                        {
+                            BalanceAmount = userDepositBalance.Data.Balance,
+                            CardNumber = userDepositBalance.Data.CardNumber,
+                            CustomerSurname = $"{userDepositBalance.Data.CustomerFirstName} {userDepositBalance.Data.CustomerLastName}",
+                            DepositStatus = userDepositBalance.Data.DepositStatus,
+                            ExpirationDate = userDepositBalance.Data.ExpirationDate
+                        }
+                    };
                 }
             }
             else
@@ -139,28 +166,31 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
                     };
                 }
 
-            }
 
 
-            if (availablePaymentMethodTypes?.Contains(PaymentMethodType.CharismaCard) is true)
-            {
-                var userDepositBalance = await _neoBankService.GetUserDepositBalance();
-
-                charismaCard = userDepositBalance.Data.DepositStatus switch
+                var companyDeposit = await _companyDepositRepository.GetBySpecAsync(new DefaultDirectDebitDepositSpec(paymentRequest.CompanyId), cancellationToken);
+                if (availablePaymentMethodTypes?.Contains(PaymentMethodType.CharismaCard) is true && companyDeposit != null &&
+                    companyDeposit.Bank.IbanPrefix == MiddleEastIbanPrefix)
                 {
-                    NeoBankDepositStatus.PendingActivation or NeoBankDepositStatus.DeActive
-                    or NeoBankDepositStatus.NoDeposite or NeoBankDepositStatus.NotCustomer =>
-                        new ViewModels.CharismaCard { MustActiveCard = true },
-                    _ => new ViewModels.CharismaCard
+                    var userDepositBalance = await _neoBankService.GetUserDepositBalance();
+
+                    charismaCard = userDepositBalance.Data.DepositStatus switch
                     {
-                        BalanceAmount = userDepositBalance.Data.Balance,
-                        CardNumber = userDepositBalance.Data.CardNumber,
-                        CustomerSurname = $"{userDepositBalance.Data.CustomerFirstName} {userDepositBalance.Data.CustomerLastName}",
-                        DepositStatus = userDepositBalance.Data.DepositStatus,
-                        ExpirationDate = userDepositBalance.Data.ExpirationDate
-                    }
-                };
+                        _ => new ViewModels.CharismaCard
+                        {
+                            BalanceAmount = userDepositBalance.Data.Balance,
+                            CardNumber = userDepositBalance.Data.CardNumber,
+                            CustomerSurname = $"{userDepositBalance.Data.CustomerFirstName} {userDepositBalance.Data.CustomerLastName}",
+                            DepositStatus = userDepositBalance.Data.DepositStatus,
+                            ExpirationDate = userDepositBalance.Data.ExpirationDate
+                        }
+                    };
+                }
+
             }
+
+
+
 
             IPGInfo[] ipgResult = null;
             DirectDebitInfo[] directDebits = null;
@@ -265,6 +295,7 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
                 IPGs = ipgResult?.ToList(),
                 DirectDebits = directDebits?.ToList(),
                 Receipt = receipt,
+                CharismaCard = charismaCard,
                 CompanyName = company?.PersianName,
             });
         }
