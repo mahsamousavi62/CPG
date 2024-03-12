@@ -7,6 +7,7 @@ using CPG.Domain.AggregateModels.TransactionAggregate;
 using CPG.Domain.AggregateModels.TransactionAggregate.Specifications;
 using CPG.Domain.Exceptions;
 using CPG.Domain.SharedKernel;
+using CPG.Domain.SharedKernel.Minio;
 using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -19,11 +20,13 @@ using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 
-public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> transactionRepository, ReadDbContext context, IHttpContextAccessor httpContext) : IRequestHandler<TransactionDetailQuery, Result<TransactionDetailResponseViewModel>>
+public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> transactionRepository, ReadDbContext context, 
+    IHttpContextAccessor httpContext, IMinioProvider minioProvider) : IRequestHandler<TransactionDetailQuery, Result<TransactionDetailResponseViewModel>>
 {
     private readonly IAggregateRepository<Transaction> _transactionRepository = transactionRepository;
     private readonly ReadDbContext _context = context;
     private readonly IHttpContextAccessor _httpContext = httpContext;
+    private readonly IMinioProvider _minioProvider = minioProvider;
 
     public async Task<Result<TransactionDetailResponseViewModel>> Handle(TransactionDetailQuery request, CancellationToken cancellationToken)
     {
@@ -57,6 +60,7 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
                     DestinationDepositIban = transaction?.DestinationDeposit?.Iban,
                     DestinationDepositAccountNumber = transaction?.DestinationDeposit?.AccountNumber,
                     PredictedExpirationDateTime = transaction is null ? string.Empty : GetTransactionPredictedExpirationDateTime(transaction),
+                    ReceiptContent = transaction.TransactionMethodType == TransactionType.PaymentReceipt ? await _minioProvider.PresignedGetObject(transaction.PaymentReceiptTransaction.ReceiptImage) : string.Empty,
                 });
         }
         catch (DomainException exc)
@@ -79,6 +83,8 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
         {
             TransactionType.IPG => "INTERNET_PAYMENT_GATEWAY",
             TransactionType.DirectDebit => "DIRECT_DEBIT",
+            TransactionType.PaymentReceipt => "PAYMENT_RECEIPT",
+            TransactionType.CharismaCard => "CHARISMA_CARD",
             _ => string.Empty
         };
     }
@@ -91,6 +97,8 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
                 return transaction.IPGTransaction.ReferenceNumber;
             case TransactionType.DirectDebit:
                 return string.Empty;
+            case TransactionType.PaymentReceipt:
+                return transaction.PaymentReceiptTransaction.ReferenceNumber;
             default:
                 return string.Empty;
         }
@@ -103,6 +111,8 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
             case TransactionType.IPG:
                 return transaction.IPGTransaction?.PredicateExpirationDateTime?.ToString("yyyy-MM-dd HH:mm:ss zzz");
             case TransactionType.DirectDebit:
+                return string.Empty;
+            case TransactionType.PaymentReceipt:
                 return string.Empty;
             default:
                 return string.Empty;
