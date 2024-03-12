@@ -19,6 +19,7 @@ public class CompanyDeposit : AuditableEntity<long>, IAggregateRoot
     public string AccountNumber { get; set; }
     public long CompanyId { get; set; }
     public bool? IsDefaultForDirectDebit { get; set; }
+    public bool? IsDefaultForCharismaCard { get;  set; }
 
     public Company Company { get; set; }
     public Bank Bank { get; set; }

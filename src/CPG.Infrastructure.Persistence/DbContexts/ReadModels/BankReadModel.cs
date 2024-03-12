@@ -6,17 +6,6 @@ namespace CPG.Infrastructure.Persistence.DbContexts.ReadModels;
 
 public class BankReadModel
 {
-    private string _logoAddress;
-    public string LogoAddress
-    {
-        get => _logoAddress;
-        set
-        {
-            _logoAddress = value;
-
-            Logo = _logoAddress;
-        }
-    }
     public int Id { get; set; }
     public string Name { get; set; }
     public string IbanPrefix { get; set; }

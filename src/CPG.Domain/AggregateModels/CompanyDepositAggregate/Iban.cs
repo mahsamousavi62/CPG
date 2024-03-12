@@ -26,8 +26,8 @@ public record Iban
         if (!iban[..2].ToCharArray().All(t => char.IsLetter(t)) || iban[..2] != "IR")
             throw new IbanInvalidFormatException(iban);
 
-        if (!Validate(iban))
-            throw new IbanInvalidException(iban);
+        //if (!Validate(iban))
+        //    throw new IbanInvalidException(iban);
 
         Value = iban;
     }

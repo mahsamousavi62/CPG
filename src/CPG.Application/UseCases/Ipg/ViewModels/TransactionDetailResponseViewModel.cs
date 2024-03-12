@@ -36,5 +36,8 @@ public class TransactionDetailResponseViewModel
 
     [JsonPropertyName("predictedExpirationDateTime")]
     public string PredictedExpirationDateTime { get; set; }
+
+    [JsonPropertyName("receiptContent")]
+    public string ReceiptContent { get; set; }
 }
 

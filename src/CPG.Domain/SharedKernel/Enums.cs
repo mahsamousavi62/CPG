@@ -197,7 +197,13 @@ public class Enums
 
     public enum PaymentReceiptStatus : byte
     {
-        Draft = 0,
+        SucceededAndWaitingForVerification = 1,
+    }
+
+    public enum CharismaCardStatus:byte
+    {
+        Failed = 0,
+        Done = 1
     }
 }
 

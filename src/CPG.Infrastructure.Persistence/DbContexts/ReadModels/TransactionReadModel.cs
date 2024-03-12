@@ -10,6 +10,7 @@ public class TransactionReadModel
     public long PaymentRquestId { get; set; }
     public long IPGTransactionId { get; set; }
     public long DirectDebitTransactionId { get; set; }
+    public long CharismaCardTransactionId { get; set; }
     public Enums.TransactionType TransactionMethodType { get; set; }
     public long CompanyId { get; set; }
     public long DestinationDepositId { get; set; }
@@ -21,5 +22,6 @@ public class TransactionReadModel
     public IPGTransactionReadModel IPGTransaction { get; set; }
     public DirectDebitTransactionReadModel DirectDebitTransaction { get; set; }
     public PaymentReceiptTransactionReadModel PaymentReceiptTransaction { get; set; }
+    public CharismaCardTransactionReadModel CharismaCardTransaction { get; set; }
     public CompanyDepositReadModel DestinationDeposit { get; set; }
 }

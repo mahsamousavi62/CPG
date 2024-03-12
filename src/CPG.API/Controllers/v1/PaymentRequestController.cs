@@ -16,6 +16,8 @@ using CPG.Application.UseCases.NeoBankServices.Queries;
 using CPG.Domain.SharedKernel.Communication.NeoBank.Models;
 using CPG.Application.UseCases.PaymentReceipt.ViewModels;
 using CPG.Application.UseCases.PaymentReceipt.Queries;
+using CPG.Application.UseCases.Companies.Commands.CreateCompany;
+using CPG.Infrastructure.File;
 
 namespace CPG.API.Controllers.v1;
 
@@ -58,9 +60,15 @@ public class PaymentRequestController : ApiBaseController
 
     [HttpPost("CreatePaymentReceiptRequest")]
     [Authorize]
-    [ProducesResponseType(typeof(ResultData<bool>), 200)]
-    public async Task<Result<bool>> CreatePaymentReceiptRequest([FromForm] PaymentReceiptRequestViewModel paymentReceiptRequest)
-       => await Mediator.Send(new AddPaymentReceiptQuery(paymentReceiptRequest));
+    [ProducesResponseType(typeof(ResultData<PaymentReceiptResponseViewModel>), 200)]
+    public async Task<Result<PaymentReceiptResponseViewModel>> CreatePaymentReceiptRequest([FromForm] PaymentReceiptRequestViewModel paymentReceiptRequest)
+    {
+        CreatePaymentReceiptModel model = new(paymentReceiptRequest.PaymentRequestCode, new FormFileProxy(paymentReceiptRequest.File),
+            paymentReceiptRequest.Iban, paymentReceiptRequest.ReceiptIdentifier, paymentReceiptRequest.CompanyDepositId,
+            paymentReceiptRequest.SettlementDateTime, paymentReceiptRequest.Description);
+
+        return await Mediator.Send(new AddPaymentReceiptQuery(model));
+    }
 
     [HttpPost("GetPaymentTransactionInfo")]
     [ProducesResponseType(typeof(Result<TransactionResultResponse>), 200)]
