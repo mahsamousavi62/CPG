@@ -15,7 +15,8 @@ public class CreateTransactionModel
     public CreateIPGTransactionModel IPGTransactionModel { get; set; }
     public CreateDDTransactionModel DDTransactionModel { get; set; }
     public PaymentReceiptTransactionModel PaymentReceiptModel { get; set; }
-    public CharismaCardTransaction CharismaCardModel { get; set; }
+   
+    public CharismaCardTransactionModel CharismaCardModel { get; set; }
 }
 
 public class CreateIPGTransactionModel

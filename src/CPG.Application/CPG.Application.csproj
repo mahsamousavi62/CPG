@@ -54,8 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="UseCases\Banks\EventHandlers\" />
-    <Folder Include="UseCases\CharismaCard\Commands\" />
-    <Folder Include="UseCases\CharismaCard\ViewModels\" />
+    <Folder Include="UseCases\CharismaCard\Queries\" />
     <Folder Include="UseCases\Common\Commands\" />
     <Folder Include="UseCases\CompanyIPG\Commands\CreateCompanyIPG\" />
     <Folder Include="UseCases\CompanyIPG\EventHandler\" />
