@@ -700,7 +700,7 @@
     <value>کاربر گرامی امکان انتقال وجه به حساب مقصد موجود نیست. در صورت امکان از سایر روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید.</value>
   </data>
   <data name="InvalidDepositNumber" xml:space="preserve">
-    <value>فرمت شماره حساب ****/**/***/********* می باشد</value>
+    <value>کاربر گرامی، شماره سپرده مربوط به این مجوز نامعتبر است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنیدs</value>
   </data>
   <data name="ServiceDisrupted" xml:space="preserve">
     <value>کاربر گرامی سرویس دهنده دچار اختلال شده و ما در حال رفع مشکل هستیم. در صورت امکان از سایر روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید.</value>
@@ -729,9 +729,6 @@
   <data name="InvalidDeposit" xml:space="preserve">
     <value>کاربر گرامی، سپرده مربوط به این مجوز متعلق به شما نیست یا امکان برداشت از آن موجود نمی باشد، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید</value>
   </data>
-  <data name="InvalidDepositNumber" xml:space="preserve">
-    <value>کاربر گرامی، شماره سپرده مربوط به این مجوز نامعتبر است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنیدs</value>
-  </data>
   <data name="InvalidGrant" xml:space="preserve">
     <value>کاربر گرامی، این مجوز نامعتبر است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید</value>
   </data>
@@ -752,5 +749,26 @@
   </data>
   <data name="UseOtherBanks" xml:space="preserve">
     <value>کاربر گرامی به منظور انجام عملیات برداشت مستقیم، در صورت امکان از سایر بانک ها جهت پرداخت مبلغ مورد نظر اقدام کنید</value>
+  </data>
+  <data name="CompanyDepositId" xml:space="preserve">
+    <value>بانک و حساب مقصد</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>توضیحات</value>
+  </data>
+  <data name="Receipt" xml:space="preserve">
+    <value>فیش واریزی</value>
+  </data>
+  <data name="ReceiptIdentifier" xml:space="preserve">
+    <value>شماره/شناسه فیش واریزی</value>
+  </data>
+  <data name="SettlementDateTime" xml:space="preserve">
+    <value>تاریخ واریز</value>
+  </data>
+  <data name="SourceIban" xml:space="preserve">
+    <value>شبای حساب مبدا</value>
+  </data>
+  <data name="SubmitAndPay" xml:space="preserve">
+    <value>تایید و پرداخت</value>
   </data>
 </root>
