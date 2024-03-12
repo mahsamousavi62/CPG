@@ -17,6 +17,7 @@ using CPG.Domain.SharedKernel.Helper;
 using static CPG.Domain.SharedKernel.Enums;
 using System.Linq;
 using System.Text.RegularExpressions;
+using CPG.Application.Shared.Resource;
 
 namespace CPG.Application.UseCases.CharismaCard.Commands;
 
@@ -131,7 +132,7 @@ public class CreateCharismaCardTransactionCommandHandler(INeoBankService neoBank
         }
         else
         {
-            return Result<Unit>.Failure(new Error("", ""));
+            return Result<Unit>.Failure(new Error("2009000", GlobalResource.GetPaymentTicketUnexpectedError));
         }
     }
 }
