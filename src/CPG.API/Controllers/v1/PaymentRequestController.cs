@@ -18,6 +18,9 @@ using CPG.Application.UseCases.PaymentReceipt.ViewModels;
 using CPG.Application.UseCases.PaymentReceipt.Queries;
 using CPG.Application.UseCases.Companies.Commands.CreateCompany;
 using CPG.Infrastructure.File;
+using System.Reactive;
+using CPG.Application.UseCases.CharismaCard.Commands;
+using CPG.Application.UseCases.CharismaCard.ViewModels;
 
 namespace CPG.API.Controllers.v1;
 
@@ -86,8 +89,9 @@ public class PaymentRequestController : ApiBaseController
     public async Task<Result<VerifyTransactionResponseViewModel>> TransactionVerify([Required] VerifyTransactionViewModel model)
         => await Mediator.Send(new VerifyTransactionQuery(model));
 
+    [Authorize]
     [HttpPost("CreateCharismaCardRequest")]
-    [ProducesResponseType(typeof(Result<ClientDirectDebitResponse>), 200)]
-    public async Task<Result<ClientDirectDebitResponse>> GetClientDirectDebit(ClientDirectDebitRequest model)
-       => await Mediator.Send(new GetClientDirectDebitQuery(model));
+    [ProducesResponseType(typeof(Result<MediatR.Unit>), 200)]
+    public async Task<Result<MediatR.Unit>> GetClientDirectDebit(CharismaCardRequsetViewModel model)
+       => await Mediator.Send(new CreateCharismaCardTransactionCommand(model));
 }

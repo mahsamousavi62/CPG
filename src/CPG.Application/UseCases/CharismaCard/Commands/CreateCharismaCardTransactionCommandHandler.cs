@@ -73,14 +73,15 @@ public class CreateCharismaCardTransactionCommandHandler(INeoBankService neoBank
 
         var mobileNumber = await _authenticationService.GetDataFromClaim<string>(ClaimTypes.MobilePhone);
         destinationDepositId = companyDeposit.Id;
+        
 
         var trackId = RandomGenerator.GenerateRandomDigitNumber(16);
-        var iban = Regex.Replace(companyDeposit.Iban, @"(\d{4})(\d{2})(\d{3})(\d+)", "$1/$2/$3/$4");
+       var accountNumber = Regex.Replace(companyDeposit.AccountNumber, @"(\d{4})(\d{2})(\d{3})(\d+)", "$1/$2/$3/$4");
         var clientDirectDebitResponse = await neoBankService.ClientDirectDebit(new ClientDirectDebitRequest
         {
             Amount = paymentRequest.Amount,
             Description = paymentRequest.Description,
-            DestinationDepositNumber = iban,
+            DestinationDepositNumber = accountNumber,
             TrackerId = trackId,
         });
 
@@ -95,7 +96,7 @@ public class CreateCharismaCardTransactionCommandHandler(INeoBankService neoBank
                 CharismaCardModel = new CharismaCardTransactionModel
                 {
                     TrackId = trackId,
-                    ProviderTrackId = clientDirectDebit.TranactionId,
+                    ProviderTrackId = clientDirectDebit.TranactionId??"0",
                     ReferenceNumber = clientDirectDebit.ReferenceNumber,
                     Status = CharismaCardstatus
                 },
