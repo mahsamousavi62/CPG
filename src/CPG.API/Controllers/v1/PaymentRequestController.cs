@@ -91,7 +91,7 @@ public class PaymentRequestController : ApiBaseController
 
     [Authorize]
     [HttpPost("CreateCharismaCardRequest")]
-    [ProducesResponseType(typeof(Result<MediatR.Unit>), 200)]
-    public async Task<Result<MediatR.Unit>> GetClientDirectDebit(CharismaCardRequsetViewModel model)
+    [ProducesResponseType(typeof(Result<CharismaCardResponseViewModel>), 200)]
+    public async Task<Result<CharismaCardResponseViewModel>> GetClientDirectDebit(CharismaCardRequsetViewModel model)
        => await Mediator.Send(new CreateCharismaCardTransactionCommand(model));
 }
