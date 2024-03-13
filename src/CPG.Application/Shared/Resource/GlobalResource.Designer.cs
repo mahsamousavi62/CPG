@@ -79,6 +79,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Activate.
+        /// </summary>
+        public static string Activate {
+            get {
+                return ResourceManager.GetString("Activate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Active.
         /// </summary>
         public static string Active {
@@ -286,11 +295,29 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CardBalance.
+        /// </summary>
+        public static string CardBalance {
+            get {
+                return ResourceManager.GetString("CardBalance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CardInfoCOnfirmation.
         /// </summary>
         public static string CardInfoCOnfirmation {
             get {
                 return ResourceManager.GetString("CardInfoCOnfirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CharismaCard.
+        /// </summary>
+        public static string CharismaCard {
+            get {
+                return ResourceManager.GetString("CharismaCard", resourceCulture);
             }
         }
         
@@ -1704,6 +1731,15 @@ namespace CPG.Application.Shared.Resource {
         public static string SourceIban {
             get {
                 return ResourceManager.GetString("SourceIban", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Special.
+        /// </summary>
+        public static string Special {
+            get {
+                return ResourceManager.GetString("Special", resourceCulture);
             }
         }
         
