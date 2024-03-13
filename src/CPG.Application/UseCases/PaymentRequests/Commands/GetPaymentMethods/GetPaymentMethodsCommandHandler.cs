@@ -166,7 +166,8 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
                     };
                 }
 
-                var companyDeposit = await _companyDepositRepository.GetBySpecAsync(new DefaultDirectDebitDepositSpec(paymentRequest.CompanyId), cancellationToken);
+                var companyDeposit = await _companyDepositRepository.
+                    GetBySpecAsync(new DefaultCharismaCardDepositSpec(paymentRequest.CompanyId), cancellationToken);
                 if (availablePaymentMethodTypes?.Contains(PaymentMethodType.CharismaCard) is true && companyDeposit != null &&
                     companyDeposit.Bank.IbanPrefix == MiddleEastIbanPrefix)
                 {
