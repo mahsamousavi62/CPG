@@ -13,12 +13,12 @@ namespace CPG.Domain.AggregateModels.BankAggregate;
 public class Bank : AuditableEntity<int>, IAggregateRoot
 {
     internal string _name;
-    internal string _logoAddress;
+    internal string _logo;
     internal IbanPrefix _ibanPrefix;
     internal bool? _hasDirectDebitFeature;
 
     public string Name => _name;
-    public string LogoAddress => _logoAddress;
+    public string Logo => _logo;
     public IbanPrefix IbanPrefix => _ibanPrefix;
     public bool? HasDirectDebitFeature => _hasDirectDebitFeature;
     public BankDirectDebitSetting DirectDebitSetting { get; set; }
@@ -33,7 +33,7 @@ public class Bank : AuditableEntity<int>, IAggregateRoot
     {
         _ibanPrefix = ibanPrefix;
         _name = name;
-        _logoAddress = logo.Value;
+        _logo = logo.Value;
         _hasDirectDebitFeature = hasDirectDebitFeature;
 
         if (hasDirectDebitFeature is true)

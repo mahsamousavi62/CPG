@@ -5,7 +5,7 @@ namespace CPG.Domain.SharedKernel.File;
 
 public interface IFile
 {
-    string FileName { get; }
+    string FileName { get; set; }
     string ContentType { get; }
     long Length { get; }
     Task CopyToAsync(Stream target);

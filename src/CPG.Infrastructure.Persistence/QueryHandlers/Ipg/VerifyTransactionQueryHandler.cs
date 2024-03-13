@@ -58,7 +58,7 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
             await _paymentRequestRepository.SaveChangesAsync(cancellationToken);
 
             var transaction = await _transactionRepository.GetBySpecAsync(new TransactionByPaymentRequestId(paymentRequest.Id), cancellationToken);
-            if (transaction is null || (transaction.IPGTransaction is null && transaction.DirectDebitTransaction is null))
+            if (transaction is null || (transaction.IPGTransaction is null && transaction.DirectDebitTransaction is null && transaction.PaymentReceiptTransaction is null))
             {
                 throw new Exception("transaction or transactionDetail not found");
             }

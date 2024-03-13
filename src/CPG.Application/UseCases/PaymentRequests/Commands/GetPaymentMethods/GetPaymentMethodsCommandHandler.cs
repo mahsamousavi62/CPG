@@ -121,17 +121,17 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
                 {
                     var userDepositBalance = await _neoBankService.GetUserDepositBalance();
 
-                    charismaCard = userDepositBalance.Data.DepositStatus switch
+                    if (userDepositBalance?.Data is not null)
                     {
-                        _ => new ViewModels.CharismaCard
+                        charismaCard = new ViewModels.CharismaCard
                         {
                             BalanceAmount = userDepositBalance.Data.Balance,
                             CardNumber = userDepositBalance.Data.CardNumber,
                             CustomerSurname = $"{userDepositBalance.Data.CustomerFirstName} {userDepositBalance.Data.CustomerLastName}",
                             DepositStatus = userDepositBalance.Data.DepositStatus,
                             ExpirationDate = userDepositBalance.Data.ExpirationDate
-                        }
-                    };
+                        };
+                    }
                 }
             }
             else
@@ -272,7 +272,7 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
                         {
                             Id = t.Key,
                             Name = t.FirstOrDefault().Bank.Name,
-                            Logo = await _minioProvider.PresignedGetObject(t.FirstOrDefault().Bank.LogoAddress)
+                            Logo = await _minioProvider.PresignedGetObject(t.FirstOrDefault().Bank.Logo)
                         },
                         GrantInfo = t.Select(q => new DirectDebitGrantInfo
                         {
