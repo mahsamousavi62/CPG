@@ -17,6 +17,8 @@ using System.Threading;
 using System.Collections.Generic;
 using CPG.Domain.AggregateModels.BankAggregate;
 using CPG.Application.UseCases.PaymentReceipt.ViewModels;
+using System.IO;
+using CPG.Domain.SharedKernel.Minio;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.PaymentReceipt;
 
@@ -25,11 +27,13 @@ public class AddPaymentReceiptQueryHandler(
     IAggregateRepository<Transaction> transactionRepository,
     IAggregateRepository<Domain.AggregateModels.CompanyDepositAggregate.CompanyDeposit> companyDepositRepository,
     IAggregateRepository<Domain.AggregateModels.CompanyAggregate.Company> companyRepository,
+    IMinioProvider minioProvider,
     ReadDbContext context) : IRequestHandler<AddPaymentReceiptQuery, Result<PaymentReceiptResponseViewModel>>
 {
     private readonly IAggregateRepository<PaymentRequest> _paymentRequestRepository = paymentRequestAggregateRepository;
     private readonly IAggregateRepository<Transaction> _transactionRepository = transactionRepository;
     private readonly IAggregateRepository<Domain.AggregateModels.CompanyAggregate.Company> _companyRepository = companyRepository;
+    private readonly IMinioProvider _minioProvider = minioProvider;
     private readonly IAggregateRepository<Domain.AggregateModels.CompanyDepositAggregate.CompanyDeposit> _companyDepositRepository = companyDepositRepository;
 
     public async Task<Result<PaymentReceiptResponseViewModel>> Handle(AddPaymentReceiptQuery request, CancellationToken cancellationToken)
@@ -64,6 +68,9 @@ public class AddPaymentReceiptQueryHandler(
             var bank = companyDeposit.Bank;
             if (!bank.IsActive) { throw new PaymentTokenInactiveBankException(); }            
             if (company.PaymentMethods?.Any(t => t.MethodType == Enums.PaymentMethodType.PaymentReceipt) is false) { throw new PaymentRequestCompanyHasNoReceiptMethodException(); }
+            var extention = Path.GetExtension(request.viewModel.File.FileName);
+            request.viewModel.File.FileName = $"{request.viewModel.PaymentRequestCode}{extention}";
+            Logo image = new(request.viewModel.File, Enums.UploadFromEntityType.PaymentReceipt.ToString(), _minioProvider);
 
             var transaction = Transaction.Create(new CreateTransactionModel
             {
@@ -76,7 +83,7 @@ public class AddPaymentReceiptQueryHandler(
                     Description = paymentRequest.Description,
                     Status = Enums.PaymentReceiptStatus.SucceededAndWaitingForVerification,
                     ReceiptDateTime = request.viewModel.SettlementDateTime,
-                    ReceiptImage = new Logo (request.viewModel.File),
+                    ReceiptImage = image,
                     ReferenceNumber = request.viewModel.ReceiptIdentifier,
                     SourceIban = new Iban(request.viewModel.Iban)
                 }

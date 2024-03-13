@@ -68,6 +68,7 @@ public class Enums
         Bank = 2,
         Provider = 3,
         Application = 4,
+        PaymentReceipt = 5,
     }
 
     public enum ProviderType : byte

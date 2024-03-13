@@ -753,4 +753,22 @@
   <data name="SubmitAndPay" xml:space="preserve">
     <value>SubmitAndPay</value>
   </data>
+  <data name="Activate" xml:space="preserve">
+    <value>Activate</value>
+  </data>
+  <data name="CardBalance" xml:space="preserve">
+    <value>CardBalance</value>
+  </data>
+  <data name="CharismaCard" xml:space="preserve">
+    <value>CharismaCard</value>
+  </data>
+  <data name="Special" xml:space="preserve">
+    <value>Special</value>
+  </data>
+  <data name="BalanceIsNotEnought" xml:space="preserve">
+    <value>BalanceIsNotEnought</value>
+  </data>
+  <data name="IncreaseBalance" xml:space="preserve">
+    <value>IncreaseBalance</value>
+  </data>
 </root>
