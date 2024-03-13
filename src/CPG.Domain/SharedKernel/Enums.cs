@@ -78,6 +78,7 @@ public class Enums
         Sep = 3,
         Pec = 4,
         Idp=5,
+        NeoBank=6,
     }
 
     public enum ServiceType : byte
@@ -95,6 +96,8 @@ public class Enums
         VandarVerify = 11,
         GetIdpToken=12,
         GetIdpProfile= 13,
+        GetUserDepositBalance = 14,
+        ClientDirectDebit=15
     }
 
     public enum TransactionType : byte
