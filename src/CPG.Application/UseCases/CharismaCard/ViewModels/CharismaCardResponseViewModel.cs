@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace CPG.Application.UseCases.CharismaCard.ViewModels
 {
-    public class CharismaCardRequsetViewModel
+    public class CharismaCardResponseViewModel
     {
-        public string PaymentCode { get; set; }
+        public string CallBackUrl { get; set; }
     }
 }
