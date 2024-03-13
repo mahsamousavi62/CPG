@@ -79,6 +79,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Activate.
+        /// </summary>
+        public static string Activate {
+            get {
+                return ResourceManager.GetString("Activate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Active.
         /// </summary>
         public static string Active {
@@ -156,6 +165,15 @@ namespace CPG.Application.Shared.Resource {
         public static string AuthenticationType {
             get {
                 return ResourceManager.GetString("AuthenticationType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to BalanceIsNotEnought.
+        /// </summary>
+        public static string BalanceIsNotEnought {
+            get {
+                return ResourceManager.GetString("BalanceIsNotEnought", resourceCulture);
             }
         }
         
@@ -286,11 +304,29 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CardBalance.
+        /// </summary>
+        public static string CardBalance {
+            get {
+                return ResourceManager.GetString("CardBalance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CardInfoCOnfirmation.
         /// </summary>
         public static string CardInfoCOnfirmation {
             get {
                 return ResourceManager.GetString("CardInfoCOnfirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CharismaCard.
+        /// </summary>
+        public static string CharismaCard {
+            get {
+                return ResourceManager.GetString("CharismaCard", resourceCulture);
             }
         }
         
@@ -327,6 +363,15 @@ namespace CPG.Application.Shared.Resource {
         public static string CompanyDepositByCompanyIdNotFound {
             get {
                 return ResourceManager.GetString("CompanyDepositByCompanyIdNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CompanyDepositId.
+        /// </summary>
+        public static string CompanyDepositId {
+            get {
+                return ResourceManager.GetString("CompanyDepositId", resourceCulture);
             }
         }
         
@@ -588,6 +633,15 @@ namespace CPG.Application.Shared.Resource {
         public static string Deposits {
             get {
                 return ResourceManager.GetString("Deposits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        public static string Description {
+            get {
+                return ResourceManager.GetString("Description", resourceCulture);
             }
         }
         
@@ -871,6 +925,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to IncreaseBalance.
+        /// </summary>
+        public static string IncreaseBalance {
+            get {
+                return ResourceManager.GetString("IncreaseBalance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to InternetPaymentGateway.
         /// </summary>
         public static string InternetPaymentGateway {
@@ -907,22 +970,22 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  Format must be ****/**/***/*********.
-        /// </summary>
-        public static string InvalidDepositNumber {
-            get {
-                return ResourceManager.GetString("InvalidDepositNumber", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Dear user, the deposit related to this license does not belong to you or it is not possible to withdraw from it, if possible, use other banks or available methods to pay the desired amount.
         /// </summary>
         public static string InvalidDeposit {
             get {
                 return ResourceManager.GetString("InvalidDeposit", resourceCulture);
             }
-        }        
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dear user, the deposit number related to this license is invalid, if possible, use other banks or available methods to pay the desired amount.
+        /// </summary>
+        public static string InvalidDepositNumber {
+            get {
+                return ResourceManager.GetString("InvalidDepositNumber", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Dear user, this license is invalid, if possible, use other banks or available methods to pay the desired amount.
@@ -1510,6 +1573,24 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Receipt.
+        /// </summary>
+        public static string Receipt {
+            get {
+                return ResourceManager.GetString("Receipt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ReceiptIdentifier.
+        /// </summary>
+        public static string ReceiptIdentifier {
+            get {
+                return ResourceManager.GetString("ReceiptIdentifier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Refresh_Token.
         /// </summary>
         public static string RefreshToken {
@@ -1573,20 +1654,20 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, the service has been disrupted and we are fixing the problem. If possible, use other available methods to pay the desired amount..
-        /// </summary>
-        public static string ServiceDisrupted {
-            get {
-                return ResourceManager.GetString("ServiceDisrupted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Dear user, the service provider/bank has a problem and we are trying to fix it. If possible, use other banks or available methods to pay the desired amount.
         /// </summary>
         public static string ServerMalfunction {
             get {
                 return ResourceManager.GetString("ServerMalfunction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dear user, the service has been disrupted and we are fixing the problem. If possible, use other available methods to pay the desired amount..
+        /// </summary>
+        public static string ServiceDisrupted {
+            get {
+                return ResourceManager.GetString("ServiceDisrupted", resourceCulture);
             }
         }
         
@@ -1605,6 +1686,15 @@ namespace CPG.Application.Shared.Resource {
         public static string SetDeActive {
             get {
                 return ResourceManager.GetString("SetDeActive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SettlementDateTime.
+        /// </summary>
+        public static string SettlementDateTime {
+            get {
+                return ResourceManager.GetString("SettlementDateTime", resourceCulture);
             }
         }
         
@@ -1654,11 +1744,38 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SourceIban.
+        /// </summary>
+        public static string SourceIban {
+            get {
+                return ResourceManager.GetString("SourceIban", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Special.
+        /// </summary>
+        public static string Special {
+            get {
+                return ResourceManager.GetString("Special", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Submit.
         /// </summary>
         public static string Submit {
             get {
                 return ResourceManager.GetString("Submit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SubmitAndPay.
+        /// </summary>
+        public static string SubmitAndPay {
+            get {
+                return ResourceManager.GetString("SubmitAndPay", resourceCulture);
             }
         }
         

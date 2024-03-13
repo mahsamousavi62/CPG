@@ -18,24 +18,16 @@ using Microsoft.AspNetCore.Http;
 using System.Linq;
 using CPG.Application.UseCases.Exceptions;
 using CPG.Domain.SharedKernel.Communication.DirectDebit;
-using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Verify;
-using CPG.Domain.AggregateModels.ProviderAggregate;
-using Newtonsoft.Json.Linq;
-using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Token;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 
 public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
-    IDirectDebitFactory directDebitFactory,
     IAggregateRepository<PaymentRequest> paymentRequestRepository,
-    IAggregateRepository<CPG.Domain.AggregateModels.ProviderAggregate.Provider> providerRepository,
     IAggregateRepository<Transaction> transactionRepository,
     IHttpContextAccessor httpContext) : IRequestHandler<VerifyTransactionQuery, Result<VerifyTransactionResponseViewModel>>
 {
     private readonly IIpgFactory _ipgFactory = ipgFactory;
-    private readonly IDirectDebitFactory _directDebitFactory = directDebitFactory;
     private readonly IAggregateRepository<PaymentRequest> _paymentRequestRepository = paymentRequestRepository;
-    private readonly IAggregateRepository<Domain.AggregateModels.ProviderAggregate.Provider> _providerRepository = providerRepository;
     private readonly IAggregateRepository<Transaction> _transactionRepository = transactionRepository;
     private readonly IHttpContextAccessor _httpContext = httpContext;
 
@@ -60,13 +52,13 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
                 ) { throw new VerifyInvalidStatusException(); }
 
             paymentRequest.Status = PaymentStatus.TransactionVerifiedByApplication;
-            paymentRequest.VerificationDateTime ??= DateTime.Now;   
+            paymentRequest.VerificationDateTime ??= DateTime.Now;
 
             await _paymentRequestRepository.UpdateAsync(paymentRequest, cancellationToken);
             await _paymentRequestRepository.SaveChangesAsync(cancellationToken);
 
             var transaction = await _transactionRepository.GetBySpecAsync(new TransactionByPaymentRequestId(paymentRequest.Id), cancellationToken);
-            if (transaction is null || (transaction.IPGTransaction is null && transaction.DirectDebitTransaction is null))
+            if (transaction is null || (transaction.IPGTransaction is null && transaction.DirectDebitTransaction is null && transaction.PaymentReceiptTransaction is null))
             {
                 throw new Exception("transaction or transactionDetail not found");
             }
@@ -110,6 +102,8 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
                         break;
                     }
                 case TransactionType.DirectDebit:
+                case TransactionType.PaymentReceipt:
+                case TransactionType.CharismaCard:
                     {
                         var date = DateTime.Now.AddDays(1);
                         transaction.PredictedSettlementDateTime = new DateTime(date.Year, date.Month, date.Day, 0, 0, 0);
@@ -118,6 +112,7 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
 
                         break;
                     }
+
                 default:
                     break;
             }
@@ -165,6 +160,8 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
         {
             TransactionType.IPG => "INTERNET_PAYMENT_GATEWAY",
             TransactionType.DirectDebit => "DIRECT_DEBIT",
+            TransactionType.PaymentReceipt => "PAYMENT_RECEIPT",
+            TransactionType.CharismaCard => "CHARISMA_CARD",
             _ => string.Empty
         };
     }
@@ -177,6 +174,9 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
                 return transaction.IPGTransaction.ReferenceNumber;
             case TransactionType.DirectDebit:
                 return string.Empty;
+            case TransactionType.PaymentReceipt:
+            case TransactionType.CharismaCard:
+                return transaction.PaymentReceiptTransaction.ReferenceNumber;
             default:
                 return string.Empty;
         }
@@ -190,6 +190,10 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
                 return transaction.IPGTransaction.VerificationDateTime?.ToString("yyyy-MM-dd HH:mm:ss zzz");
             case TransactionType.DirectDebit:
                 return DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss zzz");
+            case TransactionType.PaymentReceipt:
+            case TransactionType.CharismaCard:
+                return DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss zzz");
+
             default:
                 return string.Empty;
         }

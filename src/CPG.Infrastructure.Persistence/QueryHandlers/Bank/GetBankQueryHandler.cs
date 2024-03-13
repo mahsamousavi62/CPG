@@ -31,7 +31,7 @@ public class GetBankQueryHandler(ReadDbContext context, IMinioProvider minioProv
             Id = bank.Id,
             Name = bank.Name,
             IbanPrefix = bank.IbanPrefix,
-            Logo = !string.IsNullOrEmpty(bank.LogoAddress) ? await _minioProvider.PresignedGetObject(bank.LogoAddress) : "",
+            Logo = !string.IsNullOrEmpty(bank.Logo) ? await _minioProvider.PresignedGetObject(bank.Logo) : "",
             IsActive = bank.IsActive,
             HasDirectDebitFeature = bank.HasDirectDebitFeature,
             DirectDebitSetting = bank.DirectDebitSetting != null ? new BankDirectDebitSettingViewModel

@@ -70,7 +70,7 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
             }
 
             paymentRequest.ApplicationId = application.Id;
-            PaymentRequest.Create(paymentRequest, config.ExpireTime, clientId, application.EnglishName);
+            PaymentRequest.Create(paymentRequest, int.Parse(appConfig.ExpireTime), clientId, application.EnglishName);
 
             await _paymentRequestRepository.AddAsync(paymentRequest, cancellationToken);
             await _paymentRequestRepository.SaveChangesAsync(cancellationToken);

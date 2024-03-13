@@ -14,6 +14,13 @@ using CPG.Application.UseCases.DirectDebit.Queries;
 using CPG.Application.UseCases.DirectDebit.ViewModels;
 using CPG.Application.UseCases.NeoBankServices.Queries;
 using CPG.Domain.SharedKernel.Communication.NeoBank.Models;
+using CPG.Application.UseCases.PaymentReceipt.ViewModels;
+using CPG.Application.UseCases.PaymentReceipt.Queries;
+using CPG.Application.UseCases.Companies.Commands.CreateCompany;
+using CPG.Infrastructure.File;
+using System.Reactive;
+using CPG.Application.UseCases.CharismaCard.Commands;
+using CPG.Application.UseCases.CharismaCard.ViewModels;
 
 namespace CPG.API.Controllers.v1;
 
@@ -51,8 +58,20 @@ public class PaymentRequestController : ApiBaseController
     [HttpPost("CreateWithdrawalRequest")]
     [Authorize]
     [ProducesResponseType(typeof(ResultData<bool>), 200)]
-    public async Task<Result<bool>> GetAsanPardakhatPaymentTicket([FromBody] WithdrawalRequestViewModel withdrawalRequest)
+    public async Task<Result<bool>> CreateWithdrawalRequest([FromBody] WithdrawalRequestViewModel withdrawalRequest)
        => await Mediator.Send(new GetWithdrawalRequestQuery(withdrawalRequest));
+
+    [HttpPost("CreatePaymentReceiptRequest")]
+    [Authorize]
+    [ProducesResponseType(typeof(ResultData<PaymentReceiptResponseViewModel>), 200)]
+    public async Task<Result<PaymentReceiptResponseViewModel>> CreatePaymentReceiptRequest([FromForm] PaymentReceiptRequestViewModel paymentReceiptRequest)
+    {
+        CreatePaymentReceiptModel model = new(paymentReceiptRequest.PaymentRequestCode, new FormFileProxy(paymentReceiptRequest.File),
+            paymentReceiptRequest.Iban, paymentReceiptRequest.ReceiptIdentifier, paymentReceiptRequest.CompanyDepositId,
+            paymentReceiptRequest.SettlementDateTime, paymentReceiptRequest.Description);
+
+        return await Mediator.Send(new AddPaymentReceiptQuery(model));
+    }
 
     [HttpPost("GetPaymentTransactionInfo")]
     [ProducesResponseType(typeof(Result<TransactionResultResponse>), 200)]
@@ -70,8 +89,9 @@ public class PaymentRequestController : ApiBaseController
     public async Task<Result<VerifyTransactionResponseViewModel>> TransactionVerify([Required] VerifyTransactionViewModel model)
         => await Mediator.Send(new VerifyTransactionQuery(model));
 
+    [Authorize]
     [HttpPost("CreateCharismaCardRequest")]
-    [ProducesResponseType(typeof(Result<ClientDirectDebitResponse>), 200)]
-    public async Task<Result<ClientDirectDebitResponse>> GetClientDirectDebit(ClientDirectDebitRequest model)
-       => await Mediator.Send(new GetClientDirectDebitQuery(model));
+    [ProducesResponseType(typeof(Result<CharismaCardResponseViewModel>), 200)]
+    public async Task<Result<CharismaCardResponseViewModel>> GetClientDirectDebit(CharismaCardRequsetViewModel model)
+       => await Mediator.Send(new CreateCharismaCardTransactionCommand(model));
 }

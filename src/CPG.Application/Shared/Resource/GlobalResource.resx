@@ -682,7 +682,7 @@
     <value>Dear user, it is not possible to transfer money to the destination account. If possible, use other available methods to pay the desired amount.</value>
   </data>
   <data name="InvalidDepositNumber" xml:space="preserve">
-    <value> Format must be ****/**/***/*********</value>
+    <value>Dear user, the deposit number related to this license is invalid, if possible, use other banks or available methods to pay the desired amount</value>
   </data>
   <data name="ServiceDisrupted" xml:space="preserve">
     <value>Dear user, the service has been disrupted and we are fixing the problem. If possible, use other available methods to pay the desired amount.</value>
@@ -711,9 +711,6 @@
   <data name="InvalidDeposit" xml:space="preserve">
     <value>Dear user, the deposit related to this license does not belong to you or it is not possible to withdraw from it, if possible, use other banks or available methods to pay the desired amount</value>
   </data>
-  <data name="InvalidDepositNumber" xml:space="preserve">
-    <value>Dear user, the deposit number related to this license is invalid, if possible, use other banks or available methods to pay the desired amount</value>
-  </data>
   <data name="InvalidGrant" xml:space="preserve">
     <value>Dear user, this license is invalid, if possible, use other banks or available methods to pay the desired amount</value>
   </data>
@@ -734,5 +731,44 @@
   </data>
   <data name="UseOtherBanks" xml:space="preserve">
     <value>Dear user, in order to carry out direct withdrawal operations, if possible, pay the desired amount from other banks</value>
+  </data>
+  <data name="CompanyDepositId" xml:space="preserve">
+    <value>CompanyDepositId</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="Receipt" xml:space="preserve">
+    <value>Receipt</value>
+  </data>
+  <data name="ReceiptIdentifier" xml:space="preserve">
+    <value>ReceiptIdentifier</value>
+  </data>
+  <data name="SettlementDateTime" xml:space="preserve">
+    <value>SettlementDateTime</value>
+  </data>
+  <data name="SourceIban" xml:space="preserve">
+    <value>SourceIban</value>
+  </data>
+  <data name="SubmitAndPay" xml:space="preserve">
+    <value>SubmitAndPay</value>
+  </data>
+  <data name="Activate" xml:space="preserve">
+    <value>Activate</value>
+  </data>
+  <data name="CardBalance" xml:space="preserve">
+    <value>CardBalance</value>
+  </data>
+  <data name="CharismaCard" xml:space="preserve">
+    <value>CharismaCard</value>
+  </data>
+  <data name="Special" xml:space="preserve">
+    <value>Special</value>
+  </data>
+  <data name="BalanceIsNotEnought" xml:space="preserve">
+    <value>BalanceIsNotEnought</value>
+  </data>
+  <data name="IncreaseBalance" xml:space="preserve">
+    <value>IncreaseBalance</value>
   </data>
 </root>

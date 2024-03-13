@@ -21,6 +21,8 @@ namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations
             entity.Property(x => x.AccountNumber).HasColumnName("AccountNumber").HasMaxLength(255).HasColumnType("varchar").IsRequired();
             entity.Property(x => x.CompanyId).HasColumnName("CompanyId").HasColumnType("bigint").IsRequired();
             entity.Property(x => x.IsDefaultForDirectDebit).HasColumnName("IsDefaultForDirectDebit").HasColumnType("bit");
+            entity.Property(x => x.IsDefaultForCharismaCard).HasColumnName("IsDefaultForCharismaCard").HasColumnType("bit");
+
         }
     }
 }

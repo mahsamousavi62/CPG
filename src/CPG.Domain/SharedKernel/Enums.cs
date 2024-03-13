@@ -68,6 +68,7 @@ public class Enums
         Bank = 2,
         Provider = 3,
         Application = 4,
+        PaymentReceipt = 5,
     }
 
     public enum ProviderType : byte
@@ -99,7 +100,9 @@ public class Enums
     public enum TransactionType : byte
     {
         IPG = 1,
-        DirectDebit = 2
+        DirectDebit = 2,
+        PaymentReceipt = 3,
+        CharismaCard = 4,
     }
 
     public enum IPGTransactionStatus : byte
@@ -177,7 +180,7 @@ public class Enums
 
     public enum AuthenticationType
     {
-        CardInfoCOnfirmation = 1,
+        CardInfoConfirmation = 1,
         SendOtpCode = 2,
         CheckMobileAndDepositOwnershipMatching = 3
     }
@@ -191,6 +194,17 @@ public class Enums
         CanceledByUser = 4,
         Removed = 5,
         Expired = 6,
+    }
+
+    public enum PaymentReceiptStatus : byte
+    {
+        SucceededAndWaitingForVerification = 1,
+    }
+
+    public enum CharismaCardStatus:byte
+    {
+        Failed = 0,
+        Done = 1
     }
 }
 

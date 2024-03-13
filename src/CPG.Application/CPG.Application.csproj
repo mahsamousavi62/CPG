@@ -54,11 +54,14 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="UseCases\Banks\EventHandlers\" />
+    <Folder Include="UseCases\CharismaCard\Queries\" />
     <Folder Include="UseCases\Common\Commands\" />
     <Folder Include="UseCases\CompanyIPG\Commands\CreateCompanyIPG\" />
     <Folder Include="UseCases\CompanyIPG\EventHandler\" />
     <Folder Include="UseCases\CompanyIPG\Exceptions\" />
     <Folder Include="UseCases\CompanyIPG\Queries\" />
+    <Folder Include="UseCases\PaymentReceipt\Commands\" />
+    <Folder Include="UseCases\PaymentReceipt\Exceptions\" />
     <Folder Include="UseCases\PaymentRequests\EventHandler\" />
     <Folder Include="UseCases\CompanyIPGs\EventHandler\" />
     <Folder Include="UseCases\Providers\EventHandlers\" />

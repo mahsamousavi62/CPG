@@ -1,5 +1,7 @@
-﻿using CPG.Domain.AggregateModels.CompanyIPGAggregate;
+﻿using CPG.Domain.AggregateModels.BankAggregate;
+using CPG.Domain.AggregateModels.CompanyIPGAggregate;
 using CPG.Domain.SharedKernel;
+using System;
 using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Domain.AggregateModels.TransactionAggregate;
@@ -12,6 +14,9 @@ public class CreateTransactionModel
     public TransactionStatus Status { get; set; }
     public CreateIPGTransactionModel IPGTransactionModel { get; set; }
     public CreateDDTransactionModel DDTransactionModel { get; set; }
+    public PaymentReceiptTransactionModel PaymentReceiptModel { get; set; }
+   
+    public CharismaCardTransactionModel CharismaCardModel { get; set; }
 }
 
 public class CreateIPGTransactionModel
@@ -25,8 +30,26 @@ public class CreateIPGTransactionModel
 public class CreateDDTransactionModel
 {
     public long GrantId { get; set; }
-    public Enums.DirectDebitTransactionStatus Status { get; set; }
+    public DirectDebitTransactionStatus Status { get; set; }
     public string TrackId { get; set; }
     public string ProviderTrackId { get; set; }
     public string ProviderData { get; set; }
+}
+
+public class PaymentReceiptTransactionModel
+{
+    public Iban SourceIban { get; set; }
+    public string ReferenceNumber { get; set; }
+    public DateTime ReceiptDateTime { get; set; }
+    public string Description { get; set; }
+    public Logo ReceiptImage { get; set; }
+    public PaymentReceiptStatus Status { get; set; }
+}
+
+public class CharismaCardTransactionModel
+{
+    public string TrackId { get; set; }
+    public string ProviderTrackId { get; set; }
+    public string ReferenceNumber { get; set; }
+    public Enums.CharismaCardStatus Status { get; set; }
 }

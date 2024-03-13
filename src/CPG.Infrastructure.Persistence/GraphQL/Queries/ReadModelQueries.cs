@@ -32,7 +32,7 @@ public class ReadModelQueries
             Id = x.Id,
             Name = x.Name,
             IbanPrefix = x.IbanPrefix,
-            LogoAddress = !string.IsNullOrEmpty(x.LogoAddress) ? minioProvider.PresignedGetObject(x.LogoAddress).GetAwaiter().GetResult() : "",
+            Logo = !string.IsNullOrEmpty(x.Logo) ? minioProvider.PresignedGetObject(x.Logo).GetAwaiter().GetResult() : "",
             IsActive = x.IsActive,
             CreationDate = x.CreationDate,
             ModificationDate = x.ModificationDate
@@ -153,7 +153,7 @@ public class ReadModelQueries
                  AccountNumber = company.AccountNumber,
                  Iban = company.Iban,
                  BankId = company.BankId,
-                 BankLogo = minioProvider.PresignedGetObject(company.Bank.LogoAddress).GetAwaiter().GetResult(),
+                 BankLogo = minioProvider.PresignedGetObject(company.Bank.Logo).GetAwaiter().GetResult(),
                  BankName = company.Bank.Name,
                  CompanyId = company.CompanyId,
                  CompanyName = company.Company.PersianName,
@@ -181,7 +181,7 @@ public class ReadModelQueries
             AccountNumber = company.AccountNumber,
             Iban = company.Iban,
             BankId = company.BankId,
-            BankLogo = minioProvider.PresignedGetObject(company.Bank.LogoAddress).GetAwaiter().GetResult(),
+            BankLogo = minioProvider.PresignedGetObject(company.Bank.Logo).GetAwaiter().GetResult(),
             BankName = company.Bank.Name,
             CompanyId = company.CompanyId,
             CompanyName = company.Company.PersianName,
@@ -235,16 +235,10 @@ public class ReadModelQueries
             ProviderData = entity.ProviderData,
             IPGTypeId = entity.IPGTypeId,
             ProviderId = entity.ProviderId,
-            CompanyIPGDeposits = entity.CompanyIPGDeposits.
-            Select(t => new CompanyIPGDepositReadModel { Id = t.Id, AccountNumber = t.CompanyDeposit.AccountNumber, Name = t.CompanyDeposit.Name }).ToList(),
             CreationDate = entity.CreationDate,
             ModificationDate = entity.ModificationDate,
             IsActive = entity.IsActive,
-            DefaultDeposit = entity.CompanyIPGDeposits.Where(t => t.IsDefault == true).
-            Select(t => new CompanyIPGDepositReadModel { Id = t.Id, AccountNumber = t.CompanyDeposit.AccountNumber, Name = t.CompanyDeposit.Name }).FirstOrDefault(),
-            IPGTypeLogo = minioProvider.PresignedGetObject(entity.IPGType.Logo).GetAwaiter().GetResult(),
-            IPGTypeName = entity.IPGType.PersianName,
-            ProviderName = entity.Provider.PersianName,
+
         });
         return viewModels;
     }
@@ -269,17 +263,11 @@ public class ReadModelQueries
             ProviderData = entity.ProviderData,
             IPGTypeId = entity.IPGTypeId,
             ProviderId = entity.ProviderId,
-            CompanyIPGDeposits = entity.CompanyIPGDeposits.
-            Select(t => new CompanyIPGDepositReadModel { Id = t.Id, AccountNumber = t.CompanyDeposit.AccountNumber, Name = t.CompanyDeposit.Name }).ToList(),
             CreationDate = entity.CreationDate,
             ModificationDate = entity.ModificationDate,
             IsActive = entity.IsActive,
-            DefaultDeposit = entity.CompanyIPGDeposits.Where(t => t.IsDefault == true).
-            Select(t => new CompanyIPGDepositReadModel { Id = t.Id, AccountNumber = t.CompanyDeposit.AccountNumber, Name = t.CompanyDeposit.Name }).FirstOrDefault(),
-            IPGTypeLogo = minioProvider.PresignedGetObject(entity.IPGType.Logo).GetAwaiter().GetResult(),
-            IPGTypeName = entity.IPGType.PersianName,
-            ProviderName = entity.Provider.PersianName,
-        }); ; ;
+
+        });
         return viewModels;
     }
 
@@ -308,7 +296,6 @@ public class ReadModelQueries
         {
             Id = entity.Id,
             CompanyId = entity.CompanyId,
-            //CompanyName = entity.Company.PersianName,
             FirstName = entity.FirstName,
             IDPId = entity.IDPId,
             IsActive = entity.IsActive,
