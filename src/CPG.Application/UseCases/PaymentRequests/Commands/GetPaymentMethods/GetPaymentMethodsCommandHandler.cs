@@ -272,7 +272,7 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
                         {
                             Id = t.Key,
                             Name = t.FirstOrDefault().Bank.Name,
-                            Logo = await _minioProvider.PresignedGetObject(t.FirstOrDefault().Bank.LogoAddress)
+                            Logo = await _minioProvider.PresignedGetObject(t.FirstOrDefault().Bank.Logo)
                         },
                         GrantInfo = t.Select(q => new DirectDebitGrantInfo
                         {
