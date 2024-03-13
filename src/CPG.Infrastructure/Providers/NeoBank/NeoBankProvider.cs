@@ -30,17 +30,20 @@ using CPG.Application.Shared.Resource;
 using CPG.Application.UseCases.PaymentRequests.ViewModels;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using CPG.Domain.AggregateModels.UserAggregate;
+using CPG.Domain.SharedKernel.Logging;
+using Serilog.Context;
 
 namespace CPG.Infrastructure.Providers.NeoBank;
 
 public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configuration, IAuthService authService,
-    IHttpContextAccessor httpContextAccessor,ILogger<NeoBankProvider> logger) : INeoBankService
+    IHttpContextAccessor httpContextAccessor, ILogger<NeoBankProvider> logger) : INeoBankService
 {
     private readonly IHttpClientFactory factory = factory;
     private readonly IConfiguration configuration = configuration;
     private readonly IAuthService authService = authService;
     private readonly IHttpContextAccessor httpContextAccessor = httpContextAccessor;
-    private readonly ILogger<NeoBankProvider> logger = logger=logger;
+    private readonly ILogger<NeoBankProvider> logger = logger = logger;
 
     public async Task<Result<ClientDirectDebitResponse>> ClientDirectDebit(ClientDirectDebitRequest model)
     {
@@ -64,31 +67,44 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
                 return Result<ClientDirectDebitResponse>.Failure(new Error("2201001", ReasonPhrases.GetReasonPhrase((int)result.StatusCode)));
 
             var resultContent = await result.Content.ReadAsStringAsync();
-            try
-            {
-                var response = JsonConvert.DeserializeObject<ResultData<ClientDirectDebitResponse>>(resultContent);
 
-                switch (response.Data.ErrorCode)
-                {
-                    case "01":
-                        return Result<ClientDirectDebitResponse>.Failure(new Error("2202002", GlobalResource.DestinationAccountDoesNotBelong));
-                    case "02":
-                        return Result<ClientDirectDebitResponse>.Failure(new Error("2202003", GlobalResource.AccountDoesNotHaveEnoughBalance));
-                    case "99":
-                        return Result<ClientDirectDebitResponse>.Failure(new Error("2202004", GlobalResource.ServiceDisrupted));
-                    default:
-                        return Result<ClientDirectDebitResponse>.SuccessResult(response.Data);
-                }
-            }
-            catch (Exception ex)
+            var response = JsonConvert.DeserializeObject<ResultData<ClientDirectDebitResponse>>(resultContent);
+
+            var callLog = new CallLogModel
             {
-                logger.LogError(ex, $"Request: Unhandled Exception for Request {nameof(ClientDirectDebit)}");
-                return Result<ClientDirectDebitResponse>.Failure(new Error("2201000", GlobalResource.UnexpectedError));
+                RequestBody = System.Text.Json.JsonSerializer.Serialize(resultContent),
+                ResponseBody = System.Text.Json.JsonSerializer.Serialize(response),
+                ServiceCallDate = DateTime.Now,
+                ServiceCallUrl = neobankConfig.UserDepositBalanceUrl,
+                ServiceCallStatus = result.StatusCode == System.Net.HttpStatusCode.OK,
+                ServiceType = Enums.ServiceType.ClientDirectDebit,
+                CreationDate = DateTime.Now,
+                CreationUserId = 1,
+                ProviderType = Enums.ProviderType.NeoBank,
+                AuditType = Enums.AuditType.Provider
+            };
+
+            using (LogContext.PushProperty("CallLog", callLog, true))
+            {
+                logger.LogInformation("[CallLog] {@CallLog}", callLog);
+            }
+
+
+            switch (response.Data.ErrorCode)
+            {
+                case "01":
+                    return Result<ClientDirectDebitResponse>.Failure(new Error("2202002", GlobalResource.DestinationAccountDoesNotBelong));
+                case "02":
+                    return Result<ClientDirectDebitResponse>.Failure(new Error("2202003", GlobalResource.AccountDoesNotHaveEnoughBalance));
+                case "99":
+                    return Result<ClientDirectDebitResponse>.Failure(new Error("2202004", GlobalResource.ServiceDisrupted));
+                default:
+                    return Result<ClientDirectDebitResponse>.SuccessResult(response.Data);
             }
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, $"Request: Unhandled Exception for Request {nameof(ClientDirectDebit)}");
+            logger.LogError(ex, $"Request: Unhandled Exception for Request {nameof(ClientDirectDebit)}{ex.Message}");
 
             return Result<ClientDirectDebitResponse>.Failure(new Error("2201000", GlobalResource.UnexpectedError));
         }
@@ -118,6 +134,25 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
             {
                 var response = JsonConvert.DeserializeObject<ResultData<UserDepositBalanceResponse>>(resultContent);
 
+                var callLog = new CallLogModel
+                {
+                    RequestBody = System.Text.Json.JsonSerializer.Serialize(resultContent),
+                    ResponseBody = System.Text.Json.JsonSerializer.Serialize(response),
+                    ServiceCallDate = DateTime.Now,
+                    ServiceCallUrl = neobankConfig.UserDepositBalanceUrl,
+                    ServiceCallStatus = result.StatusCode == System.Net.HttpStatusCode.OK,
+                    ServiceType = Enums.ServiceType.GetUserDepositBalance,
+                    CreationDate = DateTime.Now,
+                    CreationUserId = 1,
+                    ProviderType = Enums.ProviderType.NeoBank,
+                    AuditType = Enums.AuditType.Provider
+                };
+
+                using (LogContext.PushProperty("CallLog", callLog, true))
+                {
+                    logger.LogInformation("[CallLog] {@CallLog}", callLog);
+                }
+
                 if (response.OperationResult == Enums.OperationResult.Succeeded)
                 {
                     return Result<UserDepositBalanceResponse>.SuccessResult(new UserDepositBalanceResponse
@@ -132,9 +167,9 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
                         Iban = response.Data.Iban,
                     });
                 }
-                else 
+                else
                 {
-                    logger.LogError( $"Request: NeoBankService_GetUserDeposit {nameof(GetUserDepositBalance)}");
+                    logger.LogError($"Request: NeoBankService_GetUserDeposit {nameof(GetUserDepositBalance)} {response.Error}");
                     return Result<UserDepositBalanceResponse>.Failure(new Error("2201000", response.Error));
                 }
             }
