@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CPG.Infrastructure.Persistence.DbContexts.ReadModels;
 
@@ -13,6 +14,4 @@ public class CompanyIPGDepositReadModel
     public DateTime? ModificationDate { get; set; }
     public CompanyIPGReadModel CompanyIPG { get; set; }
     public CompanyDepositReadModel CompanyDeposit { get; set; }
-    public string AccountNumber { get; set; }
-    public string Name { get; set; }
-}
+   }
