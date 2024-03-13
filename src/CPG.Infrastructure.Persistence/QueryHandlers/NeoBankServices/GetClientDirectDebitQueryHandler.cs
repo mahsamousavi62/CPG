@@ -33,56 +33,9 @@ namespace CPG.Infrastructure.Persistence.QueryHandlers.NeoBankServices
         {
             if (!Regex.IsMatch(request.Model.DestinationDepositNumber, "^\\d{4}/\\d{2}/\\d{3}/\\d{9}$"))
                 throw new InvalidDepositNumberFormatException(request.Model.DestinationDepositNumber);
-
-            try
-            {
-                var clientDirectDebitResponse = await neoBankService.ClientDirectDebit(request.Model);
-
-                CharismaCardStatus status = CharismaCardStatus.Done;
-
-                if (clientDirectDebitResponse.IsSuccess)
-                {
-                    var clientDirectDebit = clientDirectDebitResponse.Data;
-
-                    Transaction transaction = Transaction.Create(new CreateTransactionModel
-                    {
-                        //DestinationDepositId = destinationDepositId,
-                        //PaymentRequest = paymentRequest,
-                        TransactionMethodType = Enums.TransactionType.CharismaCard,
-                        Status = Enums.TransactionStatus.InPrgress,
-                        
-                       CharismaCardModel=new CharismaCardTransaction
-                       {
-                               TrackId = request.Model.TrackerId ?? null,
-                               ProviderTrackId = clientDirectDebit.TranactionId,
-                               ReferenceNumber = clientDirectDebit.ReferenceNumber,
-                               Status = status
-                       }
-                    });
-                    await transactionRepository.AddAsync(transaction);
-                    await transactionRepository.SaveChangesAsync();
-
-                }
-
-                return clientDirectDebitResponse;
-
-            }
-            catch (DomainException exc)
-            {
-                return Result<ClientDirectDebitResponse>.Failure(new Error((exc as dynamic).Code, exc.Message));
-            }
-            catch (AppException exc)
-            {
-                return Result<ClientDirectDebitResponse>.Failure(new Error((exc as dynamic).Code, exc.Message));
-            }
-            catch (Exception)
-            {
-                return Result<ClientDirectDebitResponse>.Failure(new Error("1007000", GlobalResource.GetPaymentTicketUnexpectedError));
-            }
+            var clientDirectDebitResponse = await neoBankService.ClientDirectDebit(request.Model);
+            return clientDirectDebitResponse;
         }
-
-
-
     }
 
 }

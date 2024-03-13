@@ -14,6 +14,7 @@ public class FormFileProxy : IFile
         
     }
     private readonly IFormFile _formFile;
+    private string _fileName;
     public string ContentType
     {
         get
@@ -25,7 +26,7 @@ public class FormFileProxy : IFile
 
     public long Length => _formFile.Length;
 
-    public string FileName { get => _formFile.FileName; set { } }
+    public string FileName { get => string.IsNullOrEmpty(_fileName) ? _formFile.FileName : _fileName; set { _fileName = value; } }
 
     public Stream Content { get ; set ; }=new MemoryStream();
 
