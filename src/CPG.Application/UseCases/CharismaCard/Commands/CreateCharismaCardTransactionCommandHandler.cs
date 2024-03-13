@@ -63,7 +63,7 @@ public class CreateCharismaCardTransactionCommandHandler(INeoBankService neoBank
         }
         else
         {
-            companyDeposit = await _companyDepositRepository.GetBySpecAsync(new DefaultDirectDebitDepositSpec(paymentRequest.CompanyId), cancellationToken);
+            companyDeposit = await _companyDepositRepository.GetBySpecAsync(new DefaultCharismaCardDepositSpec(paymentRequest.CompanyId), cancellationToken);
             if (companyDeposit is null) throw new Exception("Default CompanyDeposit for charismCard not found!");
         }
 
