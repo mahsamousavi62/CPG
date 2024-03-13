@@ -118,17 +118,25 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
             {
                 var response = JsonConvert.DeserializeObject<ResultData<UserDepositBalanceResponse>>(resultContent);
 
-                return Result<UserDepositBalanceResponse>.SuccessResult(new UserDepositBalanceResponse
+                if (response.OperationResult == Enums.OperationResult.Succeeded)
                 {
-                    Balance = response.Data.Balance,
-                    CardNumber = response.Data.CardNumber,
-                    CustomerFirstName = response.Data.CustomerFirstName,
-                    CustomerLastName = response.Data.CustomerLastName,
-                    DepositNumber = response.Data.DepositNumber,
-                    DepositStatus = response.Data.DepositStatus,
-                    ExpirationDate = response.Data.ExpirationDate,
-                    Iban = response.Data.Iban,
-                });
+                    return Result<UserDepositBalanceResponse>.SuccessResult(new UserDepositBalanceResponse
+                    {
+                        Balance = response.Data.Balance,
+                        CardNumber = response.Data.CardNumber,
+                        CustomerFirstName = response.Data.CustomerFirstName,
+                        CustomerLastName = response.Data.CustomerLastName,
+                        DepositNumber = response.Data.DepositNumber,
+                        DepositStatus = response.Data.DepositStatus,
+                        ExpirationDate = response.Data.ExpirationDate,
+                        Iban = response.Data.Iban,
+                    });
+                }
+                else 
+                {
+                    logger.LogError( $"Request: NeoBankService_GetUserDeposit {nameof(GetUserDepositBalance)}");
+                    return Result<UserDepositBalanceResponse>.Failure(new Error("2201000", response.Error));
+                }
             }
             catch (Exception ex)
             {

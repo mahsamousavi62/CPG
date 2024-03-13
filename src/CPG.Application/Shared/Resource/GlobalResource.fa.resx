@@ -771,4 +771,16 @@
   <data name="SubmitAndPay" xml:space="preserve">
     <value>تایید و پرداخت</value>
   </data>
+  <data name="Activate" xml:space="preserve">
+    <value>فعالسازی</value>
+  </data>
+  <data name="CardBalance" xml:space="preserve">
+    <value>موجودی کارت</value>
+  </data>
+  <data name="CharismaCard" xml:space="preserve">
+    <value>کاریزما کارت</value>
+  </data>
+  <data name="Special" xml:space="preserve">
+    <value>ویژه</value>
+  </data>
 </root>
