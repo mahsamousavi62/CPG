@@ -169,6 +169,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to BalanceIsNotEnought.
+        /// </summary>
+        public static string BalanceIsNotEnought {
+            get {
+                return ResourceManager.GetString("BalanceIsNotEnought", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dear user, the amount allowed in the bank has been reached, if possible, use other banks or available methods to pay the desired amount.
         /// </summary>
         public static string BankAmountLimit {
@@ -912,6 +921,15 @@ namespace CPG.Application.Shared.Resource {
         public static string InactiveGrant {
             get {
                 return ResourceManager.GetString("InactiveGrant", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to IncreaseBalance.
+        /// </summary>
+        public static string IncreaseBalance {
+            get {
+                return ResourceManager.GetString("IncreaseBalance", resourceCulture);
             }
         }
         
