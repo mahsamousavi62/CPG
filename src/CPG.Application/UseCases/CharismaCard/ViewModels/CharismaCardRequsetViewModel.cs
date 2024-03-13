@@ -8,6 +8,6 @@ namespace CPG.Application.UseCases.CharismaCard.ViewModels
 {
     public class CharismaCardRequsetViewModel
     {
-        public string PaymentRequestCode { get; set; }
+        public string PaymentCode { get; set; }
     }
 }

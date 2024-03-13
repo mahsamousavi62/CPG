@@ -44,7 +44,7 @@ public class CreateCharismaCardTransactionCommandHandler(INeoBankService neoBank
     public async Task<Result<CharismaCardResponseViewModel>> Handle(CreateCharismaCardTransactionCommand request, 
         CancellationToken cancellationToken)
     {
-        var paymentRequest = await _paymentRequestRepository.GetBySpecAsync(new PaymentRequestByCode(request.Model.PaymentRequestCode), cancellationToken);
+        var paymentRequest = await _paymentRequestRepository.GetBySpecAsync(new PaymentRequestByCode(request.Model.PaymentCode), cancellationToken);
         if (paymentRequest is null) throw new PaymentRequestNotFoundByCodeException();
         if (!paymentRequest.Company.IsActive) throw new PaymentTokenInactiveCompanyException();
         if (paymentRequest.UrlExpirationDateTime < DateTime.Now) throw new PaymentRequestCodeExpiredException();
@@ -88,7 +88,7 @@ public class CreateCharismaCardTransactionCommandHandler(INeoBankService neoBank
             TrackerId = trackId,
         });
 
-        if (clientDirectDebitResponse.IsSuccess)
+        if (clientDirectDebitResponse?.IsSuccess == true && string.IsNullOrEmpty(clientDirectDebitResponse?.Data?.ErrorCode))
         {
             ClientDirectDebitResponse clientDirectDebit = clientDirectDebitResponse.Data;
 
@@ -135,12 +135,10 @@ public class CreateCharismaCardTransactionCommandHandler(INeoBankService neoBank
             {
                 CallBackUrl = $"{transaction.PaymentRequest.CallBackUrl}/paymentResult?paymentCode={transaction.PaymentRequest.PaymentCode}&paymentStatus={General.GetPaymentStatusTitle(transaction.PaymentRequest.Status)}"
             });
-
-
         }
         else
         {
-            return Result<Unit>.Failure(new Error("2009000", GlobalResource.GetPaymentTicketUnexpectedError));
+            return Result<CharismaCardResponseViewModel>.Failure(new Error(clientDirectDebitResponse.Error.Code, clientDirectDebitResponse.Error.Description));
         }
     }
 }
