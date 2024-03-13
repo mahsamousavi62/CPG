@@ -172,7 +172,7 @@ public class ValidateGrantQueryHandler(IDirectDebitFactory directDebitFactory,
 
             return Result<ValidateGrantResponseViewModel>.SuccessResult(new ValidateGrantResponseViewModel
             {
-                BankLogo = bank?.LogoAddress,
+                BankLogo = bank?.Logo,
                 BankName = bank?.Name,
                 AccountNumber = directDebitGrant.AccountNumber,
                 Status = directDebitGrant.Status,
