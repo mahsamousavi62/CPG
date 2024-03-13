@@ -36,16 +36,16 @@ public class CompanyIPGReadModelQueries
             ProviderData = entity.ProviderData,
             IPGTypeId = entity.IPGTypeId,
             ProviderId = entity.ProviderId,
-            CompanyIPGDeposits = entity.CompanyIPGDeposits.
-            Select(t => new CompanyIPGDepositReadModel { Id = t.Id, AccountNumber = t.CompanyDeposit.AccountNumber, Name = t.CompanyDeposit.Name }).ToList(),
+            //CompanyIPGDeposits = entity.CompanyIPGDeposits.
+            //Select(t => new CompanyIPGDepositReadModel { Id = t.Id, AccountNumber = t.CompanyDeposit.AccountNumber, Name = t.CompanyDeposit.Name }).ToList(),
             CreationDate = entity.CreationDate,
             ModificationDate = entity.ModificationDate,
             IsActive = entity.IsActive,
-            DefaultDeposit = entity.CompanyIPGDeposits.Where(t => t.IsDefault == true).
-            Select(t => new CompanyIPGDepositReadModel { Id = t.Id, AccountNumber = t.CompanyDeposit.AccountNumber, Name = t.CompanyDeposit.Name }).FirstOrDefault(),
-            IPGTypeLogo = minioProvider.PresignedGetObject(entity.IPGType.Logo).GetAwaiter().GetResult(),
-            IPGTypeName = entity.IPGType.PersianName,
-            ProviderName = entity.Provider.PersianName,
+            //DefaultDeposit = entity.CompanyIPGDeposits.Where(t => t.IsDefault == true).
+            //Select(t => new CompanyIPGDepositReadModel { Id = t.Id, AccountNumber = t.CompanyDeposit.AccountNumber, Name = t.CompanyDeposit.Name }).FirstOrDefault(),
+            //IPGTypeLogo = minioProvider.PresignedGetObject(entity.IPGType.Logo).GetAwaiter().GetResult(),
+            //IPGTypeName = entity.IPGType.PersianName,
+            //ProviderName = entity.Provider.PersianName,
         }); ;;
         return viewModels;
     }
