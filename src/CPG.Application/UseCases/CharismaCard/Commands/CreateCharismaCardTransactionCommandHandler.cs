@@ -18,6 +18,8 @@ using static CPG.Domain.SharedKernel.Enums;
 using System.Linq;
 using System.Text.RegularExpressions;
 using CPG.Application.Shared.Resource;
+using CPG.Application.UseCases.PaymentReceipt.ViewModels;
+using CPG.Application.UseCases.CharismaCard.ViewModels;
 
 namespace CPG.Application.UseCases.CharismaCard.Commands;
 
@@ -29,7 +31,7 @@ public class CreateCharismaCardTransactionCommandHandler(INeoBankService neoBank
     IAggregateRepository<Domain.AggregateModels.BankAggregate.Bank> bankRepository,
     IAggregateRepository<Domain.AggregateModels.ProviderAggregate.Provider> providerRepository,
     IAuthenticationService authenticationService)
-    : IRequestHandler<CreateCharismaCardTransactionCommand, Result<Unit>>
+    : IRequestHandler<CreateCharismaCardTransactionCommand, Result<CharismaCardResponseViewModel>>
 {
     private readonly INeoBankService neoBankService = neoBankService;
     private readonly IAggregateRepository<PaymentRequest> _paymentRequestRepository = paymentRequestAggregateRepository;
@@ -39,14 +41,15 @@ public class CreateCharismaCardTransactionCommandHandler(INeoBankService neoBank
     private readonly IAggregateRepository<Domain.AggregateModels.ProviderAggregate.Provider> _providerRepository = providerRepository;
     private readonly IAggregateRepository<Domain.AggregateModels.CompanyDepositAggregate.CompanyDeposit> _companyDepositRepository = companyDepositRepository;
     private readonly IAuthenticationService _authenticationService = authenticationService;
-    public async Task<Result<Unit>> Handle(CreateCharismaCardTransactionCommand request, CancellationToken cancellationToken)
+    public async Task<Result<CharismaCardResponseViewModel>> Handle(CreateCharismaCardTransactionCommand request, 
+        CancellationToken cancellationToken)
     {
-        var paymentRequest = await _paymentRequestRepository.GetBySpecAsync(new PaymentRequestByCode(request.Model.PaymentRequestCode), cancellationToken);
+        var paymentRequest = await _paymentRequestRepository.GetBySpecAsync(new PaymentRequestByCode(request.Model.PaymentCode), cancellationToken);
         if (paymentRequest is null) throw new PaymentRequestNotFoundByCodeException();
         if (!paymentRequest.Company.IsActive) throw new PaymentTokenInactiveCompanyException();
         if (paymentRequest.UrlExpirationDateTime < DateTime.Now) throw new PaymentRequestCodeExpiredException();
         if (paymentRequest.IsUsed) throw new PaymentRequestCodeIsUsedBeforeException();
-        //if (paymentRequest.Status != Enums.PaymentStatus.RedirectedToCpg) throw new PaymentRequestCodeInvalidStatusException();
+        if (paymentRequest.Status != Enums.PaymentStatus.RedirectedToCpg) throw new PaymentRequestCodeInvalidStatusException();
 
         var company = await _companyRepository.GetBySpecAsync(new CompanyByIdSpec(paymentRequest.CompanyId), cancellationToken);
 
@@ -73,18 +76,19 @@ public class CreateCharismaCardTransactionCommandHandler(INeoBankService neoBank
 
         var mobileNumber = await _authenticationService.GetDataFromClaim<string>(ClaimTypes.MobilePhone);
         destinationDepositId = companyDeposit.Id;
+        
 
         var trackId = RandomGenerator.GenerateRandomDigitNumber(16);
-        var iban = Regex.Replace(companyDeposit.Iban, @"(\d{4})(\d{2})(\d{3})(\d+)", "$1/$2/$3/$4");
+       var accountNumber = Regex.Replace(companyDeposit.AccountNumber, @"(\d{4})(\d{2})(\d{3})(\d+)", "$1/$2/$3/$4");
         var clientDirectDebitResponse = await neoBankService.ClientDirectDebit(new ClientDirectDebitRequest
         {
             Amount = paymentRequest.Amount,
             Description = paymentRequest.Description,
-            DestinationDepositNumber = iban,
+            DestinationDepositNumber = accountNumber,
             TrackerId = trackId,
         });
 
-        if (clientDirectDebitResponse.IsSuccess)
+        if (clientDirectDebitResponse?.IsSuccess == true && string.IsNullOrEmpty(clientDirectDebitResponse?.Data?.ErrorCode))
         {
             ClientDirectDebitResponse clientDirectDebit = clientDirectDebitResponse.Data;
 
@@ -95,7 +99,7 @@ public class CreateCharismaCardTransactionCommandHandler(INeoBankService neoBank
                 CharismaCardModel = new CharismaCardTransactionModel
                 {
                     TrackId = trackId,
-                    ProviderTrackId = clientDirectDebit.TranactionId,
+                    ProviderTrackId = clientDirectDebit.TranactionId??"0",
                     ReferenceNumber = clientDirectDebit.ReferenceNumber,
                     Status = CharismaCardstatus
                 },
@@ -120,19 +124,21 @@ public class CreateCharismaCardTransactionCommandHandler(INeoBankService neoBank
                     paymentRequest.Status = Enums.PaymentStatus.TransactionFailed;
                     break;
                 default:
-                    // Handle any other cases here if needed
                     break;
             }
             paymentRequest.IsUsed = true;
             PaymentRequest.Update(paymentRequest);
             await _paymentRequestRepository.UpdateAsync(paymentRequest);
             await _paymentRequestRepository.SaveChangesAsync();
-
-            return Result<Unit>.SuccessResult(Unit.Value);
+           
+            return Result<CharismaCardResponseViewModel>.SuccessResult(new CharismaCardResponseViewModel
+            {
+                CallBackUrl = $"{transaction.PaymentRequest.CallBackUrl}/paymentResult?paymentCode={transaction.PaymentRequest.PaymentCode}&paymentStatus={General.GetPaymentStatusTitle(transaction.PaymentRequest.Status)}"
+            });
         }
         else
         {
-            return Result<Unit>.Failure(new Error("2009000", GlobalResource.GetPaymentTicketUnexpectedError));
+            return Result<CharismaCardResponseViewModel>.Failure(new Error(clientDirectDebitResponse.Error.Code, clientDirectDebitResponse.Error.Description));
         }
     }
 }
