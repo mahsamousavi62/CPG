@@ -72,8 +72,8 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
 
             var callLog = new CallLogModel
             {
-                RequestBody = System.Text.Json.JsonSerializer.Serialize(resultContent),
-                ResponseBody = System.Text.Json.JsonSerializer.Serialize(response),
+                RequestBody = System.Text.Json.JsonSerializer.Serialize(model),
+                ResponseBody = resultContent,
                 ServiceCallDate = DateTime.Now,
                 ServiceCallUrl = neobankConfig.UserDepositBalanceUrl,
                 ServiceCallStatus = result.StatusCode == System.Net.HttpStatusCode.OK,
@@ -136,8 +136,8 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
 
                 var callLog = new CallLogModel
                 {
-                    RequestBody = System.Text.Json.JsonSerializer.Serialize(resultContent),
-                    ResponseBody = System.Text.Json.JsonSerializer.Serialize(response),
+                    RequestBody = "",
+                    ResponseBody = resultContent,
                     ServiceCallDate = DateTime.Now,
                     ServiceCallUrl = neobankConfig.UserDepositBalanceUrl,
                     ServiceCallStatus = result.StatusCode == System.Net.HttpStatusCode.OK,
