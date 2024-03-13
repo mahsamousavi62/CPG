@@ -765,4 +765,10 @@
   <data name="Special" xml:space="preserve">
     <value>Special</value>
   </data>
+  <data name="BalanceIsNotEnought" xml:space="preserve">
+    <value>BalanceIsNotEnought</value>
+  </data>
+  <data name="IncreaseBalance" xml:space="preserve">
+    <value>IncreaseBalance</value>
+  </data>
 </root>
