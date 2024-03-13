@@ -235,10 +235,10 @@ public class ReadModelQueries
             ProviderData = entity.ProviderData,
             IPGTypeId = entity.IPGTypeId,
             ProviderId = entity.ProviderId,
-           CreationDate = entity.CreationDate,
+            CreationDate = entity.CreationDate,
             ModificationDate = entity.ModificationDate,
             IsActive = entity.IsActive,
-           
+
         });
         return viewModels;
     }
@@ -263,10 +263,10 @@ public class ReadModelQueries
             ProviderData = entity.ProviderData,
             IPGTypeId = entity.IPGTypeId,
             ProviderId = entity.ProviderId,
-           CreationDate = entity.CreationDate,
+            CreationDate = entity.CreationDate,
             ModificationDate = entity.ModificationDate,
             IsActive = entity.IsActive,
-                  
+
         });
         return viewModels;
     }
@@ -296,7 +296,6 @@ public class ReadModelQueries
         {
             Id = entity.Id,
             CompanyId = entity.CompanyId,
-            //CompanyName = entity.Company.PersianName,
             FirstName = entity.FirstName,
             IDPId = entity.IDPId,
             IsActive = entity.IsActive,
