@@ -77,8 +77,9 @@ public class Enums
         AsanPardakht = 2,
         Sep = 3,
         Pec = 4,
-        Idp = 5,
-        BehPardakht = 6,
+        Idp=5,
+        NeoBank=6,        
+        BehPardakht = 7,
     }
 
     public enum ServiceType : byte
@@ -96,9 +97,11 @@ public class Enums
         VandarVerify = 11,
         GetIdpToken = 12,
         GetIdpProfile = 13,
-        BehPardakhtToken = 14,
-        BehPardakhtTransResult = 15,
-        BehPardakhtVerify = 16,
+        GetUserDepositBalance = 14,
+        ClientDirectDebit = 15,        
+        BehPardakhtToken = 16,
+        BehPardakhtTransResult = 17,
+        BehPardakhtVerify = 18,
     }
 
     public enum TransactionType : byte
