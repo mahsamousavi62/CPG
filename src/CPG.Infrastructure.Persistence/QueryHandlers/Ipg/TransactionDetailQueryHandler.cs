@@ -20,7 +20,7 @@ using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 
-public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> transactionRepository, ReadDbContext context, 
+public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> transactionRepository, ReadDbContext context,
     IHttpContextAccessor httpContext, IMinioProvider minioProvider) : IRequestHandler<TransactionDetailQuery, Result<TransactionDetailResponseViewModel>>
 {
     private readonly IAggregateRepository<Transaction> _transactionRepository = transactionRepository;
@@ -56,6 +56,7 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
                     StatusTitle = General.GetPaymentStatusTitle(paymentRequest.Status),
                     PaymentMethodType = (short)transaction?.TransactionMethodType,
                     PaymentMethodTypeTitle = transaction is null ? string.Empty : GetPaymentMethodTypeTitle(transaction.TransactionMethodType),
+                    PaymentPattern = transaction?.IPGTransaction?.CompanyIPG?.IPGType?.EnglishName,
                     ReferenceNumber = transaction is null ? string.Empty : GetTransactionRefrenceNumber(transaction),
                     DestinationDepositIban = transaction?.DestinationDeposit?.Iban,
                     DestinationDepositAccountNumber = transaction?.DestinationDeposit?.AccountNumber,
