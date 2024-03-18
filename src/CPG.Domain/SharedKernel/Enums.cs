@@ -59,7 +59,7 @@ public class Enums
         InternetPaymentGateway = 1,
         DirectDebit = 2,
         PaymentReceipt = 3,
-        CharismaCard=4,
+        CharismaCard = 4,
     }
 
     public enum UploadFromEntityType
@@ -77,7 +77,8 @@ public class Enums
         AsanPardakht = 2,
         Sep = 3,
         Pec = 4,
-        Idp=5,
+        Idp = 5,
+        BehPardakht = 6,
     }
 
     public enum ServiceType : byte
@@ -93,8 +94,11 @@ public class Enums
         VandarShow = 9,
         VandarStore = 10,
         VandarVerify = 11,
-        GetIdpToken=12,
-        GetIdpProfile= 13,
+        GetIdpToken = 12,
+        GetIdpProfile = 13,
+        BehPardakhtToken = 14,
+        BehPardakhtTransResult = 15,
+        BehPardakhtVerify = 16,
     }
 
     public enum TransactionType : byte
@@ -201,7 +205,7 @@ public class Enums
         SucceededAndWaitingForVerification = 1,
     }
 
-    public enum CharismaCardStatus:byte
+    public enum CharismaCardStatus : byte
     {
         Failed = 0,
         Done = 1
