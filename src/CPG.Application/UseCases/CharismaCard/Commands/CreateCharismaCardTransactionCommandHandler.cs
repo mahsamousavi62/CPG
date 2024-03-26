@@ -55,17 +55,17 @@ public class CreateCharismaCardTransactionCommandHandler(INeoBankService neoBank
 
         long destinationDepositId;
         Domain.AggregateModels.CompanyDepositAggregate.CompanyDeposit companyDeposit;
-        if (!string.IsNullOrWhiteSpace(paymentRequest.DestinationDepositIban))
-        {
-            companyDeposit = await _companyDepositRepository.GetBySpecAsync(new CompanyDepositByIban(paymentRequest.DestinationDepositIban), cancellationToken);
-            if (companyDeposit is null) throw new Exception("CompanyDeposit not found!");
-            if (companyDeposit.CompanyId != paymentRequest.CompanyId) { throw new PaymentTokenDepositNotBelongsCompanyException(); }
-        }
-        else
-        {
-            companyDeposit = await _companyDepositRepository.GetBySpecAsync(new DefaultDirectDebitDepositSpec(paymentRequest.CompanyId), cancellationToken);
+        //if (!string.IsNullOrWhiteSpace(paymentRequest.DestinationDepositIban))
+        //{
+        //    companyDeposit = await _companyDepositRepository.GetBySpecAsync(new CompanyDepositByIban(paymentRequest.DestinationDepositIban), cancellationToken);
+        //    if (companyDeposit is null) throw new Exception("CompanyDeposit not found!");
+        //    if (companyDeposit.CompanyId != paymentRequest.CompanyId) { throw new PaymentTokenDepositNotBelongsCompanyException(); }
+        //}
+        //else
+        //{
+            companyDeposit = await _companyDepositRepository.GetBySpecAsync(new DefaultCharismaCardDepositSpec(paymentRequest.CompanyId), cancellationToken);
             if (companyDeposit is null) throw new Exception("Default CompanyDeposit for charismCard not found!");
-        }
+        //}
 
         if (!companyDeposit.IsActive) { throw new PaymentTokenInactiveDepositException(); }
         var bank = companyDeposit.Bank;
