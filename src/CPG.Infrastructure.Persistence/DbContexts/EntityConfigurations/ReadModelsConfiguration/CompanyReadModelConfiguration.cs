@@ -36,6 +36,10 @@ namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations.ReadMod
                 .WithOne(p => p.Company)
                 .HasForeignKey(p => p.CompanyId);
 
+            readModel.HasMany(c => c.Users)
+              .WithOne(p => p.Company)
+              .HasForeignKey(p => p.CompanyId);
+
             readModel.HasOne(c => c.ShaparakSetting)
                 .WithOne(p => p.Company)
                 .HasForeignKey<CompanyShaparakSettingReadModel>(p => p.CompanyId);

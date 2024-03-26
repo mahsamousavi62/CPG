@@ -67,7 +67,7 @@ public class UpdateCompanyCommandHandler(IAggregateRepository<Company> companyRe
             await _companyRepository.UpdateAsync(company, cancellationToken);
             await _companyRepository.SaveChangesAsync(cancellationToken);
 
-            User.UpdateUserCompany(users, company.Id);
+            User.UpdateUserCompany(users, company.Id,company);
             await _userRepository.UpdateRangeAsync(users, cancellationToken);
             await _userRepository.SaveChangesAsync(cancellationToken);
 

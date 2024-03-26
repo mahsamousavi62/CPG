@@ -9,6 +9,7 @@ public sealed class CompanyByIdSpec : Specification<Company>, ISingleResultSpeci
         Query.Include(c => c.CompanyDeposits)
             .Include(a => a.PaymentMethods)
             .Include(c => c.ShaparakSetting)
+            .Include(c=>c.Users).ThenInclude(c=>c.UserRoles)
             .Where(company => company.Id == companyId);
     }
 }

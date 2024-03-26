@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using CPG.Domain.AggregateModels.CompanyAggregate;
 using System.Threading.Tasks;
 using static CPG.Domain.SharedKernel.Enums;
+using System.Linq;
 
 namespace CPG.Domain.AggregateModels.UserAggregate
 {
@@ -40,7 +41,7 @@ namespace CPG.Domain.AggregateModels.UserAggregate
 
         public string NationalCode { get; private set; }
 
-        public long? CompanyId { get; private set; }
+        public long? CompanyId { get;  set; }
 
         public string FirstName { get; private set; }
 
@@ -83,7 +84,22 @@ namespace CPG.Domain.AggregateModels.UserAggregate
             return user;
         }
 
-        public static void UpdateUserCompany(List<User> users, long companyId) => users.ForEach(user => { user.CompanyId = companyId; });
+        public static void UpdateUserCompany( List<User> users, long companyId, Company company=null)
+        {
+            if(company!=null)
+            foreach (var currnetItem in company.Users.ToList())
+            {
+                currnetItem.CompanyId = null;
+                var userRole = currnetItem.UserRoles.Find(ur => ur.RoleType == UserRoleType.CompanyUser);
+                currnetItem.UserRoles.Remove(userRole);
+            }
+            users.ForEach(user =>
+            {
+                user.CompanyId = companyId;
+                if (!user.UserRoles.Any(item => item.RoleType == UserRoleType.CompanyUser))
+                    user.UserRoles.Add(new UserRole(UserRoleType.CompanyUser));
+            });
+        }
 
         public static Task<string> GetUserName(long userId)
         {
