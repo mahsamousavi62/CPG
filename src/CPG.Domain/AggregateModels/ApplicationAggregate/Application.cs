@@ -91,10 +91,10 @@ public class Application : AuditableEntity<long>, IAggregateRoot
                 application.ApplicationIdentifiers.Add(ApplicationIdentifier.Create(newItem));
         }
 
-        foreach (var currnetItem in application.ApplicationIdentifiers)
+        foreach (var currnetItem in application.ApplicationIdentifiers.ToList())
         {
             if (!idpClientIds.Any(p => p == currnetItem.IdpClientId))
-                currnetItem.IsActive = false;
+                application.ApplicationIdentifiers.Remove(currnetItem);
         }
 
         if (urls !=null)
@@ -105,10 +105,10 @@ public class Application : AuditableEntity<long>, IAggregateRoot
                     application.ApplicationCallbackUrls.Add(ApplicationCallbackUrl.Create(newItem));
             }
 
-            foreach (var currnetItem in application.ApplicationCallbackUrls)
+            foreach (var currnetItem in application.ApplicationCallbackUrls.ToList())
             {
                 if (!urls.Any(p => p == currnetItem.CallbackUrl))
-                    currnetItem.IsActive = false;
+                    application.ApplicationCallbackUrls.Remove(currnetItem);
             }
         }
     }
