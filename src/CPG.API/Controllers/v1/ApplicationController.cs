@@ -1,4 +1,5 @@
-﻿using CPG.Application.UseCases.Application.Commands.ActivateApplication;
+﻿using AuthDemo.Security.Authorization;
+using CPG.Application.UseCases.Application.Commands.ActivateApplication;
 using CPG.Application.UseCases.Application.Commands.CreateApplication;
 using CPG.Application.UseCases.Application.Queries;
 using CPG.Application.UseCases.Application.ViewModels;
@@ -7,6 +8,7 @@ using CPG.Application.UseCases.Applications.ViewModels;
 using CPG.Domain.SharedKernel;
 using CPG.Infrastructure.File;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CPG.API.Controllers.v1;
@@ -27,13 +29,14 @@ public class ApplicationController : ApiBaseController
     { 
         return await Mediator.Send(new GetAllApplicationsQuery());
     }
-
+    
     [HttpGet("active")]
     public async Task<Result<IReadOnlyCollection<ApplicationViewModel>>> GetActiveApplications()
     { 
         return await Mediator.Send(new GetActiveApplicationsQuery());
     }
 
+    [Authorize(Policy = AuthPolicies.Roles.Admin)]
     [HttpPost]
     public async Task<Result<long>> CreateApplication([FromForm] CreateApplicationModel model)
     {
@@ -41,7 +44,8 @@ public class ApplicationController : ApiBaseController
 
         return await Mediator.Send(new CreateApplicationCommand(createApplicationViewModel));        
     }
-
+    
+    [Authorize(Policy = AuthPolicies.Roles.Admin)]
     [HttpPut]
     public async Task<Result<Unit>> UpdateApplication([FromForm] UpdateApplicationModel model)
     {
@@ -49,7 +53,8 @@ public class ApplicationController : ApiBaseController
 
         return await Mediator.Send(new UpdateApplicationCommand(createApplicationViewModel));
     }
-
+   
+    [Authorize(Policy = AuthPolicies.Roles.Admin)]
     [HttpPost("activate/{ApplicationId:long}/{isActive:bool}")]
     public async Task<Result<bool>> ActivateApplication(int ApplicationId, bool isActive)
     {

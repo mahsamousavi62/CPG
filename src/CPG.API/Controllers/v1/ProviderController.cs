@@ -1,4 +1,5 @@
-﻿using CPG.Application.UseCases.Providers.Commands.ActivateProvider;
+﻿using AuthDemo.Security.Authorization;
+using CPG.Application.UseCases.Providers.Commands.ActivateProvider;
 using CPG.Application.UseCases.Providers.Commands.CreateProvider;
 using CPG.Application.UseCases.Providers.Commands.UpdateProvider;
 using CPG.Application.UseCases.Providers.Queries;
@@ -6,6 +7,7 @@ using CPG.Application.UseCases.Providers.ViewModels;
 using CPG.Domain.SharedKernel;
 using CPG.Infrastructure.File;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CPG.API.Controllers.v1;
@@ -29,7 +31,7 @@ public class ProviderController : ApiBaseController
     { 
         return await Mediator.Send(new GetActiveProvidersQuery());
     }
-
+    [Authorize(Policy = AuthPolicies.Roles.Admin)]
     [HttpPost]
     public async Task<Result<long>> CreateProvider([FromForm] CreateProviderModel model)
     {
@@ -39,7 +41,7 @@ public class ProviderController : ApiBaseController
 
         return await Mediator.Send(new CreateProviderCommand(createProviderViewModel));
     }
-
+    [Authorize(Policy = AuthPolicies.Roles.Admin)]
     [HttpPut]
     public async Task<Result<Unit>> UpdateProvider([FromForm] UpdateProviderModel model)
     {
@@ -49,7 +51,7 @@ public class ProviderController : ApiBaseController
 
         return await Mediator.Send(new UpdateProviderCommand(updateProviderViewModel));
     }
-
+    [Authorize(Policy = AuthPolicies.Roles.Admin)]
     [HttpPost("activate/{providerId:long}/{isActive:bool}")]
     public async Task<Result<bool>> ActivateProvider(int providerId, bool isActive)
     {

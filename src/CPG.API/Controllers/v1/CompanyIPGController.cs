@@ -1,10 +1,12 @@
-﻿using CPG.Application.UseCases.CompanyDeposits.ViewModels;
+﻿using AuthDemo.Security.Authorization;
+using CPG.Application.UseCases.CompanyDeposits.ViewModels;
 using CPG.Application.UseCases.CompanyIPGs.Commands.CreateCompanyIPG;
 using CPG.Application.UseCases.CompanyIPGs.Commands.UpdateCompanyIPG;
 using CPG.Application.UseCases.CompanyIPGs.Queries;
 using CPG.Application.UseCases.CompanyIPGs.ViewModels;
 using CPG.Domain.SharedKernel;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -39,7 +41,7 @@ public class CompanyIPGController : ApiBaseController
     { 
         return await Mediator.Send(new GetCompanyIPGDepositsQuery(id));
     }
-
+    [Authorize(Policy = AuthPolicies.Roles.Admin)]
     [HttpPost]
     public async Task<Result<long>> CreateCompanyIPG(CreateCompanyIPGModel model)
     {
@@ -48,7 +50,7 @@ public class CompanyIPGController : ApiBaseController
 
         return await Mediator.Send(new CreateCompanyIPGCommand(createViewModel));
     }
-
+    [Authorize(Policy = AuthPolicies.Roles.Admin)]
     [HttpPut]
     public async Task<Result<Unit>> UpdateCompanyIPG(UpdateCompanyIPGModel model)
     {
