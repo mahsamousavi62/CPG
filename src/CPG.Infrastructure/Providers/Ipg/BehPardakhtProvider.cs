@@ -15,7 +15,6 @@ using System.Threading.Tasks;
 using CPG.Domain.SharedKernel.Logging;
 using Microsoft.Extensions.Logging;
 using BehPardakhtServiceReference;
-using System.ServiceModel;
 
 namespace CPG.Infrastructure.Providers.Ipg;
 
@@ -110,6 +109,8 @@ public class BehPardakhtProvider(
         }
         catch (Exception exc)
         {
+            _logger.LogError(exc, nameof(PaymentGatewayClient.bpPayRequestAsync));
+
             if (tokenFailCounter < serviceCallMaxTryCounter)
             {
                 await Retry();
@@ -168,6 +169,8 @@ public class BehPardakhtProvider(
         }
         catch (Exception exc)
         {
+            _logger.LogError(exc, nameof(PaymentGatewayClient.bpVerifyRequestAsync));
+
             if (verifyFailCounter < serviceCallMaxTryCounter)
             {
                 await Retry();
@@ -221,6 +224,8 @@ public class BehPardakhtProvider(
         }
         catch (Exception exc)
         {
+            _logger.LogError(exc, nameof(PaymentGatewayClient.bpSettleRequestAsync));
+
             if (settleFailCounter < serviceCallMaxTryCounter)
             {
                 await Retry();

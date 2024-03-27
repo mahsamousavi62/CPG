@@ -53,10 +53,10 @@ namespace CPG.Domain.AggregateModels.CompanyIPGAggregate
                     companyIpg.IPGDeposits.Add(newItem);
             }
 
-            foreach (var currnetItem in companyIpg.IPGDeposits)
+            foreach (var currnetItem in companyIpg.IPGDeposits.ToList())
             {
                 if (!details.Any(p => p.CompanyDepositId == currnetItem.CompanyDepositId))
-                    currnetItem.IsActive = false;
+                    companyIpg.IPGDeposits.Remove(currnetItem);
             }
         }
     }

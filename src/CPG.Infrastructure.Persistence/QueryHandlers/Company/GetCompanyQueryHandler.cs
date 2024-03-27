@@ -1,6 +1,7 @@
 ﻿using Ardalis.GuardClauses;
 using CPG.Application.UseCases.Companies.Exceptions;
 using CPG.Application.UseCases.Companies.ViewModels;
+using CPG.Application.UseCases.Users.ViewModel;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Minio;
 using CPG.Infrastructure.Persistence.DbContexts;
@@ -21,7 +22,7 @@ public class GetCompanyQueryHandler(ReadDbContext context, IMinioProvider minioP
     {
         Guard.Against.NegativeOrZero(request.CompanyId, nameof(request.CompanyId));
 
-        var company = await _context.CompanyReadModels.Include(x => x.PaymentMethods)
+        var company = await _context.CompanyReadModels.Include(c => c.PaymentMethods).Include(c => c.Users)
              .FirstOrDefaultAsync(t => t.Id == request.CompanyId, cancellationToken: cancellationToken) ?? throw new CompanyNotFoundException(request.CompanyId);
 
         var companyModel = new CompanyViewModel
@@ -36,7 +37,9 @@ public class GetCompanyQueryHandler(ReadDbContext context, IMinioProvider minioP
             PaymentMethods = company.PaymentMethods.Select(p => p.MethodType).ToList(),
             CreationDate = company.CreationDate,
             ModificationDate = company.ModificationDate,
-            IsActive = company.IsActive
+            IsActive = company.IsActive,
+            Users = company.Users?.Select(u =>
+            new UserCompanyViewModel { Id = u.Id, FirstName = u.FirstName, LastName = u.LastName, NationalCode = u.NationalCode }).ToList()
         };
 
         return Result<CompanyViewModel>.SuccessResult(companyModel);

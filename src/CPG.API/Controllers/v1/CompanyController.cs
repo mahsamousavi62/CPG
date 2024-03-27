@@ -1,18 +1,23 @@
-﻿using CPG.Application.UseCases.Companies.Commands.CreateCompany;
+﻿
+using CPG.Application.UseCases.Companies.Commands.CreateCompany;
 using CPG.Application.UseCases.Companies.Commands.UpdateCompany;
 using CPG.Application.UseCases.Companies.Queries;
 using CPG.Application.UseCases.Companies.ViewModels;
 using CPG.Domain.SharedKernel;
+using CPG.Infrastructure.Authorization;
 using CPG.Infrastructure.File;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
+
 
 namespace CPG.API.Controllers;
 
 public class CompanyController : ApiBaseController
 {
+    
     [HttpGet("GetAll")]
     [ProducesResponseType(typeof(Result<IReadOnlyCollection<CompanyViewModel>>), (int)HttpStatusCode.OK)]
     public async Task<Result<IReadOnlyCollection<CompanyViewModel>>> GetAll()
@@ -37,6 +42,7 @@ public class CompanyController : ApiBaseController
     public async Task<IActionResult> GetIpgRedirectionMethodType(Enums.IpgRedirectionMethodType type)
        => Ok(await Mediator.Send(new GetIpgRedirectionMethodTypeQuery()));
 
+    [Authorize(Policy = AuthPolicies.Roles.Admin)]
     [HttpPost]
     public async Task<Result<long>> CreateCompany([FromForm] CreateCompanyModel model)
     {
@@ -46,7 +52,7 @@ public class CompanyController : ApiBaseController
 
         return await Mediator.Send(new CreateCompanyCommand(createCompanyViewModel));
     }
-
+    [Authorize(Policy = AuthPolicies.Roles.Admin)]
     [HttpPut]
     public async Task<Result<Unit>> UpdateCompany([FromForm] UpdateCompanyModel model)
     {
