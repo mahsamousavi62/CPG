@@ -1,6 +1,6 @@
-﻿using System;
+﻿
 
-namespace AuthDemo.Security.Authorization
+namespace CPG.Infrastructure.Authorization
 {
     public static class AuthPolicies
     { 

@@ -1,16 +1,17 @@
-﻿using AuthDemo.Security.Authorization;
+﻿
 using CPG.Application.UseCases.Companies.Commands.CreateCompany;
 using CPG.Application.UseCases.Companies.Commands.UpdateCompany;
 using CPG.Application.UseCases.Companies.Queries;
 using CPG.Application.UseCases.Companies.ViewModels;
 using CPG.Domain.SharedKernel;
+using CPG.Infrastructure.Authorization;
 using CPG.Infrastructure.File;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
-using static Yarp.ReverseProxy.SessionAffinity.SessionAffinityConstants;
+
 
 namespace CPG.API.Controllers;
 

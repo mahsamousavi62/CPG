@@ -1,9 +1,9 @@
-﻿using AuthDemo.Security.Authorization;
-using CPG.Application.UseCases.Banks.Commands.ActivateBank;
+﻿using CPG.Application.UseCases.Banks.Commands.ActivateBank;
 using CPG.Application.UseCases.Banks.Commands.UpdateBank;
 using CPG.Application.UseCases.Banks.Queries;
 using CPG.Application.UseCases.Banks.ViewModels;
 using CPG.Domain.SharedKernel;
+using CPG.Infrastructure.Authorization;
 using CPG.Infrastructure.File;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

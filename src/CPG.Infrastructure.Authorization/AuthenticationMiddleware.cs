@@ -9,7 +9,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Linq;
 using CPG.Domain.SharedKernel;
-using static AuthDemo.Security.Authorization.AuthPolicies;
+
 
 namespace CPG.Infrastructure.Authorization;
 

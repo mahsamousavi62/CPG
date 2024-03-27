@@ -1,11 +1,11 @@
-﻿using AuthDemo.Security.Authorization;
-using CPG.Application.UseCases.Application.Commands.ActivateApplication;
+﻿using CPG.Application.UseCases.Application.Commands.ActivateApplication;
 using CPG.Application.UseCases.Application.Commands.CreateApplication;
 using CPG.Application.UseCases.Application.Queries;
 using CPG.Application.UseCases.Application.ViewModels;
 using CPG.Application.UseCases.Applications.Commands.UpdateApplication;
 using CPG.Application.UseCases.Applications.ViewModels;
 using CPG.Domain.SharedKernel;
+using CPG.Infrastructure.Authorization;
 using CPG.Infrastructure.File;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

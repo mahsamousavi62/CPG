@@ -1,6 +1,5 @@
-﻿using AuthDemo.Security.Authorization;
+﻿
 using CPG.Application.Auth;
-using CPG.Application.UseCases.Common.Queries;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.ApplicationSettings;
 using CPG.Domain.SharedKernel.Interfaces;
