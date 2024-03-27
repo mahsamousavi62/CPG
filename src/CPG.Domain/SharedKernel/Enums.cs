@@ -1,4 +1,5 @@
-﻿using CPG.Domain.AggregateModels.TransactionAggregate;
+﻿using System;
+using CPG.Domain.AggregateModels.TransactionAggregate;
 using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Domain.SharedKernel;
@@ -210,7 +211,18 @@ public class Enums
         Done = 1
     }
 }
+public static class EnumExtensions
+{
+    public static string GetName<T>(this T enumValue) where T : Enum
+    {
+        return Enum.GetName(typeof(T), enumValue)!;
+    }
 
+    public static string GetValue<T>(this T enumValue) where T : Enum
+    {
+        return enumValue.ToString("D");
+    }
+}
 public struct ResultData<T>(Enums.OperationResult operationResult)
 {
     public T? Data { get; set; } = default(T);
