@@ -9,7 +9,7 @@ namespace CPG.Domain.AggregateModels.UserAggregate.Specifications
     {
         public UserByUserIdsSpec(List<long> userIds)
         {
-            Query.Where(entity => userIds.Contains(entity.Id));
+            Query.Where(entity => userIds.Contains(entity.Id)).Include(u=>u.UserRoles);
         }
     }
 }
