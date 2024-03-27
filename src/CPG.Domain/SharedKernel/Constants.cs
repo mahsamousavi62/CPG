@@ -4,7 +4,7 @@ namespace CPG.Domain.SharedKernel;
 
 public class Constants
 {
-    public const string Pattern = "(usr|pwd|merchantConfigurationId|key|iv)\\\"\\s*(:)\\s*\"([^\"]*)\"";
+    public const string Pattern = "(usr|pwd|merchantConfigurationId|key|iv|userPassword)\\\"\\s*(:)\\s*\"([^\"]*)\"";
     public const string Replaceformat = "$1$2*****";
 }
 public static class EnumHelper

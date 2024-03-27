@@ -11,5 +11,7 @@ public interface IIpgProvider
     Task<TransactionResultResponse> GetTransactionResult(TransactionResultRequest transactionResultRequest);
 
     Task<VerifyTransactionResponse> Verify(VerifyTransactionRequest transactionResultRequest);
+
+    Task<SettleTransactionResponse> Settle(SettleTransactionRequest transactionResultRequest);
 }
 

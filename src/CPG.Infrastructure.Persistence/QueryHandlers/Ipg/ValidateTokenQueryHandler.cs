@@ -27,13 +27,14 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
     private readonly IAggregateRepository<Transaction> _transactionRepository = transactionRepository;
     private readonly string[] sepUnsuccessStatusList = ["1", "3", "4", "5", "8", "10", "11", "12", "21"];
     private readonly string[] sepSuccessStatusList = ["2"];
+    private readonly string PecSucceedStatus = "0";
+    private readonly string bepSucceedStatus = "0";
 
     public async Task<Result<ValidateTokenResponseViewModel>> Handle(ValidateTokenQuery request, CancellationToken cancellationToken)
     {
         try
         {
             var transaction = await _transactionRepository.GetBySpecAsync(new TransactionByIPGTrackId(request.TrackId));
-            var PecSuccedStatus = "0";
             if (transaction?.IPGTransaction is null)
                 throw new NotFoundTrackIdException();
             if (transaction.IPGTransaction.Status != IPGTransactionStatus.WaitingForPspResponse)
@@ -115,18 +116,41 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
                         transaction.IPGTransaction.ReferenceNumber = req.RRN;
                         transaction.IPGTransaction.EncryptCardNumber = req.HashCardNumber;
 
-                        if (req.Status != PecSuccedStatus)
+                        if (req.Status != PecSucceedStatus)
                         {
                             transaction.IPGTransaction.Status = IPGTransactionStatus.Failed;
                             transaction.Status = TransactionStatus.TransactionFailed;
                             paymentRequest.Status = PaymentStatus.TransactionFailed;
                         }
-                        else if (req.Status == PecSuccedStatus)
+                        else if (req.Status == PecSucceedStatus)
                         {
                             transaction.IPGTransaction.Status = IPGTransactionStatus.SucceededAndWaitingForVerification;
                             transaction.IPGTransaction.PredicateExpirationDateTime = DateTime.Now.AddMinutes(transaction.IPGTransaction.VerificationTimeLimit);
                             paymentRequest.Status = PaymentStatus.TransactionWaitingForVerification;
                         }
+                        break;
+                    }
+                case ProviderType.BehPardakht:
+                    {
+                        var req = System.Text.Json.JsonSerializer.Deserialize<BehPardakhtValidateTokenViewModel>(request.ValidateToken.Request);
+
+                        transaction.IPGTransaction.ProviderTrackerId = req.SaleReferenceId;
+                        transaction.IPGTransaction.ReferenceNumber = req.SaleReferenceId;
+                        transaction.IPGTransaction.EncryptCardNumber = req.CardHolderInfo;
+
+                        if(req.ResCode == bepSucceedStatus)
+                        {
+                            transaction.IPGTransaction.Status = IPGTransactionStatus.SucceededAndWaitingForVerification;
+                            transaction.IPGTransaction.PredicateExpirationDateTime = DateTime.Now.AddMinutes(transaction.IPGTransaction.VerificationTimeLimit);
+                            paymentRequest.Status = PaymentStatus.TransactionWaitingForVerification;
+                        }
+                        else
+                        {
+                            transaction.IPGTransaction.Status = IPGTransactionStatus.Failed;
+                            transaction.Status = TransactionStatus.TransactionFailed;
+                            paymentRequest.Status = PaymentStatus.TransactionFailed;
+                        }
+
                         break;
                     }
                 default:

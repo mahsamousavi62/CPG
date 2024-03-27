@@ -36,6 +36,10 @@ namespace CPG.Infrastructure.Providers.Ipg
                     {
                         return new PecProvider(_context, _applicationSettingsRepository, _logService, _pecProviderLogger);
                     }
+                case Enums.ProviderType.BehPardakht:
+                    {
+                        return new BehPardakhtProvider(_context, _applicationSettingsRepository, _logService, _pecProviderLogger);
+                    }
                 default: return null;
             }
         }

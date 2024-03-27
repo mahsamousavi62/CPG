@@ -112,6 +112,11 @@ public class SepProvider(IHttpProvider httpProvider, ReadDbContext context, IApp
         };
     }
 
+    public Task<SettleTransactionResponse> Settle(SettleTransactionRequest transactionResultRequest)
+    {
+        throw new NotImplementedException();
+    }
+
     private static string CreateCallbackUrl(short ipgRedirectionType, string siteAddress, string trackerId, string callbackPage) => ipgRedirectionType switch
     {
         1 => $"{siteAddress}/{callbackPage}?track_id={trackerId}",
