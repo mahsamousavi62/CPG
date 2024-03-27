@@ -1,0 +1,20 @@
+{
+  "ExtendedData": {
+    "inputs": [
+      "https://bpm.shaparak.ir/pgwchannel/services/pgw?wsdl"
+    ],
+    "collectionTypes": [
+      "System.Array",
+      "System.Collections.Generic.Dictionary`2"
+    ],
+    "namespaceMappings": [
+      "*, BehPardakhtServiceReference"
+    ],
+    "references": [
+      "F:\\Projects\\CPG\\Backend\\src\\CPG.Infrastructure\\bin\\Debug\\net8.0\\CPG.Application.dll",
+      "F:\\Projects\\CPG\\Backend\\src\\CPG.Infrastructure\\bin\\Debug\\net8.0\\CPG.Infrastructure.Persistence.dll"
+    ],
+    "targetFramework": "net8.0",
+    "typeReuseMode": "Specified"
+  }
+}

@@ -1,5 +1,6 @@
 ﻿using CPG.Application.UseCases.Companies.Queries;
 using CPG.Application.UseCases.Companies.ViewModels;
+using CPG.Application.UseCases.Users.ViewModel;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Minio;
 using CPG.Infrastructure.Persistence.DbContexts;
@@ -20,7 +21,7 @@ public class GetAllCompanyQueryHandler(ReadDbContext context, IMinioProvider min
     public async Task<Result<IReadOnlyCollection<CompanyViewModel>>> Handle(GetAllCompanyQuery request, CancellationToken cancellationToken)
     {
         var companies = await _context.CompanyReadModels
-            .Include(m => m.PaymentMethods)
+            .Include(c => c.PaymentMethods).Include(c=>c.Users)
             .ToListAsync(cancellationToken: cancellationToken);
 
         var companyViewModels = await Task.WhenAll(companies.Select(async company => new CompanyViewModel
@@ -30,12 +31,14 @@ public class GetAllCompanyQueryHandler(ReadDbContext context, IMinioProvider min
             EnglishName = company.EnglishName,
             Logo = await _minioProvider.PresignedGetObject(company.Logo),
             NationalCodeMatchingRequied = company.NationalCodeMatchingRequied,
-            SiteAddress=company.SiteAddress,
-            IpgRedirectionMethodType=company.IpgRedirectionMethodType,
+            SiteAddress = company.SiteAddress,
+            IpgRedirectionMethodType = company.IpgRedirectionMethodType,
             CreationDate = company.CreationDate,
             ModificationDate = company.ModificationDate,
             IsActive = company.IsActive,
-            PaymentMethods = company.PaymentMethods.Select(p => p.MethodType).ToList()
+            PaymentMethods = company.PaymentMethods.Select(p => p.MethodType).ToList(),
+            Users = company.Users?.Select(u => new UserCompanyViewModel { Id = u.Id, FirstName = u.FirstName, LastName = u.LastName, NationalCode=u.NationalCode }).ToList()
+
         })).ConfigureAwait(false);
 
         return Result<IReadOnlyCollection<CompanyViewModel>>.SuccessResult(companyViewModels);
