@@ -17,7 +17,6 @@ using CPG.Domain.Exceptions;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
 using CPG.Application.UseCases.Exceptions;
-using CPG.Domain.SharedKernel.Communication.DirectDebit;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 
@@ -74,25 +73,39 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
                         {
                             ProviderData = transaction.IPGTransaction.CompanyIPG.ProviderData,
                             ProviderTrackerId = transaction.IPGTransaction.ProviderTrackerId,
-                            Token = transaction.IPGTransaction.IPGToken
+                            Token = transaction.IPGTransaction.IPGToken,
+                            TrackId = transaction.IPGTransaction.TrackId,
+                            ReferenceNumber = transaction.IPGTransaction.ReferenceNumber,
                         });
 
                         transaction.IPGTransaction.Status = result.Status;
 
                         if (result.Status == IPGTransactionStatus.VerificationSucceeded)
                         {
-                            var currentDateTime = DateTime.Now;
-                            var timeMargin = new TimeOnly(23, 45);
-                            var currentTime = new TimeOnly(currentDateTime.Hour, currentDateTime.Minute);
-                            var date = currentTime < timeMargin ?
-                                new DateTime(currentDateTime.AddDays(1).Year, currentDateTime.AddDays(1).Month, currentDateTime.AddDays(1).Day, 7, 0, 0) :
-                                new DateTime(currentDateTime.AddDays(2).Year, currentDateTime.AddDays(2).Month, currentDateTime.AddDays(2).Day, 7, 0, 0);
-
-                            transaction.PredictedSettlementDateTime = date;
                             transaction.Status = TransactionStatus.TransactionSucceeded;
                             transaction.IPGTransaction.VerificationDateTime = DateTime.Now;
                             paymentRequest.Status = PaymentStatus.TransactionVerificationSucceeded;
 
+                            if (providerType == ProviderType.BehPardakht)
+                            {
+                                var settlementResult = await ipg.Settle(new SettleTransactionRequest
+                                {
+                                    ProviderData = transaction.IPGTransaction.CompanyIPG.ProviderData,
+                                    TrackId = transaction.IPGTransaction.TrackId,
+                                    ReferenceNumber = transaction.IPGTransaction.ReferenceNumber,
+                                });
+
+                                transaction.IPGTransaction.Status = settlementResult.Status;
+
+                                if (settlementResult.Status == IPGTransactionStatus.SettlementSucceeded)
+                                {
+                                    transaction.PredictedSettlementDateTime = GetPredictedSettlementDateTime();
+                                }
+                            }
+                            else
+                            {   
+                                transaction.PredictedSettlementDateTime = GetPredictedSettlementDateTime();
+                            }
                         }
                         else if (result.Status == IPGTransactionStatus.VerificationFailed)
                         {
@@ -152,6 +165,17 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
         {
             return Result<VerifyTransactionResponseViewModel>.Failure(new Error("1005000", GlobalResource.TransactionDetailUnexpectedError));
         }
+    }
+
+    private static DateTime GetPredictedSettlementDateTime()
+    {
+        var currentDateTime = DateTime.Now;
+        var timeMargin = new TimeOnly(23, 45);
+        var currentTime = new TimeOnly(currentDateTime.Hour, currentDateTime.Minute);
+        var date = currentTime < timeMargin ?
+            new DateTime(currentDateTime.AddDays(1).Year, currentDateTime.AddDays(1).Month, currentDateTime.AddDays(1).Day, 7, 0, 0) :
+            new DateTime(currentDateTime.AddDays(2).Year, currentDateTime.AddDays(2).Month, currentDateTime.AddDays(2).Day, 7, 0, 0);
+        return date;
     }
 
     private string GetPaymentMethodTypeTitle(TransactionType type)

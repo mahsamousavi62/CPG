@@ -12,13 +12,9 @@ using CPG.Application.UseCases.PaymentRequests.Commands.CancelPaymentRequet;
 using System.ComponentModel.DataAnnotations;
 using CPG.Application.UseCases.DirectDebit.Queries;
 using CPG.Application.UseCases.DirectDebit.ViewModels;
-using CPG.Application.UseCases.NeoBankServices.Queries;
-using CPG.Domain.SharedKernel.Communication.NeoBank.Models;
 using CPG.Application.UseCases.PaymentReceipt.ViewModels;
 using CPG.Application.UseCases.PaymentReceipt.Queries;
-using CPG.Application.UseCases.Companies.Commands.CreateCompany;
 using CPG.Infrastructure.File;
-using System.Reactive;
 using CPG.Application.UseCases.CharismaCard.Commands;
 using CPG.Application.UseCases.CharismaCard.ViewModels;
 
