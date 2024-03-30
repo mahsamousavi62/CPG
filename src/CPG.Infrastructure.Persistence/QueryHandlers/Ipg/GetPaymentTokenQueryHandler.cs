@@ -231,7 +231,7 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                     response.JsonBody.jsonStr.url = result.IpgBaseUrl;
                     response.JsonBody.jsonStr.method = "POST";
                     response.JsonBody.jsonStr.@params = new ExpandoObject();
-                    response.JsonBody.jsonStr.@params.Token = result.Token;
+                    response.JsonBody.jsonStr.@params.RefId = result.Token;
                     response.JsonBody.jsonStr.@params.MobileNo = !string.IsNullOrEmpty(mobileNumber) ? $"98{mobileNumber.Remove(0, 1)}" : null;
                     break;
                 }

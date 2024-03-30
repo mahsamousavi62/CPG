@@ -15,6 +15,8 @@ using System;
 using System.Threading.Tasks;
 using CPG.Domain.SharedKernel.Communication.Ipg.Ayandeh;
 using System.Globalization;
+using System.Collections.Generic;
+using ServiceAmount = CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentToken.ServiceAmount;
 
 namespace CPG.Infrastructure.Providers.Ipg;
 
@@ -69,7 +71,13 @@ internal class AyandehProvider(IHttpProvider httpProvider, ReadDbContext context
                                                             AdditionalData = $"{request.NationalCode}-{trackerId}",
                                                             CallBackUrl = callBack,
                                                             Amount = request.PaymentRequestAmount.ToString(),
-                                                            ServiceId = serviceId,
+                                                            ServiceAmountList = new List<ServiceAmount> {
+                                                                new ServiceAmount
+                                                                {
+                                                                    ServiceId = serviceId,
+                                                                    Amount = request.PaymentRequestAmount.ToString()
+                                                                }
+                                                            },                                                            
                                                             Mobile = !string.IsNullOrEmpty(request.MobileNumber) ? $"{request.MobileNumber.Remove(0, 1)}" : null,
                                                             SettleDate = settleDate,
                                                         },

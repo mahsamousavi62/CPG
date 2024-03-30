@@ -1,5 +1,6 @@
 ﻿using CPG.Domain.SharedKernel.Communication.Ipg.Ayandeh;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentToken;
 
@@ -20,12 +21,21 @@ public class AyandehTokenRequest : AyandehRequestBase
     [JsonProperty("amount")]
     public string Amount { get; set; }
 
-    [JsonProperty("serviceId")]
-    public string ServiceId { get; set; }
+    [JsonProperty("serviceAmountList")]
+    public List<ServiceAmount> ServiceAmountList { get; set; }
 
     [JsonProperty("mobile")]
     public string Mobile { get; set; }
 
     [JsonProperty("settleDate")]
     public string SettleDate { get; set; }
+}
+
+public class ServiceAmount
+{
+    [JsonProperty("serviceId")]
+    public string ServiceId { get; set; }
+
+    [JsonProperty("amount")]
+    public string Amount { get; set; }
 }
