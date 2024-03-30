@@ -1,31 +1,31 @@
 ﻿using CPG.Domain.SharedKernel.Communication.Ipg.Ayandeh;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentToken;
 
 public class AyandehTokenRequest : AyandehRequestBase
 {
-    [JsonPropertyName("username")]
+    [JsonProperty("username")]
     public string Username { get; set; }
 
-    [JsonPropertyName("password")]
+    [JsonProperty("password")]
     public string Password { get; set; }
 
-    [JsonPropertyName("additionalData")]
+    [JsonProperty("additionalData")]
     public string AdditionalData { get; set; }
 
-    [JsonPropertyName("callBackUrl")]
+    [JsonProperty("callBackUrl")]
     public string CallBackUrl { get; set; }
 
-    [JsonPropertyName("amount")]
+    [JsonProperty("amount")]
     public string Amount { get; set; }
 
-    [JsonPropertyName("serviceId")]
+    [JsonProperty("serviceId")]
     public string ServiceId { get; set; }
 
-    [JsonPropertyName("mobile")]
+    [JsonProperty("mobile")]
     public string Mobile { get; set; }
 
-    [JsonPropertyName("settleDate")]
+    [JsonProperty("settleDate")]
     public string SettleDate { get; set; }
 }

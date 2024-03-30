@@ -235,6 +235,16 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                     response.JsonBody.jsonStr.@params.MobileNo = !string.IsNullOrEmpty(mobileNumber) ? $"98{mobileNumber.Remove(0, 1)}" : null;
                     break;
                 }
+            case Enums.ProviderType.Ayandeh:
+                {
+                    response.JsonBody.jsonStr = new ExpandoObject();
+                    response.JsonBody.jsonStr.url = result.IpgBaseUrl;
+                    response.JsonBody.jsonStr.method = "POST";
+                    response.JsonBody.jsonStr.@params = new ExpandoObject();
+                    response.JsonBody.jsonStr.@params.traceNumber = result.Token;
+                    response.JsonBody.jsonStr.@params.username = result.UserName;
+                    break;
+                }
             default:
                 break;
         }

@@ -6,7 +6,6 @@ using CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentTicket;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentToken;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.TransactionResult;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
-using CPG.Domain.SharedKernel.Communication.Ipg.Sep;
 using CPG.Domain.SharedKernel.Communication;
 using CPG.Domain.SharedKernel.Helper;
 using CPG.Domain.SharedKernel;
@@ -14,6 +13,8 @@ using CPG.Infrastructure.Persistence.DbContexts;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Threading.Tasks;
+using CPG.Domain.SharedKernel.Communication.Ipg.Ayandeh;
+using System.Globalization;
 
 namespace CPG.Infrastructure.Providers.Ipg;
 
@@ -26,7 +27,9 @@ internal class AyandehProvider(IHttpProvider httpProvider, ReadDbContext context
     private byte tokenFailCounter = 0;
     private byte verifyFailCounter = 0;
     private byte transactionResultFailCounter = 0;
-    private int terminalId;
+    private string serviceId;
+    private string userName;
+    private string password;
 
     private void GetDataFromJsonProvider(string providerData)
     {
@@ -34,7 +37,9 @@ internal class AyandehProvider(IHttpProvider httpProvider, ReadDbContext context
         try
         {
             jsonObjectProviderData = JObject.Parse(providerData);
-            terminalId = jsonObjectProviderData["Terminal_ID"] is not null ? (int)jsonObjectProviderData["Terminal_ID"] : throw new Exception("Invalid TerminalId");
+            serviceId = jsonObjectProviderData["Service_ID"] is not null ? jsonObjectProviderData["Service_ID"] : throw new Exception("Invalid Service_ID");
+            userName = jsonObjectProviderData["User_Name"] is not null ? jsonObjectProviderData["User_Name"] : throw new Exception("Invalid User_Name");
+            password = jsonObjectProviderData["Password"] is not null ? jsonObjectProviderData["Password"] : throw new Exception("Invalid Password");
         }
         catch
         {
@@ -48,66 +53,74 @@ internal class AyandehProvider(IHttpProvider httpProvider, ReadDbContext context
         var configViewModel = await _applicationSettingRepositoy.GetAllApplicationSettings();
         var trackerId = RandomGenerator.GenerateRandomDigitNumber(16);
         string callBack = CreateCallbackUrl((short)request.IpgRedirectionMethodType, request.SiteAddress, trackerId.ToString(), configViewModel.CPG_BackEnd);
+        var date = DateTime.Now.AddDays(1);
+        var pc = new PersianCalendar();
+        var settleDate = string.Format("{0}{1}{2}", pc.GetYear(date), pc.GetMonth(date).ToString("D2"), pc.GetDayOfMonth(date).ToString("D2"));
 
-        var response = await httpProvider.PostAsync<PaymentTokenRequest, SepTokenResponse,
-                                                    SepResponseBase, dynamic>(new HttpProviderRequest<dynamic>
+        var response = await httpProvider.PostAsync<PaymentTokenRequest, AyandehTokenResponse,
+                                                    AyandehResponseBase, dynamic>(new HttpProviderRequest<dynamic>
                                                     {
                                                         BaseAddress = "https://mpg.ba24.ir/",
                                                         Uri = "mpg/api/ipgGetTraceId",
-                                                        Body = new SepTokenRequest
+                                                        Body = new AyandehTokenRequest
                                                         {
-                                                            Action = "token",
-                                                            TerminalId = terminalId,
-                                                            RedirectUrl = callBack,
-                                                            ResNum = trackerId,
-                                                            Amount = request.PaymentRequestAmount,
-                                                            CellNumber = request.MobileNumber,
-                                                            ShaparakKycParams = request.NationalCodeMatchingRequied ? new ShaparakKycParams { CardHolderNationalId = CreateAdditionalData(request.NationalCode, request.ShaparakKey, request.ShaparakIv), ThirdPartyCode = request.ThirdPartyCode.ToString() } : null,
+                                                            Username = userName,
+                                                            Password = password,
+                                                            AdditionalData = $"{request.NationalCode}-{trackerId}",
+                                                            CallBackUrl = callBack,
+                                                            Amount = request.PaymentRequestAmount.ToString(),
+                                                            ServiceId = serviceId,
+                                                            Mobile = !string.IsNullOrEmpty(request.MobileNumber) ? $"{request.MobileNumber.Remove(0, 1)}" : null,
+                                                            SettleDate = settleDate,
                                                         },
-                                                        Provider = Enums.ProviderType.Sep,
-                                                        Service = Enums.ServiceType.SepToken,
+                                                        Provider = Enums.ProviderType.Ayandeh,
+                                                        Service = Enums.ServiceType.AyandehToken,
                                                     }, request, PaymentTokenErrorHandler);
 
         return new PaymentTokenResponse
         {
-            StatusCode = response.StatusCode,
+            StatusCode = response.StatusCode,            
             TrackerId = trackerId,
-            Token = response.Token,
+            Token = response.TraceNumber,
             IpgBaseUrl = request.IpgBaseUrl,
+            Result = response.Result,
+            UserName = userName,
         };
     }
 
     public async Task<TransactionResultResponse> GetTransactionResult(TransactionResultRequest transactionResultRequest)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public async Task<VerifyTransactionResponse> Verify(VerifyTransactionRequest request)
     {
         GetDataFromJsonProvider(request.ProviderData);
-        var response = await httpProvider.PostAsync<VerifyTransactionRequest, SepVerifyTransactionResponse,
-                                                    SepResponseBase, dynamic>(new HttpProviderRequest<dynamic>
+        var response = await httpProvider.PostAsync<VerifyTransactionRequest, AyandehVerifyTransactionResponse,
+                                                    AyandehResponseBase, dynamic>(new HttpProviderRequest<dynamic>
                                                     {
-                                                        Body = new SepVerifyTransactionRequest
+                                                        Body = new AyandehVerifyTransactionRequest
                                                         {
-                                                            RefNum = request.ProviderTrackerId,
-                                                            TerminalNumber = terminalId.ToString(),
+                                                           Username = userName,
+                                                           Password = password,
+                                                           TraceNumber = request.ProviderTrackerId
                                                         },
-                                                        BaseAddress = "https://sep.shaparak.ir/",
-                                                        Uri = "verifyTxnRandomSessionkey/ipg/VerifyTranscation",
-                                                        Provider = Enums.ProviderType.Sep,
-                                                        Service = Enums.ServiceType.SepVerify,
+                                                        BaseAddress = "https://mpg.ba24.ir/",
+                                                        Uri = "mpg/api/ipgPurchaseVerify",
+                                                        Provider = Enums.ProviderType.Ayandeh,
+                                                        Service = Enums.ServiceType.AyandehVerify,
                                                     }, request, VerifyErrorHandler);
 
-        var status = response.ResultCode switch
+        var status = response.Result switch
         {
-            -105 or -104 or -106 => Enums.IPGTransactionStatus.Verifying,
-            0 or 2 => Enums.IPGTransactionStatus.VerificationSucceeded,
-            -2 or -6 or 5 => Enums.IPGTransactionStatus.VerificationFailed,
+            "998" or "999" or "4034" => Enums.IPGTransactionStatus.Verifying,
+            "0" => Enums.IPGTransactionStatus.VerificationSucceeded,
+            _ => Enums.IPGTransactionStatus.VerificationFailed,
         };
         return new VerifyTransactionResponse
         {
-            Status = status
+            Status = status,            
+            RRN = response.Rrn,
         };
     }
 
@@ -118,7 +131,7 @@ internal class AyandehProvider(IHttpProvider httpProvider, ReadDbContext context
 
     private static string CreateCallbackUrl(short ipgRedirectionType, string siteAddress, string trackerId, string callbackPage) => ipgRedirectionType switch
     {
-        1 => $"{siteAddress}/{callbackPage}?track_id={trackerId}",
+        1 => $"{siteAddress}/{callbackPage.TrimEnd()}?track_id={trackerId}",
         2 => $"{siteAddress}/p/b/{trackerId}?pcu={callbackPage.TrimEnd()}/IPGResult",
         _ => string.Empty,
     };
@@ -135,8 +148,8 @@ internal class AyandehProvider(IHttpProvider httpProvider, ReadDbContext context
     }
 
     private async Task<TResponse?> PaymentTokenErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest? baseRequest, TResponse? response, TError? error, short statusCode)
-      where TResponse : SepTokenResponse
-      where TError : SepResponseBase
+      where TResponse : AyandehTokenResponse
+      where TError : AyandehResponseBase
       where TBaseRequest : PaymentTokenRequest
     {
         if (tokenFailCounter < serviceCallMaxTryCounter)
@@ -148,14 +161,14 @@ internal class AyandehProvider(IHttpProvider httpProvider, ReadDbContext context
     }
 
     private async Task<TResponse?> VerifyErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest? baseRequest, TResponse? response, TError? error, short statusCode)
-      where TResponse : SepVerifyTransactionResponse
-      where TError : SepResponseBase
+      where TResponse : AyandehVerifyTransactionResponse
+      where TError : AyandehResponseBase
       where TBaseRequest : VerifyTransactionRequest
     {
         return statusCode switch
         {
             504 => new VerifyTransactionResponse { Status = Enums.IPGTransactionStatus.Verifying } as TResponse,
-            _ => verifyFailCounter < serviceCallMaxTryCounter ? await Retry() : await Task.FromResult(BaseErrorHandler<TResponse, TError, TBaseRequest>(error)),
+            _ => verifyFailCounter < serviceCallMaxTryCounter ? await Retry() : new VerifyTransactionResponse {  Status = Enums.IPGTransactionStatus.VerificationFailed } as TResponse,
         };
 
         async Task<TResponse> Retry()
@@ -165,19 +178,19 @@ internal class AyandehProvider(IHttpProvider httpProvider, ReadDbContext context
         }
     }
 
-    private TResponse BaseErrorHandler<TResponse, TError, TBaseRequest>(SepResponseBase? error)
+    private TResponse BaseErrorHandler<TResponse, TError, TBaseRequest>(AyandehResponseBase? error)
        where TResponse : ResponseBase
-       where TError : SepResponseBase
+       where TError : AyandehResponseBase
        where TBaseRequest : class
 
     {
-        if (error is null || error.ErrorCode is null)
+        if (error is null || error.Result is null)
         {
             throw new Exception(GlobalResource.ProviderUnexpectedError);
         }
-        if (!string.IsNullOrEmpty(error.ErrorDescription))
+        if (!string.IsNullOrEmpty(error.Description))
         {
-            throw new Exception($"ServiceProviderError: {error.ErrorDescription}");
+            throw new Exception($"ServiceProviderError: {error.Description}");
         }
 
         throw new Exception(GlobalResource.ProviderUnexpectedError);

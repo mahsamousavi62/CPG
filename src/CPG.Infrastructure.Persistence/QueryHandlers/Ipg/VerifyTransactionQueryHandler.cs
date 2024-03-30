@@ -82,8 +82,9 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
 
                         if (result.Status == IPGTransactionStatus.VerificationSucceeded)
                         {
-                            transaction.Status = TransactionStatus.TransactionSucceeded;
+                            transaction.IPGTransaction.ReferenceNumber = result.RRN;
                             transaction.IPGTransaction.VerificationDateTime = DateTime.Now;
+                            transaction.Status = TransactionStatus.TransactionSucceeded;
                             paymentRequest.Status = PaymentStatus.TransactionVerificationSucceeded;
 
                             if (providerType == ProviderType.BehPardakht)
@@ -102,8 +103,13 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
                                     transaction.PredictedSettlementDateTime = GetPredictedSettlementDateTime();
                                 }
                             }
+                            else if (providerType == ProviderType.Ayandeh)
+                            {            
+                                var date = DateTime.Now.AddDays(2);
+                                transaction.PredictedSettlementDateTime = new DateTime(date.Year, date.Month, date.Day, 7, 0, 0);
+                            }
                             else
-                            {   
+                            {
                                 transaction.PredictedSettlementDateTime = GetPredictedSettlementDateTime();
                             }
                         }
