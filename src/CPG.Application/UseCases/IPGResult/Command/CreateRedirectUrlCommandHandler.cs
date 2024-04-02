@@ -36,6 +36,8 @@ public class CreateRedirectUrlCommandHandler(IApplicationSettingsRepository appl
                         break;
                     }
                 case Enums.ProviderType.Pec:
+                case Enums.ProviderType.BehPardakht:
+                case Enums.ProviderType.Ayandeh:
                 case Enums.ProviderType.Sep:
                     {
                         var encoder = UrlEncoder.Create();

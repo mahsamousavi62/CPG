@@ -1,15 +1,18 @@
-﻿using CPG.Application.Auth;
-using CPG.Application.UseCases.Common.Queries;
+﻿
+using CPG.Application.Auth;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.ApplicationSettings;
 using CPG.Domain.SharedKernel.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Security.Claims;
+using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Infrastructure.Authorization
 {
@@ -19,7 +22,6 @@ namespace CPG.Infrastructure.Authorization
         {
             {
                 services.AddTransient<ICurrentUser, CurrentUser>();
-                services.AddAuthorization();
                 services.AddHttpContextAccessor();
                 services.AddTransient<IAuthService, JwtService>();
                 services.AddScoped<IAuthenticationService, AuthenticationService>();
@@ -45,9 +47,36 @@ namespace CPG.Infrastructure.Authorization
                       };
                   });
 
+                services.AddAuthorizationPolicies();
                 return services;
             }
         }
+
+        public static void AddAuthorizationPolicies(this IServiceCollection services)
+        {
+            services.AddAuthorization(options =>
+            {
+                options.DefaultPolicy = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme)
+                .RequireAuthenticatedUser()
+                .Build();
+
+                options.AddPolicy(AuthPolicies.Roles.Admin, policy =>
+                {
+                    policy.RequireClaim(ClaimTypes.Role, UserRoleType.SuperAdmin.GetValue());
+                });
+
+                options.AddPolicy(AuthPolicies.Roles.CompanyUser, policy =>
+                {
+                    policy.RequireClaim(ClaimTypes.Role, UserRoleType.CompanyUser.GetValue());
+                });
+
+                options.AddPolicy(AuthPolicies.Roles.CustomerUser, policy =>
+                {
+                    policy.RequireClaim(ClaimTypes.Role, UserRoleType.CustomerUser.GetValue());
+                });
+            });
+        }
+
         public static IApplicationBuilder UseTokenAuthentication(this IApplicationBuilder app)
             => app.UseAuthentication();
 

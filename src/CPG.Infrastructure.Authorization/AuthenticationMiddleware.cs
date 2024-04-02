@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using CPG.Domain.SharedKernel;
 
+
 namespace CPG.Infrastructure.Authorization;
 
 public class AuthenticationMiddleware(IAuthenticationSchemeProvider schemes, RequestDelegate next)
@@ -68,6 +69,13 @@ public class AuthenticationMiddleware(IAuthenticationSchemeProvider schemes, Req
         newIdentity.AddClaim(new Claim(type: "ApplicationId", value: user?.ApplicationId.ToString()));
         newIdentity.AddClaim(new Claim(type: "ClientId", value: user?.IDPId.ToString()));
 
+        if (user.UserRoles?.Any() is true)
+        {
+            foreach (var role in user.UserRoles)
+            {
+                newIdentity.AddClaim(new Claim(ClaimTypes.Role, role.Key.ToString(), ClaimValueTypes.String));
+            }
+        }
         return clone;
     }
 }

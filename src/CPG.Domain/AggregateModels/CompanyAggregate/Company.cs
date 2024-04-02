@@ -7,6 +7,7 @@ using CPG.Domain.SharedKernel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Domain.AggregateModels.CompanyAggregate;
 
@@ -78,10 +79,10 @@ public class Company : AuditableEntity<long>, IAggregateRoot
                 company.PaymentMethods.Add(CompanyPaymentMethod.Create(newItem));
         }
 
-        foreach (var currnetItem in company.PaymentMethods)
+        foreach (var currnetItem in company.PaymentMethods.ToList())
         {
             if (!methodTypes.Any(p => p == currnetItem.MethodType))
-               currnetItem.IsActive = false;
+                company.PaymentMethods.Remove(currnetItem);
         }
 
         if (!string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(iV) && thirdPartyCode != null)

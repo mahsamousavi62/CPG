@@ -11,4 +11,8 @@ public class PaymentTokenResponse
     public short StatusCode { get; set; }
    
     public string Message { get; set; }
+
+    public string Result { get; set; }
+
+    public string UserName { get; set; }
 }

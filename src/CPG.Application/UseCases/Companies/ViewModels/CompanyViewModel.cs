@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using CPG.Application.UseCases.Users.ViewModel;
+using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Domain.SharedKernel;
 
 namespace CPG.Application.UseCases.Companies.ViewModels;
@@ -23,6 +25,7 @@ public class CompanyViewModel
 
     public ICollection<Enums.PaymentMethodType> PaymentMethods { get; set; }
 
+    public ICollection<UserCompanyViewModel> Users { get; set; }
     public bool IsActive { get; set; }
 
     public DateTime CreationDate { get; set; }
