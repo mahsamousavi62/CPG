@@ -14,6 +14,13 @@ using System.Threading.Tasks;
 using System.Threading;
 using CPG.Infrastructure.Persistence.GraphQL.Types.CompanyDeposit;
 using static HotChocolate.ErrorCodes;
+using CPG.Domain.AggregateModels.TransactionAggregate;
+using CPG.Infrastructure.Persistence.GraphQL.Model;
+using System;
+using System.Collections.Generic;
+using CPG.Infrastructure.Persistence.GraphQL.Types.Transaction;
+using Mapster;
+using CPG.Domain.SharedKernel;
 
 namespace CPG.Infrastructure.Persistence.GraphQL.Queries;
 
@@ -312,4 +319,80 @@ public class ReadModelQueries
         return viewModels;
     }
 
+    [UseOffsetPaging(IncludeTotalCount = true)]
+    [UseProjection]
+    [UseFiltering<TransactionFilerType>]
+    [UseSorting<TransactionSortType>]
+    public async Task<IEnumerable<TransactionReportViewModel>> GetTransactions([Service] ReadDbContext dbContext, [Service] IMinioProvider minioProvider, long companyId)
+    {
+        var data = await dbContext.TransactionReadModels
+            .Where(c => c.CompanyId == companyId)
+            .Select(c => new
+            {
+                Transaction = c,
+                Company = c.Company,
+                PaymentRequest = c.PaymentRequest,
+                Application = c.PaymentRequest.Application,
+                IPGTransaction = dbContext.IPGTransactionReadModels.FirstOrDefault(ipg => ipg.Id == c.IPGTransactionId),
+                CompanyIPG = c.IPGTransaction != null ? c.IPGTransaction.CompanyIPG : null,
+                IPGType = c.IPGTransaction.CompanyIPG.IPGType,
+                Provider = c.IPGTransaction.CompanyIPG.Provider,
+                CompanyDeposit = c.DestinationDeposit
+            })
+            .ToListAsync();
+
+        var viewModels =await Task.WhenAll(
+
+             data.Select ( async entity => new TransactionReportViewModel
+             {
+                 Id = entity.Transaction.Id,
+                 CompanyId = entity.Company.Id,
+                 CompanyPersianName = entity.Company.PersianName,
+                 CompanyEnglishName = entity.Company.EnglishName,
+                 Amount = entity.Transaction.Amount,
+                 TransactionMethodType = entity.Transaction.TransactionMethodType,
+                 TransactionMethodTypeName = GetTransactionMethodTypeName(entity.Transaction.TransactionMethodType),
+                 IpgTypeName = entity.IPGType?.PersianName,
+                 ProviderName = entity.Provider?.PersianName,
+                 ApplicationName = entity.Application?.PersianName,
+                 PaymentCode = entity.PaymentRequest?.PaymentCode,
+                 CompanyDepositName = entity.CompanyDeposit.Name,
+                 CompanyDepositaccountNumber = entity.CompanyDeposit.AccountNumber,
+                 CompanyDepositIban = entity.CompanyDeposit.Iban,
+                 CompanyLogo = !string.IsNullOrEmpty(entity.Company.Logo) ? await GetCompanyLogo(minioProvider, entity.Company.Logo) : null
+             }).ToList()
+
+            );
+
+        return viewModels;
+    }
+
+    private async Task<string> GetCompanyLogo(IMinioProvider minioProvider, string logoPath)
+    {
+        try
+        {
+            return await minioProvider.PresignedGetObject(logoPath);
+        }
+        catch (Exception)
+        {
+            return null; 
+        }
+    }
+
+    private string GetTransactionMethodTypeName(Enums.TransactionType transactionMethodType)
+    {
+        switch (transactionMethodType)
+        {
+            case Enums.TransactionType.IPG:
+                return "درگاه پرداخت";
+            case Enums.TransactionType.DirectDebit:
+                return "برداشت مستقیم";
+            case Enums.TransactionType.PaymentReceipt:
+                return "فیش واریزی";
+            case Enums.TransactionType.CharismaCard:
+                return "کاریزما کارت";
+            default:
+                return string.Empty;
+        }
+    }
 }

@@ -121,8 +121,17 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
                 {
                     var userDepositBalance = await _neoBankService.GetUserDepositBalance();
 
+                    if (string.IsNullOrEmpty(userDepositBalance?.Error.Description))
+                    {
+                        charismaCard = new()
+                        {
+                            Error = userDepositBalance.Error.ToString()
+                        };
+                    }
+
                     if (userDepositBalance?.Data is not null)
                     {
+                        
                         charismaCard = new ViewModels.CharismaCard
                         {
                             BalanceAmount = userDepositBalance.Data.Balance,
@@ -131,6 +140,7 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
                             DepositStatus = userDepositBalance.Data.DepositStatus,
                             ExpirationDate = userDepositBalance.Data.ExpirationDate
                         };
+                      
                     }
                 }
             }
