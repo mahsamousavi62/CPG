@@ -1,16 +1,16 @@
 ﻿using CPG.Domain.SharedKernel.Communication.Ipg.Ayandeh;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
 
 public class AyandehVerifyTransactionRequest : AyandehRequestBase
 {
-    [JsonPropertyName("username")]
+    [JsonProperty("username")]
     public string Username { get; set; }
 
-    [JsonPropertyName("password")]
+    [JsonProperty("password")]
     public string Password { get; set; }
 
-    [JsonPropertyName("traceNumber")]
+    [JsonProperty("traceNumber")]
     public string TraceNumber { get; set; }
 }
