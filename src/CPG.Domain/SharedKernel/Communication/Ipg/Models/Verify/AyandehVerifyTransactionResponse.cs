@@ -1,29 +1,29 @@
 ﻿using CPG.Domain.SharedKernel.Communication.Ipg.Ayandeh;
+using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
 
 public class AyandehVerifyTransactionResponse : AyandehResponseBase
 {
-    [JsonPropertyName("serviceAmountList")]
+    [JsonProperty("serviceAmountList")]
     public List<ServiceAmount> ServiceAmountList { get; set; }
 
-    [JsonPropertyName("amount")]
+    [JsonProperty("amount")]
     public string Amount { get; set; }
 
-    [JsonPropertyName("rrn")]
+    [JsonProperty("rrn")]
     public string Rrn { get; set; }
 
-    [JsonPropertyName("type")]
+    [JsonProperty("type")]
     public string Type { get; set; }
 }
 
 public class ServiceAmount
 {
-    [JsonPropertyName("serviceId")]
+    [JsonProperty("serviceId")]
     public int ServiceId { get; set; }
 
-    [JsonPropertyName("amount")]
+    [JsonProperty("amount")]
     public decimal Amount { get; set; }
 }
