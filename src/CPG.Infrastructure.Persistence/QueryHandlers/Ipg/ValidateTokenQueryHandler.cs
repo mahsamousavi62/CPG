@@ -29,6 +29,7 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
     private readonly string[] sepSuccessStatusList = ["2"];
     private readonly string PecSucceedStatus = "0";
     private readonly string bepSucceedStatus = "0";
+    private readonly string ayandehSucceedStatus = "0";
 
     public async Task<Result<ValidateTokenResponseViewModel>> Handle(ValidateTokenQuery request, CancellationToken cancellationToken)
     {
@@ -139,6 +140,28 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
                         transaction.IPGTransaction.EncryptCardNumber = req.CardHolderInfo;
 
                         if(req.ResCode == bepSucceedStatus)
+                        {
+                            transaction.IPGTransaction.Status = IPGTransactionStatus.SucceededAndWaitingForVerification;
+                            transaction.IPGTransaction.PredicateExpirationDateTime = DateTime.Now.AddMinutes(transaction.IPGTransaction.VerificationTimeLimit);
+                            paymentRequest.Status = PaymentStatus.TransactionWaitingForVerification;
+                        }
+                        else
+                        {
+                            transaction.IPGTransaction.Status = IPGTransactionStatus.Failed;
+                            transaction.Status = TransactionStatus.TransactionFailed;
+                            paymentRequest.Status = PaymentStatus.TransactionFailed;
+                        }
+
+                        break;
+                    }
+                case ProviderType.Ayandeh:
+                    {
+                        var req = System.Text.Json.JsonSerializer.Deserialize<AyandehValidateTokenViewModel>(request.ValidateToken.Request);
+
+                        transaction.IPGTransaction.ProviderTrackerId = req.TraceNumber;
+                        transaction.IPGTransaction.ReferenceNumber = req.ChannelRefNumber;
+
+                        if (req.Result == ayandehSucceedStatus)
                         {
                             transaction.IPGTransaction.Status = IPGTransactionStatus.SucceededAndWaitingForVerification;
                             transaction.IPGTransaction.PredicateExpirationDateTime = DateTime.Now.AddMinutes(transaction.IPGTransaction.VerificationTimeLimit);

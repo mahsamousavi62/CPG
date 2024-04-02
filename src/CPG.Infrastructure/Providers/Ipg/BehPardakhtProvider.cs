@@ -19,11 +19,11 @@ using BehPardakhtServiceReference;
 namespace CPG.Infrastructure.Providers.Ipg;
 
 public class BehPardakhtProvider(
-    ReadDbContext context, IApplicationSettingsRepository applicationSettingsRepository, ILogService logService, ILogger<PecProvider> logger) : IIpgProvider
+    ReadDbContext context, IApplicationSettingsRepository applicationSettingsRepository, ILogService logService, ILogger<BehPardakhtProvider> logger) : IIpgProvider
 {
     private readonly IApplicationSettingsRepository _applicationSettingRepositoy = applicationSettingsRepository;
     private readonly ILogService _logService = logService;
-    private readonly ILogger<PecProvider> _logger = logger;
+    private readonly ILogger<BehPardakhtProvider> _logger = logger;
     private readonly ReadDbContext context = context;
     private readonly byte serviceCallMaxTryCounter = 5;
     private byte tokenFailCounter = 0;
