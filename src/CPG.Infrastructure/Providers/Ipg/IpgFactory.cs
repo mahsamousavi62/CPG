@@ -13,13 +13,16 @@ namespace CPG.Infrastructure.Providers.Ipg
         ILogService logService,
         IApplicationSettingsRepository applicationSettingsRepository,
         ReadDbContext context,
-         ILogger<PecProvider> pecProviderLogger) : IIpgFactory
+        ILogger<PecProvider> pecProviderLogger,
+        ILogger<BehPardakhtProvider> behPardakhtProviderLogger
+        ) : IIpgFactory
     {
         private readonly IHttpProvider _httpProvider = httpProvider;
         private readonly IApplicationSettingsRepository _applicationSettingsRepository = applicationSettingsRepository;
         private readonly ReadDbContext _context = context;
         private readonly ILogService _logService = logService;
         private readonly ILogger<PecProvider> _pecProviderLogger = pecProviderLogger;
+        private readonly ILogger<BehPardakhtProvider> _behPardakhtProviderLogger = behPardakhtProviderLogger;
         public IIpgProvider GetInstance(Enums.ProviderType providerType)
         {
             switch (providerType)
@@ -38,7 +41,11 @@ namespace CPG.Infrastructure.Providers.Ipg
                     }
                 case Enums.ProviderType.BehPardakht:
                     {
-                        return new BehPardakhtProvider(_context, _applicationSettingsRepository, _logService, _pecProviderLogger);
+                        return new BehPardakhtProvider(_context, _applicationSettingsRepository, _logService, _behPardakhtProviderLogger);
+                    }
+                case Enums.ProviderType.Ayandeh:
+                    {
+                        return new AyandehProvider(_httpProvider, _context, _applicationSettingsRepository);
                     }
                 default: return null;
             }

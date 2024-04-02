@@ -3,4 +3,6 @@
 public class VerifyTransactionResponse : ResponseBase
 {
     public Enums.IPGTransactionStatus Status { get; set; }
+
+    public string RRN { get; set; }
 }

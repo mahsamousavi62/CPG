@@ -104,6 +104,9 @@ public class Enums
         BehPardakhtToken = 16,
         BehPardakhtTransResult = 17,
         BehPardakhtVerify = 18,
+        AyandehToken = 19,
+        AyandehTransResult = 20,
+        AyandehVerify = 21,
     }
 
     public enum TransactionType : byte
