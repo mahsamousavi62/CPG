@@ -522,6 +522,7 @@ public class HttpProvider : IHttpProvider
         }
 
         HttpResponseMessage response = await client!.GetAsync(request.Uri);
+
         var resString = await response.Content.ReadAsStringAsync();
         if (postCallHandler is not null)
         {
@@ -532,6 +533,7 @@ public class HttpProvider : IHttpProvider
         try
         {
             result = decodeHandler is not null ? await decodeHandler(response) : await response.Content.ReadFromJsonAsync<TResponse>();
+            result.StatusCode = (short)response.StatusCode;
             return response.StatusCode is not System.Net.HttpStatusCode.OK && failHandler is not null ? await failHandler(request.Request, result) : result;
         }
         catch (Exception exc)

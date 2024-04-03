@@ -14,6 +14,7 @@ namespace CPG.API.Controllers.v1;
 
 public class CompanyIPGController : ApiBaseController
 {
+    [Authorize(Policy = AuthPolicies.Roles.Admin)]
     [HttpGet("GetCompanyIPGs/{id:long}")]
     [ProducesResponseType(typeof(Result<IReadOnlyCollection<CompanyIPGDataViewModel>>), (int)HttpStatusCode.OK)]
     public async Task<Result<IReadOnlyCollection<CompanyIPGDataViewModel>>> GetCompanyIPGs(long id)
@@ -21,6 +22,7 @@ public class CompanyIPGController : ApiBaseController
         return await Mediator.Send(new GetCompanyIPGsQuery(id));
     }
 
+    [Authorize(Policy = AuthPolicies.Roles.Admin)]
     [HttpGet("GetActiveCompanyIPGs/{id:long}")]
     [ProducesResponseType(typeof(Result<IReadOnlyCollection<CompanyIPGDataViewModel>>), (int)HttpStatusCode.OK)]
     public async Task<Result<IReadOnlyCollection<CompanyIPGDataViewModel>>> GetActiveCompanyIPGs(long id)

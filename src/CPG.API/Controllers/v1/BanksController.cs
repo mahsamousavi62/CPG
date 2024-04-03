@@ -18,13 +18,13 @@ public class BanksController : ApiBaseController
     { 
         return await Mediator.Send(new GetBankQuery(id));
     }
-
+    [Authorize(Policy = AuthPolicies.Roles.Admin)]
     [HttpGet("all")]
     public async Task<Result<IReadOnlyCollection<BankViewModel>>> GetAllBanks()
     { 
         return await Mediator.Send(new GetAllBanksQuery());
     }
-    
+    [Authorize(Policy = AuthPolicies.Roles.Admin)]
     [HttpGet("active")]
     public async Task<Result<IReadOnlyCollection<BankViewModel>>> GetActiveBanks()
     { 

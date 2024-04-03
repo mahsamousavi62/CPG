@@ -115,6 +115,7 @@ public class Result
 public class UserProfileResponse: IHttpResponse
 {
     public Result Result { get; set; }
+    public short StatusCode { get; set; }
 }
 
 public class TradingCode
@@ -136,5 +137,6 @@ public interface IHttpRequest
 
 public interface IHttpResponse
 {
+    public short StatusCode { get; set; }
 }
 
