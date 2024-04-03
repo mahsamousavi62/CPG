@@ -17,6 +17,9 @@ public class TransactionReadModel
     public decimal Amount { get; set; }
     public long ApplicationId { get; set; }
     public DateTime? PredictedSettlementDateTime { get; set; }
+    public DateTime? CreationDate { get; set; }
+    public long CreationUserId { get; set; }
+    public DateTime? ModificationDate { get; set; }
     public Enums.TransactionStatus Status { get; set; }
     public PaymentRequestReadModel PaymentRequest { get; set; }
     public IPGTransactionReadModel IPGTransaction { get; set; }

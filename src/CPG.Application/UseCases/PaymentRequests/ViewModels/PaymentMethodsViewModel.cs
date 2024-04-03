@@ -52,5 +52,4 @@ public class CharismaCard
     public string CardNumber { get; set; }
     public DateTime? ExpirationDate { get; set; }
     public Enums.NeoBankDepositStatus DepositStatus { get; set; }
-    public string Error { get; set; }
 }

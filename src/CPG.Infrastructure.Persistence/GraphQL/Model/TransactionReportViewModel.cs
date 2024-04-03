@@ -35,7 +35,12 @@ namespace CPG.Infrastructure.Persistence.GraphQL.Model
         public string CompanyDepositName { get; set; }
         public string CompanyDepositaccountNumber { get; set; }
         public string CompanyDepositIban { get; set; }
+        public string? ReferenceNumber { get; set; }
         public string TransactionStatus { get; set; }
-
+        public DateTime? TransactionCreateDateTime { get; set; }
+        public DateTime? TransactionModificationDateTime { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string NationalCode { get; set; }
     }
 }

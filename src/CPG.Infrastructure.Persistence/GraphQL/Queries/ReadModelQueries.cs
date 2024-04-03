@@ -21,6 +21,8 @@ using System.Collections.Generic;
 using CPG.Infrastructure.Persistence.GraphQL.Types.Transaction;
 using Mapster;
 using CPG.Domain.SharedKernel;
+using HotChocolate.Authorization;
+
 
 namespace CPG.Infrastructure.Persistence.GraphQL.Queries;
 
@@ -318,32 +320,36 @@ public class ReadModelQueries
         });
         return viewModels;
     }
-
+    
+    [Authorize(Roles = new[] { "Guest", "Admin" })]
     [UseOffsetPaging(IncludeTotalCount = true)]
     [UseProjection]
     [UseFiltering<TransactionFilerType>]
     [UseSorting<TransactionSortType>]
-    public async Task<IEnumerable<TransactionReportViewModel>> GetTransactions([Service] ReadDbContext dbContext, [Service] IMinioProvider minioProvider, long companyId)
+    public async Task<IEnumerable<TransactionReportViewModel>> GetTransactions([Service] ReadDbContext dbContext,
+        [Service] IMinioProvider minioProvider)
     {
+        long companyId = 1;
+
         var data = await dbContext.TransactionReadModels
-            .Where(c => c.CompanyId == companyId)
+            .Where(c => c.CompanyId == companyId).OrderByDescending(c => c.Id)
             .Select(c => new
             {
                 Transaction = c,
                 Company = c.Company,
                 PaymentRequest = c.PaymentRequest,
                 Application = c.PaymentRequest.Application,
-                IPGTransaction = dbContext.IPGTransactionReadModels.FirstOrDefault(ipg => ipg.Id == c.IPGTransactionId),
+                IPGTransaction = c.IPGTransaction,
                 CompanyIPG = c.IPGTransaction != null ? c.IPGTransaction.CompanyIPG : null,
                 IPGType = c.IPGTransaction.CompanyIPG.IPGType,
                 Provider = c.IPGTransaction.CompanyIPG.Provider,
                 CompanyDeposit = c.DestinationDeposit
             })
             .ToListAsync();
+        var users = await dbContext.UserReadModels.ToListAsync();
+        var viewModels = await Task.WhenAll(
 
-        var viewModels =await Task.WhenAll(
-
-             data.Select ( async entity => new TransactionReportViewModel
+             data.Select(async entity => new TransactionReportViewModel
              {
                  Id = entity.Transaction.Id,
                  CompanyId = entity.Company.Id,
@@ -359,12 +365,34 @@ public class ReadModelQueries
                  CompanyDepositName = entity.CompanyDeposit.Name,
                  CompanyDepositaccountNumber = entity.CompanyDeposit.AccountNumber,
                  CompanyDepositIban = entity.CompanyDeposit.Iban,
-                 CompanyLogo = !string.IsNullOrEmpty(entity.Company.Logo) ? await GetCompanyLogo(minioProvider, entity.Company.Logo) : null
+                 CompanyLogo = !string.IsNullOrEmpty(entity.Company.Logo) ? await GetCompanyLogo(minioProvider, entity.Company.Logo) : null,
+                 TransactionCreateDateTime = entity.Transaction.CreationDate,
+                 TransactionModificationDateTime = entity.Transaction.ModificationDate,
+                 FirstName = users.FirstOrDefault(c => c.Id == entity.Transaction.CreationUserId)?.FirstName,
+                 LastName = users.FirstOrDefault(c => c.Id == entity.Transaction.CreationUserId)?.LastName,
+                 NationalCode = entity.PaymentRequest.NationalCode,
+                 ApplicationId = entity.Application.Id,
+                 ReferenceNumber = entity.IPGTransaction?.ReferenceNumber,
+                 TransactionStatus = GetTransactionStatusName(entity.Transaction.Status)
              }).ToList()
-
             );
 
-        return viewModels;
+        return viewModels.OrderByDescending(c=>c.Id);
+    }
+
+    private string GetTransactionStatusName(Enums.TransactionStatus status)
+    {
+        switch (status)
+        {
+            case Enums.TransactionStatus.InPrgress:
+                return "در حال انجام";
+            case Enums.TransactionStatus.TransactionSucceeded:
+                return "تراکنش موفق";
+            case Enums.TransactionStatus.TransactionFailed:
+                return "تراکنش ناموفق";
+            default:
+                return string.Empty;
+        }
     }
 
     private async Task<string> GetCompanyLogo(IMinioProvider minioProvider, string logoPath)
@@ -375,7 +403,7 @@ public class ReadModelQueries
         }
         catch (Exception)
         {
-            return null; 
+            return null;
         }
     }
 

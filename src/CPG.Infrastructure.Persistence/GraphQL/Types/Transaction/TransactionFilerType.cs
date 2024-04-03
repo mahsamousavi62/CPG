@@ -18,5 +18,17 @@ public class TransactionFilerType : FilterInputType<TransactionReportViewModel>
         descriptor.BindFieldsExplicitly();
         descriptor.Field(f => f.CompanyId).Type<CustomLongOperationFilterInputType>();
         descriptor.Field(f => f.Id).Type<CustomLongOperationFilterInputType>();
+        descriptor.Field(f => f.CompanyPersianName).Type<CustomStringOperationFilterInputType>();
+        descriptor.Field(f => f.TransactionMethodType).Type<CustomStringOperationFilterInputType>();
+        descriptor.Field(f => f.NationalCode).Type<CustomStringOperationFilterInputType>();
+        descriptor.Field(f => f.ApplicationId).Type<CustomLongOperationFilterInputType>();
+        descriptor.Field(f => f.FirstName).Type<CustomStringOperationFilterInputType>();
+        descriptor.Field(f => f.LastName).Type<CustomStringOperationFilterInputType>();
+        descriptor.Field(f => f.CompanyDepositaccountNumber).Type<CustomStringOperationFilterInputType>();
+        descriptor.Field(f => f.CompanyDepositIban).Type<CustomStringOperationFilterInputType>();
+        descriptor.Field(f => f.PaymentCode).Type<CustomStringOperationFilterInputType>();
+        descriptor.Field(f => f.Status).Type<CustomStringOperationFilterInputType>();
+
+
     }
 }

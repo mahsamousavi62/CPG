@@ -1,7 +1,7 @@
 ﻿
 
-namespace CPG.Infrastructure.Authorization
-{
+namespace CPG.Domain.SharedKernel;
+
     public static class AuthPolicies
     { 
         public static class Roles
@@ -9,9 +9,7 @@ namespace CPG.Infrastructure.Authorization
             public const string Admin = "SuperAdmin";
             public const string CompanyUser = "CompanyUser";
             public const string CustomerUser = "CustomerUser";
+            public const string AdminCompanyUser = "AdminCompanyUser";
         }
-        
     }
 
-   
-}

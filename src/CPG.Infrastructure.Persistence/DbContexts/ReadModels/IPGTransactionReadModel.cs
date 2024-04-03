@@ -12,7 +12,7 @@ public class IPGTransactionReadModel
     public long CompanyIPGId { get; set; }
     public string IPGToken { get; set; }
     public string ProviderTrackerId { get; set; }
-    public string ReferenceNumber { get; set; }
+    public string? ReferenceNumber { get; set; }
     public string EncryptCardNumber { get; set; }
     public int VerificationTimeLimit { get; set; }
     public DateTime? PredicateExpirationDateTime { get; set; }
