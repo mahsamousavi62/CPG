@@ -320,16 +320,25 @@ public class ReadModelQueries
         });
         return viewModels;
     }
-    
-    [Authorize(Roles = new[] { "Guest", "Admin" })]
+
+    // [Authorize(Roles = new[] { "Guest", "Admin" })]
     [UseOffsetPaging(IncludeTotalCount = true)]
     [UseProjection]
     [UseFiltering<TransactionFilerType>]
     [UseSorting<TransactionSortType>]
     public async Task<IEnumerable<TransactionReportViewModel>> GetTransactions([Service] ReadDbContext dbContext,
-        [Service] IMinioProvider minioProvider)
+        [Service] IMinioProvider minioProvider, int? pageNumber,int? pageSize)
     {
         long companyId = 1;
+
+        if (!pageNumber.HasValue)
+        {
+            pageNumber = 1;
+        }
+        if (!pageSize.HasValue)
+        {
+            pageSize = 10;
+        }
 
         var data = await dbContext.TransactionReadModels
             .Where(c => c.CompanyId == companyId).OrderByDescending(c => c.Id)
@@ -345,7 +354,9 @@ public class ReadModelQueries
                 Provider = c.IPGTransaction.CompanyIPG.Provider,
                 CompanyDeposit = c.DestinationDeposit
             })
+            .Skip((pageNumber.Value - 1) * pageSize.Value) .Take(pageSize.Value)
             .ToListAsync();
+        
         var users = await dbContext.UserReadModels.ToListAsync();
         var viewModels = await Task.WhenAll(
 
@@ -373,11 +384,12 @@ public class ReadModelQueries
                  NationalCode = entity.PaymentRequest.NationalCode,
                  ApplicationId = entity.Application.Id,
                  ReferenceNumber = entity.IPGTransaction?.ReferenceNumber,
-                 TransactionStatus = GetTransactionStatusName(entity.Transaction.Status)
+                 TransactionStatus = GetTransactionStatusName(entity.Transaction.Status),
+                 Status=entity.Transaction.Status
              }).ToList()
             );
 
-        return viewModels.OrderByDescending(c=>c.Id);
+        return viewModels.OrderByDescending(c => c.Id);
     }
 
     private string GetTransactionStatusName(Enums.TransactionStatus status)
