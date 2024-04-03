@@ -7,6 +7,7 @@ using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Communication.Idp;
 using MediatR;
 using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -26,7 +27,9 @@ public class CreateUserCommandHandler(IIdpProvider idpClient, IAggregateReposito
             var sub = await _authenticationService.GetDataFromClaim<string>("sub", string.Empty);
             var idpUserProfileResponse = await _idpClient.GetUserProfile(sub);
 
-            if (idpUserProfileResponse.OperationResult == Enums.OperationResult.Failed)
+            if (idpUserProfileResponse.Data.StatusCode==(short) HttpStatusCode.NotFound ||
+                idpUserProfileResponse.OperationResult == Enums.OperationResult.Failed 
+                || string.IsNullOrEmpty(idpUserProfileResponse.Data?.Result?.Id))
                 throw new IdpUserProfileException();
 
             var idpUserProfile = idpUserProfileResponse.Data;
