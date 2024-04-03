@@ -771,4 +771,7 @@
   <data name="IncreaseBalance" xml:space="preserve">
     <value>IncreaseBalance</value>
   </data>
+  <data name="PayBy" xml:space="preserve">
+    <value>PayBy</value>
+  </data>
 </root>

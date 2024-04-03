@@ -789,4 +789,7 @@
   <data name="IncreaseBalance" xml:space="preserve">
     <value>افزایش موجودی</value>
   </data>
+  <data name="PayBy" xml:space="preserve">
+    <value>پرداخت توسط</value>
+  </data>
 </root>
