@@ -27,21 +27,21 @@ public class AuthenticationMiddleware(IAuthenticationSchemeProvider schemes, Req
             if (defaultAuthenticate != null)
             {
                 var result = await context.AuthenticateAsync(defaultAuthenticate.Name);
-                //string? kycStatus = context.User.Claims.SingleOrDefault(c => c.Type == "status")?.Value;
+                string? kycStatus = context.User.Claims.SingleOrDefault(c => c.Type == "status")?.Value;
+                if (kycStatus!= userKycStatus)
+                {
+                    context.Response.Clear();
+                    context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                    await context.Response.WriteAsJsonAsync(new
+                    {
+                        Data = string.Empty,
+                        Message = string.Empty,
+                        Action = "IdpProfileNotFound",
+                        Errors = string.Empty,
+                    });
+                    return;
 
-
-                //context.Response.Clear();
-                //context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                //await context.Response.WriteAsJsonAsync(new
-                //{
-                //    Data = string.Empty,
-                //    Message = string.Empty,
-                //    Action = "IdpProfileNotFound",
-                //    Errors = string.Empty,
-                //});
-                //return;
-
-
+                }
                 if (result?.Principal != null)
                     context.User = await ClonePrincipal(result.Principal, mediator);
             }
