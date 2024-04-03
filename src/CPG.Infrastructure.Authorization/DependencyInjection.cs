@@ -74,6 +74,14 @@ namespace CPG.Infrastructure.Authorization
                 {
                     policy.RequireClaim(ClaimTypes.Role, UserRoleType.CustomerUser.GetValue());
                 });
+
+                options.AddPolicy(AuthPolicies.Roles.AdminCompanyUser, policy =>
+                {
+                    policy.RequireClaim(ClaimTypes.Role, UserRoleType.SuperAdmin.GetValue());
+                    policy.RequireClaim(ClaimTypes.Role, UserRoleType.CompanyUser.GetValue());
+
+                });
+
             });
         }
 

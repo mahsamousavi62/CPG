@@ -19,16 +19,17 @@ public class ProviderController : ApiBaseController
     {
         return await Mediator.Send(new GetProviderQuery(id));
     }
-
+    [Authorize(Policy = AuthPolicies.Roles.Admin)]
     [HttpGet("all")]
     public async Task<Result<IReadOnlyCollection<ProviderViewModel>>> GetAllProviders()
-    { 
+    {
         return await Mediator.Send(new GetAllProvidersQuery());
     }
 
+    [Authorize(Policy = AuthPolicies.Roles.Admin)]
     [HttpGet("active")]
     public async Task<Result<IReadOnlyCollection<ProviderViewModel>>> GetActiveProviders()
-    { 
+    {
         return await Mediator.Send(new GetActiveProvidersQuery());
     }
     [Authorize(Policy = AuthPolicies.Roles.Admin)]
@@ -37,7 +38,7 @@ public class ProviderController : ApiBaseController
     {
         CreateProviderViewModel createProviderViewModel = new(model.PersianName, model.EnglishName,
                                                              model.ProviderType, model.ProviderData,
-                                                             new FormFileProxy(model.File),model.MethodTypes);
+                                                             new FormFileProxy(model.File), model.MethodTypes);
 
         return await Mediator.Send(new CreateProviderCommand(createProviderViewModel));
     }
@@ -45,8 +46,8 @@ public class ProviderController : ApiBaseController
     [HttpPut]
     public async Task<Result<Unit>> UpdateProvider([FromForm] UpdateProviderModel model)
     {
-        UpdateProviderViewModel updateProviderViewModel = new(model.Id,model.PersianName, model.EnglishName,
-                                                              model.ProviderData,new FormFileProxy(model.File), 
+        UpdateProviderViewModel updateProviderViewModel = new(model.Id, model.PersianName, model.EnglishName,
+                                                              model.ProviderData, new FormFileProxy(model.File),
                                                               model.MethodTypes);
 
         return await Mediator.Send(new UpdateProviderCommand(updateProviderViewModel));

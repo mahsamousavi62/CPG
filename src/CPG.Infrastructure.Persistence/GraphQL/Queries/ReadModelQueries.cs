@@ -14,6 +14,15 @@ using System.Threading.Tasks;
 using System.Threading;
 using CPG.Infrastructure.Persistence.GraphQL.Types.CompanyDeposit;
 using static HotChocolate.ErrorCodes;
+using CPG.Domain.AggregateModels.TransactionAggregate;
+using CPG.Infrastructure.Persistence.GraphQL.Model;
+using System;
+using System.Collections.Generic;
+using CPG.Infrastructure.Persistence.GraphQL.Types.Transaction;
+using Mapster;
+using CPG.Domain.SharedKernel;
+using HotChocolate.Authorization;
+
 
 namespace CPG.Infrastructure.Persistence.GraphQL.Queries;
 
@@ -311,5 +320,107 @@ public class ReadModelQueries
         });
         return viewModels;
     }
+    
+    [Authorize(Roles = new[] { "Guest", "Admin" })]
+    [UseOffsetPaging(IncludeTotalCount = true)]
+    [UseProjection]
+    [UseFiltering<TransactionFilerType>]
+    [UseSorting<TransactionSortType>]
+    public async Task<IEnumerable<TransactionReportViewModel>> GetTransactions([Service] ReadDbContext dbContext,
+        [Service] IMinioProvider minioProvider)
+    {
+        long companyId = 1;
 
+        var data = await dbContext.TransactionReadModels
+            .Where(c => c.CompanyId == companyId).OrderByDescending(c => c.Id)
+            .Select(c => new
+            {
+                Transaction = c,
+                Company = c.Company,
+                PaymentRequest = c.PaymentRequest,
+                Application = c.PaymentRequest.Application,
+                IPGTransaction = c.IPGTransaction,
+                CompanyIPG = c.IPGTransaction != null ? c.IPGTransaction.CompanyIPG : null,
+                IPGType = c.IPGTransaction.CompanyIPG.IPGType,
+                Provider = c.IPGTransaction.CompanyIPG.Provider,
+                CompanyDeposit = c.DestinationDeposit
+            })
+            .ToListAsync();
+        var users = await dbContext.UserReadModels.ToListAsync();
+        var viewModels = await Task.WhenAll(
+
+             data.Select(async entity => new TransactionReportViewModel
+             {
+                 Id = entity.Transaction.Id,
+                 CompanyId = entity.Company.Id,
+                 CompanyPersianName = entity.Company.PersianName,
+                 CompanyEnglishName = entity.Company.EnglishName,
+                 Amount = entity.Transaction.Amount,
+                 TransactionMethodType = entity.Transaction.TransactionMethodType,
+                 TransactionMethodTypeName = GetTransactionMethodTypeName(entity.Transaction.TransactionMethodType),
+                 IpgTypeName = entity.IPGType?.PersianName,
+                 ProviderName = entity.Provider?.PersianName,
+                 ApplicationName = entity.Application?.PersianName,
+                 PaymentCode = entity.PaymentRequest?.PaymentCode,
+                 CompanyDepositName = entity.CompanyDeposit.Name,
+                 CompanyDepositaccountNumber = entity.CompanyDeposit.AccountNumber,
+                 CompanyDepositIban = entity.CompanyDeposit.Iban,
+                 CompanyLogo = !string.IsNullOrEmpty(entity.Company.Logo) ? await GetCompanyLogo(minioProvider, entity.Company.Logo) : null,
+                 TransactionCreateDateTime = entity.Transaction.CreationDate,
+                 TransactionModificationDateTime = entity.Transaction.ModificationDate,
+                 FirstName = users.FirstOrDefault(c => c.Id == entity.Transaction.CreationUserId)?.FirstName,
+                 LastName = users.FirstOrDefault(c => c.Id == entity.Transaction.CreationUserId)?.LastName,
+                 NationalCode = entity.PaymentRequest.NationalCode,
+                 ApplicationId = entity.Application.Id,
+                 ReferenceNumber = entity.IPGTransaction?.ReferenceNumber,
+                 TransactionStatus = GetTransactionStatusName(entity.Transaction.Status)
+             }).ToList()
+            );
+
+        return viewModels.OrderByDescending(c=>c.Id);
+    }
+
+    private string GetTransactionStatusName(Enums.TransactionStatus status)
+    {
+        switch (status)
+        {
+            case Enums.TransactionStatus.InPrgress:
+                return "در حال انجام";
+            case Enums.TransactionStatus.TransactionSucceeded:
+                return "تراکنش موفق";
+            case Enums.TransactionStatus.TransactionFailed:
+                return "تراکنش ناموفق";
+            default:
+                return string.Empty;
+        }
+    }
+
+    private async Task<string> GetCompanyLogo(IMinioProvider minioProvider, string logoPath)
+    {
+        try
+        {
+            return await minioProvider.PresignedGetObject(logoPath);
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+    }
+
+    private string GetTransactionMethodTypeName(Enums.TransactionType transactionMethodType)
+    {
+        switch (transactionMethodType)
+        {
+            case Enums.TransactionType.IPG:
+                return "درگاه پرداخت";
+            case Enums.TransactionType.DirectDebit:
+                return "برداشت مستقیم";
+            case Enums.TransactionType.PaymentReceipt:
+                return "فیش واریزی";
+            case Enums.TransactionType.CharismaCard:
+                return "کاریزما کارت";
+            default:
+                return string.Empty;
+        }
+    }
 }

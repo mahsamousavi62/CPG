@@ -23,13 +23,13 @@ public class ApplicationController : ApiBaseController
     { 
         return await Mediator.Send(new GetApplicationQuery(id));
     }
-
+    [Authorize(Policy = AuthPolicies.Roles.Admin)]
     [HttpGet("all")]
     public async Task<Result<IReadOnlyCollection<ApplicationViewModel>>> GetAllApplications()
     { 
         return await Mediator.Send(new GetAllApplicationsQuery());
     }
-    
+    [Authorize(Policy = AuthPolicies.Roles.Admin)]
     [HttpGet("active")]
     public async Task<Result<IReadOnlyCollection<ApplicationViewModel>>> GetActiveApplications()
     { 

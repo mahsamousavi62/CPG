@@ -17,7 +17,7 @@ namespace CPG.API.Controllers;
 
 public class CompanyController : ApiBaseController
 {
-    
+    [Authorize(Policy = AuthPolicies.Roles.Admin)]
     [HttpGet("GetAll")]
     [ProducesResponseType(typeof(Result<IReadOnlyCollection<CompanyViewModel>>), (int)HttpStatusCode.OK)]
     public async Task<Result<IReadOnlyCollection<CompanyViewModel>>> GetAll()
