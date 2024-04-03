@@ -321,13 +321,13 @@ public class ReadModelQueries
         return viewModels;
     }
 
-    // [Authorize(Roles = new[] { "Guest", "Admin" })]
+    [Authorize()]
     [UseOffsetPaging(IncludeTotalCount = true)]
     [UseProjection]
     [UseFiltering<TransactionFilerType>]
     [UseSorting<TransactionSortType>]
     public async Task<IEnumerable<TransactionReportViewModel>> GetTransactions([Service] ReadDbContext dbContext,
-        [Service] IMinioProvider minioProvider, int? pageNumber,int? pageSize)
+       [Service] IMinioProvider minioProvider, int? pageNumber, int? pageSize)
     {
         long companyId = 1;
 
@@ -354,9 +354,9 @@ public class ReadModelQueries
                 Provider = c.IPGTransaction.CompanyIPG.Provider,
                 CompanyDeposit = c.DestinationDeposit
             })
-            .Skip((pageNumber.Value - 1) * pageSize.Value) .Take(pageSize.Value)
+            .Skip((pageNumber.Value - 1) * pageSize.Value).Take(pageSize.Value)
             .ToListAsync();
-        
+
         var users = await dbContext.UserReadModels.ToListAsync();
         var viewModels = await Task.WhenAll(
 
@@ -385,7 +385,7 @@ public class ReadModelQueries
                  ApplicationId = entity.Application.Id,
                  ReferenceNumber = entity.IPGTransaction?.ReferenceNumber,
                  TransactionStatus = GetTransactionStatusName(entity.Transaction.Status),
-                 Status=entity.Transaction.Status
+                 Status = entity.Transaction.Status
              }).ToList()
             );
 
