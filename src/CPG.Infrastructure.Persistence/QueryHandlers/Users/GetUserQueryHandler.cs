@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using CPG.Application.UseCases.Users.Exceptions;
@@ -13,15 +14,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Users;
 
-public class GetUserQueryHandler(ReadDbContext context, IAuthenticationService authenticationService) : IRequestHandler<GetUserQuery, Result<UserViewModel>>
+public class GetUserQueryHandler(ReadDbContext context, IAuthenticationService authenticationService) 
+    : IRequestHandler<GetUserQuery, Result<UserViewModel>>
 {
     private readonly ReadDbContext _context = context;
     private readonly IAuthenticationService _authenticationService = authenticationService;
+    private readonly string userKycStatus = "KycVerified";
 
     public async Task<Result<UserViewModel>> Handle(GetUserQuery request, CancellationToken cancellationToken)
     {
 		try
 		{
+            string? kycStatus = await _authenticationService.GetDataFromClaim<string>("status", string.Empty);
+            if (kycStatus != userKycStatus)
+            {
+                throw new UserNotVerifyStatusException(kycStatus);
+            }
             var sub = await _authenticationService.GetDataFromClaim<string>("sub", string.Empty);
 
             var user = await _context.UserReadModels.Include(u => u.UserRoles)

@@ -9,7 +9,7 @@ namespace CPG.Domain.SharedKernel;
             public const string Admin = "SuperAdmin";
             public const string CompanyUser = "CompanyUser";
             public const string CustomerUser = "CustomerUser";
-            public const string AdminCompanyUser = "AdminCompanyUser";
+            public const string AdminOrCompanyUser = "AdminOrCompanyUser";
         }
     }
 

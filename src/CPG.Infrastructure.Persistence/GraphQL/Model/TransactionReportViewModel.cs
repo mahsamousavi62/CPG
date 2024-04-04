@@ -12,6 +12,7 @@ namespace CPG.Infrastructure.Persistence.GraphQL.Model
 {
     public class TransactionReportViewModel
     {
+        public int TotalCount { get; set; }
         public long Id { get; set; }
         public long CompanyId { get; set; }
         public string CompanyPersianName { get; set; }
