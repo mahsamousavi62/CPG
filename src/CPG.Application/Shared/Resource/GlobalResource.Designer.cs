@@ -1933,6 +1933,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to UserNotVerifyStatus.
+        /// </summary>
+        public static string UserNotVerifyStatus {
+            get {
+                return ResourceManager.GetString("UserNotVerifyStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Users.
         /// </summary>
         public static string Users {

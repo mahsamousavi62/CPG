@@ -75,16 +75,15 @@ namespace CPG.Infrastructure.Authorization
                     policy.RequireClaim(ClaimTypes.Role, UserRoleType.CustomerUser.GetValue());
                 });
 
-                options.AddPolicy(AuthPolicies.Roles.AdminCompanyUser, policy =>
+                options.AddPolicy(AuthPolicies.Roles.AdminOrCompanyUser, policy =>
                 {
-                    policy.RequireClaim(ClaimTypes.Role, UserRoleType.SuperAdmin.GetValue());
-                    policy.RequireClaim(ClaimTypes.Role, UserRoleType.CompanyUser.GetValue());
-
+                    policy.RequireAssertion(context =>
+                      context.User.HasClaim(c => c.Type == ClaimTypes.Role &&
+                      c.Value == UserRoleType.SuperAdmin.GetValue() ||
+                      c.Value == UserRoleType.CompanyUser.GetValue()));
                 });
-
             });
         }
-
         public static IApplicationBuilder UseTokenAuthentication(this IApplicationBuilder app)
             => app.UseAuthentication();
 
@@ -94,5 +93,4 @@ namespace CPG.Infrastructure.Authorization
         public static IApplicationBuilder UseAuthenticationMiddleware(this IApplicationBuilder app)
            => app.UseMiddleware<AuthenticationMiddleware>();
     }
-
 }

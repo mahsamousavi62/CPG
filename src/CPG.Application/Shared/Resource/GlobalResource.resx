@@ -774,4 +774,7 @@
   <data name="PayBy" xml:space="preserve">
     <value>PayBy</value>
   </data>
+  <data name="UserNotVerifyStatus" xml:space="preserve">
+    <value>UserNotVerifyStatus</value>
+  </data>
 </root>
