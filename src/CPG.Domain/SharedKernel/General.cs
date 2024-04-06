@@ -1,4 +1,5 @@
 ﻿
+using System;
 using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Domain.SharedKernel;
@@ -40,7 +41,7 @@ public static class General
     }
 
 
-    public static  string GetIPGTransactionStatusName(IPGTransactionStatus status)
+    public static string GetIPGTransactionStatusName(IPGTransactionStatus status)
     {
         return status switch
         {
@@ -58,6 +59,17 @@ public static class General
             IPGTransactionStatus.Cancelling => "Cancelling transaction",
             IPGTransactionStatus.CancellationSucceeded => "Transaction cancellation succeeded",
             IPGTransactionStatus.CancellationFailed => "Transaction cancellation failed",
+            _ => string.Empty,
+        };
+    }
+
+    public static string GetPaymentReceiptTransactionStatusName(PaymentReceiptStatus status)
+    {
+        return status switch
+        {
+            PaymentReceiptStatus.WaitingForResponseFromProvider => "در انتظار پاسخ از سرویس دهنده",
+            PaymentReceiptStatus.SucceededAndWaitingForVerification => "موفق و در انتظار تایید",
+            PaymentReceiptStatus.Failed => "ناموفق",
             _ => string.Empty,
         };
     }

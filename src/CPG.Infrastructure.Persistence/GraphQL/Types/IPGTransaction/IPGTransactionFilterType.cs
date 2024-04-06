@@ -5,7 +5,7 @@ using HotChocolate.Data.Filters;
 
 namespace CPG.Infrastructure.Persistence.GraphQL.Types.IPGTransaction;
 
-internal class IPGTransactionFilterType : FilterInputType<IpgTransactionReportViewModel>
+public class IPGTransactionFilterType : FilterInputType<IpgTransactionReportViewModel>
 {
     protected override void Configure(IFilterInputTypeDescriptor<IpgTransactionReportViewModel> descriptor)
     {
