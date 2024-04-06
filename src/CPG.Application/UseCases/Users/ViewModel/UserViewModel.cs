@@ -12,5 +12,7 @@ public class UserViewModel
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string PhoneNumber { get; set; }
+    public string CompanyLogo { get; set; }
+    public string CompanyPersianName { get; set; }
     public Dictionary<byte,string> UserRoles { get; set; }
 }

@@ -6,20 +6,24 @@ using System.Threading.Tasks;
 using CPG.Application.UseCases.Users.Exceptions;
 using CPG.Application.UseCases.Users.Queries;
 using CPG.Application.UseCases.Users.ViewModel;
+using CPG.Domain.AggregateModels.CompanyAggregate;
+using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Domain.Exceptions;
 using CPG.Domain.SharedKernel;
+using CPG.Domain.SharedKernel.Minio;
 using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Users;
 
-public class GetUserQueryHandler(ReadDbContext context, IAuthenticationService authenticationService) 
+public class GetUserQueryHandler(ReadDbContext context, IAuthenticationService authenticationService, IMinioProvider minioProvider) 
     : IRequestHandler<GetUserQuery, Result<UserViewModel>>
 {
     private readonly ReadDbContext _context = context;
     private readonly IAuthenticationService _authenticationService = authenticationService;
     private readonly string userKycStatus = "KycVerified";
+    private readonly IMinioProvider _minioProvider = minioProvider;
 
     public async Task<Result<UserViewModel>> Handle(GetUserQuery request, CancellationToken cancellationToken)
     {
@@ -40,6 +44,8 @@ public class GetUserQueryHandler(ReadDbContext context, IAuthenticationService a
 
             var userViewModel = new UserViewModel
             {
+                CompanyPersianName = user.Company.PersianName,
+                CompanyLogo= await _minioProvider.PresignedGetObject(user.Company.Logo),
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Id = user.Id,
