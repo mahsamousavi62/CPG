@@ -27,6 +27,7 @@ using System.Security.Claims;
 using static CPG.Domain.SharedKernel.Enums;
 using CPG.Infrastructure.Persistence.Redis;
 using CPG.Domain.AggregateModels.UserAggregate;
+using CPG.Infrastructure.Persistence.GraphQL.Types.IPGTransaction;
 
 
 namespace CPG.Infrastructure.Persistence.GraphQL.Queries;
@@ -35,7 +36,7 @@ public class ReadModelQueries
 {
 
 
-
+    [Authorize(Policy = AuthPolicies.Roles.Admin)]
     [UseOffsetPaging(IncludeTotalCount = true)]
     [UseProjection]
     [UseFiltering<BankFilterType>]
@@ -330,7 +331,7 @@ public class ReadModelQueries
     }
 
     #region [ TransactionReport]
-    
+
     [Authorize(Policy = AuthPolicies.Roles.AdminOrCompanyUser)]
     [UseOffsetPaging(IncludeTotalCount = true)]
     [UseProjection]
@@ -413,7 +414,7 @@ public class ReadModelQueries
                  CompanyDepositName = entity.CompanyDeposit.Name,
                  CompanyDepositaccountNumber = entity.CompanyDeposit.AccountNumber,
                  CompanyDepositIban = entity.CompanyDeposit.Iban,
-                 CompanyLogo = !string.IsNullOrEmpty(entity.Company.Logo) ? await GetCompanyLogo(minioProvider, entity.Company.Logo) : null,
+                 CompanyLogo = !string.IsNullOrEmpty(entity.Company.Logo) ? await GetLogo(minioProvider, entity.Company.Logo) : null,
                  TransactionCreateDateTime = entity.Transaction.CreationDate,
                  TransactionModificationDateTime = entity.Transaction.ModificationDate,
                  FirstName = UserscacheData.FirstOrDefault(c => c.Id == entity.Transaction.CreationUserId)?.FirstName,
@@ -424,7 +425,7 @@ public class ReadModelQueries
                                    entity.CharismaCardTransaction?.ReferenceNumber ??
                                    entity.PaymentReceiptTransaction?.ReferenceNumber ??
                                    entity.DirectDebitTransaction?.TrackId,
-                 TransactionStatusName = GetTransactionStatusName(entity.Transaction.Status),
+                 TransactionStatusName = General.GetTransactionStatusName(entity.Transaction.Status),
                  TransactionStatus = entity.Transaction.Status,
                  TransactionStatusCode = entity.Transaction.Status.GetValue()
              }).ToList()
@@ -433,22 +434,9 @@ public class ReadModelQueries
         return viewModels;
     }
 
-    private string GetTransactionStatusName(Enums.TransactionStatus status)
-    {
-        switch (status)
-        {
-            case Enums.TransactionStatus.InPrgress:
-                return "در حال انجام";
-            case Enums.TransactionStatus.TransactionSucceeded:
-                return "تراکنش موفق";
-            case Enums.TransactionStatus.TransactionFailed:
-                return "تراکنش ناموفق";
-            default:
-                return string.Empty;
-        }
-    }
+    
 
-    private async Task<string> GetCompanyLogo(IMinioProvider minioProvider, string logoPath)
+    private async Task<string> GetLogo(IMinioProvider minioProvider, string logoPath)
     {
         try
         {
@@ -475,6 +463,84 @@ public class ReadModelQueries
             default:
                 return string.Empty;
         }
-    } 
+    }
+    #endregion
+
+
+    #region [ IPGTranaction ]
+
+    [Authorize(Policy = AuthPolicies.Roles.AdminOrCompanyUser)]
+    [UseProjection]
+    [UseFiltering<IPGTransactionFilterType>]
+    [UseSorting<IPGTransactionSortType>]
+    public async Task<IEnumerable<IpgTransactionReportViewModel>> GetIPGTransactions
+   ([Service] ReadDbContext dbContext, [Service] IMinioProvider minioProvider,
+   [Service] IHttpContextAccessor httpContext, int? pageNumber, int? pageSize)
+    {
+        if (!pageNumber.HasValue)
+        {
+            pageNumber = 1;
+        }
+        if (!pageSize.HasValue)
+        {
+            pageSize = 10;
+        }
+
+        IQueryable<IPGTransactionReadModel> query = dbContext.IPGTransactionReadModels.Include(c => c.Transaction);
+
+        var roleClaim = httpContext.HttpContext.User.FindFirst(c => c.Type == ClaimTypes.Role &&
+               c.Value == UserRoleType.CompanyUser.GetValue());
+
+        var companyIdClaim = httpContext.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "CompanyId");
+        if (companyIdClaim == null ||
+        !long.TryParse(companyIdClaim.Value, out long companyId) || companyId == 0)
+        {
+            throw new Exception("companyIdNotFound");
+        }
+        query = query.Where(c => c.Transaction.CompanyId == companyId);
+
+        int totalCount = query.Count();
+
+        var data = await query.OrderByDescending(c => c.Id)
+            .Select(c => new
+            {
+                IPGTransaction = c,
+                Company = c.Transaction.Company,
+                PaymentRequest = c.Transaction.PaymentRequest,
+                Transaction = c.Transaction,
+                IPGType = c.CompanyIPG.IPGType,
+            })
+            .Skip((pageNumber.Value - 1) * pageSize.Value)
+            .Take(pageSize.Value)
+            .ToListAsync();
+
+        var viewModels = await Task.WhenAll(
+
+             data.Select(async entity => new IpgTransactionReportViewModel
+             {
+                 TotalCount = totalCount,
+                 Id = entity.Transaction.Id,
+                 CompanyId = entity.Company.Id,
+                 CompanyPersianName = entity.Company.PersianName,
+                 CompanyEnglishName = entity.Company.EnglishName,
+                 Amount = entity.Transaction.Amount,
+                 IPGTypeId = entity.IPGType.Id,
+                 IpgTypePersianName = entity.IPGType?.PersianName,
+                 IpgTypeLogo= !string.IsNullOrEmpty(entity.IPGType.Logo) ? await GetLogo(minioProvider, entity.IPGType.Logo) : null,
+                 PaymentCode = entity.PaymentRequest?.PaymentCode,
+                 CompanyLogo = !string.IsNullOrEmpty(entity.Company.Logo) ? await GetLogo(minioProvider, entity.Company.Logo) : null,
+                 CreationDate = entity.IPGTransaction.CreationDate,
+                 VerificationDateTime = entity.IPGTransaction.VerificationDateTime,
+                 PredicateExpirationDateTime = entity.IPGTransaction.PredicateExpirationDateTime,
+                 ReferenceNumber = entity.IPGTransaction?.ReferenceNumber,
+                 TransactionStatusName = General.GetIPGTransactionStatusName(entity.IPGTransaction.Status),
+                 TransactionStatus = entity.IPGTransaction.Status,
+                 TransactionStatusCode = entity.IPGTransaction.Status.GetValue()
+             }).ToList()
+            );
+
+        return viewModels;
+    }
+
     #endregion
 }
