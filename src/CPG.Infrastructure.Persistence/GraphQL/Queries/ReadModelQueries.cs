@@ -25,12 +25,17 @@ using HotChocolate.Authorization;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using static CPG.Domain.SharedKernel.Enums;
+using CPG.Infrastructure.Persistence.Redis;
+using CPG.Domain.AggregateModels.UserAggregate;
 
 
 namespace CPG.Infrastructure.Persistence.GraphQL.Queries;
 
 public class ReadModelQueries
 {
+
+
+
     [UseOffsetPaging(IncludeTotalCount = true)]
     [UseProjection]
     [UseFiltering<BankFilterType>]
@@ -324,14 +329,16 @@ public class ReadModelQueries
         return viewModels;
     }
 
+    #region [ TransactionReport]
+    
     [Authorize(Policy = AuthPolicies.Roles.AdminOrCompanyUser)]
     [UseOffsetPaging(IncludeTotalCount = true)]
     [UseProjection]
     [UseFiltering<TransactionFilerType>]
     [UseSorting<TransactionSortType>]
     public async Task<IEnumerable<TransactionReportViewModel>> GetTransactions
-        ([Service] ReadDbContext dbContext, [Service] IMinioProvider minioProvider,
-        [Service] IHttpContextAccessor httpContext, int? pageNumber, int? pageSize)
+    ([Service] ReadDbContext dbContext, [Service] IMinioProvider minioProvider, [Service] IRedisCacheService cacheService,
+    [Service] IHttpContextAccessor httpContext, int? pageNumber, int? pageSize)
     {
         if (!pageNumber.HasValue)
         {
@@ -346,15 +353,15 @@ public class ReadModelQueries
 
         var roleClaim = httpContext.HttpContext.User.FindFirst(c => c.Type == ClaimTypes.Role &&
                c.Value == UserRoleType.CompanyUser.GetValue());
-           
-            var companyIdClaim = httpContext.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "CompanyId");
-            if (companyIdClaim == null || 
-            !long.TryParse(companyIdClaim.Value, out long companyId) || companyId == 0)
-            {
-                throw new Exception("companyIdNotFound");
-            }
-            query = query.Where(c => c.CompanyId == companyId);
-        
+
+        var companyIdClaim = httpContext.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "CompanyId");
+        if (companyIdClaim == null ||
+        !long.TryParse(companyIdClaim.Value, out long companyId) || companyId == 0)
+        {
+            throw new Exception("companyIdNotFound");
+        }
+        query = query.Where(c => c.CompanyId == companyId);
+
         int totalCount = query.Count();
 
         var data = await query.OrderByDescending(c => c.Id)
@@ -377,7 +384,14 @@ public class ReadModelQueries
             .Take(pageSize.Value)
             .ToListAsync();
 
-        var users = await dbContext.UserReadModels.ToListAsync();
+        var UserscacheData = cacheService.GetData<List<UserReadModel>>("AllUser_key");
+
+        if (UserscacheData == null)
+        {
+            UserscacheData = await dbContext.UserReadModels.ToListAsync();
+            cacheService.SetData("AllUser_key", UserscacheData);
+        }
+
         var viewModels = await Task.WhenAll(
 
              data.Select(async entity => new TransactionReportViewModel
@@ -390,7 +404,9 @@ public class ReadModelQueries
                  Amount = entity.Transaction.Amount,
                  TransactionMethodType = entity.Transaction.TransactionMethodType,
                  TransactionMethodTypeName = GetTransactionMethodTypeName(entity.Transaction.TransactionMethodType),
+                 IPGTypeId = entity.IPGType.Id,
                  IpgTypeName = entity.IPGType?.PersianName,
+                 ProviderId = entity.Provider?.Id,
                  ProviderName = entity.Provider?.PersianName,
                  ApplicationName = entity.Application?.PersianName,
                  PaymentCode = entity.PaymentRequest?.PaymentCode,
@@ -400,23 +416,22 @@ public class ReadModelQueries
                  CompanyLogo = !string.IsNullOrEmpty(entity.Company.Logo) ? await GetCompanyLogo(minioProvider, entity.Company.Logo) : null,
                  TransactionCreateDateTime = entity.Transaction.CreationDate,
                  TransactionModificationDateTime = entity.Transaction.ModificationDate,
-                 FirstName = users.FirstOrDefault(c => c.Id == entity.Transaction.CreationUserId)?.FirstName,
-                 LastName = users.FirstOrDefault(c => c.Id == entity.Transaction.CreationUserId)?.LastName,
+                 FirstName = UserscacheData.FirstOrDefault(c => c.Id == entity.Transaction.CreationUserId)?.FirstName,
+                 LastName = UserscacheData.FirstOrDefault(c => c.Id == entity.Transaction.CreationUserId)?.LastName,
                  NationalCode = entity.PaymentRequest.NationalCode,
                  ApplicationId = entity.Application.Id,
                  ReferenceNumber = entity.IPGTransaction?.ReferenceNumber ??
                                    entity.CharismaCardTransaction?.ReferenceNumber ??
                                    entity.PaymentReceiptTransaction?.ReferenceNumber ??
                                    entity.DirectDebitTransaction?.TrackId,
-                 TransactionStatus = GetTransactionStatusName(entity.Transaction.Status),
-                 Status = entity.Transaction.Status
+                 TransactionStatusName = GetTransactionStatusName(entity.Transaction.Status),
+                 TransactionStatus = entity.Transaction.Status,
+                 TransactionStatusCode = entity.Transaction.Status.GetValue()
              }).ToList()
             );
 
         return viewModels;
     }
-
-
 
     private string GetTransactionStatusName(Enums.TransactionStatus status)
     {
@@ -460,5 +475,6 @@ public class ReadModelQueries
             default:
                 return string.Empty;
         }
-    }
+    } 
+    #endregion
 }
