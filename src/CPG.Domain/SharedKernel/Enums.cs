@@ -213,7 +213,9 @@ public class Enums
 
     public enum PaymentReceiptStatus : byte
     {
+        WaitingForResponseFromProvider = 0,
         SucceededAndWaitingForVerification = 1,
+        Failed = 2
     }
 
     public enum CharismaCardStatus : byte
