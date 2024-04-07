@@ -17,6 +17,7 @@ public class IPGTransactionReadModel
     public int VerificationTimeLimit { get; set; }
     public DateTime? PredicateExpirationDateTime { get; set; }
     public DateTime? VerificationDateTime { get; set; }
+    public DateTime CreationDate { get; set; }
     public TransactionReadModel Transaction { get; set; }
     public CompanyIPGReadModel CompanyIPG { get; set; }
 }
