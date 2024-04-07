@@ -15,4 +15,6 @@ public class UserViewModel
     public string CompanyLogo { get; set; }
     public string CompanyPersianName { get; set; }
     public Dictionary<byte,string> UserRoles { get; set; }
+    public byte[] UserRolesArray { get; set; }
+    public long? CompanyId { get; set; }
 }

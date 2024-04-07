@@ -1,5 +1,7 @@
 ﻿
 using System;
+using CPG.Domain.SharedKernel.Minio;
+using System.Threading.Tasks;
 using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Domain.SharedKernel;
@@ -72,5 +74,18 @@ public static class General
             PaymentReceiptStatus.Failed => "ناموفق",
             _ => string.Empty,
         };
+    }
+
+
+    public static async Task<string> GetLogo(IMinioProvider minioProvider, string logoPath)
+    {
+        try
+        {
+            return await minioProvider.PresignedGetObject(logoPath);
+        }
+        catch (Exception)
+        {
+            return null;
+        }
     }
 }

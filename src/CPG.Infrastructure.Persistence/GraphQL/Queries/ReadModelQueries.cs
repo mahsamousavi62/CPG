@@ -415,7 +415,7 @@ public class ReadModelQueries
                  CompanyDepositName = entity.CompanyDeposit.Name,
                  CompanyDepositaccountNumber = entity.CompanyDeposit.AccountNumber,
                  CompanyDepositIban = entity.CompanyDeposit.Iban,
-                 CompanyLogo = !string.IsNullOrEmpty(entity.Company.Logo) ? await GetLogo(minioProvider, entity.Company.Logo) : null,
+                 CompanyLogo = !string.IsNullOrEmpty(entity.Company.Logo) ? await General.GetLogo(minioProvider, entity.Company.Logo) : null,
                  TransactionCreateDateTime = entity.Transaction.CreationDate,
                  TransactionModificationDateTime = entity.Transaction.ModificationDate,
                  FirstName = UserscacheData.FirstOrDefault(c => c.Id == entity.Transaction.CreationUserId)?.FirstName,
@@ -433,20 +433,6 @@ public class ReadModelQueries
             );
 
         return viewModels;
-    }
-
-    
-
-    private async Task<string> GetLogo(IMinioProvider minioProvider, string logoPath)
-    {
-        try
-        {
-            return await minioProvider.PresignedGetObject(logoPath);
-        }
-        catch (Exception)
-        {
-            return null;
-        }
     }
 
     private string GetTransactionMethodTypeName(Enums.TransactionType transactionMethodType)
@@ -527,9 +513,9 @@ public class ReadModelQueries
                  Amount = entity.Transaction.Amount,
                  IPGTypeId = entity.IPGType.Id,
                  IpgTypePersianName = entity.IPGType?.PersianName,
-                 IpgTypeLogo= !string.IsNullOrEmpty(entity.IPGType.Logo) ? await GetLogo(minioProvider, entity.IPGType.Logo) : null,
+                 IpgTypeLogo= !string.IsNullOrEmpty(entity.IPGType.Logo) ? await General.GetLogo(minioProvider, entity.IPGType.Logo) : null,
                  PaymentCode = entity.PaymentRequest?.PaymentCode,
-                 CompanyLogo = !string.IsNullOrEmpty(entity.Company.Logo) ? await GetLogo(minioProvider, entity.Company.Logo) : null,
+                 CompanyLogo = !string.IsNullOrEmpty(entity.Company.Logo) ? await General.GetLogo(minioProvider, entity.Company.Logo) : null,
                  CreationDate = entity.IPGTransaction.CreationDate,
                  VerificationDateTime = entity.IPGTransaction.VerificationDateTime,
                  PredicateExpirationDateTime = entity.IPGTransaction.PredicateExpirationDateTime,
@@ -614,12 +600,12 @@ public class ReadModelQueries
                  CompanyPersianName = entity.Company.PersianName,
                  CompanyEnglishName = entity.Company.EnglishName,
                  Amount = entity.Transaction.Amount,
-                 ReceiptImage= !string.IsNullOrEmpty(entity.PaymentReceiptTransaction.ReceiptImage) ?await GetLogo(minioProvider, entity.PaymentReceiptTransaction.ReceiptImage) : null,
+                 ReceiptImage= !string.IsNullOrEmpty(entity.PaymentReceiptTransaction.ReceiptImage) ?await General.GetLogo(minioProvider, entity.PaymentReceiptTransaction.ReceiptImage) : null,
                  BankId= bankscacheData.FirstOrDefault(c => c.IbanPrefix == entity.PaymentReceiptTransaction.SourceIban.Substring(5, 3)).Id,
-                 BankLogo =  await GetLogo(minioProvider, bankscacheData.FirstOrDefault(c=>c.IbanPrefix==entity.PaymentReceiptTransaction.SourceIban.Substring(5,2)).Logo),
+                 BankLogo =  await General.GetLogo(minioProvider, bankscacheData.FirstOrDefault(c=>c.IbanPrefix==entity.PaymentReceiptTransaction.SourceIban.Substring(5,2)).Logo),
                  BankName = bankscacheData.FirstOrDefault(c => c.IbanPrefix == entity.PaymentReceiptTransaction.SourceIban.Substring(5, 3)).Name,
                  PaymentCode = entity.PaymentRequest?.PaymentCode,
-                 CompanyLogo = !string.IsNullOrEmpty(entity.Company.Logo) ? await GetLogo(minioProvider, entity.Company.Logo) : null,
+                 CompanyLogo = !string.IsNullOrEmpty(entity.Company.Logo) ? await General.GetLogo(minioProvider, entity.Company.Logo) : null,
                  CreationDate = entity.PaymentReceiptTransaction.CreationDate,
                  ReceiptDateTime = entity.PaymentReceiptTransaction.ReceiptDateTime,
                  ReferenceNumber = entity.PaymentReceiptTransaction?.ReferenceNumber,
