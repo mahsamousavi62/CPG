@@ -32,8 +32,7 @@ public class GetUserQueryHandler(ReadDbContext context, IAuthenticationService a
 
     public async Task<Result<UserViewModel>> Handle(GetUserQuery request, CancellationToken cancellationToken)
     {
-		try
-		{
+		
             var sub = await _authenticationService.GetDataFromClaim<string>("sub", string.Empty);
             var kycStatus = await _authenticationService.GetDataFromClaim<string>("status", string.Empty);
             if (kycStatus != userKycStatus)
@@ -69,14 +68,7 @@ public class GetUserQueryHandler(ReadDbContext context, IAuthenticationService a
                 UserRolesArray=user.UserRoles.Select(u=>u.RoleType).ToArray(),
             };
             return Result<UserViewModel>.SuccessResult(userViewModel);
-        }
-        catch (Exception exc)
-        {
-            if (exc is DomainException )
-                return Result<UserViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
-            else
-                return Result<UserViewModel>.Failure(new Error(exc.Source, exc.Message));
-        }
+      
     }
 }
 
