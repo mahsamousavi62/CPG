@@ -42,7 +42,7 @@ public class GetUserQueryHandler(ReadDbContext context, IAuthenticationService a
                 if (idpUserProfileResponse.Data.StatusCode == (short)HttpStatusCode.NotFound ||
                   idpUserProfileResponse.OperationResult == Enums.OperationResult.Failed
                   || string.IsNullOrEmpty(idpUserProfileResponse.Data?.Result?.Id))
-                    throw new IdpUserProfileException();
+                    throw new UserNotVerifyStatusException(string.Empty);
             }
 
             var user = await _context.UserReadModels.Include(u => u.UserRoles).Include(c=>c.Company)
