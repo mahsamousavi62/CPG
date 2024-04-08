@@ -798,4 +798,10 @@
   <data name="UserNotVerify" xml:space="preserve">
     <value>وضعیت کاربر {0}می باشد </value>
   </data>
+  <data name="Ayandeh" xml:space="preserve">
+    <value>ارتباط فردا</value>
+  </data>
+  <data name="BehPardakht" xml:space="preserve">
+    <value>به پرداخت</value>
+  </data>
 </root>
