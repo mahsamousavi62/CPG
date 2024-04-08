@@ -1240,6 +1240,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to PayBy.
+        /// </summary>
+        public static string PayBy {
+            get {
+                return ResourceManager.GetString("PayBy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Pay : &quot;{0} rial&quot; | {1} tooman for company : {2}.
         /// </summary>
         public static string PaymentMessage {
@@ -1920,6 +1929,15 @@ namespace CPG.Application.Shared.Resource {
         public static string UserNotFound {
             get {
                 return ResourceManager.GetString("UserNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UserNotVerifyStatus.
+        /// </summary>
+        public static string UserNotVerifyStatus {
+            get {
+                return ResourceManager.GetString("UserNotVerifyStatus", resourceCulture);
             }
         }
         

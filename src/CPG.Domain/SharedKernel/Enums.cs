@@ -1,4 +1,5 @@
-﻿using CPG.Domain.AggregateModels.TransactionAggregate;
+﻿using System;
+using CPG.Domain.AggregateModels.TransactionAggregate;
 using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Domain.SharedKernel;
@@ -59,7 +60,7 @@ public class Enums
         InternetPaymentGateway = 1,
         DirectDebit = 2,
         PaymentReceipt = 3,
-        CharismaCard=4,
+        CharismaCard = 4,
     }
 
     public enum UploadFromEntityType
@@ -77,8 +78,10 @@ public class Enums
         AsanPardakht = 2,
         Sep = 3,
         Pec = 4,
-        Idp=5,
-        NeoBank=6,
+        BehPardakht = 5,
+        Ayandeh = 6,
+        Idp = 101,
+        NeoBank = 102,
     }
 
     public enum ServiceType : byte
@@ -94,10 +97,16 @@ public class Enums
         VandarShow = 9,
         VandarStore = 10,
         VandarVerify = 11,
-        GetIdpToken=12,
-        GetIdpProfile= 13,
+        GetIdpToken = 12,
+        GetIdpProfile = 13,
         GetUserDepositBalance = 14,
-        ClientDirectDebit=15
+        ClientDirectDebit = 15,
+        BehPardakhtToken = 16,
+        BehPardakhtTransResult = 17,
+        BehPardakhtVerify = 18,
+        AyandehToken = 19,
+        AyandehTransResult = 20,
+        AyandehVerify = 21,
     }
 
     public enum TransactionType : byte
@@ -118,9 +127,12 @@ public class Enums
         Verifying = 5,
         VerificationSucceeded = 6,
         VerificationFailed = 7,
-        Cancelling = 8,
-        CancellationSucceeded = 9,
-        CancellationFailed = 10,
+        WaitingForSettlementRequest = 8,
+        SettlementSucceeded = 9,
+        SettlementFailed = 10,
+        Cancelling = 11,
+        CancellationSucceeded = 12,
+        CancellationFailed = 13,
     }
 
     public enum TransactionStatus : byte
@@ -201,16 +213,29 @@ public class Enums
 
     public enum PaymentReceiptStatus : byte
     {
+        WaitingForResponseFromProvider = 0,
         SucceededAndWaitingForVerification = 1,
+        Failed = 2
     }
 
-    public enum CharismaCardStatus:byte
+    public enum CharismaCardStatus : byte
     {
         Failed = 0,
         Done = 1
     }
 }
+public static class EnumExtensions
+{
+    public static string GetName<T>(this T enumValue) where T : Enum
+    {
+        return Enum.GetName(typeof(T), enumValue)!;
+    }
 
+    public static string GetValue<T>(this T enumValue) where T : Enum
+    {
+        return enumValue.ToString("D");
+    }
+}
 public struct ResultData<T>(Enums.OperationResult operationResult)
 {
     public T? Data { get; set; } = default(T);

@@ -123,6 +123,7 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
 
                     if (userDepositBalance?.Data is not null)
                     {
+
                         charismaCard = new ViewModels.CharismaCard
                         {
                             BalanceAmount = userDepositBalance.Data.Balance,

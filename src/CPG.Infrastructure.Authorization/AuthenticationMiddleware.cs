@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 using System.Linq;
 using CPG.Domain.SharedKernel;
 
+
 namespace CPG.Infrastructure.Authorization;
 
 public class AuthenticationMiddleware(IAuthenticationSchemeProvider schemes, RequestDelegate next)
 {
     private readonly RequestDelegate _next = next ?? throw new ArgumentNullException(nameof(next));
-    private readonly string userKycStatus = "KycVerified";
     public IAuthenticationSchemeProvider Schemes { get; set; } = schemes ?? throw new ArgumentNullException(nameof(schemes));
 
     public async Task Invoke(HttpContext context, IMediator mediator)
@@ -26,21 +26,7 @@ public class AuthenticationMiddleware(IAuthenticationSchemeProvider schemes, Req
             if (defaultAuthenticate != null)
             {
                 var result = await context.AuthenticateAsync(defaultAuthenticate.Name);
-                //string? kycStatus = context.User.Claims.SingleOrDefault(c => c.Type == "status")?.Value;
-
-
-                //context.Response.Clear();
-                //context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                //await context.Response.WriteAsJsonAsync(new
-                //{
-                //    Data = string.Empty,
-                //    Message = string.Empty,
-                //    Action = "IdpProfileNotFound",
-                //    Errors = string.Empty,
-                //});
-                //return;
-
-
+                
                 if (result?.Principal != null)
                     context.User = await ClonePrincipal(result.Principal, mediator);
             }
@@ -68,6 +54,13 @@ public class AuthenticationMiddleware(IAuthenticationSchemeProvider schemes, Req
         newIdentity.AddClaim(new Claim(type: "ApplicationId", value: user?.ApplicationId.ToString()));
         newIdentity.AddClaim(new Claim(type: "ClientId", value: user?.IDPId.ToString()));
 
+        if (user.UserRoles?.Any() is true)
+        {
+            foreach (var role in user.UserRoles)
+            {
+                newIdentity.AddClaim(new Claim(ClaimTypes.Role, role.Key.ToString(), ClaimValueTypes.String));
+            }
+        }
         return clone;
     }
 }

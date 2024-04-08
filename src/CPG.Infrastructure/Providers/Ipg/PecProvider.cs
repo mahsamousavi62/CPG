@@ -105,6 +105,11 @@ public class PecProvider(
         }
     }
 
+    public Task<SettleTransactionResponse> Settle(SettleTransactionRequest transactionResultRequest)
+    {
+        throw new NotImplementedException();
+    }
+
     private string GetDataFromJsonProvider(string providerData)
     {
         dynamic jsonObjectProviderData;

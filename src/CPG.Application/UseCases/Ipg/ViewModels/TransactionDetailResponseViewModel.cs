@@ -28,6 +28,9 @@ public class TransactionDetailResponseViewModel
     [JsonPropertyName("paymentMethodTypeTitle")]
     public string PaymentMethodTypeTitle { get; set; }
 
+    [JsonPropertyName("paymentPattern")]
+    public string PaymentPattern { get; set; }
+
     [JsonPropertyName("status")]
     public short Status { get; set; }
 

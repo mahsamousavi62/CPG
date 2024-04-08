@@ -144,6 +144,11 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
         return response;
     }
 
+    public Task<SettleTransactionResponse> Settle(SettleTransactionRequest transactionResultRequest)
+    {
+        throw new NotImplementedException();
+    }
+
     private string CreateAdditionalData(string nationalCode, string key, string iv)
     {
         string hexString = Guid.NewGuid().ToString("N");

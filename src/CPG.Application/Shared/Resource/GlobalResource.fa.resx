@@ -789,4 +789,13 @@
   <data name="IncreaseBalance" xml:space="preserve">
     <value>افزایش موجودی</value>
   </data>
+  <data name="PayBy" xml:space="preserve">
+    <value>پرداخت توسط</value>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UserNotVerify" xml:space="preserve">
+    <value>وضعیت کاربر {0}می باشد </value>
+  </data>
 </root>

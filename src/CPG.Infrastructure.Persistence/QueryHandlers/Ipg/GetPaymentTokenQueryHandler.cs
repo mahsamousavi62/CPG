@@ -1,4 +1,5 @@
-﻿using CPG.Application.Shared.Resource;
+﻿using Azure.Core;
+using CPG.Application.Shared.Resource;
 using CPG.Application.UseCases.CompanyIPGs.Exceptions;
 using CPG.Application.UseCases.Exceptions;
 using CPG.Application.UseCases.Ipg.Commands;
@@ -109,7 +110,7 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                    ? (string)jsonObjectProviderData["IPG_Base_URL"] : throw new Exception("Invalid IPG_Base_URL");
 
                 IpgVerificationTimeLimit = jsonObjectProviderData["IPG_Verification_Time_Limit"] is not null
-                               ? (short)jsonObjectProviderData["IPG_Verification_Time_Limit"] : throw new Exception("IPG_Verification_TimeLimit");
+                   ? (short)jsonObjectProviderData["IPG_Verification_Time_Limit"] : throw new Exception("IPG_Verification_TimeLimit");
             }
             catch
             {
@@ -222,6 +223,26 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                     response.JsonBody.jsonStr.method = "GET";
                     response.JsonBody.jsonStr.@params = new ExpandoObject();
                     response.JsonBody.jsonStr.@params.Token = result.Token;
+                    break;
+                }
+            case Enums.ProviderType.BehPardakht:
+                {
+                    response.JsonBody.jsonStr = new ExpandoObject();
+                    response.JsonBody.jsonStr.url = result.IpgBaseUrl;
+                    response.JsonBody.jsonStr.method = "POST";
+                    response.JsonBody.jsonStr.@params = new ExpandoObject();
+                    response.JsonBody.jsonStr.@params.RefId = result.Token;
+                    response.JsonBody.jsonStr.@params.MobileNo = !string.IsNullOrEmpty(mobileNumber) ? $"98{mobileNumber.Remove(0, 1)}" : null;
+                    break;
+                }
+            case Enums.ProviderType.Ayandeh:
+                {
+                    response.JsonBody.jsonStr = new ExpandoObject();
+                    response.JsonBody.jsonStr.url = result.IpgBaseUrl;
+                    response.JsonBody.jsonStr.method = "POST";
+                    response.JsonBody.jsonStr.@params = new ExpandoObject();
+                    response.JsonBody.jsonStr.@params.traceNumber = result.Token;
+                    response.JsonBody.jsonStr.@params.username = result.UserName;
                     break;
                 }
             default:

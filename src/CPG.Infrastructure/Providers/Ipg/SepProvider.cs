@@ -11,7 +11,6 @@ using CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
 using CPG.Domain.SharedKernel.Communication.Ipg.Sep;
 using CPG.Domain.SharedKernel.Helper;
 using CPG.Infrastructure.Persistence.DbContexts;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Threading.Tasks;
@@ -110,6 +109,11 @@ public class SepProvider(IHttpProvider httpProvider, ReadDbContext context, IApp
         {
             Status = status
         };
+    }
+
+    public Task<SettleTransactionResponse> Settle(SettleTransactionRequest transactionResultRequest)
+    {
+        throw new NotImplementedException();
     }
 
     private static string CreateCallbackUrl(short ipgRedirectionType, string siteAddress, string trackerId, string callbackPage) => ipgRedirectionType switch
