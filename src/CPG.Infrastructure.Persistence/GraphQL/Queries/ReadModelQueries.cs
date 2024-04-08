@@ -38,6 +38,7 @@ public class ReadModelQueries
 {
 
 
+    #region Gets
     [Authorize(Policy = AuthPolicies.Roles.Admin)]
     [UseOffsetPaging(IncludeTotalCount = true)]
     [UseProjection]
@@ -330,7 +331,8 @@ public class ReadModelQueries
 
         });
         return viewModels;
-    }
+    } 
+    #endregion
 
     #region [ TransactionReport]
 
@@ -540,182 +542,9 @@ public class ReadModelQueries
     #endregion
 
 
-    #region [ PaymentReceiptTransaction ]
-
-
-
-
-
-    [Authorize(Policy = AuthPolicies.Roles.AdminOrCompanyUser)]
-    [UseOffsetPaging(IncludeTotalCount = true)]
-    [UseProjection]
-    [UseFiltering<PaymentReceiptTransactionFilterType>]
-    [UseSorting<IPGTransactionSortType>]
-    public async Task<IEnumerable<PaymentReceiptTransactionReportViewModel>> GetPaymentReceiptTransactions
-   ([Service] ReadDbContext dbContext, [Service] IMinioProvider minioProvider, [Service] IRedisCacheService cacheService,
-   [Service] IHttpContextAccessor httpContext, int? pageNumber, int? pageSize)
-    {
-        if (!pageNumber.HasValue)
-        {
-            pageNumber = 1;
-        }
-        if (!pageSize.HasValue)
-        {
-            pageSize = 10;
-        }
-
-        IQueryable<PaymentReceiptTransactionReadModel> query = dbContext.PaymentReceiptTransactionReadModels.Include(c => c.Transaction);
-
-        var roleClaim = httpContext.HttpContext.User.FindFirst(c => c.Type == ClaimTypes.Role &&
-               c.Value == UserRoleType.CompanyUser.GetValue());
-
-        var companyIdClaim = httpContext.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "CompanyId");
-        if (companyIdClaim == null ||
-        !long.TryParse(companyIdClaim.Value, out long companyId) || companyId == 0)
-        {
-            throw new Exception("companyIdNotFound");
-        }
-        else
-        {
-            query = query.Where(c => c.Transaction.CompanyId == companyId);
-
-        }
-
-        int totalCount = query.Count();
-
-        var data = await query.OrderByDescending(c => c.Id)
-            .Select(c => new
-            {
-                PaymentReceiptTransaction = c,
-                Company = c.Transaction.Company,
-                PaymentRequest = c.Transaction.PaymentRequest,
-                Transaction = c.Transaction,
-            })
-            .Skip((pageNumber.Value - 1) * pageSize.Value)
-            .Take(pageSize.Value)
-            .ToListAsync();
-
-        var bankscacheData = cacheService.GetData<List<BankReadModel>>("AllBank_key");
-
-        if (bankscacheData == null)
-        {
-            bankscacheData = await dbContext.BankReadModels.ToListAsync();
-            cacheService.SetData("AllBank_key", bankscacheData);
-        }
-
-        var viewModels = await Task.WhenAll(
-
-             data.Select(async entity => new PaymentReceiptTransactionReportViewModel
-             {
-                 TotalCount = totalCount,
-                 Id = entity.Transaction.Id,
-                 CompanyId = entity.Company.Id,
-                 CompanyPersianName = entity.Company.PersianName,
-                 CompanyEnglishName = entity.Company.EnglishName,
-                 Amount = entity.Transaction.Amount,
-                 ReceiptImage = !string.IsNullOrEmpty(entity.PaymentReceiptTransaction.ReceiptImage) ? await General.GetLogo(minioProvider, entity.PaymentReceiptTransaction.ReceiptImage) : null,
-                 BankId = bankscacheData.FirstOrDefault(c => c.IbanPrefix == entity.PaymentReceiptTransaction.SourceIban.Substring(5, 3)).Id,
-                 BankLogo = await General.GetLogo(minioProvider, bankscacheData.FirstOrDefault(c => c.IbanPrefix == entity.PaymentReceiptTransaction.SourceIban.Substring(5, 2)).Logo),
-                 BankName = bankscacheData.FirstOrDefault(c => c.IbanPrefix == entity.PaymentReceiptTransaction.SourceIban.Substring(5, 3)).Name,
-                 PaymentCode = entity.PaymentRequest?.PaymentCode,
-                 CompanyLogo = !string.IsNullOrEmpty(entity.Company.Logo) ? await General.GetLogo(minioProvider, entity.Company.Logo) : null,
-                 CreationDate = entity.PaymentReceiptTransaction.CreationDate,
-                 ReceiptDateTime = entity.PaymentReceiptTransaction.ReceiptDateTime,
-                 ReferenceNumber = entity.PaymentReceiptTransaction?.ReferenceNumber,
-                 TransactionStatusName = General.GetPaymentReceiptTransactionStatusName(entity.PaymentReceiptTransaction.Status),
-                 TransactionStatus = entity.PaymentReceiptTransaction.Status,
-                 TransactionStatusCode = entity.PaymentReceiptTransaction.Status.GetValue(),
-                 SourceIban = entity.PaymentReceiptTransaction.SourceIban,
-                 ModificationDate = entity.PaymentReceiptTransaction.ModificationDate,
-                 PaymentReceiptTransactionId = entity.PaymentReceiptTransaction.Id,
-             }).ToList()
-            );
-
-        return viewModels;
-    }
-
-
-
-
-    [Authorize(Policy = AuthPolicies.Roles.AdminOrCompanyUser)]
-    [UseOffsetPaging(IncludeTotalCount = true)]
-    [UseProjection]
-    [UseFiltering<PaymentReceiptTransactionFilterType>]
-    [UseSorting<IPGTransactionSortType>]
-    public async Task<PaymentReceiptTransactionReportViewModel> GetPaymentReceiptTransaction
-  ([Service] ReadDbContext dbContext, [Service] IMinioProvider minioProvider, [Service] IRedisCacheService cacheService,
-  [Service] IHttpContextAccessor httpContext, long paymentReceiptTransactionId)
-    {
-
-        IQueryable<PaymentReceiptTransactionReadModel> query = dbContext.PaymentReceiptTransactionReadModels.Include(c => c.Transaction).Include(c=>c.Transaction.Company).Include(c=>c.Transaction.PaymentRequest);
-
-        var roleClaim = httpContext.HttpContext.User.FindFirst(c => c.Type == ClaimTypes.Role &&
-               c.Value == UserRoleType.CompanyUser.GetValue());
-
-        var companyIdClaim = httpContext.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "CompanyId");
-        if (companyIdClaim == null ||
-        !long.TryParse(companyIdClaim.Value, out long companyId) || companyId == 0)
-        {
-            throw new Exception("companyIdNotFound");
-        }
-        else
-        {
-            query = query.Where(c => c.Transaction.CompanyId == companyId);
-        }
-
-       var  entity = query.FirstOrDefault(c => c.Id == paymentReceiptTransactionId);
-        if (query == null)
-        {
-            throw new Exception("IdNotFound");
-        }
-
-
-        
-        var bankscacheData = cacheService.GetData<List<BankReadModel>>("AllBank_key");
-
-        if (bankscacheData == null)
-        {
-            bankscacheData = await dbContext.BankReadModels.ToListAsync();
-            cacheService.SetData("AllBank_key", bankscacheData);
-        }
-
-        var viewModel =
-
-             new PaymentReceiptTransactionReportViewModel
-             {
-
-                 TotalCount = 1,
-                 Id = entity.Transaction.Id,
-                 CompanyId = entity.Transaction.Company.Id,
-                 CompanyPersianName = entity.Transaction.Company.PersianName,
-                 CompanyEnglishName = entity.Transaction.Company.EnglishName,
-                 Amount = entity.Transaction.Amount,
-                 ReceiptImage = !string.IsNullOrEmpty(entity.ReceiptImage) ? await General.GetLogo(minioProvider, entity.ReceiptImage) : null,
-                 BankId = bankscacheData.FirstOrDefault(c => c.IbanPrefix == entity.SourceIban.Substring(5, 3)).Id,
-                 BankLogo = await General.GetLogo(minioProvider, bankscacheData.FirstOrDefault(c => c.IbanPrefix == entity.SourceIban.Substring(5, 2)).Logo),
-                 BankName = bankscacheData.FirstOrDefault(c => c.IbanPrefix == entity.SourceIban.Substring(5, 3)).Name,
-                 PaymentCode = entity.Transaction.PaymentRequest?.PaymentCode,
-                 CompanyLogo = !string.IsNullOrEmpty(entity.Transaction.Company.Logo) ? await General.GetLogo(minioProvider, entity.Transaction.Company.Logo) : null,
-                 CreationDate = entity.CreationDate,
-                 ReceiptDateTime = entity.ReceiptDateTime,
-                 ReferenceNumber = entity.ReferenceNumber,
-                 TransactionStatusName = General.GetPaymentReceiptTransactionStatusName(entity.Status),
-                 TransactionStatus = entity.Status,
-                 TransactionStatusCode = entity.Status.GetValue(),
-                 SourceIban = entity.SourceIban,
-                 ModificationDate = entity.ModificationDate,
-                 PaymentReceiptTransactionId = entity.Id
-             };
-
-        return viewModel;
-        
-    }
-
-
-
-
-    #endregion
-
+    
+  
+  
 
 
 
