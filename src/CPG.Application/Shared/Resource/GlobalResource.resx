@@ -777,4 +777,10 @@
   <data name="UserNotVerifyStatus" xml:space="preserve">
     <value>UserNotVerifyStatus</value>
   </data>
+  <data name="Ayandeh" xml:space="preserve">
+    <value>Ayandeh</value>
+  </data>
+  <data name="BehPardakht" xml:space="preserve">
+    <value>BehPardakht</value>
+  </data>
 </root>
