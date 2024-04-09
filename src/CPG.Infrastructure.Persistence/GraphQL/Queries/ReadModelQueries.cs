@@ -389,7 +389,7 @@ public class ReadModelQueries
                 CompanyDeposit = c.DestinationDeposit
             })
             .Skip((pageNumber.Value - 1) * pageSize.Value)
-            .Take(pageSize.Value).Where(c=>c.Transaction.Id==530)
+            .Take(pageSize.Value)
             .ToListAsync();
 
         var UserscacheData = cacheService.GetData<List<UserReadModel>>("AllUser_key");
