@@ -52,7 +52,7 @@ public class GetUserQueryHandler(ReadDbContext context, IAuthenticationService a
             
             if (user == null)
                 throw new UserNotFoundException(sub);
-
+     
             var userViewModel = new UserViewModel
             {
                 CompanyId=user.Company?.Id,
@@ -65,7 +65,7 @@ public class GetUserQueryHandler(ReadDbContext context, IAuthenticationService a
                 IDPId = user.IDPId,
                 PhoneNumber = user.PhoneNumber,
                 UserRoles = user.UserRoles.ToDictionary(p => p.RoleType,p => ((Enums.UserRoleType)p.RoleType).ToString()),
-                UserRolesArray=user.UserRoles.Select(u=>u.RoleType).ToArray(),
+                UserRolesList=user.UserRoles.Select(u=>u.RoleType).ToList(),
             };
             return Result<UserViewModel>.SuccessResult(userViewModel);
       

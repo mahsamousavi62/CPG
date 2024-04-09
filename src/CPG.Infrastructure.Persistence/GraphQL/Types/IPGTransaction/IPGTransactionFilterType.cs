@@ -17,5 +17,7 @@ public class IPGTransactionFilterType : FilterInputType<IpgTransactionReportView
         descriptor.Field(f => f.ReferenceNumber).Type<CustomStringOperationFilterInputType>();
         descriptor.Field(f => f.PaymentCode).Type<CustomStringOperationFilterInputType>();
         descriptor.Field(f => f.TransactionStatusCode).Type<CustomStringOperationFilterInputType>();
+        descriptor.Field(f => f.TrackerId).Type<CustomStringOperationFilterInputType>();
+        descriptor.Field(f => f.ProviderTrackerId).Type<CustomStringOperationFilterInputType>();
     }
 }
