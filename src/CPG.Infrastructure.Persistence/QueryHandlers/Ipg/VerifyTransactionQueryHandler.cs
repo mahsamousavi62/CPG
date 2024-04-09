@@ -82,7 +82,10 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
 
                         if (result.Status == IPGTransactionStatus.VerificationSucceeded)
                         {
-                            transaction.IPGTransaction.ReferenceNumber = result.RRN;
+                            if (providerType == ProviderType.Sep || providerType == ProviderType.Pec || providerType == ProviderType.Ayandeh)
+                            {
+                                transaction.IPGTransaction.ReferenceNumber = result.RRN;
+                            }
                             transaction.IPGTransaction.VerificationDateTime = DateTime.Now;
                             transaction.Status = TransactionStatus.TransactionSucceeded;
                             paymentRequest.Status = PaymentStatus.TransactionVerificationSucceeded;

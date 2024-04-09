@@ -169,6 +169,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ayandeh.
+        /// </summary>
+        public static string Ayandeh {
+            get {
+                return ResourceManager.GetString("Ayandeh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to BalanceIsNotEnought.
         /// </summary>
         public static string BalanceIsNotEnought {
@@ -255,6 +264,15 @@ namespace CPG.Application.Shared.Resource {
         public static string Before {
             get {
                 return ResourceManager.GetString("Before", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to BehPardakht.
+        /// </summary>
+        public static string BehPardakht {
+            get {
+                return ResourceManager.GetString("BehPardakht", resourceCulture);
             }
         }
         

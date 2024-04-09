@@ -804,4 +804,10 @@
   <data name="UnAuthorizeRequest" xml:space="preserve">
     <value>اعتبارسنجی درخواست انجام نشده است </value>
   </data>
+  <data name="Ayandeh" xml:space="preserve">
+    <value>ارتباط فردا</value>
+  </data>
+  <data name="BehPardakht" xml:space="preserve">
+    <value>به پرداخت</value>
+  </data>
 </root>
