@@ -11,6 +11,7 @@ using HotChocolate.Execution.Processing;
 using IdentityModel.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Serilog.Context;
@@ -41,17 +42,21 @@ namespace CPG.Infrastructure.Providers.Charispay
         {
             var charisPayConfig = configuration.GetSection("Infrastructure:CharisPay").Get<CharisPayConfig>();
             ResultData<AccountNumberResponse> resultData = new();
-
-            var client = _factory.CreateClient("charisPayClient");
-            client.SetBearerToken(charisPayConfig.Token);
-            client.DefaultRequestHeaders.Add("correlation-id", Guid.NewGuid().ToString());
-            string json = JsonConvert.SerializeObject(new { iban });
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var result = await client.PostAsync(charisPayConfig.InqueryIbanUrl, content);
-
-            var resultContent = await result.Content.ReadAsStringAsync();
             try
             {
+                var client = _factory.CreateClient("charisPayClient");
+                client.SetBearerToken(charisPayConfig.Token);
+                client.DefaultRequestHeaders.Add("correlation-id", Guid.NewGuid().ToString());
+                string json = JsonConvert.SerializeObject(new { iban });
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var result = await client.PostAsync(charisPayConfig.InqueryIbanUrl, content);
+
+                var resultContent = await result.Content.ReadAsStringAsync();
+
+                if (resultContent.StartsWith("{\"result\":\""))
+                {
+                    resultContent = resultContent.Replace("{\"result\":\"", "{\"errorResult\":\"");
+                }
                 var callLog = new CallLogModel
                 {
                     RequestBody = json,
@@ -71,8 +76,9 @@ namespace CPG.Infrastructure.Providers.Charispay
                     _logger.LogInformation("[CallLog] {@CallLog}", callLog);
                 }
 
+
                 var response = JsonConvert.DeserializeObject<CharispayResponseBase<InquiryIbanResponse>>(resultContent);
-              
+
                 if (response == null)
                 {
                     return Result<AccountNumberResponse>.Failure(new Error("2201000", GlobalResource.NotHasResponse));
@@ -86,10 +92,24 @@ namespace CPG.Infrastructure.Providers.Charispay
                 {
                     return Result<AccountNumberResponse>.Failure(new Error("2201000", response.error.ToString()));
                 }
-                resultData.Data = new AccountNumberResponse(response.result[0].depositNumber, response.result[0].bankName);
-                return Result<AccountNumberResponse>.SuccessResult(resultData.Data);
 
+                if (!string.IsNullOrEmpty(response.ErrorResult))
+                {
+                    resultData.Error = response.ErrorResult;
+                    return Result<AccountNumberResponse>.Failure(new Error("2201000", resultData.Error));
+                }
+                else
+                {
+                    resultData.Data = new AccountNumberResponse(response.result[0].depositNumber, response.result[0].bankName);
+                    return Result<AccountNumberResponse>.SuccessResult(resultData.Data);
+                }
             }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError(ex, $"Request: Unhandled HttpRequestException for Request {nameof(GetAccountNumber)}{ex.Message} ");
+                return Result<AccountNumberResponse>.Failure(new Error("2201000", GlobalResource.UnexpectedError));
+            }
+
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Request: Unhandled Exception for Request {nameof(GetAccountNumber)}{ex.Message} ");

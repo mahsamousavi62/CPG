@@ -36,8 +36,6 @@ namespace CPG.Infrastructure.Persistence.GraphQL.Queries;
 
 public class ReadModelQueries
 {
-
-
     #region Gets
     [Authorize(Policy = AuthPolicies.Roles.Admin)]
     [UseOffsetPaging(IncludeTotalCount = true)]
@@ -331,7 +329,7 @@ public class ReadModelQueries
 
         });
         return viewModels;
-    } 
+    }
     #endregion
 
     #region [ TransactionReport]
@@ -355,21 +353,22 @@ public class ReadModelQueries
         }
 
         IQueryable<TransactionReadModel> query = dbContext.TransactionReadModels;
-
         var roleClaim = httpContext.HttpContext.User.FindFirst(c => c.Type == ClaimTypes.Role &&
-               c.Value == UserRoleType.CompanyUser.GetValue());
+           c.Value == UserRoleType.SuperAdmin.GetValue());
 
-        var companyIdClaim = httpContext.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "CompanyId");
-        if (companyIdClaim == null ||
-        !long.TryParse(companyIdClaim.Value, out long companyId) || companyId == 0)
+        if (roleClaim == null)
         {
-            throw new Exception("companyIdNotFound");
+            var companyIdClaim = httpContext.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "CompanyId");
+            if (companyIdClaim == null ||
+            !long.TryParse(companyIdClaim.Value, out long companyId) || companyId == 0)
+            {
+                throw new Exception("companyIdNotFound");
+            }
+            else
+            {
+                query = query.Where(c => c.CompanyId == companyId);
+            }
         }
-        else
-        {
-            query = query.Where(c => c.CompanyId == companyId);
-        }
-
         int totalCount = query.Count();
 
         var data = await query.OrderByDescending(c => c.Id)
@@ -459,8 +458,7 @@ public class ReadModelQueries
     }
     #endregion
 
-
-    #region [ IPGTranaction ]
+    #region [ IPGTranactionReport ]
 
     [Authorize(Policy = AuthPolicies.Roles.AdminOrCompanyUser)]
     [UseOffsetPaging(IncludeTotalCount = true)]
@@ -483,19 +481,20 @@ public class ReadModelQueries
         IQueryable<IPGTransactionReadModel> query = dbContext.IPGTransactionReadModels.Include(c => c.Transaction);
 
         var roleClaim = httpContext.HttpContext.User.FindFirst(c => c.Type == ClaimTypes.Role &&
-               c.Value == UserRoleType.CompanyUser.GetValue());
-
-        var companyIdClaim = httpContext.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "CompanyId");
-        if (companyIdClaim == null ||
-        !long.TryParse(companyIdClaim.Value, out long companyId) || companyId == 0)
+        c.Value == UserRoleType.SuperAdmin.GetValue());
+        if (roleClaim == null)
         {
-            throw new Exception("companyIdNotFound");
+            var companyIdClaim = httpContext.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "CompanyId");
+            if (companyIdClaim == null ||
+            !long.TryParse(companyIdClaim.Value, out long companyId) || companyId == 0)
+            {
+                throw new Exception("companyIdNotFound");
+            }
+            else
+            {
+                query = query.Where(c => c.Transaction.CompanyId == companyId);
+            }
         }
-        else
-        {
-            query = query.Where(c => c.Transaction.CompanyId == companyId);
-        }
-
         int totalCount = query.Count();
 
         var data = await query.OrderByDescending(c => c.Id)
@@ -532,7 +531,10 @@ public class ReadModelQueries
                  ReferenceNumber = entity.IPGTransaction?.ReferenceNumber,
                  TransactionStatusName = General.GetIPGTransactionStatusName(entity.IPGTransaction.Status),
                  TransactionStatus = entity.IPGTransaction.Status,
-                 TransactionStatusCode = entity.IPGTransaction.Status.GetValue()
+                 TransactionStatusCode = entity.IPGTransaction.Status.GetValue(),
+                 TrackerId = entity.IPGTransaction.TrackId,
+                 ProviderTrackerId = entity.IPGTransaction.ProviderTrackerId,
+
              }).ToList()
             );
 
@@ -541,17 +543,16 @@ public class ReadModelQueries
 
     #endregion
 
-
-    #region [ PaymentReceiptTransaction ]
+    #region [ PaymentReceiptTransactionReport ]
 
     [Authorize(Policy = AuthPolicies.Roles.AdminOrCompanyUser)]
     [UseOffsetPaging(IncludeTotalCount = true)]
     [UseProjection]
     [UseFiltering<PaymentReceiptTransactionFilterType>]
-    [UseSorting<IPGTransactionSortType>]
-    public async Task<IEnumerable<PaymentReceiptTransactionReportViewModel>> GetPaymentReceiptTransactions
+    [UseSorting<PaymentReceiptTransactionSortType>]
+    public async Task<IEnumerable<PaymentReceiptTransactionsReportViewModel>> GetPaymentReceiptTransactions
    ([Service] ReadDbContext dbContext, [Service] IMinioProvider minioProvider, [Service] IRedisCacheService cacheService,
-   [Service] IHttpContextAccessor httpContext, int? pageNumber, int? pageSize)
+    [Service] IHttpContextAccessor httpContext, int? pageNumber, int? pageSize)
     {
         if (!pageNumber.HasValue)
         {
@@ -562,21 +563,22 @@ public class ReadModelQueries
             pageSize = 10;
         }
 
-        IQueryable<PaymentReceiptTransactionReadModel> query = dbContext.PaymentReceiptTransactionReadModels.Include(c => c.Transaction);
+        var query = dbContext.TransactionReadModels.Include(c => c.PaymentReceiptTransaction).Where(c => c.PaymentReceiptTransactionId.HasValue).AsQueryable();
 
         var roleClaim = httpContext.HttpContext.User.FindFirst(c => c.Type == ClaimTypes.Role &&
-               c.Value == UserRoleType.CompanyUser.GetValue());
-
-        var companyIdClaim = httpContext.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "CompanyId");
-        if (companyIdClaim == null ||
-        !long.TryParse(companyIdClaim.Value, out long companyId) || companyId == 0)
+               c.Value == UserRoleType.SuperAdmin.GetValue());
+        if (roleClaim == null)
         {
-            throw new Exception("companyIdNotFound");
-        }
-        else
-        {
-            query = query.Where(c => c.Transaction.CompanyId == companyId);
-
+            var companyIdClaim = httpContext.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "CompanyId");
+            if (companyIdClaim == null ||
+            !long.TryParse(companyIdClaim.Value, out long companyId) || companyId == 0)
+            {
+                throw new Exception("companyIdNotFound");
+            }
+            else
+            {
+                query = query.Where(c => c.CompanyId == companyId);
+            }
         }
 
         int totalCount = query.Count();
@@ -584,10 +586,10 @@ public class ReadModelQueries
         var data = await query.OrderByDescending(c => c.Id)
             .Select(c => new
             {
-                PaymentReceiptTransaction = c,
-                Company = c.Transaction.Company,
-                PaymentRequest = c.Transaction.PaymentRequest,
-                Transaction = c.Transaction,
+                PaymentReceiptTransaction = c.PaymentReceiptTransaction,
+                Company = c.Company,
+                PaymentRequest = c.PaymentRequest,
+                Transaction = c,
             })
             .Skip((pageNumber.Value - 1) * pageSize.Value)
             .Take(pageSize.Value)
@@ -603,42 +605,102 @@ public class ReadModelQueries
 
         var viewModels = await Task.WhenAll(
 
-             data.Select(async entity => new PaymentReceiptTransactionReportViewModel
+             data.Select(async entity => new PaymentReceiptTransactionsReportViewModel
              {
                  TotalCount = totalCount,
-                 Id = entity.Transaction.Id,
+                 Id = entity.PaymentReceiptTransaction.Id,
                  CompanyId = entity.Company.Id,
                  CompanyPersianName = entity.Company.PersianName,
                  CompanyEnglishName = entity.Company.EnglishName,
                  Amount = entity.Transaction.Amount,
-                 ReceiptImage = !string.IsNullOrEmpty(entity.PaymentReceiptTransaction.ReceiptImage) ? await General.GetLogo(minioProvider, entity.PaymentReceiptTransaction.ReceiptImage) : null,
-                 BankId = bankscacheData.FirstOrDefault(c => c.IbanPrefix == entity.PaymentReceiptTransaction.SourceIban.Substring(5, 3)).Id,
-                 BankLogo = await General.GetLogo(minioProvider, bankscacheData.FirstOrDefault(c => c.IbanPrefix == entity.PaymentReceiptTransaction.SourceIban.Substring(5, 2)).Logo),
-                 BankName = bankscacheData.FirstOrDefault(c => c.IbanPrefix == entity.PaymentReceiptTransaction.SourceIban.Substring(5, 3)).Name,
+                 ReceiptImage = !string.IsNullOrEmpty(entity.PaymentReceiptTransaction.ReceiptImage) ?
+                 await General.GetLogo(minioProvider, entity.PaymentReceiptTransaction.ReceiptImage) : null,
+                 BankId = bankscacheData.FirstOrDefault(c => c.IbanPrefix == entity.PaymentReceiptTransaction.SourceIban.Substring(4, 3))?.Id??0,
+                 BankLogo = await General.GetLogo(minioProvider, bankscacheData.FirstOrDefault(c => c.IbanPrefix == entity.PaymentReceiptTransaction.SourceIban.Substring(4, 3))?.Logo),
+                 BankName = bankscacheData.FirstOrDefault(c => c.IbanPrefix == entity.PaymentReceiptTransaction.SourceIban.Substring(4, 3))?.Name,
                  PaymentCode = entity.PaymentRequest?.PaymentCode,
                  CompanyLogo = !string.IsNullOrEmpty(entity.Company.Logo) ? await General.GetLogo(minioProvider, entity.Company.Logo) : null,
                  CreationDate = entity.PaymentReceiptTransaction.CreationDate,
                  ReceiptDateTime = entity.PaymentReceiptTransaction.ReceiptDateTime,
-                 ReferenceNumber = entity.PaymentReceiptTransaction?.ReferenceNumber,
+                 ReferenceNumber = entity.PaymentReceiptTransaction.ReferenceNumber,
                  TransactionStatusName = General.GetPaymentReceiptTransactionStatusName(entity.PaymentReceiptTransaction.Status),
                  TransactionStatus = entity.PaymentReceiptTransaction.Status,
                  TransactionStatusCode = entity.PaymentReceiptTransaction.Status.GetValue(),
                  SourceIban = entity.PaymentReceiptTransaction.SourceIban,
                  ModificationDate = entity.PaymentReceiptTransaction.ModificationDate,
-                 PaymentReceiptTransactionId = entity.PaymentReceiptTransaction.Id,
              }).ToList()
             );
 
         return viewModels;
     }
 
+    [Authorize(Policy = AuthPolicies.Roles.AdminOrCompanyUser)]
+    public async Task<PaymentReceiptTransactionReportViewModel> GetPaymentReceiptTransaction
+   ([Service] ReadDbContext dbContext, [Service] IMinioProvider minioProvider, [Service] IRedisCacheService cacheService,
+   [Service] IHttpContextAccessor httpContext, long id)
+    {
+        var query = dbContext.TransactionReadModels
+            .Include(c => c.PaymentReceiptTransaction).Where(c => c.PaymentReceiptTransactionId.HasValue)
+            .Include(c => c.Company).Include(c => c.PaymentRequest).AsQueryable();
 
+        var roleClaim = httpContext.HttpContext.User.FindFirst(c => c.Type == ClaimTypes.Role &&
+               c.Value == UserRoleType.SuperAdmin.GetValue());
 
+        if (roleClaim == null)
+        {
+            var companyIdClaim = httpContext.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "CompanyId");
+
+            if (companyIdClaim == null ||
+            !long.TryParse(companyIdClaim.Value, out long companyId) || companyId == 0)
+            {
+                throw new Exception("companyIdNotFound");
+            }
+            else
+            {
+                query = query.Where(c => c.CompanyId == companyId);
+            }
+        }
+
+        var entity = query.FirstOrDefault(c => c.PaymentReceiptTransactionId == id);
+        if (query == null)
+        {
+            throw new Exception("IdNotFound");
+        }
+
+        var bankscacheData = cacheService.GetData<List<BankReadModel>>("AllBank_key");
+
+        if (bankscacheData == null)
+        {
+            bankscacheData = await dbContext.BankReadModels.ToListAsync();
+            cacheService.SetData("AllBank_key", bankscacheData);
+        }
+        var ibanPrefix = entity.PaymentReceiptTransaction.SourceIban.Substring(4, 3);
+        var bank =bankscacheData.FirstOrDefault(c=>c.IbanPrefix== ibanPrefix);  
+        var viewModel = new PaymentReceiptTransactionReportViewModel
+        {
+            Id = entity.PaymentReceiptTransaction.Id,
+            CompanyId = entity.Company.Id,
+            CompanyPersianName = entity.Company.PersianName,
+            CompanyEnglishName = entity.Company.EnglishName,
+            Amount = entity.Amount,
+            ReceiptImage = !string.IsNullOrEmpty(entity.PaymentReceiptTransaction.ReceiptImage) ?
+                 await General.GetLogo(minioProvider, entity.PaymentReceiptTransaction.ReceiptImage) : null,
+            BankId = bank?.Id??0,
+            BankLogo = await General.GetLogo(minioProvider, bank?.Logo),
+            BankName = bank?.Name,
+            PaymentCode = entity.PaymentRequest?.PaymentCode,
+            CompanyLogo = !string.IsNullOrEmpty(entity.Company.Logo) ? await General.GetLogo(minioProvider, entity.Company.Logo) : null,
+            CreationDate = entity.PaymentReceiptTransaction.CreationDate,
+            ReceiptDateTime = entity.PaymentReceiptTransaction.ReceiptDateTime,
+            ReferenceNumber = entity.PaymentReceiptTransaction.ReferenceNumber,
+            TransactionStatusName = General.GetPaymentReceiptTransactionStatusName(entity.PaymentReceiptTransaction.Status),
+            TransactionStatus = entity.PaymentReceiptTransaction.Status,
+            TransactionStatusCode = entity.PaymentReceiptTransaction.Status.GetValue(),
+            SourceIban = entity.PaymentReceiptTransaction.SourceIban,
+            ModificationDate = entity.PaymentReceiptTransaction.ModificationDate,
+        };
+        return viewModel;
+    }
+    
     #endregion
-
-
-
-
-
-
 }

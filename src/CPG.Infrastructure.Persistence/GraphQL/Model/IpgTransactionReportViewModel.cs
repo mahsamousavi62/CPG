@@ -28,5 +28,6 @@ public class IpgTransactionReportViewModel
     public DateTime? CreationDate { get; set; }
     public string TransactionStatusCode { get;  set; }
     public Enums.IPGTransactionStatus TransactionStatus { get;  set; }
-    public string TransactionStatusName { get; internal set; }
+    public string TransactionStatusName { get;  set; }
+    public string TrackerId { get;  set; }
 }

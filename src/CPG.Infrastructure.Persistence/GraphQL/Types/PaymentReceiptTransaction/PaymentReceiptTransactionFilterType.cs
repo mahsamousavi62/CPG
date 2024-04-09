@@ -10,9 +10,9 @@ using HotChocolate.Data.Filters;
 namespace CPG.Infrastructure.Persistence.GraphQL.Types.PaymentReceiptTransaction
 {
 
-    public class PaymentReceiptTransactionFilterType : FilterInputType<PaymentReceiptTransactionReportViewModel>
+    public class PaymentReceiptTransactionFilterType : FilterInputType<PaymentReceiptTransactionsReportViewModel>
     {
-        protected override void Configure(IFilterInputTypeDescriptor<PaymentReceiptTransactionReportViewModel> descriptor)
+        protected override void Configure(IFilterInputTypeDescriptor<PaymentReceiptTransactionsReportViewModel> descriptor)
         {
             descriptor.BindFieldsExplicitly();
             descriptor.Field(f => f.CompanyId).Type<CustomLongOperationFilterInputType>();
@@ -25,4 +25,5 @@ namespace CPG.Infrastructure.Persistence.GraphQL.Types.PaymentReceiptTransaction
             descriptor.Field(f => f.TransactionStatusCode).Type<CustomStringOperationFilterInputType>();
         }
     }
+ 
 }
