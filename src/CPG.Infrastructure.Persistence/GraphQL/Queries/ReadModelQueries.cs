@@ -30,6 +30,7 @@ using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Infrastructure.Persistence.GraphQL.Types.IPGTransaction;
 using System.Security.Cryptography.X509Certificates;
 using CPG.Infrastructure.Persistence.GraphQL.Types.PaymentReceiptTransaction;
+using CPG.Infrastructure.Persistence.GraphQL.Types.CharismaCard;
 
 
 namespace CPG.Infrastructure.Persistence.GraphQL.Queries;
@@ -615,7 +616,7 @@ public class ReadModelQueries
                  Amount = entity.Transaction.Amount,
                  ReceiptImage = !string.IsNullOrEmpty(entity.PaymentReceiptTransaction.ReceiptImage) ?
                  await General.GetLogo(minioProvider, entity.PaymentReceiptTransaction.ReceiptImage) : null,
-                 BankId = bankscacheData.FirstOrDefault(c => c.IbanPrefix == entity.PaymentReceiptTransaction.SourceIban.Substring(4, 3))?.Id??0,
+                 BankId = bankscacheData.FirstOrDefault(c => c.IbanPrefix == entity.PaymentReceiptTransaction.SourceIban.Substring(4, 3))?.Id ?? 0,
                  BankLogo = await General.GetLogo(minioProvider, bankscacheData.FirstOrDefault(c => c.IbanPrefix == entity.PaymentReceiptTransaction.SourceIban.Substring(4, 3))?.Logo),
                  BankName = bankscacheData.FirstOrDefault(c => c.IbanPrefix == entity.PaymentReceiptTransaction.SourceIban.Substring(4, 3))?.Name,
                  PaymentCode = entity.PaymentRequest?.PaymentCode,
@@ -675,7 +676,7 @@ public class ReadModelQueries
             cacheService.SetData("AllBank_key", bankscacheData);
         }
         var ibanPrefix = entity.PaymentReceiptTransaction.SourceIban.Substring(4, 3);
-        var bank =bankscacheData.FirstOrDefault(c=>c.IbanPrefix== ibanPrefix);  
+        var bank = bankscacheData.FirstOrDefault(c => c.IbanPrefix == ibanPrefix);
         var viewModel = new PaymentReceiptTransactionReportViewModel
         {
             Id = entity.PaymentReceiptTransaction.Id,
@@ -685,7 +686,7 @@ public class ReadModelQueries
             Amount = entity.Amount,
             ReceiptImage = !string.IsNullOrEmpty(entity.PaymentReceiptTransaction.ReceiptImage) ?
                  await General.GetLogo(minioProvider, entity.PaymentReceiptTransaction.ReceiptImage) : null,
-            BankId = bank?.Id??0,
+            BankId = bank?.Id ?? 0,
             BankLogo = await General.GetLogo(minioProvider, bank?.Logo),
             BankName = bank?.Name,
             PaymentCode = entity.PaymentRequest?.PaymentCode,
@@ -701,6 +702,92 @@ public class ReadModelQueries
         };
         return viewModel;
     }
-    
+
     #endregion
+
+    #region [ CharismaCardTransactionReport ]
+
+    [Authorize(Policy = AuthPolicies.Roles.AdminOrCompanyUser)]
+    [UseOffsetPaging(IncludeTotalCount = true)]
+    [UseProjection]
+    [UseFiltering<CharismaCardTransactionFilterType>]
+    [UseSorting<CharismaCardTransactionSortType>]
+    public async Task<IEnumerable<CharismaCardTransactionReportViewModel>> GetCharismaCardTransactions
+   ([Service] ReadDbContext dbContext, [Service] IMinioProvider minioProvider, [Service] IRedisCacheService cacheService,
+    [Service] IHttpContextAccessor httpContext, int? pageNumber, int? pageSize)
+    {
+        if (!pageNumber.HasValue)
+        {
+            pageNumber = 1;
+        }
+        if (!pageSize.HasValue)
+        {
+            pageSize = 10;
+        }
+
+        var query = dbContext.TransactionReadModels.Include(c => c.CharismaCardTransaction).
+            Where(c => c.CharismaCardTransactionId.HasValue).AsQueryable();
+
+        var roleClaim = httpContext.HttpContext.User.FindFirst(c => c.Type == ClaimTypes.Role &&
+               c.Value == UserRoleType.SuperAdmin.GetValue());
+        if (roleClaim == null)
+        {
+            var companyIdClaim = httpContext.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "CompanyId");
+            if (companyIdClaim == null ||
+            !long.TryParse(companyIdClaim.Value, out long companyId) || companyId == 0)
+            {
+                throw new Exception("companyIdNotFound");
+            }
+            else
+            {
+                query = query.Where(c => c.CompanyId == companyId);
+            }
+        }
+
+        int totalCount = query.Count();
+
+        var data = await query.OrderByDescending(c => c.Id)
+            .Select(c => new
+            {
+                CharismaCardTransaction = c.CharismaCardTransaction,
+                Company = c.Company,
+                PaymentRequest = c.PaymentRequest,
+                Transaction = c,
+            })
+            .Skip((pageNumber.Value - 1) * pageSize.Value)
+            .Take(pageSize.Value)
+            .ToListAsync();
+
+        var bankscacheData = cacheService.GetData<List<BankReadModel>>("AllBank_key");
+
+        if (bankscacheData == null)
+        {
+            bankscacheData = await dbContext.BankReadModels.ToListAsync();
+            cacheService.SetData("AllBank_key", bankscacheData);
+        }
+
+        var viewModels = await Task.WhenAll(
+
+             data.Select(async entity => new CharismaCardTransactionReportViewModel
+             {
+                 TotalCount = totalCount,
+                 Id = entity.CharismaCardTransaction.Id,
+                 CompanyId = entity.Company.Id,
+                 CompanyPersianName = entity.Company.PersianName,
+                 CompanyEnglishName = entity.Company.EnglishName,
+                 Amount = entity.Transaction.Amount,
+                 PaymentCode = entity.PaymentRequest?.PaymentCode,
+                 CompanyLogo = !string.IsNullOrEmpty(entity.Company.Logo) ? await General.GetLogo(minioProvider, entity.Company.Logo) : null,
+                 CreationDate = entity.CharismaCardTransaction.CreationDate,
+                 ReferenceNumber = entity.CharismaCardTransaction.ReferenceNumber,
+                 TransactionStatusName = General.GetCharismaCardTransactionStatusName(entity.CharismaCardTransaction.Status),
+                 TransactionStatus = entity.CharismaCardTransaction.Status,
+                 TransactionStatusCode = entity.CharismaCardTransaction.Status.GetValue(),
+             }).ToList()
+            );
+
+        return viewModels;
+    }
+    #endregion
+
 }

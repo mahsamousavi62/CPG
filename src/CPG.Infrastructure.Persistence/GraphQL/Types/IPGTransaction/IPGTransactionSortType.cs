@@ -17,6 +17,5 @@ public class IPGTransactionSortType : SortInputType<IpgTransactionReportViewMode
     {
         descriptor.BindFieldsExplicitly();
         descriptor.Field(f => f.Id).Type<AscDescSortEnumType>();
-
     }
 }

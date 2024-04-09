@@ -76,7 +76,15 @@ public static class General
         };
     }
 
-
+    public static string GetCharismaCardTransactionStatusName(CharismaCardStatus status)
+    {
+        return status switch
+        {
+            CharismaCardStatus.Done => "موفق",
+            CharismaCardStatus.Failed => "ناموفق",
+            _ => string.Empty,
+        };
+    }
     public static async Task<string> GetLogo(IMinioProvider minioProvider, string logoPath)
     {
         try
