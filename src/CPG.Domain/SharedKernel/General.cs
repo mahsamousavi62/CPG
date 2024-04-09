@@ -30,34 +30,32 @@ public static class General
         };
     }
 
-
     public static string GetTransactionStatusName(Enums.TransactionStatus status)
     {
         return status switch
         {
-            Enums.TransactionStatus.InPrgress => "در حال انجام",
-            Enums.TransactionStatus.TransactionSucceeded => "تراکنش موفق",
-            Enums.TransactionStatus.TransactionFailed => "تراکنش ناموفق",
+            Enums.TransactionStatus.InPrgress =>Resource.InPrgress,
+            Enums.TransactionStatus.TransactionSucceeded => Resource.TransactionSucceeded,
+            Enums.TransactionStatus.TransactionFailed => Resource.TransactionFailed,
             _ => string.Empty,
         };
     }
-
 
     public static string GetIPGTransactionStatusName(IPGTransactionStatus status)
     {
         return status switch
         {
-            IPGTransactionStatus.WaitingForPspResponse => "در انتظار پاسخ از درگاه",
-            IPGTransactionStatus.FetchingResult => "در انتظار دریافت اطلاعات تراکنش",
-            IPGTransactionStatus.SucceededAndWaitingForVerification => "موفق و در انتظار تایید",
-            IPGTransactionStatus.Failed => "ناموفق",
-            IPGTransactionStatus.Expired => "منقضی شده",
-            IPGTransactionStatus.Verifying => "در انتظار تایید تراکنش در درگاه",
-            IPGTransactionStatus.VerificationSucceeded => " تایید موفق در درگاه",
-            IPGTransactionStatus.VerificationFailed => "تایید ناموفق در درگاه",
-            IPGTransactionStatus.WaitingForSettlementRequest => "در انتظار ثبت درخواست تسویه در درگاه",
-            IPGTransactionStatus.SettlementSucceeded => "ثبت درخواست تسویه موفق",
-            IPGTransactionStatus.SettlementFailed => "ثبت درخواست تسویه ناموفق",
+            IPGTransactionStatus.WaitingForPspResponse => Resource.WaitingForPspResponse,
+            IPGTransactionStatus.FetchingResult => Resource.FetchingResult,
+            IPGTransactionStatus.SucceededAndWaitingForVerification => Resource.SucceededAndWaitingForVerification,
+            IPGTransactionStatus.Failed => Resource.Failed,
+            IPGTransactionStatus.Expired => Resource.Expired,
+            IPGTransactionStatus.Verifying => Resource.Verifying,
+            IPGTransactionStatus.VerificationSucceeded => Resource.VerificationSucceeded,
+            IPGTransactionStatus.VerificationFailed => Resource.VerificationFailed,
+            IPGTransactionStatus.WaitingForSettlementRequest => Resource.WaitingForSettlementRequest,
+            IPGTransactionStatus.SettlementSucceeded => Resource.SettlementSucceeded,
+            IPGTransactionStatus.SettlementFailed => Resource.SettlementFailed,
             IPGTransactionStatus.Cancelling => "Cancelling transaction",
             IPGTransactionStatus.CancellationSucceeded => "Transaction cancellation succeeded",
             IPGTransactionStatus.CancellationFailed => "Transaction cancellation failed",
@@ -69,9 +67,9 @@ public static class General
     {
         return status switch
         {
-            PaymentReceiptStatus.WaitingForResponseFromProvider => "در انتظار پاسخ از سرویس دهنده",
-            PaymentReceiptStatus.SucceededAndWaitingForVerification => "موفق و در انتظار تایید",
-            PaymentReceiptStatus.Failed => "ناموفق",
+            PaymentReceiptStatus.WaitingForResponseFromProvider => Resource.WaitingForResponseFromProvider,
+            PaymentReceiptStatus.SucceededAndWaitingForVerification => Resource.SucceededAndWaitingForVerification,
+            PaymentReceiptStatus.Failed =>Resource.Failed,
             _ => string.Empty,
         };
     }
@@ -80,11 +78,12 @@ public static class General
     {
         return status switch
         {
-            CharismaCardStatus.Done => "موفق",
-            CharismaCardStatus.Failed => "ناموفق",
+            CharismaCardStatus.Done => Resource.Done,
+            CharismaCardStatus.Failed => Resource.Failed,
             _ => string.Empty,
         };
     }
+   
     public static async Task<string> GetLogo(IMinioProvider minioProvider, string logoPath)
     {
         try

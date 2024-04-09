@@ -389,7 +389,7 @@ public class ReadModelQueries
                 CompanyDeposit = c.DestinationDeposit
             })
             .Skip((pageNumber.Value - 1) * pageSize.Value)
-            .Take(pageSize.Value)
+            .Take(pageSize.Value).Where(c=>c.Transaction.Id==530)
             .ToListAsync();
 
         var UserscacheData = cacheService.GetData<List<UserReadModel>>("AllUser_key");
@@ -412,9 +412,9 @@ public class ReadModelQueries
                  Amount = entity.Transaction.Amount,
                  TransactionMethodType = entity.Transaction.TransactionMethodType,
                  TransactionMethodTypeName = GetTransactionMethodTypeName(entity.Transaction.TransactionMethodType),
-                 IPGTypeId = entity.IPGType.Id,
+                 IPGTypeId = entity.IPGType?.Id??0,
                  IpgTypeName = entity.IPGType?.PersianName,
-                 ProviderId = entity.Provider?.Id,
+                 ProviderId = entity.Provider?.Id??0,
                  ProviderName = entity.Provider?.PersianName,
                  ApplicationName = entity.Application?.PersianName,
                  PaymentCode = entity.PaymentRequest?.PaymentCode,
@@ -427,7 +427,7 @@ public class ReadModelQueries
                  FirstName = UserscacheData.FirstOrDefault(c => c.Id == entity.Transaction.CreationUserId)?.FirstName,
                  LastName = UserscacheData.FirstOrDefault(c => c.Id == entity.Transaction.CreationUserId)?.LastName,
                  NationalCode = entity.PaymentRequest.NationalCode,
-                 ApplicationId = entity.Application.Id,
+                 ApplicationId = entity.Application?.Id ?? 0,
                  ReferenceNumber = entity.IPGTransaction?.ReferenceNumber ??
                                    entity.CharismaCardTransaction?.ReferenceNumber ??
                                    entity.PaymentReceiptTransaction?.ReferenceNumber ??
