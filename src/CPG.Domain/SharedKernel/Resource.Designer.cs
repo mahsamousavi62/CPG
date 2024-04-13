@@ -61,6 +61,51 @@ namespace CPG.Domain.SharedKernel {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to موفق.
+        /// </summary>
+        internal static string Done {
+            get {
+                return ResourceManager.GetString("Done", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to منقضی شده.
+        /// </summary>
+        internal static string Expired {
+            get {
+                return ResourceManager.GetString("Expired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ناموفق.
+        /// </summary>
+        internal static string Failed {
+            get {
+                return ResourceManager.GetString("Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to در انتظار دریافت اطلاعات تراکنش.
+        /// </summary>
+        internal static string FetchingResult {
+            get {
+                return ResourceManager.GetString("FetchingResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to در حال انجام.
+        /// </summary>
+        internal static string InPrgress {
+            get {
+                return ResourceManager.GetString("InPrgress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to تعداد کاراکتر آدرس &apos;{0}&apos; در محدوده مجاز نمی باشد.
         /// </summary>
         internal static string InvalidUrlCharacterLimit {
@@ -75,6 +120,105 @@ namespace CPG.Domain.SharedKernel {
         internal static string InvalidUrlFormat {
             get {
                 return ResourceManager.GetString("InvalidUrlFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ثبت درخواست تسویه ناموفق.
+        /// </summary>
+        internal static string SettlementFailed {
+            get {
+                return ResourceManager.GetString("SettlementFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ثبت درخواست تسویه موفق.
+        /// </summary>
+        internal static string SettlementSucceeded {
+            get {
+                return ResourceManager.GetString("SettlementSucceeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to موفق و در انتظار تایید.
+        /// </summary>
+        internal static string SucceededAndWaitingForVerification {
+            get {
+                return ResourceManager.GetString("SucceededAndWaitingForVerification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to تراکنش ناموفق.
+        /// </summary>
+        internal static string TransactionFailed {
+            get {
+                return ResourceManager.GetString("TransactionFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to تراکنش موفق.
+        /// </summary>
+        internal static string TransactionSucceeded {
+            get {
+                return ResourceManager.GetString("TransactionSucceeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to تایید ناموفق در درگاه.
+        /// </summary>
+        internal static string VerificationFailed {
+            get {
+                return ResourceManager.GetString("VerificationFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to تایید موفق در درگاه.
+        /// </summary>
+        internal static string VerificationSucceeded {
+            get {
+                return ResourceManager.GetString("VerificationSucceeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to در انتظار تایید تراکنش در درگاه.
+        /// </summary>
+        internal static string Verifying {
+            get {
+                return ResourceManager.GetString("Verifying", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to در انتظار پاسخ از درگاه.
+        /// </summary>
+        internal static string WaitingForPspResponse {
+            get {
+                return ResourceManager.GetString("WaitingForPspResponse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to در انتظار پاسخ از سرویس دهنده.
+        /// </summary>
+        internal static string WaitingForResponseFromProvider {
+            get {
+                return ResourceManager.GetString("WaitingForResponseFromProvider", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to در انتظار ثبت درخواست تسویه در درگاه.
+        /// </summary>
+        internal static string WaitingForSettlementRequest {
+            get {
+                return ResourceManager.GetString("WaitingForSettlementRequest", resourceCulture);
             }
         }
     }

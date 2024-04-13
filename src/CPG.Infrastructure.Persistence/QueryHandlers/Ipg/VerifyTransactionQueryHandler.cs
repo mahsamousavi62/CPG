@@ -124,11 +124,19 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
                         break;
                     }
                 case TransactionType.DirectDebit:
-                case TransactionType.PaymentReceipt:
-                case TransactionType.CharismaCard:
                     {
                         var date = DateTime.Now.AddDays(1);
                         transaction.PredictedSettlementDateTime = new DateTime(date.Year, date.Month, date.Day, 0, 0, 0);
+                        break;
+                    }
+                case TransactionType.PaymentReceipt:
+                    {
+                        transaction.PredictedSettlementDateTime = transaction.PaymentReceiptTransaction.ReceiptDateTime;
+                        break;
+                    }
+                case TransactionType.CharismaCard:
+                    {
+                        transaction.PredictedSettlementDateTime = transaction.CharismaCardTransaction.CreationDate;
                         transaction.Status = TransactionStatus.TransactionSucceeded;
                         paymentRequest.Status = PaymentStatus.TransactionVerificationSucceeded;
 

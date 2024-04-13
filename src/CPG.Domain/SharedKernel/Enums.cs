@@ -107,6 +107,7 @@ public class Enums
         AyandehToken = 19,
         AyandehTransResult = 20,
         AyandehVerify = 21,
+        GetAccountNumber=22,
     }
 
     public enum TransactionType : byte

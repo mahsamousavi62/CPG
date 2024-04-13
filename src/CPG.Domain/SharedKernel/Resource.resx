@@ -117,10 +117,58 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Done" xml:space="preserve">
+    <value>موفق</value>
+  </data>
+  <data name="Expired" xml:space="preserve">
+    <value>منقضی شده</value>
+  </data>
+  <data name="Failed" xml:space="preserve">
+    <value>ناموفق</value>
+  </data>
+  <data name="FetchingResult" xml:space="preserve">
+    <value>در انتظار دریافت اطلاعات تراکنش</value>
+  </data>
+  <data name="InPrgress" xml:space="preserve">
+    <value>در حال انجام</value>
+  </data>
   <data name="InvalidUrlCharacterLimit" xml:space="preserve">
     <value>تعداد کاراکتر آدرس '{0}' در محدوده مجاز نمی باشد</value>
   </data>
   <data name="InvalidUrlFormat" xml:space="preserve">
     <value>فرمت آدرس '{0}' معتبر نمی باشد</value>
+  </data>
+  <data name="SettlementFailed" xml:space="preserve">
+    <value>ثبت درخواست تسویه ناموفق</value>
+  </data>
+  <data name="SettlementSucceeded" xml:space="preserve">
+    <value>ثبت درخواست تسویه موفق</value>
+  </data>
+  <data name="SucceededAndWaitingForVerification" xml:space="preserve">
+    <value>موفق و در انتظار تایید</value>
+  </data>
+  <data name="TransactionFailed" xml:space="preserve">
+    <value>تراکنش ناموفق</value>
+  </data>
+  <data name="TransactionSucceeded" xml:space="preserve">
+    <value>تراکنش موفق</value>
+  </data>
+  <data name="VerificationFailed" xml:space="preserve">
+    <value>تایید ناموفق در درگاه</value>
+  </data>
+  <data name="VerificationSucceeded" xml:space="preserve">
+    <value>تایید موفق در درگاه</value>
+  </data>
+  <data name="Verifying" xml:space="preserve">
+    <value>در انتظار تایید تراکنش در درگاه</value>
+  </data>
+  <data name="WaitingForPspResponse" xml:space="preserve">
+    <value>در انتظار پاسخ از درگاه</value>
+  </data>
+  <data name="WaitingForResponseFromProvider" xml:space="preserve">
+    <value>در انتظار پاسخ از سرویس دهنده</value>
+  </data>
+  <data name="WaitingForSettlementRequest" xml:space="preserve">
+    <value>در انتظار ثبت درخواست تسویه در درگاه</value>
   </data>
 </root>

@@ -783,4 +783,10 @@
   <data name="BehPardakht" xml:space="preserve">
     <value>BehPardakht</value>
   </data>
+  <data name="NotHasResponse" xml:space="preserve">
+    <value>Response is null</value>
+  </data>
+  <data name="UnAuthorizeRequest" xml:space="preserve">
+    <value>UnAuthorizeRequest</value>
+  </data>
 </root>

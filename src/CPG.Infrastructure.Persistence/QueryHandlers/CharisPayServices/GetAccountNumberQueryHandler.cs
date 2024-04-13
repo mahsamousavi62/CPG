@@ -20,8 +20,8 @@ public class GetAccountNumberQueryHandler : IRequestHandler<GetAccountNumberQuer
     public async Task<Result<AccountNumberResponse>> Handle(GetAccountNumberQuery request, CancellationToken cancellationToken)
     {
         var iban = new Iban(request.Iban);
-        var accountNumber = await _charisPayClient.GetAccountNumber(iban.Value);
+        var accountNumberResponse = await _charisPayClient.GetAccountNumber(iban.Value);
 
-        return Result<AccountNumberResponse>.SuccessResult(accountNumber.Data);
+        return accountNumberResponse;
     }
 }
