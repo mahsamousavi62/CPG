@@ -62,6 +62,7 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
                     DestinationDepositAccountNumber = transaction?.DestinationDeposit?.AccountNumber,
                     PredictedExpirationDateTime = transaction is null ? string.Empty : GetTransactionPredictedExpirationDateTime(transaction),
                     ReceiptContent = transaction.TransactionMethodType == TransactionType.PaymentReceipt ? await _minioProvider.PresignedGetObject(transaction.PaymentReceiptTransaction.ReceiptImage) : string.Empty,
+                    PredictedSettlementDateTime = transaction.PredictedSettlementDateTime?.ToString("yyyy-MM-dd HH:mm:ss zzz")
                 });
         }
         catch (DomainException exc)
