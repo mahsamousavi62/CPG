@@ -29,18 +29,18 @@ internal class CreateApplicationCommandHandler(IAggregateRepository<Domain.Aggre
         PersianName persianName = new(request.Model.PersianName);
         EnglishName englishName = new(request.Model.EnglishName);
 
-        var samePersianNameApplication = await _applicationRepository.GetBySpecAsync(new ApplicationByPersianName(request.Model.PersianName), cancellationToken);
+        var samePersianNameApplication = await _applicationRepository.FirstOrDefaultAsync(new ApplicationByPersianName(request.Model.PersianName), cancellationToken);
         if (samePersianNameApplication != null)
         {
             throw new DuplicatePersianNameException(request.Model.PersianName);
         }
-        var sameEnglishNameApplication = await _applicationRepository.GetBySpecAsync(new ApplicationByEnglishName(request.Model.EnglishName), cancellationToken);
+        var sameEnglishNameApplication = await _applicationRepository.FirstOrDefaultAsync(new ApplicationByEnglishName(request.Model.EnglishName), cancellationToken);
         if (sameEnglishNameApplication != null)
         {
             throw new DuplicateEnglishNameException(request.Model.EnglishName);
         }
 
-        var  applicationByClinetIds = await _applicationRepository.GetBySpecAsync(new ApplicationbyIdpClientId(request.Model.IdpClientIds));
+        var  applicationByClinetIds = await _applicationRepository.FirstOrDefaultAsync(new ApplicationbyIdpClientId(request.Model.IdpClientIds));
                 
         if (applicationByClinetIds is not null &&(applicationByClinetIds.ApplicationIdentifiers != null || applicationByClinetIds.ApplicationIdentifiers.Count != 0))
         {
@@ -49,7 +49,7 @@ internal class CreateApplicationCommandHandler(IAggregateRepository<Domain.Aggre
 
         if (request.Model.CallbackUrls!=null)
         {
-            var applicationByCallBackUrls = await _applicationRepository.GetBySpecAsync(new ApplicationByCallBackUrl(request.Model.CallbackUrls));
+            var applicationByCallBackUrls = await _applicationRepository.FirstOrDefaultAsync(new ApplicationByCallBackUrl(request.Model.CallbackUrls));
             if (applicationByCallBackUrls is not null && (applicationByCallBackUrls.ApplicationCallbackUrls != null
                 || applicationByCallBackUrls.ApplicationCallbackUrls.Count != 0))
             {
