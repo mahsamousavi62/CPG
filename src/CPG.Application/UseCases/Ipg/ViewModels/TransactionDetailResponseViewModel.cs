@@ -42,5 +42,8 @@ public class TransactionDetailResponseViewModel
 
     [JsonPropertyName("receiptContent")]
     public string ReceiptContent { get; set; }
+
+    [JsonPropertyName("predictedSettlementDateTime")]
+    public string PredictedSettlementDateTime { get; set; }
 }
 

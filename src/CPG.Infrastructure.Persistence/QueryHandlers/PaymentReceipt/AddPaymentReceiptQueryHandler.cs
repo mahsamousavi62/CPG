@@ -77,7 +77,8 @@ public class AddPaymentReceiptQueryHandler(
                 DestinationDepositId = destinationDepositId,
                 PaymentRequest = paymentRequest,
                 TransactionMethodType = Enums.TransactionType.PaymentReceipt,                
-                Status = Enums.TransactionStatus.InPrgress,                
+                Status = Enums.TransactionStatus.InPrgress,    
+                PredictedSettlementDateTime = request.viewModel.SettlementDateTime,
                 PaymentReceiptModel = new PaymentReceiptTransactionModel
                 {
                     Description = paymentRequest.Description,
@@ -86,7 +87,7 @@ public class AddPaymentReceiptQueryHandler(
                     ReceiptImage = image,
                     ReferenceNumber = request.viewModel.ReceiptIdentifier,
                     SourceIban = new Iban(request.viewModel.Iban)
-                }
+                }                
             });
 
             await _transactionRepository.AddAsync(transaction);
@@ -112,7 +113,7 @@ public class AddPaymentReceiptQueryHandler(
         }
         catch (Exception)
         {
-            return Result<PaymentReceiptResponseViewModel>.Failure(new Error("2009000", GlobalResource.GetPaymentTicketUnexpectedError));
+            return Result<PaymentReceiptResponseViewModel>.Failure(new Error("1007000", GlobalResource.GetPaymentTicketUnexpectedError));
         }
     }
 }
