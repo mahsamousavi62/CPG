@@ -100,6 +100,7 @@ public class SetVandarWithdrawalDataCommandHandler(
             transaction.Status = status == Enums.DirectDebitTransactionStatus.UnSuccessful ? Enums.TransactionStatus.TransactionFailed : transaction.Status;
             transaction.PaymentRequest.Status = status == Enums.DirectDebitTransactionStatus.UnSuccessful ? Enums.PaymentStatus.TransactionFailed :
                 status == Enums.DirectDebitTransactionStatus.TransactionSucceeded ? Enums.PaymentStatus.TransactionWaitingForVerification : transaction.PaymentRequest.Status;
+            transaction.PredictedSettlementDateTime = GetPredictedSettlementTime();
             await _transactionRepository.UpdateAsync(transaction);
             await _transactionRepository.SaveChangesAsync();
             await _paymentRequestRepository.UpdateAsync(transaction.PaymentRequest);
@@ -202,5 +203,11 @@ public class SetVandarWithdrawalDataCommandHandler(
                     return Result<WithdrawalDataResponseViewModel>.Failure(new Error("2010000", GlobalResource.UnexpectedError));
                 }
         }
+    }
+
+    private static DateTime GetPredictedSettlementTime()
+    {
+        var currentDateTime = DateTime.Now;
+        return new DateTime(currentDateTime.AddDays(1).Year, currentDateTime.AddDays(1).Month, currentDateTime.AddDays(1).Day, 0, 0, 0);
     }
 }
