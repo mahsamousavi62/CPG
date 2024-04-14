@@ -84,23 +84,23 @@ public class AddPaymentReceiptQueryHandler(
         request.viewModel.File.FileName = $"{request.viewModel.PaymentRequestCode}{extention}";
         Logo image = new(request.viewModel.File, Enums.UploadFromEntityType.PaymentReceipt.ToString(), _minioProvider);
 
-            var transaction = Transaction.Create(new CreateTransactionModel
+        var transaction = Transaction.Create(new CreateTransactionModel
+        {
+            DestinationDepositId = destinationDepositId,
+            PaymentRequest = paymentRequest,
+            TransactionMethodType = Enums.TransactionType.PaymentReceipt,
+            Status = Enums.TransactionStatus.InPrgress,
+            PredictedSettlementDateTime = request.viewModel.SettlementDateTime,
+            PaymentReceiptModel = new PaymentReceiptTransactionModel
             {
-                DestinationDepositId = destinationDepositId,
-                PaymentRequest = paymentRequest,
-                TransactionMethodType = Enums.TransactionType.PaymentReceipt,                
-                Status = Enums.TransactionStatus.InPrgress,    
-                PredictedSettlementDateTime = request.viewModel.SettlementDateTime,
-                PaymentReceiptModel = new PaymentReceiptTransactionModel
-                {
-                    Description = paymentRequest.Description,
-                    Status = Enums.PaymentReceiptStatus.SucceededAndWaitingForVerification,
-                    ReceiptDateTime = request.viewModel.SettlementDateTime,
-                    ReceiptImage = image,
-                    ReferenceNumber = request.viewModel.ReceiptIdentifier,
-                    SourceIban = new Iban(request.viewModel.Iban)
-                }                
-            });
+                Description = paymentRequest.Description,
+                Status = Enums.PaymentReceiptStatus.SucceededAndWaitingForVerification,
+                ReceiptDateTime = request.viewModel.SettlementDateTime,
+                ReceiptImage = image,
+                ReferenceNumber = request.viewModel.ReceiptIdentifier,
+                SourceIban = new Iban(request.viewModel.Iban)
+            }
+        });
 
         _ = await _transactionRepository.AddAsync(transaction, cancellationToken);
         _ = await _transactionRepository.SaveChangesAsync(cancellationToken);
@@ -112,22 +112,9 @@ public class AddPaymentReceiptQueryHandler(
         await _paymentRequestRepository.UpdateAsync(paymentRequest, cancellationToken);
         _ = await _paymentRequestRepository.SaveChangesAsync(cancellationToken);
 
-            return Result<PaymentReceiptResponseViewModel>.SuccessResult(new PaymentReceiptResponseViewModel
-            {
-                CallbackUrl = $"{transaction.PaymentRequest.CallBackUrl}/paymentResult?paymentCode={transaction.PaymentRequest.PaymentCode}&paymentStatus={General.GetPaymentStatusTitle(transaction.PaymentRequest.Status)}"
-            });
-        }
-        catch (DomainException exc)
+        return Result<PaymentReceiptResponseViewModel>.SuccessResult(new PaymentReceiptResponseViewModel
         {
-            return Result<PaymentReceiptResponseViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
-        }
-        catch (AppException exc)
-        {
-            return Result<PaymentReceiptResponseViewModel>.Failure(new Error((exc as dynamic).Code, exc.Message));
-        }
-        catch (Exception)
-        {
-            return Result<PaymentReceiptResponseViewModel>.Failure(new Error("1007000", GlobalResource.GetPaymentTicketUnexpectedError));
-        }
+            CallbackUrl = $"{transaction.PaymentRequest.CallBackUrl}/paymentResult?paymentCode={transaction.PaymentRequest.PaymentCode}&paymentStatus={General.GetPaymentStatusTitle(transaction.PaymentRequest.Status)}"
+        });
     }
 }
