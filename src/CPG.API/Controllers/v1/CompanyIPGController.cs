@@ -4,7 +4,9 @@ using CPG.Application.UseCases.CompanyIPGs.Commands.UpdateCompanyIPG;
 using CPG.Application.UseCases.CompanyIPGs.Queries;
 using CPG.Application.UseCases.CompanyIPGs.ViewModels;
 using CPG.Domain.SharedKernel;
+using CPG.Infrastructure.Authorization;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -12,6 +14,7 @@ namespace CPG.API.Controllers.v1;
 
 public class CompanyIPGController : ApiBaseController
 {
+    [Authorize(Policy = AuthPolicies.Roles.Admin)]
     [HttpGet("GetCompanyIPGs/{id:long}")]
     [ProducesResponseType(typeof(Result<IReadOnlyCollection<CompanyIPGDataViewModel>>), (int)HttpStatusCode.OK)]
     public async Task<Result<IReadOnlyCollection<CompanyIPGDataViewModel>>> GetCompanyIPGs(long id)
@@ -19,6 +22,7 @@ public class CompanyIPGController : ApiBaseController
         return await Mediator.Send(new GetCompanyIPGsQuery(id));
     }
 
+    [Authorize(Policy = AuthPolicies.Roles.Admin)]
     [HttpGet("GetActiveCompanyIPGs/{id:long}")]
     [ProducesResponseType(typeof(Result<IReadOnlyCollection<CompanyIPGDataViewModel>>), (int)HttpStatusCode.OK)]
     public async Task<Result<IReadOnlyCollection<CompanyIPGDataViewModel>>> GetActiveCompanyIPGs(long id)
@@ -39,7 +43,7 @@ public class CompanyIPGController : ApiBaseController
     { 
         return await Mediator.Send(new GetCompanyIPGDepositsQuery(id));
     }
-
+    [Authorize(Policy = AuthPolicies.Roles.Admin)]
     [HttpPost]
     public async Task<Result<long>> CreateCompanyIPG(CreateCompanyIPGModel model)
     {
@@ -48,7 +52,7 @@ public class CompanyIPGController : ApiBaseController
 
         return await Mediator.Send(new CreateCompanyIPGCommand(createViewModel));
     }
-
+    [Authorize(Policy = AuthPolicies.Roles.Admin)]
     [HttpPut]
     public async Task<Result<Unit>> UpdateCompanyIPG(UpdateCompanyIPGModel model)
     {

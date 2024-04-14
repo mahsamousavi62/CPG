@@ -79,6 +79,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Activate.
+        /// </summary>
+        public static string Activate {
+            get {
+                return ResourceManager.GetString("Activate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Active.
         /// </summary>
         public static string Active {
@@ -156,6 +165,24 @@ namespace CPG.Application.Shared.Resource {
         public static string AuthenticationType {
             get {
                 return ResourceManager.GetString("AuthenticationType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ayandeh.
+        /// </summary>
+        public static string Ayandeh {
+            get {
+                return ResourceManager.GetString("Ayandeh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to BalanceIsNotEnought.
+        /// </summary>
+        public static string BalanceIsNotEnought {
+            get {
+                return ResourceManager.GetString("BalanceIsNotEnought", resourceCulture);
             }
         }
         
@@ -241,6 +268,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to BehPardakht.
+        /// </summary>
+        public static string BehPardakht {
+            get {
+                return ResourceManager.GetString("BehPardakht", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dear user, the account related to this license has been blocked, if possible, use other banks or available methods to pay the desired amount.
         /// </summary>
         public static string BlockedAccount {
@@ -286,11 +322,29 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CardBalance.
+        /// </summary>
+        public static string CardBalance {
+            get {
+                return ResourceManager.GetString("CardBalance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CardInfoCOnfirmation.
         /// </summary>
         public static string CardInfoCOnfirmation {
             get {
                 return ResourceManager.GetString("CardInfoCOnfirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CharismaCard.
+        /// </summary>
+        public static string CharismaCard {
+            get {
+                return ResourceManager.GetString("CharismaCard", resourceCulture);
             }
         }
         
@@ -889,6 +943,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to IncreaseBalance.
+        /// </summary>
+        public static string IncreaseBalance {
+            get {
+                return ResourceManager.GetString("IncreaseBalance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to InternetPaymentGateway.
         /// </summary>
         public static string InternetPaymentGateway {
@@ -1168,6 +1231,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Response is null.
+        /// </summary>
+        public static string NotHasResponse {
+            get {
+                return ResourceManager.GetString("NotHasResponse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to OneMonth.
         /// </summary>
         public static string OneMonth {
@@ -1191,6 +1263,15 @@ namespace CPG.Application.Shared.Resource {
         public static string ParseCompanyIpgProviderData {
             get {
                 return ResourceManager.GetString("ParseCompanyIpgProviderData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PayBy.
+        /// </summary>
+        public static string PayBy {
+            get {
+                return ResourceManager.GetString("PayBy", resourceCulture);
             }
         }
         
@@ -1708,6 +1789,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Special.
+        /// </summary>
+        public static string Special {
+            get {
+                return ResourceManager.GetString("Special", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Submit.
         /// </summary>
         public static string Submit {
@@ -1834,6 +1924,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to UnAuthorizeRequest.
+        /// </summary>
+        public static string UnAuthorizeRequest {
+            get {
+                return ResourceManager.GetString("UnAuthorizeRequest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An unexpected error has occurred, please try again or contact support.
         /// </summary>
         public static string UnexpectedError {
@@ -1866,6 +1965,15 @@ namespace CPG.Application.Shared.Resource {
         public static string UserNotFound {
             get {
                 return ResourceManager.GetString("UserNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UserNotVerifyStatus.
+        /// </summary>
+        public static string UserNotVerifyStatus {
+            get {
+                return ResourceManager.GetString("UserNotVerifyStatus", resourceCulture);
             }
         }
         

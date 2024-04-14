@@ -771,4 +771,43 @@
   <data name="SubmitAndPay" xml:space="preserve">
     <value>تایید و پرداخت</value>
   </data>
+  <data name="Activate" xml:space="preserve">
+    <value>فعالسازی</value>
+  </data>
+  <data name="CardBalance" xml:space="preserve">
+    <value>موجودی کارت</value>
+  </data>
+  <data name="CharismaCard" xml:space="preserve">
+    <value>کاریزما کارت</value>
+  </data>
+  <data name="Special" xml:space="preserve">
+    <value>ویژه</value>
+  </data>
+  <data name="BalanceIsNotEnought" xml:space="preserve">
+    <value>موجودی کارت کافی نیست</value>
+  </data>
+  <data name="IncreaseBalance" xml:space="preserve">
+    <value>افزایش موجودی</value>
+  </data>
+  <data name="PayBy" xml:space="preserve">
+    <value>پرداخت توسط</value>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UserNotVerify" xml:space="preserve">
+    <value>وضعیت کاربر {0}می باشد </value>
+  </data>
+  <data name="NotHasResponse" xml:space="preserve">
+    <value>سرویس پاسخی ندارد</value>
+  </data>
+  <data name="UnAuthorizeRequest" xml:space="preserve">
+    <value>اعتبارسنجی درخواست انجام نشده است </value>
+  </data>
+  <data name="Ayandeh" xml:space="preserve">
+    <value>ارتباط فردا</value>
+  </data>
+  <data name="BehPardakht" xml:space="preserve">
+    <value>به پرداخت</value>
+  </data>
 </root>

@@ -17,7 +17,6 @@ using CPG.Domain.Exceptions;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
 using CPG.Application.UseCases.Exceptions;
-using CPG.Domain.SharedKernel.Communication.DirectDebit;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 
@@ -74,25 +73,48 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
                         {
                             ProviderData = transaction.IPGTransaction.CompanyIPG.ProviderData,
                             ProviderTrackerId = transaction.IPGTransaction.ProviderTrackerId,
-                            Token = transaction.IPGTransaction.IPGToken
+                            Token = transaction.IPGTransaction.IPGToken,
+                            TrackId = transaction.IPGTransaction.TrackId,
+                            ReferenceNumber = transaction.IPGTransaction.ReferenceNumber,
                         });
 
                         transaction.IPGTransaction.Status = result.Status;
 
                         if (result.Status == IPGTransactionStatus.VerificationSucceeded)
                         {
-                            var currentDateTime = DateTime.Now;
-                            var timeMargin = new TimeOnly(23, 45);
-                            var currentTime = new TimeOnly(currentDateTime.Hour, currentDateTime.Minute);
-                            var date = currentTime < timeMargin ?
-                                new DateTime(currentDateTime.AddDays(1).Year, currentDateTime.AddDays(1).Month, currentDateTime.AddDays(1).Day, 7, 0, 0) :
-                                new DateTime(currentDateTime.AddDays(2).Year, currentDateTime.AddDays(2).Month, currentDateTime.AddDays(2).Day, 7, 0, 0);
-
-                            transaction.PredictedSettlementDateTime = date;
-                            transaction.Status = TransactionStatus.TransactionSucceeded;
+                            if (providerType == ProviderType.Sep || providerType == ProviderType.Pec || providerType == ProviderType.Ayandeh)
+                            {
+                                transaction.IPGTransaction.ReferenceNumber = result.RRN;
+                            }
                             transaction.IPGTransaction.VerificationDateTime = DateTime.Now;
+                            transaction.Status = TransactionStatus.TransactionSucceeded;
                             paymentRequest.Status = PaymentStatus.TransactionVerificationSucceeded;
 
+                            if (providerType == ProviderType.BehPardakht)
+                            {
+                                var settlementResult = await ipg.Settle(new SettleTransactionRequest
+                                {
+                                    ProviderData = transaction.IPGTransaction.CompanyIPG.ProviderData,
+                                    TrackId = transaction.IPGTransaction.TrackId,
+                                    ReferenceNumber = transaction.IPGTransaction.ReferenceNumber,
+                                });
+
+                                transaction.IPGTransaction.Status = settlementResult.Status;
+
+                                if (settlementResult.Status == IPGTransactionStatus.SettlementSucceeded)
+                                {
+                                    transaction.PredictedSettlementDateTime = GetPredictedSettlementDateTime();
+                                }
+                            }
+                            else if (providerType == ProviderType.Ayandeh)
+                            {            
+                                var date = DateTime.Now.AddDays(2);
+                                transaction.PredictedSettlementDateTime = new DateTime(date.Year, date.Month, date.Day, 7, 0, 0);
+                            }
+                            else
+                            {
+                                transaction.PredictedSettlementDateTime = GetPredictedSettlementDateTime();
+                            }
                         }
                         else if (result.Status == IPGTransactionStatus.VerificationFailed)
                         {
@@ -102,11 +124,19 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
                         break;
                     }
                 case TransactionType.DirectDebit:
-                case TransactionType.PaymentReceipt:
-                case TransactionType.CharismaCard:
                     {
                         var date = DateTime.Now.AddDays(1);
                         transaction.PredictedSettlementDateTime = new DateTime(date.Year, date.Month, date.Day, 0, 0, 0);
+                        break;
+                    }
+                case TransactionType.PaymentReceipt:
+                    {
+                        transaction.PredictedSettlementDateTime = transaction.PaymentReceiptTransaction.ReceiptDateTime;
+                        break;
+                    }
+                case TransactionType.CharismaCard:
+                    {
+                        transaction.PredictedSettlementDateTime = transaction.CharismaCardTransaction.CreationDate;
                         transaction.Status = TransactionStatus.TransactionSucceeded;
                         paymentRequest.Status = PaymentStatus.TransactionVerificationSucceeded;
 
@@ -152,6 +182,17 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
         {
             return Result<VerifyTransactionResponseViewModel>.Failure(new Error("1005000", GlobalResource.TransactionDetailUnexpectedError));
         }
+    }
+
+    private static DateTime GetPredictedSettlementDateTime()
+    {
+        var currentDateTime = DateTime.Now;
+        var timeMargin = new TimeOnly(23, 45);
+        var currentTime = new TimeOnly(currentDateTime.Hour, currentDateTime.Minute);
+        var date = currentTime < timeMargin ?
+            new DateTime(currentDateTime.AddDays(1).Year, currentDateTime.AddDays(1).Month, currentDateTime.AddDays(1).Day, 7, 0, 0) :
+            new DateTime(currentDateTime.AddDays(2).Year, currentDateTime.AddDays(2).Month, currentDateTime.AddDays(2).Day, 7, 0, 0);
+        return date;
     }
 
     private string GetPaymentMethodTypeTitle(TransactionType type)

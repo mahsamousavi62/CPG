@@ -119,23 +119,24 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
             {
                 var userDepositBalance = await _neoBankService.GetUserDepositBalance();
 
-                charismaCard = userDepositBalance.Data.DepositStatus switch
-                {
-                    _ => new ViewModels.CharismaCard
+                    if (userDepositBalance?.Data is not null)
                     {
-                        BalanceAmount = userDepositBalance.Data.Balance,
-                        CardNumber = userDepositBalance.Data.CardNumber,
-                        CustomerSurname = $"{userDepositBalance.Data.CustomerFirstName} {userDepositBalance.Data.CustomerLastName}",
-                        DepositStatus = userDepositBalance.Data.DepositStatus,
-                        ExpirationDate = userDepositBalance.Data.ExpirationDate
+
+                        charismaCard = new ViewModels.CharismaCard
+                        {
+                            BalanceAmount = userDepositBalance.Data.Balance,
+                            CardNumber = userDepositBalance.Data.CardNumber,
+                            CustomerSurname = $"{userDepositBalance.Data.CustomerFirstName} {userDepositBalance.Data.CustomerLastName}",
+                            DepositStatus = userDepositBalance.Data.DepositStatus,
+                            ExpirationDate = userDepositBalance.Data.ExpirationDate
+                        };
                     }
-                };
+                }
             }
-        }
-        else
-        {
-            company = await _companyRepository.GetBySpecAsync(new CompanyPaymentMethodsByIdSpec(paymentRequest.CompanyId), cancellationToken);
-            availablePaymentMethodTypes = company?.PaymentMethods?.Select(p => p.MethodType).ToList();
+            else
+            {
+                company = await _companyRepository.GetBySpecAsync(new CompanyPaymentMethodsByIdSpec(paymentRequest.CompanyId), cancellationToken);
+                availablePaymentMethodTypes = company?.PaymentMethods?.Select(p => p.MethodType).ToList();
 
             if (availablePaymentMethodTypes?.Contains(PaymentMethodType.InternetPaymentGateway) is true)
             {
@@ -164,24 +165,25 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
                 };
             }
 
-            var companyDeposit = await _companyDepositRepository.GetBySpecAsync(new DefaultDirectDebitDepositSpec(paymentRequest.CompanyId), cancellationToken);
-            if (availablePaymentMethodTypes?.Contains(PaymentMethodType.CharismaCard) is true && companyDeposit != null &&
-                companyDeposit.Bank.IbanPrefix == MiddleEastIbanPrefix)
-            {
-                var userDepositBalance = await _neoBankService.GetUserDepositBalance();
-
-                charismaCard = userDepositBalance.Data.DepositStatus switch
+                var companyDeposit = await _companyDepositRepository.
+                    GetBySpecAsync(new DefaultCharismaCardDepositSpec(paymentRequest.CompanyId), cancellationToken);
+                if (availablePaymentMethodTypes?.Contains(PaymentMethodType.CharismaCard) is true && companyDeposit != null &&
+                    companyDeposit.Bank.IbanPrefix == MiddleEastIbanPrefix)
                 {
-                    _ => new ViewModels.CharismaCard
+                    var userDepositBalance = await _neoBankService.GetUserDepositBalance();
+
+                    if (userDepositBalance?.Data is not null)
                     {
-                        BalanceAmount = userDepositBalance.Data.Balance,
-                        CardNumber = userDepositBalance.Data.CardNumber,
-                        CustomerSurname = $"{userDepositBalance.Data.CustomerFirstName} {userDepositBalance.Data.CustomerLastName}",
-                        DepositStatus = userDepositBalance.Data.DepositStatus,
-                        ExpirationDate = userDepositBalance.Data.ExpirationDate
+                        charismaCard = new ViewModels.CharismaCard
+                        {
+                            BalanceAmount = userDepositBalance.Data.Balance,
+                            CardNumber = userDepositBalance.Data.CardNumber,
+                            CustomerSurname = $"{userDepositBalance.Data.CustomerFirstName} {userDepositBalance.Data.CustomerLastName}",
+                            DepositStatus = userDepositBalance.Data.DepositStatus,
+                            ExpirationDate = userDepositBalance.Data.ExpirationDate
+                        };
                     }
-                };
-            }
+                }
 
         }
 

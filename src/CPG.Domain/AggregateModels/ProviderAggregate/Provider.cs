@@ -58,10 +58,10 @@ public class Provider : AuditableEntity<long>, IAggregateRoot
                 provider.PaymentMethods.Add(ProviderPaymentMethod.Create(newItem));
         }
 
-        foreach (var currnetItem in provider.PaymentMethods)
+        foreach (var currnetItem in provider.PaymentMethods.ToList())
         {
             if (!details.Any(p => p == currnetItem.MethodType))
-                currnetItem.IsActive = false;
+                provider.PaymentMethods.Remove(currnetItem);
         }
     }
 

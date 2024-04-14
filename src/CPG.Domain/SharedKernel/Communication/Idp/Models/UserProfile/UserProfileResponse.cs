@@ -25,31 +25,31 @@ public class Address
 public class BankAccount
 {
     public string AccountNumber { get; set; }
-    public int BankId { get; set; }
-    public int RayanId { get; set; }
-    public long TadbirId { get; set; }
+    public int? BankId { get; set; }
+    public int? RayanId { get; set; }
+    public long? TadbirId { get; set; }
     public string Type { get; set; }
     public string Sheba { get; set; }
     public string BankTitle { get; set; }
     public string BranchCode { get; set; }
     public string BranchName { get; set; }
     public string BranchCityName { get; set; }
-    public bool IsDefault { get; set; }
+    public bool? IsDefault { get; set; }
 }
 
 public class FinancialInfo
 {
-    public int AssetsValue { get; set; }
-    public int InComingAverage { get; set; }
-    public int SExchangeTransaction { get; set; }
-    public int CExchangeTransaction { get; set; }
-    public int OutExchangeTransaction { get; set; }
+    public long? AssetsValue { get; set; }
+    public long? InComingAverage { get; set; }
+    public long? SExchangeTransaction { get; set; }
+    public long? CExchangeTransaction { get; set; }
+    public long? OutExchangeTransaction { get; set; }
     public string TransactionLevel { get; set; }
     public string TradingKnowledgeLevel { get; set; }
     public object CompanyPurpose { get; set; }
     public object ReferenceRateCompany { get; set; }
     public object RateDate { get; set; }
-    public int Rate { get; set; }
+    public int? Rate { get; set; }
     public List<object> FinancialBrokers { get; set; }
 }
 
@@ -95,7 +95,7 @@ public class Result
 {
     public string Id { get; set; }
     public string UniqueIdentifier { get; set; }
-    public long Mobile { get; set; }
+    public long? Mobile { get; set; }
     public object Email { get; set; }
     public string Type { get; set; }
     public string Status { get; set; }
@@ -115,6 +115,7 @@ public class Result
 public class UserProfileResponse: IHttpResponse
 {
     public Result Result { get; set; }
+    public short StatusCode { get; set; }
 }
 
 public class TradingCode
@@ -127,7 +128,7 @@ public class TradingCode
 }
 public class IdpProfileRequest : IHttpRequest
 {
-    public string? IdpId { get; set; }
+    public string IdpId { get; set; }
 }
 
 public interface IHttpRequest
@@ -136,5 +137,6 @@ public interface IHttpRequest
 
 public interface IHttpResponse
 {
+    public short StatusCode { get; set; }
 }
 

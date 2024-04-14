@@ -1,4 +1,7 @@
 ﻿
+using System;
+using CPG.Domain.SharedKernel.Minio;
+using System.Threading.Tasks;
 using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Domain.SharedKernel;
@@ -25,5 +28,71 @@ public static class General
             PaymentStatus.SettlementFailed => "SETTLEMENT_FAILED",
             _ => string.Empty
         };
+    }
+
+    public static string GetTransactionStatusName(Enums.TransactionStatus status)
+    {
+        return status switch
+        {
+            Enums.TransactionStatus.InPrgress =>Resource.InPrgress,
+            Enums.TransactionStatus.TransactionSucceeded => Resource.TransactionSucceeded,
+            Enums.TransactionStatus.TransactionFailed => Resource.TransactionFailed,
+            _ => string.Empty,
+        };
+    }
+
+    public static string GetIPGTransactionStatusName(IPGTransactionStatus status)
+    {
+        return status switch
+        {
+            IPGTransactionStatus.WaitingForPspResponse => Resource.WaitingForPspResponse,
+            IPGTransactionStatus.FetchingResult => Resource.FetchingResult,
+            IPGTransactionStatus.SucceededAndWaitingForVerification => Resource.SucceededAndWaitingForVerification,
+            IPGTransactionStatus.Failed => Resource.Failed,
+            IPGTransactionStatus.Expired => Resource.Expired,
+            IPGTransactionStatus.Verifying => Resource.Verifying,
+            IPGTransactionStatus.VerificationSucceeded => Resource.VerificationSucceeded,
+            IPGTransactionStatus.VerificationFailed => Resource.VerificationFailed,
+            IPGTransactionStatus.WaitingForSettlementRequest => Resource.WaitingForSettlementRequest,
+            IPGTransactionStatus.SettlementSucceeded => Resource.SettlementSucceeded,
+            IPGTransactionStatus.SettlementFailed => Resource.SettlementFailed,
+            IPGTransactionStatus.Cancelling => "Cancelling transaction",
+            IPGTransactionStatus.CancellationSucceeded => "Transaction cancellation succeeded",
+            IPGTransactionStatus.CancellationFailed => "Transaction cancellation failed",
+            _ => string.Empty,
+        };
+    }
+
+    public static string GetPaymentReceiptTransactionStatusName(PaymentReceiptStatus status)
+    {
+        return status switch
+        {
+            PaymentReceiptStatus.WaitingForResponseFromProvider => Resource.WaitingForResponseFromProvider,
+            PaymentReceiptStatus.SucceededAndWaitingForVerification => Resource.SucceededAndWaitingForVerification,
+            PaymentReceiptStatus.Failed =>Resource.Failed,
+            _ => string.Empty,
+        };
+    }
+
+    public static string GetCharismaCardTransactionStatusName(CharismaCardStatus status)
+    {
+        return status switch
+        {
+            CharismaCardStatus.Done => Resource.Done,
+            CharismaCardStatus.Failed => Resource.Failed,
+            _ => string.Empty,
+        };
+    }
+   
+    public static async Task<string> GetLogo(IMinioProvider minioProvider, string logoPath)
+    {
+        try
+        {
+            return await minioProvider.PresignedGetObject(logoPath);
+        }
+        catch (Exception)
+        {
+            return null;
+        }
     }
 }

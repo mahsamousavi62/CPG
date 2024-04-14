@@ -753,4 +753,40 @@
   <data name="SubmitAndPay" xml:space="preserve">
     <value>SubmitAndPay</value>
   </data>
+  <data name="Activate" xml:space="preserve">
+    <value>Activate</value>
+  </data>
+  <data name="CardBalance" xml:space="preserve">
+    <value>CardBalance</value>
+  </data>
+  <data name="CharismaCard" xml:space="preserve">
+    <value>CharismaCard</value>
+  </data>
+  <data name="Special" xml:space="preserve">
+    <value>Special</value>
+  </data>
+  <data name="BalanceIsNotEnought" xml:space="preserve">
+    <value>BalanceIsNotEnought</value>
+  </data>
+  <data name="IncreaseBalance" xml:space="preserve">
+    <value>IncreaseBalance</value>
+  </data>
+  <data name="PayBy" xml:space="preserve">
+    <value>PayBy</value>
+  </data>
+  <data name="UserNotVerifyStatus" xml:space="preserve">
+    <value>UserNotVerifyStatus</value>
+  </data>
+  <data name="Ayandeh" xml:space="preserve">
+    <value>Ayandeh</value>
+  </data>
+  <data name="BehPardakht" xml:space="preserve">
+    <value>BehPardakht</value>
+  </data>
+  <data name="NotHasResponse" xml:space="preserve">
+    <value>Response is null</value>
+  </data>
+  <data name="UnAuthorizeRequest" xml:space="preserve">
+    <value>UnAuthorizeRequest</value>
+  </data>
 </root>
