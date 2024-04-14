@@ -119,6 +119,7 @@ public class CreateCharismaCardTransactionCommandHandler(INeoBankService neoBank
             {
                 case CharismaCardStatus.Done:
                     paymentRequest.Status = Enums.PaymentStatus.TransactionWaitingForVerification;
+                    transaction.PredictedSettlementDateTime = transaction.CharismaCardTransaction.CreationDate;
                     break;
                 case CharismaCardStatus.Failed:
                     paymentRequest.Status = Enums.PaymentStatus.TransactionFailed;
@@ -130,6 +131,8 @@ public class CreateCharismaCardTransactionCommandHandler(INeoBankService neoBank
             PaymentRequest.Update(paymentRequest);
             await _paymentRequestRepository.UpdateAsync(paymentRequest);
             await _paymentRequestRepository.SaveChangesAsync();
+            await _transactionRepository.UpdateAsync(transaction);
+            await _transactionRepository.SaveChangesAsync();
            
             return Result<CharismaCardResponseViewModel>.SuccessResult(new CharismaCardResponseViewModel
             {

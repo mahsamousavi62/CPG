@@ -25,17 +25,17 @@ public class UnhandledExceptionBehaviour<TRequest, TResponse>(ILogger<TRequest> 
         catch (DomainException exc)
         {
             LogError(exc);
-            return (TResponse)typeof(TResponse).GetMethod("Failure").Invoke(null, new object[] { new Error(exc.Code, exc.Message) });
+            return (TResponse)typeof(TResponse).GetMethod("Failure").Invoke(null, [new Error(exc.Code, exc.Message)]);
         }
         catch (AppException exc)
         {
             LogError(exc);
-            return (TResponse)typeof(TResponse).GetMethod("Failure").Invoke(null, new object[] { new Error(exc.Code, exc.Message) });
+            return (TResponse)typeof(TResponse).GetMethod("Failure").Invoke(null, [new Error(exc.Code, exc.Message)]);
         }
         catch (Exception exc)
         {
             LogError(exc);
-            return (TResponse)typeof(TResponse).GetMethod("Failure").Invoke(null, new object[] { new Error(exc.Source, exc.Message) });
+            return (TResponse)typeof(TResponse).GetMethod("Failure").Invoke(null, [new Error(exc.Source, exc.Message)]);
         }
     }
 
