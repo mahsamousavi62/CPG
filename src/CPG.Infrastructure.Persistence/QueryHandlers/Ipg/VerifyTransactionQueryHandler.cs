@@ -82,7 +82,7 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
 
                         if (result.Status == IPGTransactionStatus.VerificationSucceeded)
                         {
-                            if (providerType == ProviderType.Sep || providerType == ProviderType.Pec || providerType == ProviderType.Ayandeh)
+                            if (string.IsNullOrEmpty(transaction.IPGTransaction.ReferenceNumber) && (providerType == ProviderType.Sep || providerType == ProviderType.Pec || providerType == ProviderType.Ayandeh))
                             {
                                 transaction.IPGTransaction.ReferenceNumber = result.RRN;
                             }
@@ -127,11 +127,15 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
                     {
                         var date = DateTime.Now.AddDays(1);
                         transaction.PredictedSettlementDateTime = new DateTime(date.Year, date.Month, date.Day, 0, 0, 0);
+                        transaction.Status = TransactionStatus.TransactionSucceeded;
+                        paymentRequest.Status = PaymentStatus.TransactionVerificationSucceeded;
                         break;
                     }
                 case TransactionType.PaymentReceipt:
                     {
                         transaction.PredictedSettlementDateTime = transaction.PaymentReceiptTransaction.ReceiptDateTime;
+                        transaction.Status = TransactionStatus.TransactionSucceeded;
+                        paymentRequest.Status = PaymentStatus.TransactionVerificationSucceeded;
                         break;
                     }
                 case TransactionType.CharismaCard:
