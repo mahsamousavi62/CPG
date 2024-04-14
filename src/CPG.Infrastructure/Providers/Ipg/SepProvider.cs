@@ -107,7 +107,8 @@ public class SepProvider(IHttpProvider httpProvider, ReadDbContext context, IApp
         };
         return new VerifyTransactionResponse
         {
-            Status = status
+            Status = status,
+            RRN = response?.TransactionDetail?.RRN,
         };
     }
 

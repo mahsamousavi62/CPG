@@ -92,10 +92,10 @@ public class PecProvider(
                 CreateLog(request, confirm, nameof(ConfirmServiceSoapClient), confirm.Body.ConfirmPaymentResult.Status,string.Empty,Enums.ServiceType.PecVerify);
 
                 var CardNumberMasked = confirm.Body.ConfirmPaymentResult.CardNumberMasked;
-                var RRN = confirm.Body.ConfirmPaymentResult.RRN;
+                var RRN = confirm.Body.ConfirmPaymentResult.RRN.ToString();
                 var Token = confirm.Body.ConfirmPaymentResult.Token;
                 var Status = confirm.Body.ConfirmPaymentResult.Status;
-                return ResponseModel(Status);
+                return ResponseModel(Status, RRN);
             }
         }
         catch (Exception exc)
@@ -123,7 +123,7 @@ public class PecProvider(
             throw new ParseCompanyIpgProviderDataException(providerData);
         }
     }
-    private static VerifyTransactionResponse ResponseModel(short status)
+    private static VerifyTransactionResponse ResponseModel(short status, string rrn)
     {
         return new VerifyTransactionResponse
         {
@@ -133,7 +133,8 @@ public class PecProvider(
                 0 or 2 => Enums.IPGTransactionStatus.VerificationSucceeded,
                 -1528 or -1531 or 1530 => Enums.IPGTransactionStatus.VerificationFailed,
                 _ => throw new NotImplementedException(),
-            }
+            },
+            RRN = rrn
         };
     }
     private void CreateLog<T1, T2>(T1 request, T2 response, string serviceName,short status,string message, Enums.ServiceType serviceType)
