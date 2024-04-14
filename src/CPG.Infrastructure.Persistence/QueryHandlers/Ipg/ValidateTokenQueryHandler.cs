@@ -68,6 +68,7 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
                                     transaction.IPGTransaction.Status = IPGTransactionStatus.SucceededAndWaitingForVerification;
                                     transaction.IPGTransaction.PredicateExpirationDateTime = result.PayGateTranDate.AddMinutes(transaction.IPGTransaction.VerificationTimeLimit);
                                     paymentRequest.Status = PaymentStatus.TransactionWaitingForVerification;
+                                    transaction.PredictedSettlementDateTime = GetPredictedSettlementTimeDueToCurrentTime();
                                     break;
                                 }
                             case 3:
@@ -106,6 +107,7 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
                             transaction.IPGTransaction.Status = IPGTransactionStatus.SucceededAndWaitingForVerification;
                             transaction.IPGTransaction.PredicateExpirationDateTime = DateTime.Now.AddMinutes(transaction.IPGTransaction.VerificationTimeLimit);
                             paymentRequest.Status = PaymentStatus.TransactionWaitingForVerification;
+                            transaction.PredictedSettlementDateTime = GetPredictedSettlementTimeDueToCurrentTime();
                         }
                         break;
                     }
@@ -128,6 +130,7 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
                             transaction.IPGTransaction.Status = IPGTransactionStatus.SucceededAndWaitingForVerification;
                             transaction.IPGTransaction.PredicateExpirationDateTime = DateTime.Now.AddMinutes(transaction.IPGTransaction.VerificationTimeLimit);
                             paymentRequest.Status = PaymentStatus.TransactionWaitingForVerification;
+                            transaction.PredictedSettlementDateTime = GetPredictedSettlementTimeDueToCurrentTime();
                         }
                         break;
                     }
@@ -144,6 +147,7 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
                             transaction.IPGTransaction.Status = IPGTransactionStatus.SucceededAndWaitingForVerification;
                             transaction.IPGTransaction.PredicateExpirationDateTime = DateTime.Now.AddMinutes(transaction.IPGTransaction.VerificationTimeLimit);
                             paymentRequest.Status = PaymentStatus.TransactionWaitingForVerification;
+                            transaction.PredictedSettlementDateTime = GetPredictedSettlementTimeDueToCurrentTime();
                         }
                         else
                         {
@@ -166,6 +170,7 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
                             transaction.IPGTransaction.Status = IPGTransactionStatus.SucceededAndWaitingForVerification;
                             transaction.IPGTransaction.PredicateExpirationDateTime = DateTime.Now.AddMinutes(transaction.IPGTransaction.VerificationTimeLimit);
                             paymentRequest.Status = PaymentStatus.TransactionWaitingForVerification;
+                            transaction.PredictedSettlementDateTime = GetPredictedSettlementTime();
                         }
                         else
                         {
@@ -202,5 +207,22 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
         {
             return Result<ValidateTokenResponseViewModel>.Failure(new Error("1008000", GlobalResource.GetPaymentTicketUnexpectedError));
         }
+    }
+
+    private static DateTime GetPredictedSettlementTimeDueToCurrentTime()
+    {
+        var currentDateTime = DateTime.Now;
+        var timeMargin = new TimeOnly(23, 45);
+        var currentTime = new TimeOnly(currentDateTime.Hour, currentDateTime.Minute);
+        var date = currentTime < timeMargin ?
+            new DateTime(currentDateTime.AddDays(1).Year, currentDateTime.AddDays(1).Month, currentDateTime.AddDays(1).Day, 7, 0, 0) :
+            new DateTime(currentDateTime.AddDays(2).Year, currentDateTime.AddDays(2).Month, currentDateTime.AddDays(2).Day, 7, 0, 0);
+        return date;
+    }
+
+    private static DateTime GetPredictedSettlementTime()
+    {
+        var currentDateTime = DateTime.Now;
+        return new DateTime(currentDateTime.AddDays(2).Year, currentDateTime.AddDays(2).Month, currentDateTime.AddDays(2).Day, 7, 0, 0);
     }
 }

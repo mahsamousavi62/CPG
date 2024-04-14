@@ -10,7 +10,8 @@ namespace CPG.Domain.AggregateModels.TransactionAggregate;
 public class Transaction : AuditableEntity<long>, IAggregateRoot
 {
     public Transaction(long paymentRquestId, Enums.TransactionType transactionMethodType, long companyId,
-                   long destinationDepositId, decimal amount, long applicationId, Enums.TransactionStatus status)
+                   long destinationDepositId, decimal amount, long applicationId, Enums.TransactionStatus status,
+                   DateTime? predictedSettlementDateTime = null)
     {
         PaymentRquestId = paymentRquestId;
         TransactionMethodType = transactionMethodType;
@@ -20,6 +21,7 @@ public class Transaction : AuditableEntity<long>, IAggregateRoot
         ApplicationId = applicationId;
         Status = status;
         IsActive = true;
+        PredictedSettlementDateTime = predictedSettlementDateTime;
     }
 
     public long PaymentRquestId { get; set; }
@@ -60,7 +62,7 @@ public class Transaction : AuditableEntity<long>, IAggregateRoot
     {
         Transaction transaction = new(model.PaymentRequest.Id, model.TransactionMethodType, model.PaymentRequest.Company.Id,
                                       model.DestinationDepositId, model.PaymentRequest.Amount, model.PaymentRequest.Application.Id,
-                                      model.Status);
+                                      model.Status, model.PredictedSettlementDateTime);
 
         switch (model.TransactionMethodType)
         {
@@ -89,12 +91,12 @@ public class Transaction : AuditableEntity<long>, IAggregateRoot
                 }
             case Enums.TransactionType.CharismaCard:
                 {
-                   var charismaCard= CharismaCardTransaction.Create(model.CharismaCardModel.TrackId, model.CharismaCardModel.ProviderTrackId,
-                       model.CharismaCardModel.ReferenceNumber,model.CharismaCardModel.Status);
+                    var charismaCard = CharismaCardTransaction.Create(model.CharismaCardModel.TrackId, model.CharismaCardModel.ProviderTrackId,
+                        model.CharismaCardModel.ReferenceNumber, model.CharismaCardModel.Status);
                     transaction.CharismaCardTransaction = charismaCard;
                     break;
                 }
-                
+
             default:
                 break;
         }
