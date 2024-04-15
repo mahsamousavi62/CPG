@@ -47,5 +47,4 @@ namespace CPG.Infrastructure.Persistence.GraphQL.Model
         public string TransactionStatusCode { get; internal set; }
         public Enums.TransactionStatus TransactionStatus { get; internal set; }
     }
-
 }
