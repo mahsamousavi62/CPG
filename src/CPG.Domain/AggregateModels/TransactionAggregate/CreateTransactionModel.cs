@@ -12,10 +12,10 @@ public class CreateTransactionModel
     public long DestinationDepositId { get; set; }
     public TransactionType TransactionMethodType { get; set; }
     public TransactionStatus Status { get; set; }
+    public DateTime? PredictedSettlementDateTime { get; set; }
     public CreateIPGTransactionModel IPGTransactionModel { get; set; }
     public CreateDDTransactionModel DDTransactionModel { get; set; }
-    public PaymentReceiptTransactionModel PaymentReceiptModel { get; set; }
-   
+    public PaymentReceiptTransactionModel PaymentReceiptModel { get; set; }   
     public CharismaCardTransactionModel CharismaCardModel { get; set; }
 }
 
