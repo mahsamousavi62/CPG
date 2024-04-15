@@ -31,6 +31,7 @@ using CPG.Infrastructure.Persistence.GraphQL.Types.IPGTransaction;
 using System.Security.Cryptography.X509Certificates;
 using CPG.Infrastructure.Persistence.GraphQL.Types.PaymentReceiptTransaction;
 using CPG.Infrastructure.Persistence.GraphQL.Types.CharismaCard;
+using CPG.Application.UseCases.Companies.Exceptions;
 
 
 namespace CPG.Infrastructure.Persistence.GraphQL.Queries;
@@ -333,151 +334,17 @@ public class ReadModelQueries
     }
     #endregion
 
-    #region [ TransactionReport]
-
-    [Authorize(Policy = AuthPolicies.Roles.AdminOrCompanyUser)]
-    [UseOffsetPaging(IncludeTotalCount = true)]
-    [UseProjection]
-    [UseFiltering<TransactionFilerType>]
-    [UseSorting<TransactionSortType>]
-    public async Task<IEnumerable<TransactionReportViewModel>> GetTransactions
-    ([Service] ReadDbContext dbContext, [Service] IMinioProvider minioProvider, [Service] IRedisCacheService cacheService,
-    [Service] IHttpContextAccessor httpContext, int? pageNumber, int? pageSize)
-    {
-        if (!pageNumber.HasValue)
-        {
-            pageNumber = 1;
-        }
-        if (!pageSize.HasValue)
-        {
-            pageSize = 10;
-        }
-
-        IQueryable<TransactionReadModel> query = dbContext.TransactionReadModels;
-        var roleClaim = httpContext.HttpContext.User.FindFirst(c => c.Type == ClaimTypes.Role &&
-           c.Value == UserRoleType.SuperAdmin.GetValue());
-
-        if (roleClaim == null)
-        {
-            var companyIdClaim = httpContext.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "CompanyId");
-            if (companyIdClaim == null ||
-            !long.TryParse(companyIdClaim.Value, out long companyId) || companyId == 0)
-            {
-                throw new Exception("companyIdNotFound");
-            }
-            else
-            {
-                query = query.Where(c => c.CompanyId == companyId);
-            }
-        }
-        int totalCount = query.Count();
-
-        var data = await query.OrderByDescending(c => c.Id)
-            .Select(c => new
-            {
-                Transaction = c,
-                Company = c.Company,
-                PaymentRequest = c.PaymentRequest,
-                Application = c.PaymentRequest.Application,
-                IPGTransaction = c.IPGTransaction,
-                CharismaCardTransaction = c.CharismaCardTransaction,
-                PaymentReceiptTransaction = c.PaymentReceiptTransaction,
-                DirectDebitTransaction = c.DirectDebitTransaction,
-                CompanyIPG = c.IPGTransaction != null ? c.IPGTransaction.CompanyIPG : null,
-                IPGType = c.IPGTransaction != null && c.IPGTransaction.CompanyIPG != null ? c.IPGTransaction.CompanyIPG.IPGType : null,
-                Provider = c.IPGTransaction != null && c.IPGTransaction.CompanyIPG != null ? c.IPGTransaction.CompanyIPG.Provider : null,
-                CompanyDeposit = c.DestinationDeposit
-            })
-            .Skip((pageNumber.Value - 1) * pageSize.Value)
-            .Take(pageSize.Value)
-            .ToListAsync();
-
-        var UserscacheData = cacheService.GetData<List<UserReadModel>>("AllUser_key");
-
-        if (UserscacheData == null)
-        {
-            UserscacheData = await dbContext.UserReadModels.ToListAsync();
-            cacheService.SetData("AllUser_key", UserscacheData);
-        }
-
-        var viewModels = await Task.WhenAll(
-
-             data.Select(async entity => new TransactionReportViewModel
-             {
-                 TotalCount = totalCount,
-                 Id = entity.Transaction.Id,
-                 CompanyId = entity.Company.Id,
-                 CompanyPersianName = entity.Company.PersianName,
-                 CompanyEnglishName = entity.Company.EnglishName,
-                 Amount = entity.Transaction.Amount,
-                 TransactionMethodType = entity.Transaction.TransactionMethodType,
-                 TransactionMethodTypeName = GetTransactionMethodTypeName(entity.Transaction.TransactionMethodType),
-                 IPGTypeId = entity.IPGType?.Id??0,
-                 IpgTypeName = entity.IPGType?.PersianName,
-                 ProviderId = entity.Provider?.Id??0,
-                 ProviderName = entity.Provider?.PersianName,
-                 ApplicationName = entity.Application?.PersianName,
-                 PaymentCode = entity.PaymentRequest?.PaymentCode,
-                 CompanyDepositName = entity.CompanyDeposit.Name,
-                 CompanyDepositaccountNumber = entity.CompanyDeposit.AccountNumber,
-                 CompanyDepositIban = entity.CompanyDeposit.Iban,
-                 CompanyLogo = !string.IsNullOrEmpty(entity.Company.Logo) ? await General.GetLogo(minioProvider, entity.Company.Logo) : null,
-                 TransactionCreateDateTime = entity.Transaction.CreationDate,
-                 TransactionModificationDateTime = entity.Transaction.ModificationDate,
-                 FirstName = UserscacheData.FirstOrDefault(c => c.Id == entity.Transaction.CreationUserId)?.FirstName,
-                 LastName = UserscacheData.FirstOrDefault(c => c.Id == entity.Transaction.CreationUserId)?.LastName,
-                 NationalCode = entity.PaymentRequest.NationalCode,
-                 ApplicationId = entity.Application?.Id ?? 0,
-                 ReferenceNumber = entity.IPGTransaction?.ReferenceNumber ??
-                                   entity.CharismaCardTransaction?.ReferenceNumber ??
-                                   entity.PaymentReceiptTransaction?.ReferenceNumber ??
-                                   entity.DirectDebitTransaction?.TrackId,
-                 TransactionStatusName = General.GetTransactionStatusName(entity.Transaction.Status),
-                 TransactionStatus = entity.Transaction.Status,
-                 TransactionStatusCode = entity.Transaction.Status.GetValue()
-             }).ToList()
-            );
-
-        return viewModels;
-    }
-
-    private string GetTransactionMethodTypeName(Enums.TransactionType transactionMethodType)
-    {
-        switch (transactionMethodType)
-        {
-            case Enums.TransactionType.IPG:
-                return "درگاه پرداخت";
-            case Enums.TransactionType.DirectDebit:
-                return "برداشت مستقیم";
-            case Enums.TransactionType.PaymentReceipt:
-                return "فیش واریزی";
-            case Enums.TransactionType.CharismaCard:
-                return "کاریزما کارت";
-            default:
-                return string.Empty;
-        }
-    }
-    #endregion
-
     #region [ IPGTranactionReport ]
 
     [Authorize(Policy = AuthPolicies.Roles.AdminOrCompanyUser)]
-    [UseOffsetPaging(IncludeTotalCount = true)]
-    [UseProjection]
     [UseFiltering<IPGTransactionFilterType>]
     [UseSorting<IPGTransactionSortType>]
-    public async Task<IEnumerable<IpgTransactionReportViewModel>> GetIPGTransactions
+    public async Task<ReportViewModel<IpgTransactionReportViewModel>> GetIPGTransactions
    ([Service] ReadDbContext dbContext, [Service] IMinioProvider minioProvider,
    [Service] IHttpContextAccessor httpContext, int? pageNumber, int? pageSize)
     {
-        if (!pageNumber.HasValue)
-        {
-            pageNumber = 1;
-        }
-        if (!pageSize.HasValue)
-        {
-            pageSize = 10;
-        }
+        pageNumber ??= 1;
+        pageSize ??= 10;
 
         IQueryable<IPGTransactionReadModel> query = dbContext.IPGTransactionReadModels.Include(c => c.Transaction);
 
@@ -489,7 +356,7 @@ public class ReadModelQueries
             if (companyIdClaim == null ||
             !long.TryParse(companyIdClaim.Value, out long companyId) || companyId == 0)
             {
-                throw new Exception("companyIdNotFound");
+                throw new CompanyNotFoundException(0);
             }
             else
             {
@@ -497,6 +364,7 @@ public class ReadModelQueries
             }
         }
         int totalCount = query.Count();
+        int totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
 
         var data = await query.OrderByDescending(c => c.Id)
             .Select(c => new
@@ -539,7 +407,15 @@ public class ReadModelQueries
              }).ToList()
             );
 
-        return viewModels;
+          return new ReportViewModel<IpgTransactionReportViewModel>
+        {
+            TotalCount = totalCount,
+            CurrentPage = pageNumber.Value,
+            TotalPages = totalPages,
+            HasNextPage = pageNumber < totalPages,
+            HasPreviousPage = pageNumber > 1,
+            Models = viewModels
+        }; ;
     }
 
     #endregion
@@ -547,22 +423,14 @@ public class ReadModelQueries
     #region [ PaymentReceiptTransactionReport ]
 
     [Authorize(Policy = AuthPolicies.Roles.AdminOrCompanyUser)]
-    [UseOffsetPaging(IncludeTotalCount = true)]
-    [UseProjection]
     [UseFiltering<PaymentReceiptTransactionFilterType>]
     [UseSorting<PaymentReceiptTransactionSortType>]
-    public async Task<IEnumerable<PaymentReceiptTransactionsReportViewModel>> GetPaymentReceiptTransactions
+    public async Task<ReportViewModel<PaymentReceiptTransactionReportViewModel>> GetPaymentReceiptTransactions
    ([Service] ReadDbContext dbContext, [Service] IMinioProvider minioProvider, [Service] IRedisCacheService cacheService,
     [Service] IHttpContextAccessor httpContext, int? pageNumber, int? pageSize)
     {
-        if (!pageNumber.HasValue)
-        {
-            pageNumber = 1;
-        }
-        if (!pageSize.HasValue)
-        {
-            pageSize = 10;
-        }
+        pageNumber ??= 1;
+        pageSize ??= 10;
 
         var query = dbContext.TransactionReadModels.Include(c => c.PaymentReceiptTransaction).Where(c => c.PaymentReceiptTransactionId.HasValue).AsQueryable();
 
@@ -574,7 +442,7 @@ public class ReadModelQueries
             if (companyIdClaim == null ||
             !long.TryParse(companyIdClaim.Value, out long companyId) || companyId == 0)
             {
-                throw new Exception("companyIdNotFound");
+                throw new CompanyNotFoundException(0);
             }
             else
             {
@@ -583,6 +451,7 @@ public class ReadModelQueries
         }
 
         int totalCount = query.Count();
+        int totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
 
         var data = await query.OrderByDescending(c => c.Id)
             .Select(c => new
@@ -606,9 +475,8 @@ public class ReadModelQueries
 
         var viewModels = await Task.WhenAll(
 
-             data.Select(async entity => new PaymentReceiptTransactionsReportViewModel
+             data.Select(async entity => new PaymentReceiptTransactionReportViewModel
              {
-                 TotalCount = totalCount,
                  Id = entity.PaymentReceiptTransaction.Id,
                  CompanyId = entity.Company.Id,
                  CompanyPersianName = entity.Company.PersianName,
@@ -629,10 +497,19 @@ public class ReadModelQueries
                  TransactionStatusCode = entity.PaymentReceiptTransaction.Status.GetValue(),
                  SourceIban = entity.PaymentReceiptTransaction.SourceIban,
                  ModificationDate = entity.PaymentReceiptTransaction.ModificationDate,
+                 Description=entity.PaymentReceiptTransaction.Description
              }).ToList()
             );
 
-        return viewModels;
+          return new ReportViewModel<PaymentReceiptTransactionReportViewModel>
+        {
+            TotalCount = totalCount,
+            CurrentPage = pageNumber.Value,
+            TotalPages = totalPages,
+            HasNextPage = pageNumber < totalPages,
+            HasPreviousPage = pageNumber > 1,
+            Models = viewModels
+        }; ;
     }
 
     [Authorize(Policy = AuthPolicies.Roles.AdminOrCompanyUser)]
@@ -654,7 +531,7 @@ public class ReadModelQueries
             if (companyIdClaim == null ||
             !long.TryParse(companyIdClaim.Value, out long companyId) || companyId == 0)
             {
-                throw new Exception("companyIdNotFound");
+                throw new CompanyNotFoundException(0);
             }
             else
             {
@@ -699,6 +576,7 @@ public class ReadModelQueries
             TransactionStatusCode = entity.PaymentReceiptTransaction.Status.GetValue(),
             SourceIban = entity.PaymentReceiptTransaction.SourceIban,
             ModificationDate = entity.PaymentReceiptTransaction.ModificationDate,
+            Description = entity.PaymentReceiptTransaction.Description
         };
         return viewModel;
     }
@@ -708,22 +586,14 @@ public class ReadModelQueries
     #region [ CharismaCardTransactionReport ]
 
     [Authorize(Policy = AuthPolicies.Roles.AdminOrCompanyUser)]
-    [UseOffsetPaging(IncludeTotalCount = true)]
-    [UseProjection]
     [UseFiltering<CharismaCardTransactionFilterType>]
     [UseSorting<CharismaCardTransactionSortType>]
-    public async Task<IEnumerable<CharismaCardTransactionReportViewModel>> GetCharismaCardTransactions
+    public async Task<ReportViewModel<CharismaCardTransactionReportViewModel>> GetCharismaCardTransactions
    ([Service] ReadDbContext dbContext, [Service] IMinioProvider minioProvider, [Service] IRedisCacheService cacheService,
     [Service] IHttpContextAccessor httpContext, int? pageNumber, int? pageSize)
     {
-        if (!pageNumber.HasValue)
-        {
-            pageNumber = 1;
-        }
-        if (!pageSize.HasValue)
-        {
-            pageSize = 10;
-        }
+        pageNumber ??= 1;
+        pageSize ??= 10;
 
         var query = dbContext.TransactionReadModels.Include(c => c.CharismaCardTransaction).
             Where(c => c.CharismaCardTransactionId.HasValue).AsQueryable();
@@ -736,7 +606,7 @@ public class ReadModelQueries
             if (companyIdClaim == null ||
             !long.TryParse(companyIdClaim.Value, out long companyId) || companyId == 0)
             {
-                throw new Exception("companyIdNotFound");
+                throw new CompanyNotFoundException(0);
             }
             else
             {
@@ -745,6 +615,7 @@ public class ReadModelQueries
         }
 
         int totalCount = query.Count();
+        int totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
 
         var data = await query.OrderByDescending(c => c.Id)
             .Select(c => new
@@ -786,8 +657,114 @@ public class ReadModelQueries
              }).ToList()
             );
 
-        return viewModels;
+        return new ReportViewModel<CharismaCardTransactionReportViewModel>
+        {
+            TotalCount = totalCount,
+            CurrentPage = pageNumber.Value,
+            TotalPages = totalPages,
+            HasNextPage = pageNumber < totalPages,
+            HasPreviousPage = pageNumber > 1,
+            Models = viewModels
+        };
     }
     #endregion
 
+    #region [ TransactionReport]
+
+    [Authorize(Policy = AuthPolicies.Roles.AdminOrCompanyUser)]
+    [UseFiltering<TransactionFilterType>]
+    [UseSorting<TransactionSortType>]
+    public async Task<ReportViewModel<TransactionReportViewModel>> GetTransactions
+([Service] ReadDbContext dbContext, [Service] IMinioProvider minioProvider, [Service] IRedisCacheService cacheService,
+[Service] IHttpContextAccessor httpContext, int? pageNumber, int? pageSize)
+    {
+        pageNumber ??= 1;
+        pageSize ??= 10;
+
+        IQueryable<TransactionReadModel> query = dbContext.TransactionReadModels;
+
+        var companyId = httpContext.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "CompanyId")?.Value;
+        if (companyId == null || !long.TryParse(companyId, out long parsedCompanyId) || parsedCompanyId == 0)
+        {
+            throw new CompanyNotFoundException(0);
+        }
+
+        query = query.Where(c => c.CompanyId == parsedCompanyId);
+
+        int totalCount = await query.CountAsync();
+        int totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+        var data = await query.OrderByDescending(c => c.Id)
+         .Select(c => new
+         {
+             Transaction = c,
+             Company = c.Company,
+             PaymentRequest = c.PaymentRequest,
+             Application = c.PaymentRequest.Application,
+             IPGTransaction = c.IPGTransaction,
+             CharismaCardTransaction = c.CharismaCardTransaction,
+             PaymentReceiptTransaction = c.PaymentReceiptTransaction,
+             DirectDebitTransaction = c.DirectDebitTransaction,
+             CompanyIPG = c.IPGTransaction != null ? c.IPGTransaction.CompanyIPG : null,
+             IPGType = c.IPGTransaction != null && c.IPGTransaction.CompanyIPG != null ? c.IPGTransaction.CompanyIPG.IPGType : null,
+             Provider = c.IPGTransaction != null && c.IPGTransaction.CompanyIPG != null ? c.IPGTransaction.CompanyIPG.Provider : null,
+             CompanyDeposit = c.DestinationDeposit
+         })
+         .Skip((pageNumber.Value - 1) * pageSize.Value)
+         .Take(pageSize.Value)
+         .ToListAsync();
+        
+        var UserscacheData = cacheService.GetData<List<UserReadModel>>("AllUser_key");
+
+        if (UserscacheData == null)
+        {
+            UserscacheData = await dbContext.UserReadModels.ToListAsync();
+            cacheService.SetData("AllUser_key", UserscacheData);
+        }
+        var viewModels = await Task.WhenAll(data.Select(async entity => new TransactionReportViewModel
+        {
+            Id = entity.Transaction.Id,
+            CompanyId = entity.Company.Id,
+            CompanyPersianName = entity.Company.PersianName,
+            CompanyEnglishName = entity.Company.EnglishName,
+            Amount = entity.Transaction.Amount,
+            TransactionMethodType = entity.Transaction.TransactionMethodType,
+            TransactionMethodTypeName = General.GetTransactionMethodTypeName(entity.Transaction.TransactionMethodType),
+            IPGTypeId = entity.IPGType?.Id ?? 0,
+            IpgTypeName = entity.IPGType?.PersianName,
+            ProviderId = entity.Provider?.Id ?? 0,
+            ProviderName = entity.Provider?.PersianName,
+            ApplicationName = entity.Application?.PersianName,
+            PaymentCode = entity.PaymentRequest?.PaymentCode,
+            CompanyDepositName = entity.CompanyDeposit.Name,
+            CompanyDepositaccountNumber = entity.CompanyDeposit.AccountNumber,
+            CompanyDepositIban = entity.CompanyDeposit.Iban,
+            CompanyLogo = !string.IsNullOrEmpty(entity.Company.Logo) ? await General.GetLogo(minioProvider, entity.Company.Logo) : null,
+            TransactionCreateDateTime = entity.Transaction.CreationDate,
+            TransactionModificationDateTime = entity.Transaction.ModificationDate,
+            FirstName = UserscacheData.FirstOrDefault(c => c.Id == entity.Transaction.CreationUserId)?.FirstName,
+            LastName = UserscacheData.FirstOrDefault(c => c.Id == entity.Transaction.CreationUserId)?.LastName,
+            NationalCode = entity.PaymentRequest.NationalCode,
+            ApplicationId = entity.Application?.Id ?? 0,
+            ReferenceNumber = entity.IPGTransaction?.ReferenceNumber ??
+                               entity.CharismaCardTransaction?.ReferenceNumber ??
+                               entity.PaymentReceiptTransaction?.ReferenceNumber ??
+                               entity.DirectDebitTransaction?.TrackId,
+            TransactionStatusName = General.GetTransactionStatusName(entity.Transaction.Status),
+            TransactionStatus = entity.Transaction.Status,
+            TransactionStatusCode = entity.Transaction.Status.GetValue()
+        }));
+
+        return new ReportViewModel<TransactionReportViewModel>
+        {
+            TotalCount = totalCount,
+            CurrentPage = pageNumber.Value,
+            TotalPages = totalPages,
+            HasNextPage = pageNumber < totalPages,
+            HasPreviousPage = pageNumber > 1,
+            Models = viewModels
+        };
+    }
+
+    #endregion
 }

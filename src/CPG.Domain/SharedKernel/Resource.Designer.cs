@@ -61,6 +61,24 @@ namespace CPG.Domain.SharedKernel {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to کاریزما کارت.
+        /// </summary>
+        internal static string CharismaCard {
+            get {
+                return ResourceManager.GetString("CharismaCard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to برداشت مستقیم.
+        /// </summary>
+        internal static string DirectDebit {
+            get {
+                return ResourceManager.GetString("DirectDebit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to موفق.
         /// </summary>
         internal static string Done {
@@ -120,6 +138,24 @@ namespace CPG.Domain.SharedKernel {
         internal static string InvalidUrlFormat {
             get {
                 return ResourceManager.GetString("InvalidUrlFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to درگاه پرداخت.
+        /// </summary>
+        internal static string IPG {
+            get {
+                return ResourceManager.GetString("IPG", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to فیش واریزی.
+        /// </summary>
+        internal static string PaymentReceipt {
+            get {
+                return ResourceManager.GetString("PaymentReceipt", resourceCulture);
             }
         }
         

@@ -6,7 +6,6 @@ namespace CPG.Infrastructure.Persistence.GraphQL.Model;
 
 public class CharismaCardTransactionReportViewModel
 {
-    public int TotalCount { get; set; }
     public long Id { get; set; }
     public long CompanyId { get; set; }
     public string CompanyPersianName { get; set; }
@@ -23,5 +22,4 @@ public class CharismaCardTransactionReportViewModel
     public Enums.CharismaCardStatus TransactionStatus { get; set; }
     public string TransactionStatusName { get; set; }
     public string TrackerId { get; set; }
-
 }

@@ -11,7 +11,7 @@ using HotChocolate.Data.Filters;
 
 namespace CPG.Infrastructure.Persistence.GraphQL.Types.Transaction;
 
-public class TransactionFilerType : FilterInputType<TransactionReportViewModel>
+public class TransactionFilterType : FilterInputType<TransactionReportViewModel>
 {
     protected override void Configure(IFilterInputTypeDescriptor<TransactionReportViewModel> descriptor)
     {
