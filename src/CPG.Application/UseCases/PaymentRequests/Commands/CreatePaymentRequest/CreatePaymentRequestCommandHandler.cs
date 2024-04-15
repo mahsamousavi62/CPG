@@ -63,8 +63,8 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
             var validCallBackUrl = application.ApplicationCallbackUrls.Select(a => a.CallbackUrl);
             var compareUri = new Uri(request.Model.CallBackUrl, UriKind.Absolute);
 
-            if (validCallBackUrl.All(url => !Uri.TryCreate(url, UriKind.Absolute, out var baseUri)
-            || !string.Equals(baseUri.Host, compareUri.Host, StringComparison.OrdinalIgnoreCase)))
+            if (validCallBackUrl.All(url => !Uri.TryCreate(url, UriKind.Absolute, out var baseUri) || 
+                !string.Equals(baseUri.Host, compareUri.Host, StringComparison.OrdinalIgnoreCase)))
             {
                 throw new PaymentRequestInvalidCallbackUrlException(request.Model.CallBackUrl);
             }

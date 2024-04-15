@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations.ReadModelsConfiguration;
+
 public class PaymentRequestReadModelConfiguration : IEntityTypeConfiguration<PaymentRequestReadModel>
 {
     public void Configure(EntityTypeBuilder<PaymentRequestReadModel> reader)
@@ -19,6 +20,7 @@ public class PaymentRequestReadModelConfiguration : IEntityTypeConfiguration<Pay
         reader.Property(x => x.CallBackUrl);
         reader.Property(x => x.PaymentCode);
         reader.Property(x => x.TrackerId);
+        reader.Property(x => x.PaymentId);
         reader.Property(x => x.Status).HasColumnName("Status").HasColumnType("tinyint");
         reader.Property(x => x.IsUsed);
         reader.Property(x => x.VerificationDateTime);
@@ -27,5 +29,4 @@ public class PaymentRequestReadModelConfiguration : IEntityTypeConfiguration<Pay
         reader.Property(x => x.ModificationDate);
         reader.Property(x => x.CreationDate);
     }
-
 }

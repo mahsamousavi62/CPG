@@ -1,6 +1,7 @@
 using System;
 using CPG.Domain.AggregateModels.ApplicationAggregate;
 using CPG.Domain.AggregateModels.CompanyAggregate;
+using CPG.Domain.AggregateModels.PaymentRequestAggregate.Exceptions;
 using CPG.Domain.AggregateModels.TransactionAggregate;
 using CPG.Domain.SeedWork;
 using CPG.Domain.SharedKernel;
@@ -11,8 +12,9 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
     {
 
     }
-    public PaymentRequest(long companyId, string destinationIban, long applicationId, string nationalCode,
-    string description, decimal amount, string callBackUrl, string code, string trackerId, Enums.PaymentStatus status, bool isUsed)
+
+    public PaymentRequest(long companyId, string destinationIban, long applicationId, string nationalCode, string description, decimal amount,
+        string callBackUrl, string code, string trackerId, Enums.PaymentStatus status, bool isUsed, string paymentId)
     {
         CompanyId = companyId;
         DestinationDepositIban = destinationIban;
@@ -23,10 +25,10 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
         CallBackUrl = callBackUrl;
         PaymentCode = code;
         TrackerId = trackerId;
+        PaymentId = paymentId;
         Status = status;
         IsUsed = isUsed;
     }
-
 
     public long CompanyId { get; set; }
     public long ApplicationId { get; set; }
@@ -37,6 +39,7 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
     public string CallBackUrl { get; set; }
     public string PaymentCode { get; set; }
     public string TrackerId { get; set; }
+    public string PaymentId { get; set; }
     public Enums.PaymentStatus Status { get; set; }
     public bool IsUsed { get; set; }
     public DateTime? VerificationDateTime { get; set; }
@@ -47,6 +50,8 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
 
     public static PaymentRequest Create(PaymentRequest paymentRequest, int expireTime, string clientId, string applicationEnglishName)
     {
+        if (!string.IsNullOrEmpty(paymentRequest.PaymentId) && (paymentRequest.PaymentId.Length < 5 || paymentRequest.PaymentId.Length > 255))
+            throw new InvalidPaymentIdLengthException();
         paymentRequest.UrlExpirationDateTime = DateTime.Now.AddMinutes(expireTime);
         paymentRequest.IsActive = true;
         string hexString = Guid.NewGuid().ToString("N");
@@ -59,7 +64,7 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
     }
 
     public static void Update(PaymentRequest paymentRequest)
-    {   
+    {
         paymentRequest.ModificationDate = DateTime.Now;
     }
 
