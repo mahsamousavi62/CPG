@@ -346,14 +346,8 @@ public class ReadModelQueries
    ([Service] ReadDbContext dbContext, [Service] IMinioProvider minioProvider,
    [Service] IHttpContextAccessor httpContext, int? pageNumber, int? pageSize)
     {
-        if (!pageNumber.HasValue)
-        {
-            pageNumber = 1;
-        }
-        if (!pageSize.HasValue)
-        {
-            pageSize = 10;
-        }
+        pageNumber ??= 1;
+        pageSize ??= 10;
 
         IQueryable<IPGTransactionReadModel> query = dbContext.IPGTransactionReadModels.Include(c => c.Transaction);
 
@@ -438,14 +432,8 @@ public class ReadModelQueries
    ([Service] ReadDbContext dbContext, [Service] IMinioProvider minioProvider, [Service] IRedisCacheService cacheService,
     [Service] IHttpContextAccessor httpContext, int? pageNumber, int? pageSize)
     {
-        if (!pageNumber.HasValue)
-        {
-            pageNumber = 1;
-        }
-        if (!pageSize.HasValue)
-        {
-            pageSize = 10;
-        }
+        pageNumber ??= 1;
+        pageSize ??= 10;
 
         var query = dbContext.TransactionReadModels.Include(c => c.PaymentReceiptTransaction).Where(c => c.PaymentReceiptTransactionId.HasValue).AsQueryable();
 
@@ -606,14 +594,8 @@ public class ReadModelQueries
    ([Service] ReadDbContext dbContext, [Service] IMinioProvider minioProvider, [Service] IRedisCacheService cacheService,
     [Service] IHttpContextAccessor httpContext, int? pageNumber, int? pageSize)
     {
-        if (!pageNumber.HasValue)
-        {
-            pageNumber = 1;
-        }
-        if (!pageSize.HasValue)
-        {
-            pageSize = 10;
-        }
+        pageNumber ??= 1;
+        pageSize ??= 10;
 
         var query = dbContext.TransactionReadModels.Include(c => c.CharismaCardTransaction).
             Where(c => c.CharismaCardTransactionId.HasValue).AsQueryable();
@@ -626,7 +608,7 @@ public class ReadModelQueries
             if (companyIdClaim == null ||
             !long.TryParse(companyIdClaim.Value, out long companyId) || companyId == 0)
             {
-                throw new Exception("companyIdNotFound");
+                throw new CompanyNotFoundException(0);
             }
             else
             {
