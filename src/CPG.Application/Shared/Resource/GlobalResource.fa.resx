@@ -798,6 +798,12 @@
   <data name="UserNotVerify" xml:space="preserve">
     <value>وضعیت کاربر {0}می باشد </value>
   </data>
+  <data name="NotHasResponse" xml:space="preserve">
+    <value>سرویس پاسخی ندارد</value>
+  </data>
+  <data name="UnAuthorizeRequest" xml:space="preserve">
+    <value>اعتبارسنجی درخواست انجام نشده است </value>
+  </data>
   <data name="Ayandeh" xml:space="preserve">
     <value>ارتباط فردا</value>
   </data>

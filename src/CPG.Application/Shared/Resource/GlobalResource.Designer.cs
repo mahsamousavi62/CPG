@@ -1231,6 +1231,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Response is null.
+        /// </summary>
+        public static string NotHasResponse {
+            get {
+                return ResourceManager.GetString("NotHasResponse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to OneMonth.
         /// </summary>
         public static string OneMonth {
@@ -1911,6 +1920,15 @@ namespace CPG.Application.Shared.Resource {
         public static string Type {
             get {
                 return ResourceManager.GetString("Type", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UnAuthorizeRequest.
+        /// </summary>
+        public static string UnAuthorizeRequest {
+            get {
+                return ResourceManager.GetString("UnAuthorizeRequest", resourceCulture);
             }
         }
         

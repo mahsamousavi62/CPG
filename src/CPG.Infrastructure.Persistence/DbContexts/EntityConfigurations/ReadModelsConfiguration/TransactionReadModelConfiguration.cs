@@ -27,6 +27,8 @@ public class TransactionReadModelConfiguration : IEntityTypeConfiguration<Transa
         entity.HasOne(t => t.IPGTransaction).WithOne(t => t.Transaction).HasForeignKey<TransactionReadModel>(t => t.IPGTransactionId);
         entity.HasOne(t => t.DirectDebitTransaction).WithOne(t => t.Transaction).HasForeignKey<TransactionReadModel>(t => t.DirectDebitTransactionId);
         entity.HasOne(t => t.CharismaCardTransaction).WithOne(t => t.Transaction).HasForeignKey<TransactionReadModel>(t => t.CharismaCardTransactionId);
+        entity.HasOne(t => t.PaymentReceiptTransaction).WithOne(t => t.Transaction).HasForeignKey<TransactionReadModel>(t => t.PaymentReceiptTransactionId);
         entity.HasOne(t => t.DestinationDeposit).WithMany(t => t.Transactions).HasForeignKey(t => t.DestinationDepositId);
+
     }
 }

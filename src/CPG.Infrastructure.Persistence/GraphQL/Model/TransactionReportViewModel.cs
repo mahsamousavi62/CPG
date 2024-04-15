@@ -15,7 +15,7 @@ namespace CPG.Infrastructure.Persistence.GraphQL.Model
         public int TotalCount { get; set; }
         public long Id { get; set; }
         public long CompanyId { get; set; }
-        public string CompanyPersianName { get; set; }
+        public string CompanyPersianName { get; set; }  
         public string CompanyEnglishName { get; set; }
         public string CompanyLogo { get; set; }
         public long PaymentRquestId { get; set; }

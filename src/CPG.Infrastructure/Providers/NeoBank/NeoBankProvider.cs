@@ -43,7 +43,7 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
     private readonly IConfiguration configuration = configuration;
     private readonly IAuthService authService = authService;
     private readonly IHttpContextAccessor httpContextAccessor = httpContextAccessor;
-    private readonly ILogger<NeoBankProvider> logger = logger = logger;
+    private readonly ILogger<NeoBankProvider> logger  = logger;
 
     public async Task<Result<ClientDirectDebitResponse>> ClientDirectDebit(ClientDirectDebitRequest model)
     {
