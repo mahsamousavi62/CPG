@@ -407,7 +407,7 @@ public class ReadModelQueries
              }).ToList()
             );
 
-          return new ReportViewModel<IpgTransactionReportViewModel>
+        return new ReportViewModel<IpgTransactionReportViewModel>
         {
             TotalCount = totalCount,
             CurrentPage = pageNumber.Value,
@@ -497,11 +497,11 @@ public class ReadModelQueries
                  TransactionStatusCode = entity.PaymentReceiptTransaction.Status.GetValue(),
                  SourceIban = entity.PaymentReceiptTransaction.SourceIban,
                  ModificationDate = entity.PaymentReceiptTransaction.ModificationDate,
-                 Description=entity.PaymentReceiptTransaction.Description
+                 Description = entity.PaymentReceiptTransaction.Description
              }).ToList()
             );
 
-          return new ReportViewModel<PaymentReceiptTransactionReportViewModel>
+        return new ReportViewModel<PaymentReceiptTransactionReportViewModel>
         {
             TotalCount = totalCount,
             CurrentPage = pageNumber.Value,
@@ -641,7 +641,6 @@ public class ReadModelQueries
 
              data.Select(async entity => new CharismaCardTransactionReportViewModel
              {
-                 TotalCount = totalCount,
                  Id = entity.CharismaCardTransaction.Id,
                  CompanyId = entity.Company.Id,
                  CompanyPersianName = entity.Company.PersianName,
@@ -713,7 +712,7 @@ public class ReadModelQueries
          .Skip((pageNumber.Value - 1) * pageSize.Value)
          .Take(pageSize.Value)
          .ToListAsync();
-        
+
         var UserscacheData = cacheService.GetData<List<UserReadModel>>("AllUser_key");
 
         if (UserscacheData == null)
