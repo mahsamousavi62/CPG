@@ -425,7 +425,7 @@ public class ReadModelQueries
     [Authorize(Policy = AuthPolicies.Roles.AdminOrCompanyUser)]
     [UseFiltering<PaymentReceiptTransactionFilterType>]
     [UseSorting<PaymentReceiptTransactionSortType>]
-    public async Task<ReportViewModel<PaymentReceiptTransactionsReportViewModel>> GetPaymentReceiptTransactions
+    public async Task<ReportViewModel<PaymentReceiptTransactionReportViewModel>> GetPaymentReceiptTransactions
    ([Service] ReadDbContext dbContext, [Service] IMinioProvider minioProvider, [Service] IRedisCacheService cacheService,
     [Service] IHttpContextAccessor httpContext, int? pageNumber, int? pageSize)
     {
@@ -442,7 +442,7 @@ public class ReadModelQueries
             if (companyIdClaim == null ||
             !long.TryParse(companyIdClaim.Value, out long companyId) || companyId == 0)
             {
-                throw new Exception("companyIdNotFound");
+                throw new CompanyNotFoundException(0);
             }
             else
             {
@@ -475,9 +475,8 @@ public class ReadModelQueries
 
         var viewModels = await Task.WhenAll(
 
-             data.Select(async entity => new PaymentReceiptTransactionsReportViewModel
+             data.Select(async entity => new PaymentReceiptTransactionReportViewModel
              {
-                 TotalCount = totalCount,
                  Id = entity.PaymentReceiptTransaction.Id,
                  CompanyId = entity.Company.Id,
                  CompanyPersianName = entity.Company.PersianName,
@@ -498,10 +497,11 @@ public class ReadModelQueries
                  TransactionStatusCode = entity.PaymentReceiptTransaction.Status.GetValue(),
                  SourceIban = entity.PaymentReceiptTransaction.SourceIban,
                  ModificationDate = entity.PaymentReceiptTransaction.ModificationDate,
+                 Description=entity.PaymentReceiptTransaction.Description
              }).ToList()
             );
 
-          return new ReportViewModel<PaymentReceiptTransactionsReportViewModel>
+          return new ReportViewModel<PaymentReceiptTransactionReportViewModel>
         {
             TotalCount = totalCount,
             CurrentPage = pageNumber.Value,
@@ -531,7 +531,7 @@ public class ReadModelQueries
             if (companyIdClaim == null ||
             !long.TryParse(companyIdClaim.Value, out long companyId) || companyId == 0)
             {
-                throw new Exception("companyIdNotFound");
+                throw new CompanyNotFoundException(0);
             }
             else
             {
@@ -576,6 +576,7 @@ public class ReadModelQueries
             TransactionStatusCode = entity.PaymentReceiptTransaction.Status.GetValue(),
             SourceIban = entity.PaymentReceiptTransaction.SourceIban,
             ModificationDate = entity.PaymentReceiptTransaction.ModificationDate,
+            Description = entity.PaymentReceiptTransaction.Description
         };
         return viewModel;
     }
