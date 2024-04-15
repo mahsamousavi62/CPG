@@ -38,7 +38,6 @@ namespace CPG.Infrastructure.Persistence.GraphQL.Queries;
 
 public class ReadModelQueries
 {
-    
     #region Gets
     [Authorize(Policy = AuthPolicies.Roles.Admin)]
     [UseOffsetPaging(IncludeTotalCount = true)]
@@ -335,14 +334,12 @@ public class ReadModelQueries
     }
     #endregion
 
-   
-
     #region [ IPGTranactionReport ]
 
     [Authorize(Policy = AuthPolicies.Roles.AdminOrCompanyUser)]
     [UseFiltering<IPGTransactionFilterType>]
     [UseSorting<IPGTransactionSortType>]
-    public async Task<PagingReportViewModel<IpgTransactionReportViewModel>> GetIPGTransactions
+    public async Task<ReportViewModel<IpgTransactionReportViewModel>> GetIPGTransactions
    ([Service] ReadDbContext dbContext, [Service] IMinioProvider minioProvider,
    [Service] IHttpContextAccessor httpContext, int? pageNumber, int? pageSize)
     {
@@ -410,7 +407,7 @@ public class ReadModelQueries
              }).ToList()
             );
 
-          return new PagingReportViewModel<IpgTransactionReportViewModel>
+          return new ReportViewModel<IpgTransactionReportViewModel>
         {
             TotalCount = totalCount,
             CurrentPage = pageNumber.Value,
@@ -428,7 +425,7 @@ public class ReadModelQueries
     [Authorize(Policy = AuthPolicies.Roles.AdminOrCompanyUser)]
     [UseFiltering<PaymentReceiptTransactionFilterType>]
     [UseSorting<PaymentReceiptTransactionSortType>]
-    public async Task<PagingReportViewModel<PaymentReceiptTransactionsReportViewModel>> GetPaymentReceiptTransactions
+    public async Task<ReportViewModel<PaymentReceiptTransactionsReportViewModel>> GetPaymentReceiptTransactions
    ([Service] ReadDbContext dbContext, [Service] IMinioProvider minioProvider, [Service] IRedisCacheService cacheService,
     [Service] IHttpContextAccessor httpContext, int? pageNumber, int? pageSize)
     {
@@ -504,7 +501,7 @@ public class ReadModelQueries
              }).ToList()
             );
 
-          return new PagingReportViewModel<PaymentReceiptTransactionsReportViewModel>
+          return new ReportViewModel<PaymentReceiptTransactionsReportViewModel>
         {
             TotalCount = totalCount,
             CurrentPage = pageNumber.Value,
@@ -590,7 +587,7 @@ public class ReadModelQueries
     [Authorize(Policy = AuthPolicies.Roles.AdminOrCompanyUser)]
     [UseFiltering<CharismaCardTransactionFilterType>]
     [UseSorting<CharismaCardTransactionSortType>]
-    public async Task<PagingReportViewModel<CharismaCardTransactionReportViewModel>> GetCharismaCardTransactions
+    public async Task<ReportViewModel<CharismaCardTransactionReportViewModel>> GetCharismaCardTransactions
    ([Service] ReadDbContext dbContext, [Service] IMinioProvider minioProvider, [Service] IRedisCacheService cacheService,
     [Service] IHttpContextAccessor httpContext, int? pageNumber, int? pageSize)
     {
@@ -659,7 +656,7 @@ public class ReadModelQueries
              }).ToList()
             );
 
-        return new PagingReportViewModel<CharismaCardTransactionReportViewModel>
+        return new ReportViewModel<CharismaCardTransactionReportViewModel>
         {
             TotalCount = totalCount,
             CurrentPage = pageNumber.Value,
@@ -670,15 +667,13 @@ public class ReadModelQueries
         };
     }
     #endregion
-   
-
 
     #region [ TransactionReport]
 
     [Authorize(Policy = AuthPolicies.Roles.AdminOrCompanyUser)]
     [UseFiltering<TransactionFilterType>]
     [UseSorting<TransactionSortType>]
-    public async Task<PagingReportViewModel<TransactionReportViewModel>> GetTransactions
+    public async Task<ReportViewModel<TransactionReportViewModel>> GetTransactions
 ([Service] ReadDbContext dbContext, [Service] IMinioProvider minioProvider, [Service] IRedisCacheService cacheService,
 [Service] IHttpContextAccessor httpContext, int? pageNumber, int? pageSize)
     {
@@ -733,7 +728,7 @@ public class ReadModelQueries
             CompanyEnglishName = entity.Company.EnglishName,
             Amount = entity.Transaction.Amount,
             TransactionMethodType = entity.Transaction.TransactionMethodType,
-            TransactionMethodTypeName = GetTransactionMethodTypeName(entity.Transaction.TransactionMethodType),
+            TransactionMethodTypeName = General.GetTransactionMethodTypeName(entity.Transaction.TransactionMethodType),
             IPGTypeId = entity.IPGType?.Id ?? 0,
             IpgTypeName = entity.IPGType?.PersianName,
             ProviderId = entity.Provider?.Id ?? 0,
@@ -759,7 +754,7 @@ public class ReadModelQueries
             TransactionStatusCode = entity.Transaction.Status.GetValue()
         }));
 
-        return new PagingReportViewModel<TransactionReportViewModel>
+        return new ReportViewModel<TransactionReportViewModel>
         {
             TotalCount = totalCount,
             CurrentPage = pageNumber.Value,
@@ -770,23 +765,5 @@ public class ReadModelQueries
         };
     }
 
-    private string GetTransactionMethodTypeName(Enums.TransactionType transactionMethodType)
-    {
-        switch (transactionMethodType)
-        {
-            case Enums.TransactionType.IPG:
-                return "درگاه پرداخت";
-            case Enums.TransactionType.DirectDebit:
-                return "برداشت مستقیم";
-            case Enums.TransactionType.PaymentReceipt:
-                return "فیش واریزی";
-            case Enums.TransactionType.CharismaCard:
-                return "کاریزما کارت";
-            default:
-                return string.Empty;
-        }
-    }
     #endregion
-
-
 }

@@ -95,4 +95,21 @@ public static class General
             return null;
         }
     }
+
+    public static string GetTransactionMethodTypeName(Enums.TransactionType transactionMethodType)
+    {
+        switch (transactionMethodType)
+        {
+            case Enums.TransactionType.IPG:
+                return Resource.IPG;
+            case Enums.TransactionType.DirectDebit:
+                return Resource.DirectDebit;
+            case Enums.TransactionType.PaymentReceipt:
+                return Resource.PaymentReceipt;
+            case Enums.TransactionType.CharismaCard:
+                return Resource.CharismaCard;
+            default:
+                return string.Empty;
+        }
+    }
 }
