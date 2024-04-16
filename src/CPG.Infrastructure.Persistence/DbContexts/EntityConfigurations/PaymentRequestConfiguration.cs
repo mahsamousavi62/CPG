@@ -1,14 +1,8 @@
-﻿using CPG.Domain.AggregateModels.IPGTypeAggregate;
-using CPG.Domain.SeedWork;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations;
+
 public class PaymentRequestConfiguration : IEntityTypeConfiguration<PaymentRequest>
 {
     public void Configure(EntityTypeBuilder<PaymentRequest> entity)
@@ -31,6 +25,6 @@ public class PaymentRequestConfiguration : IEntityTypeConfiguration<PaymentReque
         entity.Property(x => x.IsUsed).HasColumnName("IsUsed").HasColumnType("bit").IsRequired();
         entity.Property(x => x.VerificationDateTime).HasColumnName("VerificationDateTime").HasColumnType("datetime2(7)");
         entity.Property(x => x.UrlExpirationDateTime).HasColumnName("UrlExpirationDateTime").HasColumnType("datetime2(7)").IsRequired();
+        entity.Property(x => x.PaymentIdentifier).HasColumnType("nvarchar").HasMaxLength(255);
     }
-
 }

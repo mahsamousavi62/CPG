@@ -5,17 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 using CPG.Domain.AggregateModels.CompanyDepositAggregate;
 using CPG.Domain.AggregateModels.TransactionAggregate;
-using CPG.Domain.SharedKernel;  
+using CPG.Domain.SharedKernel;
 using CPG.Infrastructure.Persistence.DbContexts.ReadModels;
 
 namespace CPG.Infrastructure.Persistence.GraphQL.Model
 {
     public class TransactionReportViewModel
     {
-        public int TotalCount { get; set; }
         public long Id { get; set; }
         public long CompanyId { get; set; }
-        public string CompanyPersianName { get; set; }  
+        public string CompanyPersianName { get; set; }
         public string CompanyEnglishName { get; set; }
         public string CompanyLogo { get; set; }
         public long PaymentRquestId { get; set; }

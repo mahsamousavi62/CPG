@@ -7,7 +7,6 @@ namespace CPG.Infrastructure.Persistence.GraphQL.Model;
 
 public class IpgTransactionReportViewModel
 {
-    public int TotalCount { get; set; }
     public long Id { get; set; }
     public long CompanyId { get; set; }
     public string CompanyPersianName { get; set; }
@@ -30,4 +29,5 @@ public class IpgTransactionReportViewModel
     public Enums.IPGTransactionStatus TransactionStatus { get;  set; }
     public string TransactionStatusName { get;  set; }
     public string TrackerId { get;  set; }
+    public DateTime? PredictedSettlementDateTime { get; set; }
 }

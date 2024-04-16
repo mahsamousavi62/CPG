@@ -7,5 +7,7 @@ public class ApplicationConfigViewModel
     public string CPG_BackEnd { get; set; }
     public string Direct_Debit_Grant_Result_URL { get; set; }
     public string ExpireTime { get; set; }
+    public string Referrer_Page { get; set; }
+    public string Callback_Page { get; set; }
 }
 
