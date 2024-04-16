@@ -18,6 +18,7 @@ public class CharismaCardTransactionReportViewModel
     public string? ReferenceNumber { get; set; }
     public DateTime? VerificationDateTime { get; set; }
     public DateTime? CreationDate { get; set; }
+    public DateTime ModificationDate { get; set; }
     public string TransactionStatusCode { get; set; }
     public Enums.CharismaCardStatus TransactionStatus { get; set; }
     public string TransactionStatusName { get; set; }
