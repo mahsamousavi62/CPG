@@ -810,4 +810,46 @@
   <data name="BehPardakht" xml:space="preserve">
     <value>به پرداخت</value>
   </data>
+  <data name="ApplicationName" xml:space="preserve">
+    <value>برنامه پایه گذار درخواست</value>
+  </data>
+  <data name="CompanyDeposit" xml:space="preserve">
+    <value>حساب مقصد</value>
+  </data>
+  <data name="IpgToken" xml:space="preserve">
+    <value>توکن درگاه پرداخت</value>
+  </data>
+  <data name="PaymentCode" xml:space="preserve">
+    <value>شناسه رهگیری</value>
+  </data>
+  <data name="PredictedSettlementDateTime" xml:space="preserve">
+    <value>تاریخ و زمان تسویه (احتمالی)</value>
+  </data>
+  <data name="ProviderTrackerId" xml:space="preserve">
+    <value>کد رهگیری درگاه</value>
+  </data>
+  <data name="ReceiptDateTime" xml:space="preserve">
+    <value>تاریخ و زمان پرداخت</value>
+  </data>
+  <data name="ReferenceNumber" xml:space="preserve">
+    <value>شناسه پرداخت</value>
+  </data>
+  <data name="SourceBank" xml:space="preserve">
+    <value>بانک مبدا</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>وضعیت</value>
+  </data>
+  <data name="TrackerId" xml:space="preserve">
+    <value>شناسه برنامه</value>
+  </data>
+  <data name="Transactions" xml:space="preserve">
+    <value>تراکنش‌ها</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>کاربر</value>
+  </data>
+  <data name="VerificationDateTime" xml:space="preserve">
+    <value>تاریخ و زمان تایید</value>
+  </data>
 </root>
