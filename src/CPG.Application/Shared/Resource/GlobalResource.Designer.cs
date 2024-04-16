@@ -1150,6 +1150,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to MethodType not allowed.
+        /// </summary>
+        public static string MethodTypeNotAllowed {
+            get {
+                return ResourceManager.GetString("MethodTypeNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to MethodTypes.
         /// </summary>
         public static string MethodTypes {

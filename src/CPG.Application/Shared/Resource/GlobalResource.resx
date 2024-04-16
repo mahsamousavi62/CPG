@@ -831,4 +831,7 @@
   <data name="VerificationDateTime" xml:space="preserve">
     <value>VerificationDateTime</value>
   </data>
+  <data name="MethodTypeNotAllowed" xml:space="preserve">
+    <value>MethodType not allowed</value>
+  </data>
 </root>

@@ -23,7 +23,7 @@ public class UpdateCompanyDepositCommandHandler(IAggregateRepository<CompanyDepo
         {
             var (companyDeposit, persianName) = await Validate(request.Model);
 
-            CompanyDeposit.Update(companyDeposit, persianName);
+            CompanyDeposit.Update(companyDeposit, persianName, request.Model.methodTypes);
 
             await _companyDepositRepository.UpdateAsync(companyDeposit, cancellationToken);
             await _companyDepositRepository.SaveChangesAsync(cancellationToken);

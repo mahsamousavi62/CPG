@@ -21,6 +21,7 @@ public class CompanyDepositReadModel
     public CompanyReadModel Company { get; set; }
     public List<CompanyIPGDepositReadModel> CompanyIPGDeposits { get; set; }
     public List<TransactionReadModel> Transactions { get; set; }
+    public IEnumerable<CompanyDepositPaymentMethodReadModel> PaymentMethods { get; set; }
     [NotMapped]
     public string? BankName { get; set; }
     [NotMapped]

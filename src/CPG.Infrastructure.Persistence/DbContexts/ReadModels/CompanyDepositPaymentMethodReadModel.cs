@@ -2,10 +2,10 @@
 
 namespace CPG.Infrastructure.Persistence.DbContexts.ReadModels;
 
-public class CompanyPaymentMethodsReadModel
+public class CompanyDepositPaymentMethodReadModel
 {
     public long Id { get; set; }
     public Enums.PaymentMethodType MethodType { get; set; }
     public long CompanyId { get; set; }
-    public CompanyReadModel Company { get; set; }
+    public CompanyDepositReadModel Company { get; set; }
 }
