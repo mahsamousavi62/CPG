@@ -68,5 +68,14 @@ namespace CPG.Domain.AggregateModels.PaymentRequestAggregate {
                 return ResourceManager.GetString("AmountIsNotInRange", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to تعداد کاراکتر شناسه واریز نامعتبر است.
+        /// </summary>
+        internal static string InvalidPaymentIdLength {
+            get {
+                return ResourceManager.GetString("InvalidPaymentIdLength", resourceCulture);
+            }
+        }
     }
 }

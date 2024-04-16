@@ -120,4 +120,7 @@
   <data name="AmountIsNotInRange" xml:space="preserve">
     <value>بازه ی مبلغ  10000ريال تا 100000000000ريال می باشد</value>
   </data>
+  <data name="InvalidPaymentIdLength" xml:space="preserve">
+    <value>تعداد کاراکتر شناسه واریز نامعتبر است</value>
+  </data>
 </root>

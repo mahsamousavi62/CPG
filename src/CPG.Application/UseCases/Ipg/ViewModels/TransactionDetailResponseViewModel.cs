@@ -45,5 +45,7 @@ public class TransactionDetailResponseViewModel
 
     [JsonPropertyName("predictedSettlementDateTime")]
     public string PredictedSettlementDateTime { get; set; }
-}
 
+    [JsonPropertyName("paymentIdentifier")]
+    public string PaymentIdentifier { get; set; }
+}
