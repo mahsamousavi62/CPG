@@ -654,6 +654,10 @@ public class ReadModelQueries
                  TransactionStatusName = General.GetCharismaCardTransactionStatusName(entity.CharismaCardTransaction.Status),
                  TransactionStatus = entity.CharismaCardTransaction.Status,
                  TransactionStatusCode = entity.CharismaCardTransaction.Status.GetValue(),
+                 ProviderTrackerId=entity.CharismaCardTransaction.ProviderTrackId,
+                 TrackerId=entity.CharismaCardTransaction.TrackId,
+                 ModificationDate = entity.CharismaCardTransaction.ModificationDate,
+
              }).ToList()
             );
 
