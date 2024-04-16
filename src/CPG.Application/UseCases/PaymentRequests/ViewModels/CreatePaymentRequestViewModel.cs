@@ -21,7 +21,7 @@ public class CreatePaymentRequestViewModel : IRegister
     [Required]
     public string TrackerId { get; set; }
     
-    public string PaymentId { get; set; }
+    public string PaymentIdentifier { get; set; }
     
     public string Description { get; set; }
 

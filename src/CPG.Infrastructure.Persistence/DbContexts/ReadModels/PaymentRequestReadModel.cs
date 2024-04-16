@@ -16,7 +16,7 @@ public class PaymentRequestReadModel
     public string CallBackUrl { get; set; }
     public string PaymentCode { get; set; }
     public string TrackerId { get; set; }
-    public string PaymentId { get; set; }
+    public string PaymentIdentifier { get; set; }
     public Enums.PaymentStatus Status { get; set; }
     public bool IsUsed { get; set; }
     public DateTime? VerificationDateTime { get; set; }

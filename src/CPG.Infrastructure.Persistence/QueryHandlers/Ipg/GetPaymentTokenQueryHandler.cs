@@ -133,7 +133,7 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                     ShaparakIv = paymentRequest.Company.NationalCodeMatchingRequied ? paymentRequest.Company.ShaparakSetting.Iv : string.Empty,
                     ShaparakKey = paymentRequest.Company.NationalCodeMatchingRequied ? paymentRequest.Company.ShaparakSetting.Key : string.Empty,
                     ThirdPartyCode = paymentRequest.Company.NationalCodeMatchingRequied ? paymentRequest.Company.ShaparakSetting.ThirdPartyCode : null,
-                    PaymentId = paymentRequest.PaymentId,
+                    PaymentIdentifier = paymentRequest.PaymentIdentifier,
                 });
 
             if (result.StatusCode == (short)HttpStatusCode.OK)

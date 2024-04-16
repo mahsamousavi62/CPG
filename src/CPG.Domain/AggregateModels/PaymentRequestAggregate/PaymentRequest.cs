@@ -14,7 +14,7 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
     }
 
     public PaymentRequest(long companyId, string destinationIban, long applicationId, string nationalCode, string description, decimal amount,
-        string callBackUrl, string code, string trackerId, Enums.PaymentStatus status, bool isUsed, string paymentId)
+        string callBackUrl, string code, string trackerId, Enums.PaymentStatus status, bool isUsed, string paymentIdentifier)
     {
         CompanyId = companyId;
         DestinationDepositIban = destinationIban;
@@ -25,7 +25,7 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
         CallBackUrl = callBackUrl;
         PaymentCode = code;
         TrackerId = trackerId;
-        PaymentId = paymentId;
+        PaymentIdentifier = paymentIdentifier;
         Status = status;
         IsUsed = isUsed;
     }
@@ -39,7 +39,7 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
     public string CallBackUrl { get; set; }
     public string PaymentCode { get; set; }
     public string TrackerId { get; set; }
-    public string PaymentId { get; set; }
+    public string PaymentIdentifier { get; set; }
     public Enums.PaymentStatus Status { get; set; }
     public bool IsUsed { get; set; }
     public DateTime? VerificationDateTime { get; set; }
@@ -50,7 +50,7 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
 
     public static PaymentRequest Create(PaymentRequest paymentRequest, int expireTime, string clientId, string applicationEnglishName)
     {
-        if (!string.IsNullOrEmpty(paymentRequest.PaymentId) && (paymentRequest.PaymentId.Length < 5 || paymentRequest.PaymentId.Length > 255))
+        if (!string.IsNullOrEmpty(paymentRequest.PaymentIdentifier) && (paymentRequest.PaymentIdentifier.Length < 5 || paymentRequest.PaymentIdentifier.Length > 255))
             throw new InvalidPaymentIdLengthException();
         paymentRequest.UrlExpirationDateTime = DateTime.Now.AddMinutes(expireTime);
         paymentRequest.IsActive = true;

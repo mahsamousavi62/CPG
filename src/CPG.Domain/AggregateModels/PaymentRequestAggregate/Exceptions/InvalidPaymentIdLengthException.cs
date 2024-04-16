@@ -4,5 +4,5 @@ namespace CPG.Domain.AggregateModels.PaymentRequestAggregate.Exceptions;
 
 public class InvalidPaymentIdLengthException() : DomainException(Resource.InvalidPaymentIdLength)
 {
-    public override string Code => "invalid_paymentId_length";
+    public override string Code => "invalid_paymentIdentifier_length";
 }
