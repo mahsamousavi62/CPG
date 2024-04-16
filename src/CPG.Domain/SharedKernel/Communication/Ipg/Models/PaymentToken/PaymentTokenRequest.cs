@@ -13,4 +13,5 @@ public class PaymentTokenRequest : RequestBase
     public string ShaparakKey { get; set; }
     public string ShaparakIv { get; set; }
     public int? ThirdPartyCode { get; set; }
+    public string PaymentId { get; set; }
 }
