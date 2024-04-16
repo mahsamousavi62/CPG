@@ -383,7 +383,7 @@ public class ReadModelQueries
 
              data.Select(async entity => new IpgTransactionReportViewModel
              {
-                 TotalCount = totalCount,
+                 IPGToken=entity.IPGTransaction.IPGToken,
                  Id = entity.Transaction.Id,
                  CompanyId = entity.Company.Id,
                  CompanyPersianName = entity.Company.PersianName,
@@ -397,6 +397,7 @@ public class ReadModelQueries
                  CreationDate = entity.IPGTransaction.CreationDate,
                  VerificationDateTime = entity.IPGTransaction.VerificationDateTime,
                  PredicateExpirationDateTime = entity.IPGTransaction.PredicateExpirationDateTime,
+                 PredictedSettlementDateTime = entity.Transaction.PredictedSettlementDateTime,
                  ReferenceNumber = entity.IPGTransaction?.ReferenceNumber,
                  TransactionStatusName = General.GetIPGTransactionStatusName(entity.IPGTransaction.Status),
                  TransactionStatus = entity.IPGTransaction.Status,
