@@ -383,7 +383,7 @@ public class ReadModelQueries
 
              data.Select(async entity => new IpgTransactionReportViewModel
              {
-                 IPGToken=entity.IPGTransaction.IPGToken,
+                 IPGToken = entity.IPGTransaction.IPGToken,
                  Id = entity.Transaction.Id,
                  CompanyId = entity.Company.Id,
                  CompanyPersianName = entity.Company.PersianName,
@@ -654,8 +654,8 @@ public class ReadModelQueries
                  TransactionStatusName = General.GetCharismaCardTransactionStatusName(entity.CharismaCardTransaction.Status),
                  TransactionStatus = entity.CharismaCardTransaction.Status,
                  TransactionStatusCode = entity.CharismaCardTransaction.Status.GetValue(),
-                 ProviderTrackerId=entity.CharismaCardTransaction.ProviderTrackId,
-                 TrackerId=entity.CharismaCardTransaction.TrackId,
+                 ProviderTrackerId = entity.CharismaCardTransaction.ProviderTrackId,
+                 TrackerId = entity.CharismaCardTransaction.TrackId,
                  ModificationDate = entity.CharismaCardTransaction.ModificationDate,
 
              }).ToList()
@@ -687,14 +687,21 @@ public class ReadModelQueries
 
         IQueryable<TransactionReadModel> query = dbContext.TransactionReadModels;
 
-        var companyId = httpContext.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "CompanyId")?.Value;
-        if (companyId == null || !long.TryParse(companyId, out long parsedCompanyId) || parsedCompanyId == 0)
+        var roleClaim = httpContext.HttpContext.User.FindFirst(c => c.Type == ClaimTypes.Role &&
+              c.Value == UserRoleType.SuperAdmin.GetValue());
+        if (roleClaim == null)
         {
-            throw new CompanyNotFoundException(0);
+            var companyIdClaim = httpContext.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "CompanyId");
+            if (companyIdClaim == null ||
+            !long.TryParse(companyIdClaim.Value, out long companyId) || companyId == 0)
+            {
+                throw new CompanyNotFoundException(0);
+            }
+            else
+            {
+                query = query.Where(c => c.CompanyId == companyId);
+            }
         }
-
-        query = query.Where(c => c.CompanyId == parsedCompanyId);
-
         int totalCount = await query.CountAsync();
         int totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
 
