@@ -32,6 +32,7 @@ using System.Security.Cryptography.X509Certificates;
 using CPG.Infrastructure.Persistence.GraphQL.Types.PaymentReceiptTransaction;
 using CPG.Infrastructure.Persistence.GraphQL.Types.CharismaCard;
 using CPG.Application.UseCases.Companies.Exceptions;
+using CPG.Application.UseCases.PaymentReceipt.Exceptions;
 
 
 namespace CPG.Infrastructure.Persistence.GraphQL.Queries;
@@ -543,7 +544,7 @@ public class ReadModelQueries
         var entity = query.FirstOrDefault(c => c.PaymentReceiptTransactionId == id);
         if (entity == null)
         {
-            throw new Exception("IdNotFound");
+            throw new PaymentReceiptNotFoundException(id) ;
         }
 
         var bankscacheData = cacheService.GetData<List<BankReadModel>>("AllBank_key");
