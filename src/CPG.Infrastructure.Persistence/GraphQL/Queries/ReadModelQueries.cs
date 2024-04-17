@@ -521,7 +521,7 @@ public class ReadModelQueries
     {
         var query = dbContext.TransactionReadModels
             .Include(c => c.PaymentReceiptTransaction).Where(c => c.PaymentReceiptTransactionId.HasValue)
-            .Include(c => c.Company).Include(c => c.PaymentRequest).AsQueryable();
+            .Include(c => c.Company).Include(c => c.PaymentRequest).Include(c=>c.DestinationDeposit).AsQueryable();
 
         var roleClaim = httpContext.HttpContext.User.FindFirst(c => c.Type == ClaimTypes.Role &&
                c.Value == UserRoleType.SuperAdmin.GetValue());
@@ -580,12 +580,13 @@ public class ReadModelQueries
             TransactionStatusCode = entity.PaymentReceiptTransaction.Status.GetValue(),
             SourceIban = entity.PaymentReceiptTransaction.SourceIban,
             ModificationDate = entity.PaymentReceiptTransaction.ModificationDate,
-            Description = entity.PaymentReceiptTransaction.Description
+            Description = entity.PaymentReceiptTransaction.Description,
+            DestinationIban=entity.DestinationDeposit?.Iban,
         };
         return viewModel;
     }
 
-    #endregion
+# endregion
 
     #region [ CharismaCardTransactionReport ]
 
