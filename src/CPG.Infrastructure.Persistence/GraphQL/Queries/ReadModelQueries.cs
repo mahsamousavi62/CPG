@@ -541,7 +541,7 @@ public class ReadModelQueries
         }
 
         var entity = query.FirstOrDefault(c => c.PaymentReceiptTransactionId == id);
-        if (query == null)
+        if (entity == null)
         {
             throw new Exception("IdNotFound");
         }
@@ -555,6 +555,8 @@ public class ReadModelQueries
         }
         var ibanPrefix = entity.PaymentReceiptTransaction.SourceIban.Substring(4, 3);
         var bank = bankscacheData.FirstOrDefault(c => c.IbanPrefix == ibanPrefix);
+        
+        
         var viewModel = new PaymentReceiptTransactionReportViewModel
         {
             Id = entity.PaymentReceiptTransaction.Id,
