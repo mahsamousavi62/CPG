@@ -834,4 +834,19 @@
   <data name="paymentReceiptNotFound" xml:space="preserve">
     <value>paymentReceiptNotFound</value>
   </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Amount</value>
+  </data>
+  <data name="CompanyName" xml:space="preserve">
+    <value>CompanyName</value>
+  </data>
+  <data name="DestinationIban" xml:space="preserve">
+    <value>DestinationIban</value>
+  </data>
+  <data name="PaymentReceiptPropertiesById" xml:space="preserve">
+    <value>PaymentReceiptPropertiesById</value>
+  </data>
+  <data name="ReceiptProperties" xml:space="preserve">
+    <value>ReceiptProperties</value>
+  </data>
 </root>

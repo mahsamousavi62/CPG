@@ -106,6 +106,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Amount.
+        /// </summary>
+        public static string Amount {
+            get {
+                return ResourceManager.GetString("Amount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ApplicationLogo.
         /// </summary>
         public static string ApplicationLogo {
@@ -466,6 +475,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CompanyName.
+        /// </summary>
+        public static string CompanyName {
+            get {
+                return ResourceManager.GetString("CompanyName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CompanyNotFound.
         /// </summary>
         public static string CompanyNotFound {
@@ -687,6 +705,15 @@ namespace CPG.Application.Shared.Resource {
         public static string DestinationAccountDoesNotBelong {
             get {
                 return ResourceManager.GetString("DestinationAccountDoesNotBelong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DestinationIban.
+        /// </summary>
+        public static string DestinationIban {
+            get {
+                return ResourceManager.GetString("DestinationIban", resourceCulture);
             }
         }
         
@@ -1348,6 +1375,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to PaymentReceiptPropertiesById.
+        /// </summary>
+        public static string PaymentReceiptPropertiesById {
+            get {
+                return ResourceManager.GetString("PaymentReceiptPropertiesById", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Application {0}-{1} is inactive.
         /// </summary>
         public static string PaymentRequestApplicationIsInactive {
@@ -1695,6 +1731,15 @@ namespace CPG.Application.Shared.Resource {
         public static string ReceiptIdentifier {
             get {
                 return ResourceManager.GetString("ReceiptIdentifier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ReceiptProperties.
+        /// </summary>
+        public static string ReceiptProperties {
+            get {
+                return ResourceManager.GetString("ReceiptProperties", resourceCulture);
             }
         }
         
