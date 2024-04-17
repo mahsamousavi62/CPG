@@ -687,17 +687,21 @@ public class ReadModelQueries
 
         IQueryable<TransactionReadModel> query = dbContext.TransactionReadModels;
 
-        var companyId = httpContext.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "CompanyId")?.Value;
-        if (companyId == null || !long.TryParse(companyId, out long parsedCompanyId) || parsedCompanyId == 0)
+        var roleClaim = httpContext.HttpContext.User.FindFirst(c => c.Type == ClaimTypes.Role &&
+              c.Value == UserRoleType.SuperAdmin.GetValue());
+        if (roleClaim == null)
         {
-            throw new CompanyNotFoundException(0);
+            var companyIdClaim = httpContext.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "CompanyId");
+            if (companyIdClaim == null ||
+            !long.TryParse(companyIdClaim.Value, out long companyId) || companyId == 0)
+            {
+                throw new CompanyNotFoundException(0);
+            }
+            else
+            {
+                query = query.Where(c => c.CompanyId == companyId);
+            }
         }
-        else
-        {
-            query = query.Where(c => c.CompanyId == parsedCompanyId);
-        }
-
-
         int totalCount = await query.CountAsync();
         int totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
 
