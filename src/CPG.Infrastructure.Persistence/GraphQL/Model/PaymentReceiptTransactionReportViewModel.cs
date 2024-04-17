@@ -20,6 +20,7 @@ public class PaymentReceiptTransactionReportViewModel
     public string BankName { get; set; }
     public string BankLogo { get; set; }
     public string SourceIban { get; set; }
+    public string DestinationIban { get; set; }
     public string ReferenceNumber { get; set; }
     public DateTime ReceiptDateTime { get; set; }
     public string Description { get; set; }
