@@ -383,7 +383,7 @@ public class ReadModelQueries
 
              data.Select(async entity => new IpgTransactionReportViewModel
              {
-                 IPGToken=entity.IPGTransaction.IPGToken,
+                 IPGToken = entity.IPGTransaction.IPGToken,
                  Id = entity.Transaction.Id,
                  CompanyId = entity.Company.Id,
                  CompanyPersianName = entity.Company.PersianName,
@@ -654,8 +654,8 @@ public class ReadModelQueries
                  TransactionStatusName = General.GetCharismaCardTransactionStatusName(entity.CharismaCardTransaction.Status),
                  TransactionStatus = entity.CharismaCardTransaction.Status,
                  TransactionStatusCode = entity.CharismaCardTransaction.Status.GetValue(),
-                 ProviderTrackerId=entity.CharismaCardTransaction.ProviderTrackId,
-                 TrackerId=entity.CharismaCardTransaction.TrackId,
+                 ProviderTrackerId = entity.CharismaCardTransaction.ProviderTrackId,
+                 TrackerId = entity.CharismaCardTransaction.TrackId,
                  ModificationDate = entity.CharismaCardTransaction.ModificationDate,
 
              }).ToList()
@@ -692,8 +692,11 @@ public class ReadModelQueries
         {
             throw new CompanyNotFoundException(0);
         }
+        else
+        {
+            query = query.Where(c => c.CompanyId == parsedCompanyId);
+        }
 
-        query = query.Where(c => c.CompanyId == parsedCompanyId);
 
         int totalCount = await query.CountAsync();
         int totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
