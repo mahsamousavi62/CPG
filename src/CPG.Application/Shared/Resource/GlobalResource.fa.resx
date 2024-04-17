@@ -855,4 +855,19 @@
   <data name="paymentReceiptNotFound" xml:space="preserve">
     <value>شناسه قبض یافت نشد</value>
   </data>
+  <data name="Amount" xml:space="preserve">
+    <value>مبلغ</value>
+  </data>
+  <data name="CompanyName" xml:space="preserve">
+    <value>شرکت دریافت کننده وجه</value>
+  </data>
+  <data name="DestinationIban" xml:space="preserve">
+    <value>شبای مقصد</value>
+  </data>
+  <data name="PaymentReceiptPropertiesById" xml:space="preserve">
+    <value>مشخصات فیش واریزی به شناسه </value>
+  </data>
+  <data name="ReceiptProperties" xml:space="preserve">
+    <value>مشخصات فیش</value>
+  </data>
 </root>
