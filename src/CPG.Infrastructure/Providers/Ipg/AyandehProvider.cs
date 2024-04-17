@@ -68,7 +68,7 @@ internal class AyandehProvider(IHttpProvider httpProvider, ReadDbContext context
                                                         {
                                                             Username = userName,
                                                             Password = password,
-                                                            AdditionalData = $"{request.NationalCode}-{trackerId}",
+                                                            AdditionalData = $"{request.NationalCode}-{request.PaymentIdentifier}",
                                                             CallBackUrl = callBack,
                                                             Amount = request.PaymentRequestAmount.ToString(),
                                                             ServiceAmountList = new List<ServiceAmount> {

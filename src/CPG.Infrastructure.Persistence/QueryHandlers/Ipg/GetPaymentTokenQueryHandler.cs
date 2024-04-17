@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using CPG.Application.Shared.Resource;
+﻿using CPG.Application.Shared.Resource;
 using CPG.Application.UseCases.CompanyIPGs.Exceptions;
 using CPG.Application.UseCases.Exceptions;
 using CPG.Application.UseCases.Ipg.Commands;
@@ -134,6 +133,7 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                     ShaparakIv = paymentRequest.Company.NationalCodeMatchingRequied ? paymentRequest.Company.ShaparakSetting.Iv : string.Empty,
                     ShaparakKey = paymentRequest.Company.NationalCodeMatchingRequied ? paymentRequest.Company.ShaparakSetting.Key : string.Empty,
                     ThirdPartyCode = paymentRequest.Company.NationalCodeMatchingRequied ? paymentRequest.Company.ShaparakSetting.ThirdPartyCode : null,
+                    PaymentIdentifier = paymentRequest.PaymentIdentifier,
                 });
 
             if (result.StatusCode == (short)HttpStatusCode.OK)
@@ -220,7 +220,7 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                 {
                     response.JsonBody.jsonStr = new ExpandoObject();
                     response.JsonBody.jsonStr.url = result.IpgBaseUrl;
-                    response.JsonBody.jsonStr.method = "GET";
+                    response.JsonBody.jsonStr.method = "POST";
                     response.JsonBody.jsonStr.@params = new ExpandoObject();
                     response.JsonBody.jsonStr.@params.Token = result.Token;
                     break;

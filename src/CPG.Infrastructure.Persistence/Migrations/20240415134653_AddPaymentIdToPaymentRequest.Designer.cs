@@ -4,6 +4,7 @@ using CPG.Infrastructure.Persistence.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CPG.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(WriteDbContext))]
-    partial class WriteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240415134653_AddPaymentIdToPaymentRequest")]
+    partial class AddPaymentIdToPaymentRequest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1345,7 +1348,7 @@ namespace CPG.Infrastructure.Persistence.Migrations
                         .HasColumnType("varchar")
                         .HasColumnName("PaymentCode");
 
-                    b.Property<string>("PaymentIdentifier")
+                    b.Property<string>("PaymentId")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar");
 

@@ -789,4 +789,46 @@
   <data name="UnAuthorizeRequest" xml:space="preserve">
     <value>UnAuthorizeRequest</value>
   </data>
+  <data name="ApplicationName" xml:space="preserve">
+    <value>ApplicationName</value>
+  </data>
+  <data name="CompanyDeposit" xml:space="preserve">
+    <value>CompanyDeposit</value>
+  </data>
+  <data name="IpgToken" xml:space="preserve">
+    <value>IpgToken</value>
+  </data>
+  <data name="PaymentCode" xml:space="preserve">
+    <value>PaymentCode</value>
+  </data>
+  <data name="PredictedSettlementDateTime" xml:space="preserve">
+    <value>PredictedSettlementDateTime</value>
+  </data>
+  <data name="ProviderTrackerId" xml:space="preserve">
+    <value>ProviderTrackerId</value>
+  </data>
+  <data name="ReceiptDateTime" xml:space="preserve">
+    <value>ReceiptDateTime</value>
+  </data>
+  <data name="ReferenceNumber" xml:space="preserve">
+    <value>ReferenceNumber</value>
+  </data>
+  <data name="SourceBank" xml:space="preserve">
+    <value>SourceBank</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="TrackerId" xml:space="preserve">
+    <value>TrackerId</value>
+  </data>
+  <data name="Transactions" xml:space="preserve">
+    <value>Transactions</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="VerificationDateTime" xml:space="preserve">
+    <value>VerificationDateTime</value>
+  </data>
 </root>

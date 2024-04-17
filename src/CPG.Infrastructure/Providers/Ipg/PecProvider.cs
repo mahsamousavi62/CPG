@@ -30,7 +30,8 @@ public class PecProvider(
     {
         var configViewModel = await _applicationSettingRepositoy.GetAllApplicationSettings();
         var trackerId = RandomGenerator.GenerateRandomDigitNumber(16);
-        string callBack = CreateCallbackUrl((short)request.IpgRedirectionMethodType, request.SiteAddress, trackerId.ToString(), configViewModel.CPG_BackEnd);
+        string callBack = CreateCallbackUrl((short)request.IpgRedirectionMethodType, request.SiteAddress,
+            trackerId.ToString(), configViewModel);
 
         try
         {
@@ -157,10 +158,11 @@ public class PecProvider(
         var json = JsonConvert.SerializeObject(new { NationalEncryptedId = token, ThirdPartyCode = thirdParty, Data = string.Empty });
         return json;
     }
-    private static string CreateCallbackUrl(short ipgRedirectionType, string siteAddress, string trackerId, string callbackPage) => ipgRedirectionType switch
+    private static string CreateCallbackUrl(short ipgRedirectionType, string siteAddress, string trackerId,
+        ApplicationConfigViewModel applicationConfig) => ipgRedirectionType switch
     {
-        1 => $"{siteAddress}/{callbackPage}?track_id={trackerId}",
-        2 => $"{siteAddress}/p/b/{trackerId}?pcu={callbackPage.TrimEnd()}/IPGResult",
+        1 => $"{siteAddress}/{applicationConfig.Callback_Page}?pcu={applicationConfig.CPG_BackEnd.TrimEnd()}/IPGResult/p/b/{trackerId}",
+        2 => $"{siteAddress}/p/b/{trackerId}?pcu={applicationConfig.CPG_BackEnd.TrimEnd()}/IPGResult",
         _ => string.Empty,
     };
 
