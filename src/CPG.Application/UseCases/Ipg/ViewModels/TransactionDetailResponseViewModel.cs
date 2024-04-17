@@ -17,13 +17,13 @@ public class TransactionDetailResponseViewModel
     public string DestinationDepositAccountNumber { get; set; }
     
     [JsonPropertyName("amount")]
-    public decimal Amount { get; set; }
+    public decimal? Amount { get; set; }
 
     [JsonPropertyName("referenceNumber")]
     public string ReferenceNumber { get; set; }
 
     [JsonPropertyName("paymentMethodType")]
-    public short PaymentMethodType { get; set; }
+    public short? PaymentMethodType { get; set; }
 
     [JsonPropertyName("paymentMethodTypeTitle")]
     public string PaymentMethodTypeTitle { get; set; }
@@ -32,7 +32,7 @@ public class TransactionDetailResponseViewModel
     public string PaymentPattern { get; set; }
 
     [JsonPropertyName("status")]
-    public short Status { get; set; }
+    public short? Status { get; set; }
 
     [JsonPropertyName("statusTitle")]
     public string StatusTitle { get; set; }
