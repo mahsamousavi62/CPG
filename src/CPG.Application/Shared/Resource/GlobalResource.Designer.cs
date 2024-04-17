@@ -1339,6 +1339,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to paymentReceiptNotFound.
+        /// </summary>
+        public static string paymentReceiptNotFound {
+            get {
+                return ResourceManager.GetString("paymentReceiptNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Application {0}-{1} is inactive.
         /// </summary>
         public static string PaymentRequestApplicationIsInactive {

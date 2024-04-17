@@ -831,4 +831,7 @@
   <data name="VerificationDateTime" xml:space="preserve">
     <value>VerificationDateTime</value>
   </data>
+  <data name="paymentReceiptNotFound" xml:space="preserve">
+    <value>paymentReceiptNotFound</value>
+  </data>
 </root>
