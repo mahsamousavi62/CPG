@@ -61,7 +61,6 @@
     <Folder Include="UseCases\CompanyIPG\Exceptions\" />
     <Folder Include="UseCases\CompanyIPG\Queries\" />
     <Folder Include="UseCases\PaymentReceipt\Commands\" />
-    <Folder Include="UseCases\PaymentReceipt\Exceptions\" />
     <Folder Include="UseCases\PaymentRequests\EventHandler\" />
     <Folder Include="UseCases\CompanyIPGs\EventHandler\" />
     <Folder Include="UseCases\Providers\EventHandlers\" />

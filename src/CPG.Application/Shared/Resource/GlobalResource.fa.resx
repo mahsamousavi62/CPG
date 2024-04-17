@@ -852,4 +852,7 @@
   <data name="VerificationDateTime" xml:space="preserve">
     <value>تاریخ و زمان تایید</value>
   </data>
+  <data name="paymentReceiptNotFound" xml:space="preserve">
+    <value>شناسه قبض یافت نشد</value>
+  </data>
 </root>

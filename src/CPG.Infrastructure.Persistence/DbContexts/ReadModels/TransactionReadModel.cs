@@ -29,4 +29,5 @@ public class TransactionReadModel
     public CharismaCardTransactionReadModel CharismaCardTransaction { get; set; }
     public CompanyDepositReadModel DestinationDeposit { get; set; }
     public CompanyReadModel Company { get; set; }
+    
 }
