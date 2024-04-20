@@ -32,6 +32,7 @@ using System.Security.Cryptography.X509Certificates;
 using CPG.Infrastructure.Persistence.GraphQL.Types.PaymentReceiptTransaction;
 using CPG.Infrastructure.Persistence.GraphQL.Types.CharismaCard;
 using CPG.Application.UseCases.Companies.Exceptions;
+using CPG.Application.UseCases.PaymentReceipt.Exceptions;
 
 
 namespace CPG.Infrastructure.Persistence.GraphQL.Queries;
@@ -520,7 +521,7 @@ public class ReadModelQueries
     {
         var query = dbContext.TransactionReadModels
             .Include(c => c.PaymentReceiptTransaction).Where(c => c.PaymentReceiptTransactionId.HasValue)
-            .Include(c => c.Company).Include(c => c.PaymentRequest).AsQueryable();
+            .Include(c => c.Company).Include(c => c.PaymentRequest).Include(c=>c.DestinationDeposit).AsQueryable();
 
         var roleClaim = httpContext.HttpContext.User.FindFirst(c => c.Type == ClaimTypes.Role &&
                c.Value == UserRoleType.SuperAdmin.GetValue());
@@ -541,9 +542,9 @@ public class ReadModelQueries
         }
 
         var entity = query.FirstOrDefault(c => c.PaymentReceiptTransactionId == id);
-        if (query == null)
+        if (entity == null)
         {
-            throw new Exception("IdNotFound");
+            throw new PaymentReceiptNotFoundException(id) ;
         }
 
         var bankscacheData = cacheService.GetData<List<BankReadModel>>("AllBank_key");
@@ -553,8 +554,12 @@ public class ReadModelQueries
             bankscacheData = await dbContext.BankReadModels.ToListAsync();
             cacheService.SetData("AllBank_key", bankscacheData);
         }
-        var ibanPrefix = entity.PaymentReceiptTransaction.SourceIban.Substring(4, 3);
-        var bank = bankscacheData.FirstOrDefault(c => c.IbanPrefix == ibanPrefix);
+        var sourceIbanPrefix = entity.PaymentReceiptTransaction.SourceIban.Substring(4, 3);
+        var sourceBank = bankscacheData.FirstOrDefault(c => c.IbanPrefix == sourceIbanPrefix);
+
+        var destIbanPrefix = entity.DestinationDeposit.Iban.Substring(4, 3);
+        var destinationbank = bankscacheData.FirstOrDefault(c => c.IbanPrefix == destIbanPrefix);
+        
         var viewModel = new PaymentReceiptTransactionReportViewModel
         {
             Id = entity.PaymentReceiptTransaction.Id,
@@ -564,9 +569,9 @@ public class ReadModelQueries
             Amount = entity.Amount,
             ReceiptImage = !string.IsNullOrEmpty(entity.PaymentReceiptTransaction.ReceiptImage) ?
                  await General.GetLogo(minioProvider, entity.PaymentReceiptTransaction.ReceiptImage) : null,
-            BankId = bank?.Id ?? 0,
-            BankLogo = await General.GetLogo(minioProvider, bank?.Logo),
-            BankName = bank?.Name,
+            BankId = sourceBank?.Id ?? 0,
+            BankLogo = await General.GetLogo(minioProvider, sourceBank?.Logo),
+            BankName = sourceBank?.Name,
             PaymentCode = entity.PaymentRequest?.PaymentCode,
             CompanyLogo = !string.IsNullOrEmpty(entity.Company.Logo) ? await General.GetLogo(minioProvider, entity.Company.Logo) : null,
             CreationDate = entity.PaymentReceiptTransaction.CreationDate,
@@ -577,12 +582,16 @@ public class ReadModelQueries
             TransactionStatusCode = entity.PaymentReceiptTransaction.Status.GetValue(),
             SourceIban = entity.PaymentReceiptTransaction.SourceIban,
             ModificationDate = entity.PaymentReceiptTransaction.ModificationDate,
-            Description = entity.PaymentReceiptTransaction.Description
+            Description = entity.PaymentReceiptTransaction.Description,
+            DestinationIban=entity.DestinationDeposit?.Iban,
+            DestinationBankId = destinationbank?.Id ?? 0,
+            DestinationBankLogo = await General.GetLogo(minioProvider, destinationbank?.Logo),
+            DestinationBankName = destinationbank?.Name,
         };
         return viewModel;
     }
 
-    #endregion
+# endregion
 
     #region [ CharismaCardTransactionReport ]
 
@@ -711,7 +720,7 @@ public class ReadModelQueries
              Transaction = c,
              Company = c.Company,
              PaymentRequest = c.PaymentRequest,
-             Application = c.PaymentRequest.Application,
+             Application = c.Application,
              IPGTransaction = c.IPGTransaction,
              CharismaCardTransaction = c.CharismaCardTransaction,
              PaymentReceiptTransaction = c.PaymentReceiptTransaction,
@@ -755,7 +764,7 @@ public class ReadModelQueries
             TransactionModificationDateTime = entity.Transaction.ModificationDate,
             FirstName = UserscacheData.FirstOrDefault(c => c.Id == entity.Transaction.CreationUserId)?.FirstName,
             LastName = UserscacheData.FirstOrDefault(c => c.Id == entity.Transaction.CreationUserId)?.LastName,
-            NationalCode = entity.PaymentRequest.NationalCode,
+            NationalCode = UserscacheData.FirstOrDefault(c => c.Id == entity.Transaction.CreationUserId)?.NationalCode,
             ApplicationId = entity.Application?.Id ?? 0,
             ReferenceNumber = entity.IPGTransaction?.ReferenceNumber ??
                                entity.CharismaCardTransaction?.ReferenceNumber ??
