@@ -720,7 +720,7 @@ public class ReadModelQueries
              Transaction = c,
              Company = c.Company,
              PaymentRequest = c.PaymentRequest,
-             Application = c.PaymentRequest.Application,
+             Application = c.Application,
              IPGTransaction = c.IPGTransaction,
              CharismaCardTransaction = c.CharismaCardTransaction,
              PaymentReceiptTransaction = c.PaymentReceiptTransaction,
@@ -764,7 +764,7 @@ public class ReadModelQueries
             TransactionModificationDateTime = entity.Transaction.ModificationDate,
             FirstName = UserscacheData.FirstOrDefault(c => c.Id == entity.Transaction.CreationUserId)?.FirstName,
             LastName = UserscacheData.FirstOrDefault(c => c.Id == entity.Transaction.CreationUserId)?.LastName,
-            NationalCode = entity.PaymentRequest.NationalCode,
+            NationalCode = UserscacheData.FirstOrDefault(c => c.Id == entity.Transaction.CreationUserId)?.NationalCode,
             ApplicationId = entity.Application?.Id ?? 0,
             ReferenceNumber = entity.IPGTransaction?.ReferenceNumber ??
                                entity.CharismaCardTransaction?.ReferenceNumber ??
