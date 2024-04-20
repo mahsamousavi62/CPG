@@ -870,4 +870,10 @@
   <data name="ReceiptProperties" xml:space="preserve">
     <value>مشخصات فیش</value>
   </data>
+  <data name="DestinationIbanBank" xml:space="preserve">
+    <value>شبا و بانک حساب مقصد</value>
+  </data>
+  <data name="SourceIbanBank" xml:space="preserve">
+    <value>شبا و بانک حساب مبدا</value>
+  </data>
 </root>

@@ -718,6 +718,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DestinationIbanBank.
+        /// </summary>
+        public static string DestinationIbanBank {
+            get {
+                return ResourceManager.GetString("DestinationIbanBank", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dear user, a license has already been registered in the system with a different number, if possible, use other banks or available methods to pay the desired amount.
         /// </summary>
         public static string DiffrentNumber {
@@ -1920,6 +1929,15 @@ namespace CPG.Application.Shared.Resource {
         public static string SourceIban {
             get {
                 return ResourceManager.GetString("SourceIban", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SourceIbanBank.
+        /// </summary>
+        public static string SourceIbanBank {
+            get {
+                return ResourceManager.GetString("SourceIbanBank", resourceCulture);
             }
         }
         
