@@ -8,7 +8,7 @@ public class CompanyDepositPaymentMethodConfiguration : IEntityTypeConfiguration
 {
     public void Configure(EntityTypeBuilder<CompanyDepositPaymentMethod> entity)
     {
-        entity.ToTable("CompanyPaymentMethods");
+        entity.ToTable("CompanyDepositPaymentMethod");
         entity.HasKey(x => x.Id);
         entity.Property(x => x.Id).UseIdentityColumn();
         entity.Property(x => x.CompanyDepositId).IsRequired();

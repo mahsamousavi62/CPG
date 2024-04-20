@@ -11,7 +11,7 @@ public class CompanyDepositPaymentMethodReadModelConfiguration : IEntityTypeConf
         readModel.ToTable("CompanyDepositPaymentMethod");
         readModel.HasKey(x => x.Id);
         readModel.Property(x => x.Id).HasColumnName("Id");
-        readModel.Property(x => x.CompanyId);
+        readModel.Property(x => x.CompanyDepositId);
         readModel.Property(x => x.MethodType);
     }
 }

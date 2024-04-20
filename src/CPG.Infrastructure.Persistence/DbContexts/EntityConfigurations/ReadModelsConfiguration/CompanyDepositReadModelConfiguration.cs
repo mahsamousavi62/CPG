@@ -23,5 +23,9 @@ public class CompanyDepositReadModelConfiguration : IEntityTypeConfiguration<Com
         readModel.Property(x => x.IsActive);
         readModel.Property(x => x.ModificationDate);
         readModel.Property(x => x.CreationDate);
+
+        readModel.HasMany(x => x.PaymentMethods)
+            .WithOne(x => x.CompanyDeposit)
+            .HasForeignKey(x => x.CompanyDepositId);
     }
 }

@@ -6,6 +6,6 @@ public class CompanyDepositPaymentMethodReadModel
 {
     public long Id { get; set; }
     public Enums.PaymentMethodType MethodType { get; set; }
-    public long CompanyId { get; set; }
-    public CompanyDepositReadModel Company { get; set; }
+    public long CompanyDepositId { get; set; }
+    public CompanyDepositReadModel CompanyDeposit { get; set; }
 }

@@ -3,6 +3,7 @@ using CPG.Domain.AggregateModels.BankAggregate;
 using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Domain.AggregateModels.CompanyDepositAggregate.Events;
 using CPG.Domain.AggregateModels.CompanyIPGAggregate;
+using CPG.Domain.AggregateModels.ProviderAggregate;
 using CPG.Domain.AggregateModels.TransactionAggregate;
 using CPG.Domain.SeedWork;
 using CPG.Domain.SharedKernel;
@@ -67,6 +68,12 @@ public class CompanyDeposit : AuditableEntity<long>, IAggregateRoot
         {
             if (!companyDeposit.PaymentMethods.Any(p => p.MethodType == newItem))
                 companyDeposit.PaymentMethods.Add(CompanyDepositPaymentMethod.Create(newItem));
+        }
+
+        foreach (var currnetItem in companyDeposit.PaymentMethods.ToList())
+        {
+            if (!details.Any(p => p == currnetItem.MethodType))
+                companyDeposit.PaymentMethods.Remove(currnetItem);
         }
     }
 }
