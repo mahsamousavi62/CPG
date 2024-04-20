@@ -4,7 +4,7 @@ using CPG.Infrastructure.Persistence.DbContexts.ReadModels;
 
 namespace CPG.Domain.AggregateModels.TransactionAggregate;
 
-public class TransactionReadModel 
+public class TransactionReadModel
 {
     public long Id { get; set; }
     public long PaymentRquestId { get; set; }
@@ -29,5 +29,5 @@ public class TransactionReadModel
     public CharismaCardTransactionReadModel CharismaCardTransaction { get; set; }
     public CompanyDepositReadModel DestinationDeposit { get; set; }
     public CompanyReadModel Company { get; set; }
-    
+    public ApplicationReadModel Application { get; set; }
 }
