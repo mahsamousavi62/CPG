@@ -554,9 +554,11 @@ public class ReadModelQueries
             bankscacheData = await dbContext.BankReadModels.ToListAsync();
             cacheService.SetData("AllBank_key", bankscacheData);
         }
-        var ibanPrefix = entity.PaymentReceiptTransaction.SourceIban.Substring(4, 3);
-        var bank = bankscacheData.FirstOrDefault(c => c.IbanPrefix == ibanPrefix);
-        
+        var sourceIbanPrefix = entity.PaymentReceiptTransaction.SourceIban.Substring(4, 3);
+        var sourceBank = bankscacheData.FirstOrDefault(c => c.IbanPrefix == sourceIbanPrefix);
+
+        var destIbanPrefix = entity.DestinationDeposit.Iban.Substring(4, 3);
+        var destinationbank = bankscacheData.FirstOrDefault(c => c.IbanPrefix == destIbanPrefix);
         
         var viewModel = new PaymentReceiptTransactionReportViewModel
         {
@@ -567,9 +569,9 @@ public class ReadModelQueries
             Amount = entity.Amount,
             ReceiptImage = !string.IsNullOrEmpty(entity.PaymentReceiptTransaction.ReceiptImage) ?
                  await General.GetLogo(minioProvider, entity.PaymentReceiptTransaction.ReceiptImage) : null,
-            BankId = bank?.Id ?? 0,
-            BankLogo = await General.GetLogo(minioProvider, bank?.Logo),
-            BankName = bank?.Name,
+            BankId = sourceBank?.Id ?? 0,
+            BankLogo = await General.GetLogo(minioProvider, sourceBank?.Logo),
+            BankName = sourceBank?.Name,
             PaymentCode = entity.PaymentRequest?.PaymentCode,
             CompanyLogo = !string.IsNullOrEmpty(entity.Company.Logo) ? await General.GetLogo(minioProvider, entity.Company.Logo) : null,
             CreationDate = entity.PaymentReceiptTransaction.CreationDate,
@@ -582,6 +584,9 @@ public class ReadModelQueries
             ModificationDate = entity.PaymentReceiptTransaction.ModificationDate,
             Description = entity.PaymentReceiptTransaction.Description,
             DestinationIban=entity.DestinationDeposit?.Iban,
+            DestinationBankId = destinationbank?.Id ?? 0,
+            DestinationBankLogo = await General.GetLogo(minioProvider, destinationbank?.Logo),
+            DestinationBankName = destinationbank?.Name,
         };
         return viewModel;
     }
@@ -715,7 +720,7 @@ public class ReadModelQueries
              Transaction = c,
              Company = c.Company,
              PaymentRequest = c.PaymentRequest,
-             Application = c.PaymentRequest.Application,
+             Application = c.Application,
              IPGTransaction = c.IPGTransaction,
              CharismaCardTransaction = c.CharismaCardTransaction,
              PaymentReceiptTransaction = c.PaymentReceiptTransaction,
@@ -759,7 +764,7 @@ public class ReadModelQueries
             TransactionModificationDateTime = entity.Transaction.ModificationDate,
             FirstName = UserscacheData.FirstOrDefault(c => c.Id == entity.Transaction.CreationUserId)?.FirstName,
             LastName = UserscacheData.FirstOrDefault(c => c.Id == entity.Transaction.CreationUserId)?.LastName,
-            NationalCode = entity.PaymentRequest.NationalCode,
+            NationalCode = UserscacheData.FirstOrDefault(c => c.Id == entity.Transaction.CreationUserId)?.NationalCode,
             ApplicationId = entity.Application?.Id ?? 0,
             ReferenceNumber = entity.IPGTransaction?.ReferenceNumber ??
                                entity.CharismaCardTransaction?.ReferenceNumber ??
