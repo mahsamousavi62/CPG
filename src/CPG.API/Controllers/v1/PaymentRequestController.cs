@@ -41,8 +41,8 @@ public class PaymentRequestController : ApiBaseController
     public async Task<Result<CancelPaymentRequestResponseViewModel>> CancelPaymentRequest([FromBody] CancelPaymentRequestViewModel model)
         => await Mediator.Send(new CancelPaymentRequestCommand(model));
 
+    [AllowAnonymous]
     [HttpPost("CreateIPGJsonStr")]
-    [Authorize]
     [ProducesResponseType(typeof(ResultData<PaymentTokenResponseViewModel>), 200)]
     public async Task<Result<PaymentTokenResponseViewModel>> GetAsanPardakhatPaymentTicket([FromBody] PaymentTokenViewModel paymentTicketRequest)
         => await Mediator.Send(new GetPaymentTokenCommand(paymentTicketRequest));
