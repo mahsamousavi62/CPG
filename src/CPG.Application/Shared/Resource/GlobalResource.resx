@@ -849,4 +849,13 @@
   <data name="ReceiptProperties" xml:space="preserve">
     <value>ReceiptProperties</value>
   </data>
+  <data name="DestinationIbanBank" xml:space="preserve">
+    <value>DestinationIbanBank</value>
+  </data>
+  <data name="SourceIbanBank" xml:space="preserve">
+    <value>SourceIbanBank</value>
+  </data>
+  <data name="MethodTypeNotAllowed" xml:space="preserve">
+    <value>MethodType not allowed</value>
+  </data>
 </root>

@@ -8,7 +8,7 @@ namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<CompanyPaymentMethod> entity)
         {
-            entity.ToTable("CompanyPaymentMethods");
+            entity.ToTable("CompanyPaymentMethod");
             entity.HasKey(x => x.Id);
             entity.Property(x => x.Id).HasColumnName("Id").UseIdentityColumn();
             entity.Property(x => x.CompanyId).HasColumnName("CompanyId").IsRequired();

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CPG.Domain.SharedKernel;
+using System;
+using System.Collections.Generic;
 
 namespace CPG.Application.UseCases.CompanyDeposits.ViewModels;
 
@@ -17,4 +19,5 @@ public class CompanyDepositViewModel
     public bool IsActive { get; set; }
     public DateTime CreationDate { get; set; }
     public DateTime? ModificationDate { get; set; }
+    public ICollection<Enums.PaymentMethodType> PaymentMethods { get; set; }
 }
