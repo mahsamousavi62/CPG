@@ -50,6 +50,6 @@ public class GetUserByPaymentCodeQueryHandler(ReadDbContext context, IMinioProvi
             };
             return Result<UserViewModel>.SuccessResult(userViewModel);
         }
-        return null;
+        return Result<UserViewModel>.SuccessResult(null);
     }
 }
