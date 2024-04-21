@@ -2,13 +2,12 @@
 using CPG.Application.UseCases.CompanyDeposits.Exceptions;
 using CPG.Application.UseCases.CompanyDeposits.Queries;
 using CPG.Application.UseCases.CompanyDeposits.ViewModels;
-using CPG.Application.UseCases.CompanyIPGs.ViewModels;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Minio;
 using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -24,8 +23,10 @@ public class GetCompanyDepositQueryHandler(ReadDbContext context, IMinioProvider
     {
         try
         {
-            var companyDeposit = await _context.CompanyDepositReadModels.Include(c => c.Bank)
-                .Include(c => c.Company)
+            var companyDeposit = await _context.CompanyDepositReadModels
+                .Include(t => t.Bank)
+                .Include(t => t.Company)
+                .Include(t => t.PaymentMethods)
                 .FirstOrDefaultAsync(t => t.Id == request.CompanyDepositId);
 
             if (companyDeposit == null)
@@ -46,6 +47,7 @@ public class GetCompanyDepositQueryHandler(ReadDbContext context, IMinioProvider
                 CreationDate = companyDeposit.CreationDate,
                 IsActive = companyDeposit.IsActive,
                 ModificationDate = companyDeposit.ModificationDate,
+                PaymentMethods = companyDeposit.PaymentMethods.Select(p => p.MethodType).ToList(),
             };
 
             return Result<CompanyDepositViewModel>.SuccessResult(companyDepositViewModel);

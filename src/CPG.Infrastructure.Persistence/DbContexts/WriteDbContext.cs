@@ -42,6 +42,7 @@ public class WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator 
     public DbSet<DirectDebitPlan> DirectDebitPlans { get; set; }
     public DbSet<PaymentReceiptTransaction> PaymentReceiptTransactions { get; set; }
     public DbSet<CharismaCardTransaction> CharismaCardTransactions { get; set; }
+    public DbSet<CompanyDepositPaymentMethod> CompanyDepositPaymentMethods { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
         => modelBuilder
             .ApplyConfiguration(new ApplicationSettingsConfiguration())
@@ -68,6 +69,7 @@ public class WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator 
             .ApplyConfiguration(new DirectDebitTransactionConfiguration())
             .ApplyConfiguration(new PaymentReceiptTransactionConfiguration())
             .ApplyConfiguration(new CharismaCardTransactionConfiguration())
+            .ApplyConfiguration(new CompanyDepositPaymentMethodConfiguration())
         ;
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())

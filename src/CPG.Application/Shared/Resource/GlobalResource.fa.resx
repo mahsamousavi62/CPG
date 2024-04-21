@@ -876,4 +876,7 @@
   <data name="SourceIbanBank" xml:space="preserve">
     <value>شبا و بانک حساب مبدا</value>
   </data>
+  <data name="MethodTypeNotAllowed" xml:space="preserve">
+    <value> با توجه به روشهای پرداخت مجاز شرکت، امکان انتخاب این روش پرداخت وجود ندارد</value>
+  </data>
 </root>

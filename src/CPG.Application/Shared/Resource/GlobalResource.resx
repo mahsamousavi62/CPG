@@ -855,4 +855,7 @@
   <data name="SourceIbanBank" xml:space="preserve">
     <value>SourceIbanBank</value>
   </data>
+  <data name="MethodTypeNotAllowed" xml:space="preserve">
+    <value>MethodType not allowed</value>
+  </data>
 </root>
