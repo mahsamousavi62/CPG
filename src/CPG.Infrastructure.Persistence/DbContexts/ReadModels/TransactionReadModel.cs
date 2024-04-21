@@ -1,10 +1,14 @@
 ﻿using System;
+using CPG.Application.UseCases.PaymentRequests.ViewModels;
+using CPG.Domain.SeedWork;
 using CPG.Domain.SharedKernel;
 using CPG.Infrastructure.Persistence.DbContexts.ReadModels;
+using CPG.Infrastructure.Persistence.GraphQL.Model;
+using Mapster;
 
 namespace CPG.Domain.AggregateModels.TransactionAggregate;
 
-public class TransactionReadModel 
+public class TransactionReadModel
 {
     public long Id { get; set; }
     public long PaymentRquestId { get; set; }
@@ -29,5 +33,10 @@ public class TransactionReadModel
     public CharismaCardTransactionReadModel CharismaCardTransaction { get; set; }
     public CompanyDepositReadModel DestinationDeposit { get; set; }
     public CompanyReadModel Company { get; set; }
-    
+    public ApplicationReadModel Application { get; set; }
+
+    public void Register(TypeAdapterConfig config)
+    {
+        config.ForType<TransactionReadModel, TransactionReportViewModel>();
+    }
 }

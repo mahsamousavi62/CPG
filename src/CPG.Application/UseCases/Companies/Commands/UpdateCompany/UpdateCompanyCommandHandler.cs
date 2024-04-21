@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CPG.Application.UseCases.Companies.Exceptions;
@@ -13,30 +11,30 @@ using CPG.Domain.SharedKernel.Minio;
 using MediatR;
 using CPG.Application.Shared.Exceptions;
 using CPG.Domain.AggregateModels.CompanyAggregate.Specifications;
-using CPG.Application.UseCases.Application.Exceptions;
-using System.Reflection;
-using Ardalis.GuardClauses;
 using CPG.Application.UseCases.Exceptions;
 using CPG.Domain.Exceptions;
+using CPG.Domain.AggregateModels.CompanyDepositAggregate;
 
 namespace CPG.Application.UseCases.Companies.Commands.UpdateCompany;
 
-public class UpdateCompanyCommandHandler(IAggregateRepository<Company> companyRepository,IAggregateRepository<User> userRepository,
-                                            IMinioProvider minioProvider) : IRequestHandler<UpdateCompanyCommand, Result<Unit>>
+public class UpdateCompanyCommandHandler(IAggregateRepository<Company> companyRepository,
+    IAggregateRepository<CompanyDeposit> companyDepositRepository,
+    IAggregateRepository<User> userRepository,
+    IMinioProvider minioProvider) : IRequestHandler<UpdateCompanyCommand, Result<Unit>>
 {
     private readonly IAggregateRepository<Company> _companyRepository = companyRepository;
+    private readonly IAggregateRepository<CompanyDeposit> _companyDepositRepository = companyDepositRepository;
     private readonly IAggregateRepository<User> _userRepository = userRepository;
     private readonly IMinioProvider _minioProvider = minioProvider;
 
     public async Task<Result<Unit>> Handle(UpdateCompanyCommand request, CancellationToken cancellationToken)
     {
-
         try
         {
             PersianName persianName = new(request.Model.PersianName);
             EnglishName englishName = new(request.Model.EnglishName);
 
-            var company = await _companyRepository.GetBySpecAsync(new CompanyByIdSpec( request.Model.Id));
+            var company = await _companyRepository.GetBySpecAsync(new CompanyByIdSpec(request.Model.Id));
             if (company == null)
                 throw new CompanyNotFoundException(request.Model.Id);
 
@@ -67,7 +65,19 @@ public class UpdateCompanyCommandHandler(IAggregateRepository<Company> companyRe
             await _companyRepository.UpdateAsync(company, cancellationToken);
             await _companyRepository.SaveChangesAsync(cancellationToken);
 
-            User.UpdateUserCompany(users, company.Id,company);
+            foreach (var deposit in company.CompanyDeposits)
+            {
+                var paymentMethods = deposit.PaymentMethods
+                    .Where(t => company.PaymentMethods.Select(x => x.MethodType).Contains(t.MethodType))
+                    .Select(t => t.MethodType)
+                    .ToArray();                
+                PersianName depositPersianName = new(deposit.Name);
+                CompanyDeposit.Update(deposit, depositPersianName, paymentMethods);
+            }
+            await _companyDepositRepository.UpdateRangeAsync(company.CompanyDeposits, cancellationToken);
+            await _companyDepositRepository.SaveChangesAsync(cancellationToken);
+
+            User.UpdateUserCompany(users, company.Id, company);
             await _userRepository.UpdateRangeAsync(users, cancellationToken);
             await _userRepository.SaveChangesAsync(cancellationToken);
 
@@ -85,17 +95,15 @@ public class UpdateCompanyCommandHandler(IAggregateRepository<Company> companyRe
         {
             return Result<Unit>.Failure(new Error(exc.Source, exc.Message));
         }
-
-
     }
 
     private async Task CheckUniqueName(long id, string persianName, string englishName)
     {
-        Company samePersianName = await _companyRepository.GetBySpecAsync(new CompanyByPersianNameUpdateMode(persianName,id));
+        Company samePersianName = await _companyRepository.GetBySpecAsync(new CompanyByPersianNameUpdateMode(persianName, id));
 
         if (samePersianName != null) throw new DuplicatePersianNameException(persianName);
 
-        Company sameEnglishName = await _companyRepository.GetBySpecAsync(new CompanyByEnglishNameUpdateMode(englishName,id));
+        Company sameEnglishName = await _companyRepository.GetBySpecAsync(new CompanyByEnglishNameUpdateMode(englishName, id));
 
         if (sameEnglishName != null) throw new DuplicateEnglishNameException(englishName);
     }

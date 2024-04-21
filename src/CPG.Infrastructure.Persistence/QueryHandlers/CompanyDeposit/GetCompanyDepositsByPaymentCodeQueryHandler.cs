@@ -22,16 +22,21 @@ public class GetCompanyDepositsByPaymentCodeQueryHandler(ReadDbContext context, 
     {
         try
         {
-            var paymentRequestCompanyId = await _context.PaymentRequestReadModels.Where(t => t.PaymentCode == request.PaymentCode)
-                .Select(t => t.CompanyId).FirstOrDefaultAsync();
-            var companyDeposits = await _context.CompanyDepositReadModels.Include(t => t.Company).Include(c => c.Bank).Where(t => t.CompanyId == paymentRequestCompanyId)
+            var paymentRequestCompanyId = await _context.PaymentRequestReadModels
+                .Where(t => t.PaymentCode == request.PaymentCode)
+                .Select(t => t.CompanyId)
+                .FirstOrDefaultAsync();
+            var companyDeposits = await _context.CompanyDepositReadModels
+                .Include(t => t.PaymentMethods)
+                .Include(t => t.Company)
+                .Include(t => t.Bank)
+                .Where(t => t.CompanyId == paymentRequestCompanyId)
                 .ToListAsync();
 
             var companyViewModels = await Task.WhenAll(
                companyDeposits?.Select(async deposit => new CompanyDepositViewModel
                {
                    Id = deposit.Id,
-
                    Name = deposit.Name,
                    AccountNumber = deposit.AccountNumber,
                    Iban = deposit.Iban,
@@ -44,6 +49,7 @@ public class GetCompanyDepositsByPaymentCodeQueryHandler(ReadDbContext context, 
                    CreationDate = deposit.CreationDate,
                    IsActive = deposit.IsActive,
                    ModificationDate = deposit.ModificationDate,
+                   PaymentMethods = deposit.PaymentMethods.Select(p => p.MethodType).ToList(),
                }))
                .ConfigureAwait(false);
 

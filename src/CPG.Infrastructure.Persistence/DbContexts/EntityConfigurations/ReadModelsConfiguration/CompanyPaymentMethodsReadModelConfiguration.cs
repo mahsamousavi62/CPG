@@ -9,7 +9,7 @@ public class CompanyPaymentMethodsReadModelConfiguration : IEntityTypeConfigurat
 {
     public void Configure(EntityTypeBuilder<CompanyPaymentMethodsReadModel> readModel)
     {
-        readModel.ToTable("CompanyPaymentMethods");
+        readModel.ToTable("CompanyPaymentMethod");
         readModel.HasKey(x => x.Id);
         readModel.Property(x => x.Id).HasColumnName("Id");
         readModel.Property(x => x.CompanyId);
