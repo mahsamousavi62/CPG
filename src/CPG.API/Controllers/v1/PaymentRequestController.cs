@@ -22,11 +22,7 @@ namespace CPG.API.Controllers.v1;
 
 public class PaymentRequestController : ApiBaseController
 {
-    //[HttpGet]
-    //[ProducesResponseType(typeof(Result<IReadOnlyCollection<PaymentRequestViewModel>>), 200)]
-    //public async Task<Result<IReadOnlyCollection<PaymentRequestViewModel>>> Get()
-    //    => await Mediator.Send(new GetPaymentRequestQuery());
-           
+
     [Authorize]
     [HttpPost]
     [ProducesResponseType(typeof(Result<PaymentRequestResponseViewModel>), 200)]
@@ -45,8 +41,8 @@ public class PaymentRequestController : ApiBaseController
     public async Task<Result<CancelPaymentRequestResponseViewModel>> CancelPaymentRequest([FromBody] CancelPaymentRequestViewModel model)
         => await Mediator.Send(new CancelPaymentRequestCommand(model));
 
+    [AllowAnonymous]
     [HttpPost("CreateIPGJsonStr")]
-    [Authorize]
     [ProducesResponseType(typeof(ResultData<PaymentTokenResponseViewModel>), 200)]
     public async Task<Result<PaymentTokenResponseViewModel>> GetAsanPardakhatPaymentTicket([FromBody] PaymentTokenViewModel paymentTicketRequest)
         => await Mediator.Send(new GetPaymentTokenCommand(paymentTicketRequest));
@@ -79,7 +75,7 @@ public class PaymentRequestController : ApiBaseController
     [ProducesResponseType(typeof(Result<TransactionDetailResponseViewModel>), 200)]
     public async Task<Result<TransactionDetailResponseViewModel>> TransactionDetail([Required] TransactionDetailRequestViewModel model)
         => await Mediator.Send(new TransactionDetailQuery(model));
-    
+
     [HttpPost("TransactionVerify")]
     [ProducesResponseType(typeof(Result<VerifyTransactionResponseViewModel>), 200)]
     public async Task<Result<VerifyTransactionResponseViewModel>> TransactionVerify([Required] VerifyTransactionViewModel model)

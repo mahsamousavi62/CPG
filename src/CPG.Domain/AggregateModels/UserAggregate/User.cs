@@ -5,6 +5,7 @@ using CPG.Domain.AggregateModels.CompanyAggregate;
 using System.Threading.Tasks;
 using static CPG.Domain.SharedKernel.Enums;
 using System.Linq;
+using Microsoft.JSInterop;
 
 namespace CPG.Domain.AggregateModels.UserAggregate
 {
@@ -25,7 +26,7 @@ namespace CPG.Domain.AggregateModels.UserAggregate
             IsActive = true;
             IsLegal = isLegal;
         }
-
+        
         public User(string firstName, string lastName, string phoneNumber, bool isLegal, short kycStatus)
         {
             FirstName = firstName;
@@ -70,7 +71,12 @@ namespace CPG.Domain.AggregateModels.UserAggregate
 
             return user;
         }
-
+        public static User Create(NationalCode nationalCode)
+        {
+            var user = new User(null,nationalCode.Value,string.Empty,string.Empty,string.Empty,false,0);
+            user.UserRoles.Add(new UserRole(UserRoleType.CustomerUser));
+            return user;
+        }
         public static User Update(User user, Name name, string phoneNumber, string sub, bool isLegal, short kycStatus)
         {
             user.FirstName = name.FirstName;
