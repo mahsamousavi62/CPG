@@ -2,43 +2,43 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations.ReadModelsConfiguration
+namespace CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations.ReadModelsConfiguration;
+
+public class CompanyReadModelConfiguration : IEntityTypeConfiguration<CompanyReadModel>
 {
-    public class CompanyReadModelConfiguration : IEntityTypeConfiguration<CompanyReadModel>
+    public void Configure(EntityTypeBuilder<CompanyReadModel> readModel)
     {
-        public void Configure(EntityTypeBuilder<CompanyReadModel> readModel)
-        {
-            readModel.ToTable("Company");
-            readModel.HasKey(x => x.Id);
-            readModel.Property(x => x.Id).HasColumnName("Id");
-            readModel.Property(x => x.PersianName).HasColumnName("PersianName");
-            readModel.Property(x => x.EnglishName).HasColumnName("EnglishName");
-            readModel.Property(x => x.Logo).HasColumnName("Logo");
-            readModel.Property(x => x.SiteAddress).HasColumnName("SiteAddress");
-            readModel.Property(x => x.IpgRedirectionMethodType).HasColumnName("IpgRedirectionMethodType");
-            readModel.Property(x => x.IsActive);
-            readModel.Property(x => x.ModificationDate);
-            readModel.Property(x => x.CreationDate);
+        readModel.ToTable("Company");
+        readModel.HasKey(x => x.Id);
+        readModel.Property(x => x.Id).HasColumnName("Id");
+        readModel.Property(x => x.PersianName).HasColumnName("PersianName");
+        readModel.Property(x => x.EnglishName).HasColumnName("EnglishName");
+        readModel.Property(x => x.Logo).HasColumnName("Logo");
+        readModel.Property(x => x.SiteAddress).HasColumnName("SiteAddress");
+        readModel.Property(x => x.IpgRedirectionMethodType).HasColumnName("IpgRedirectionMethodType");
+        readModel.Property(x => x.IsActive);
+        readModel.Property(x => x.Code).HasColumnType("tinyint");
+        readModel.Property(x => x.ModificationDate);
+        readModel.Property(x => x.CreationDate);
 
-            readModel.HasMany(a => a.PaymentMethods)
-                .WithOne(b => b.Company)
-                .HasForeignKey(b => b.CompanyId);
+        readModel.HasMany(a => a.PaymentMethods)
+            .WithOne(b => b.Company)
+            .HasForeignKey(b => b.CompanyId);
 
-            readModel.HasMany(c => c.CompanyDeposits)
-                .WithOne(p => p.Company)
-                .HasForeignKey(p => p.CompanyId);
+        readModel.HasMany(c => c.CompanyDeposits)
+            .WithOne(p => p.Company)
+            .HasForeignKey(p => p.CompanyId);
 
-            readModel.HasMany(c => c.PaymentRequests)
-                .WithOne(p => p.Company)
-                .HasForeignKey(p => p.CompanyId);
+        readModel.HasMany(c => c.PaymentRequests)
+            .WithOne(p => p.Company)
+            .HasForeignKey(p => p.CompanyId);
 
-            readModel.HasMany(c => c.Users)
-              .WithOne(p => p.Company)
-              .HasForeignKey(p => p.CompanyId);
+        readModel.HasMany(c => c.Users)
+          .WithOne(p => p.Company)
+          .HasForeignKey(p => p.CompanyId);
 
-            readModel.HasOne(c => c.ShaparakSetting)
-                .WithOne(p => p.Company)
-                .HasForeignKey<CompanyShaparakSettingReadModel>(p => p.CompanyId);
-        }
+        readModel.HasOne(c => c.ShaparakSetting)
+            .WithOne(p => p.Company)
+            .HasForeignKey<CompanyShaparakSettingReadModel>(p => p.CompanyId);
     }
 }

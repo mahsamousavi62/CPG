@@ -10,11 +10,12 @@ public class IPGType : AuditableEntity<long>, IAggregateRoot
 
     }
 
-    public IPGType(PersianName persianName, EnglishName englishName, Logo logo)
+    public IPGType(PersianName persianName, EnglishName englishName, Logo logo, short code)
     {
         PersianName = persianName.Value;
         EnglishName = englishName.Value;
         Logo = logo.Value;
+        Code = code;
     }
 
     public string PersianName { get; }
@@ -23,9 +24,11 @@ public class IPGType : AuditableEntity<long>, IAggregateRoot
 
     public string Logo { get; }
 
-    public static IPGType Create(PersianName persianName, EnglishName englishName, Logo logo)
+    public short Code { get; set; }
+
+    public static IPGType Create(PersianName persianName, EnglishName englishName, Logo logo, short code)
     {
-        IPGType provider = new(persianName, englishName, logo)
+        IPGType provider = new(persianName, englishName, logo, code)
         {
             IsActive = true
         };
