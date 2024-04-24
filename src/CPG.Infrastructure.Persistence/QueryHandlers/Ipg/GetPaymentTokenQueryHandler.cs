@@ -224,9 +224,12 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
 
     private static Result<PaymentTokenResponseViewModel> CreateResponseModel(PaymentRequest paymentRequest, Domain.AggregateModels.CompanyIPGAggregate.CompanyIPG companyIpg, string mobileNumber, PaymentTokenResponse result)
     {
+        var url = string.Empty;
+
         var response = new PaymentTokenResponseViewModel()
         {
-            Url = $"{paymentRequest.Company.SiteAddress}/redirectToBank",
+            Url = paymentRequest.Company.IpgRedirectionMethodType == Enums.IpgRedirectionMethodType.RayanReferencePage ?
+            $"{paymentRequest.Company.SiteAddress}/redirectToBank" : $"{paymentRequest.Company.SiteAddress}/redirect-to-bank",
             JsonBody = new ExpandoObject(),
             RedirectionMethodType = paymentRequest.Company.IpgRedirectionMethodType,
         };
@@ -263,8 +266,8 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                     response.JsonBody.jsonStr = new ExpandoObject();
                     response.JsonBody.jsonStr.url = result.IpgBaseUrl;
                     response.JsonBody.jsonStr.method = "POST";
-                    response.JsonBody.jsonStr.@params = new ExpandoObject();
-                    response.JsonBody.jsonStr.@params.Token = result.Token;
+                    response.JsonBody.jsonStr.@body = new ExpandoObject();
+                    response.JsonBody.jsonStr.@body.Token = result.Token;
                     break;
                 }
             case Enums.ProviderType.BehPardakht:
