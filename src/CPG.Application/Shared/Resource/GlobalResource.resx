@@ -858,4 +858,7 @@
   <data name="MethodTypeNotAllowed" xml:space="preserve">
     <value>MethodType not allowed</value>
   </data>
+  <data name="DuplicateCompanyCode" xml:space="preserve">
+    <value>Code '{0}' has already been used for another company</value>
+  </data>
 </root>

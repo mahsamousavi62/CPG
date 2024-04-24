@@ -26,7 +26,9 @@ public class GetAllIPGTypesQueryHandler(ReadDbContext context, IMinioProvider mi
             Id = x.Id,
             PersianName = x.PersianName,
             EnglishName = x.EnglishName,
-            Logo = await _minioProvider.PresignedGetObject(x.Logo),            
+            Logo = await _minioProvider.PresignedGetObject(x.Logo),   
+            Code = x.Code,
+            IsActive = x.IsActive,
             CreationDate = x.CreationDate,
             ModificationDate = x.ModificationDate,
         })).ConfigureAwait(false);

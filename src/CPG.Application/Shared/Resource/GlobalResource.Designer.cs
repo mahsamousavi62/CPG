@@ -763,6 +763,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Code &apos;{0}&apos; has already been used for another company.
+        /// </summary>
+        public static string DuplicateCompanyCode {
+            get {
+                return ResourceManager.GetString("DuplicateCompanyCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to  EnglishName &apos;{0}&apos; has already been created.
         /// </summary>
         public static string DuplicateEnglishName {
