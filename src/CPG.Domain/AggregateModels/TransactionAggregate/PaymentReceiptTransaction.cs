@@ -21,6 +21,7 @@ public class PaymentReceiptTransaction : AuditableEntity<long>
         Description = description;
         ReceiptImage = receiptImage.Value;
         Status = status;
+        IsActive = true;
     }
 
     public string SourceIban { get; set; }
@@ -29,6 +30,8 @@ public class PaymentReceiptTransaction : AuditableEntity<long>
     public string Description { get; set; }
     public string ReceiptImage { get; set; }
     public PaymentReceiptStatus Status { get; set; }
+    public DateTime? VerificationDateTime { get; set; }
+    public long? VerifiedBy { get; set; }
     public Transaction Transaction { get; set; }
 
     public static PaymentReceiptTransaction Create(Iban sourceIban, string referenceNumber, DateTime receiptDateTime, string description,

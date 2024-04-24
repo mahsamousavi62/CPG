@@ -17,6 +17,7 @@ using CPG.Application.UseCases.PaymentReceipt.Queries;
 using CPG.Infrastructure.File;
 using CPG.Application.UseCases.CharismaCard.Commands;
 using CPG.Application.UseCases.CharismaCard.ViewModels;
+using CPG.Application.UseCases.PaymentReceipt.Commands;
 
 namespace CPG.API.Controllers.v1;
 
@@ -80,6 +81,14 @@ public class PaymentRequestController : ApiBaseController
     [ProducesResponseType(typeof(Result<VerifyTransactionResponseViewModel>), 200)]
     public async Task<Result<VerifyTransactionResponseViewModel>> TransactionVerify([Required] VerifyTransactionViewModel model)
         => await Mediator.Send(new VerifyTransactionQuery(model));
+
+
+    [Authorize(Policy = AuthPolicies.Roles.AdminOrCompanyUser)]
+    [HttpPost("PaymentReceiptTransactionVerify")]
+    [ProducesResponseType(typeof(Result<string>), 200)]
+    public async Task<Result<string>> PaymentReceiptTransactionVerify([Required] VerifyPaymentReceiptTransactionViewModel model)
+        => await Mediator.Send(new VerifiyPaymentReceiptCommand(model));
+
 
     [Authorize]
     [HttpPost("CreateCharismaCardRequest")]

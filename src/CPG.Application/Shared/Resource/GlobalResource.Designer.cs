@@ -1285,6 +1285,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to NotAuthorizeToVerify.
+        /// </summary>
+        public static string NotAuthorizeToVerify {
+            get {
+                return ResourceManager.GetString("NotAuthorizeToVerify", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dear user, the selected account does not have the necessary balance for payment. If possible, use other banks or available methods to pay the desired amount.
         /// </summary>
         public static string NotEnoughBalance {
@@ -2262,6 +2271,15 @@ namespace CPG.Application.Shared.Resource {
         public static string VerificationTimeLimitIPG {
             get {
                 return ResourceManager.GetString("VerificationTimeLimitIPG", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VerifiedOperationIsSucccesseed.
+        /// </summary>
+        public static string VerifiedMessage {
+            get {
+                return ResourceManager.GetString("VerifiedMessage", resourceCulture);
             }
         }
         
