@@ -22,6 +22,7 @@ using CPG.Domain.SharedKernel.Interfaces;
 using CPG.Application.UseCases.PaymentReceipt.Exceptions;
 using CPG.Application.UseCases.Companies.Exceptions;
 using System.Security.Claims;
+using System.Globalization;
 
 namespace CPG.Application.UseCases.PaymentReceipt.Commands;
 
@@ -37,6 +38,7 @@ public class VerifyPaymentReceiptCommandHandler(IAggregateRepository<PaymentRequ
 
     public async Task<Result<string>> Handle(VerifiyPaymentReceiptCommand request, CancellationToken cancellationToken)
     {
+     var c=   CultureInfo.CurrentCulture;
         if (request.VerifyTransaction.Id == 0)
         {
             throw new PaymentReceiptNotFoundException(request.VerifyTransaction.Id);
