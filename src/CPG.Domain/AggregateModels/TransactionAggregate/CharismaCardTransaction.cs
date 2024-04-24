@@ -13,6 +13,7 @@ public class CharismaCardTransaction : AuditableEntity<long>
         ProviderTrackId = providerTrackId;
         ReferenceNumber = referenceNumber;
         Status = status;
+        IsActive = true;
     }
     public CharismaCardTransaction()
     {

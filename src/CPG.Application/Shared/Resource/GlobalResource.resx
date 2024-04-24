@@ -858,4 +858,10 @@
   <data name="MethodTypeNotAllowed" xml:space="preserve">
     <value>MethodType not allowed</value>
   </data>
+  <data name="VerifiedMessage" xml:space="preserve">
+    <value>VerifiedOperationIsSucccesseed</value>
+  </data>
+  <data name="NotAuthorizeToVerify" xml:space="preserve">
+    <value>NotAuthorizeToVerify</value>
+  </data>
 </root>

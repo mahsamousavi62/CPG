@@ -879,4 +879,10 @@
   <data name="MethodTypeNotAllowed" xml:space="preserve">
     <value> با توجه به روشهای پرداخت مجاز شرکت، امکان انتخاب این روش پرداخت وجود ندارد</value>
   </data>
+  <data name="VerifiedMessage" xml:space="preserve">
+    <value>عملیات تایید موفقیت آمیز انجام شد</value>
+  </data>
+  <data name="NotAuthorizeToVerify" xml:space="preserve">
+    <value>شما مجاز به تایید این تراکنش نیستند.</value>
+  </data>
 </root>

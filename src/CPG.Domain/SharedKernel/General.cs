@@ -3,6 +3,7 @@ using System;
 using CPG.Domain.SharedKernel.Minio;
 using System.Threading.Tasks;
 using static CPG.Domain.SharedKernel.Enums;
+using CPG.Domain.AggregateModels.TransactionAggregate;
 
 namespace CPG.Domain.SharedKernel;
 
@@ -108,6 +109,50 @@ public static class General
                 return Resource.PaymentReceipt;
             case Enums.TransactionType.CharismaCard:
                 return Resource.CharismaCard;
+            default:
+                return string.Empty;
+        }
+    }
+    public static string GetPaymentMethodTypeTitle(TransactionType type)
+    {
+        return type switch
+        {
+            TransactionType.IPG => "INTERNET_PAYMENT_GATEWAY",
+            TransactionType.DirectDebit => "DIRECT_DEBIT",
+            TransactionType.PaymentReceipt => "PAYMENT_RECEIPT",
+            TransactionType.CharismaCard => "CHARISMA_CARD",
+            _ => string.Empty
+        };
+    }
+
+    public static string GetTransactionRefrenceNumber(Transaction transaction)
+    {
+        switch (transaction.TransactionMethodType)
+        {
+            case TransactionType.IPG:
+                return transaction.IPGTransaction.ReferenceNumber;
+            case TransactionType.DirectDebit:
+                return string.Empty;
+            case TransactionType.PaymentReceipt:
+            case TransactionType.CharismaCard:
+                return transaction.PaymentReceiptTransaction.ReferenceNumber;
+            default:
+                return string.Empty;
+        }
+    }
+
+    public static string GetTransactionVerificationDateTime(Transaction transaction)
+    {
+        switch (transaction.TransactionMethodType)
+        {
+            case TransactionType.IPG:
+                return transaction.IPGTransaction.VerificationDateTime?.ToString("yyyy-MM-dd HH:mm:ss zzz");
+            case TransactionType.DirectDebit:
+                return DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss zzz");
+            case TransactionType.PaymentReceipt:
+            case TransactionType.CharismaCard:
+                return DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss zzz");
+
             default:
                 return string.Empty;
         }
