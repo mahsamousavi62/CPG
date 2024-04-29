@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Ardalis.GuardClauses;
 using CPG.Application.UseCases.CompanyDeposits.Exceptions;
 using CPG.Application.UseCases.CompanyDeposits.Queries;
 using CPG.Application.UseCases.CompanyDeposits.ViewModels;
@@ -22,6 +23,8 @@ public class GetCompanyDepositsByCompanyIdQueryHandler(ReadDbContext context, IM
     {
         try
         {
+            Guard.Against.NegativeOrZero(request.CompanyId, nameof(request.CompanyId));
+
             var companyDeposits = await _context.CompanyDepositReadModels
                 .Include(t => t.Bank)
                 .Include(t => t.Company)
@@ -40,7 +43,7 @@ public class GetCompanyDepositsByCompanyIdQueryHandler(ReadDbContext context, IM
                    AccountNumber = deposit.AccountNumber,
                    Iban = deposit.Iban,
                    BankId = deposit.BankId,
-                   BankLogo = await _minioProvider.PresignedGetObject(deposit.Bank.Logo),
+                   BankLogo = !string.IsNullOrEmpty(deposit.Bank.Logo) ? await General.GetLogo(_minioProvider, deposit.Bank.Logo) : null,
                    BankName = deposit.Bank.Name,
                    CompanyId = deposit.CompanyId,
                    CompanyName = deposit.Company.PersianName,

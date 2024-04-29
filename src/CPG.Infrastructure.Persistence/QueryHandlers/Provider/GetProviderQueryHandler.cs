@@ -2,6 +2,7 @@
 using CPG.Application.UseCases.Providers.Exceptions;
 using CPG.Application.UseCases.Providers.Queries;
 using CPG.Application.UseCases.Providers.ViewModels;
+using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Minio;
 using CPG.Infrastructure.Persistence.DbContexts;
@@ -32,13 +33,13 @@ public class GetProviderQueryHandler(ReadDbContext context, IMinioProvider minio
             Id = provider.Id,
             PersianName = provider.PersianName,
             EnglishName = provider.EnglishName,
-            Logo = await _minioProvider.PresignedGetObject(provider.Logo),
+            Logo = await General.GetLogo( _minioProvider,provider.Logo),
             ProviderData = provider.ProviderData,
             ProviderType = provider.ProviderType,
             IsActive = provider.IsActive,
             PaymentMethods= provider.PaymentMethods.Select(p => p.MethodType).ToList()
         };
-
+        
         return Result<ProviderViewModel>.SuccessResult(providerModel);
     }
 }

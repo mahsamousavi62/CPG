@@ -30,7 +30,7 @@ public class GetCompanyQueryHandler(ReadDbContext context, IMinioProvider minioP
             Id = company.Id,
             PersianName = company.PersianName,
             EnglishName = company.EnglishName,
-            Logo = await _minioProvider.PresignedGetObject(company.Logo),
+            Logo = await General.GetLogo(_minioProvider, company.Logo),
             NationalCodeMatchingRequied = company.NationalCodeMatchingRequied,
             SiteAddress = company.SiteAddress,
             IpgRedirectionMethodType = company.IpgRedirectionMethodType,
@@ -41,7 +41,6 @@ public class GetCompanyQueryHandler(ReadDbContext context, IMinioProvider minioP
             Users = company.Users?.Select(u =>
             new UserCompanyViewModel { Id = u.Id, FirstName = u.FirstName, LastName = u.LastName, NationalCode = u.NationalCode }).ToList()
         };
-
         return Result<CompanyViewModel>.SuccessResult(companyModel);
     }
 }

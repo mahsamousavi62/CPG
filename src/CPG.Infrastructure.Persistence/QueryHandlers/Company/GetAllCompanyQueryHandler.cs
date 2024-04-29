@@ -13,15 +13,16 @@ using System.Threading.Tasks;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Company;
 
-public class GetAllCompanyQueryHandler(ReadDbContext context, IMinioProvider minioProvider) : IRequestHandler<GetAllCompanyQuery, Result<IReadOnlyCollection<CompanyViewModel>>>
+public class GetAllCompanyQueryHandler(ReadDbContext context, IMinioProvider minioProvider)
+    : IRequestHandler<GetAllCompanyQuery, Result<IReadOnlyCollection<CompanyViewModel>>>
 {
     private readonly ReadDbContext _context = context;
     private readonly IMinioProvider _minioProvider = minioProvider;
 
     public async Task<Result<IReadOnlyCollection<CompanyViewModel>>> Handle(GetAllCompanyQuery request, CancellationToken cancellationToken)
     {
-        var companies = await _context.CompanyReadModels
-            .Include(c => c.PaymentMethods).Include(c=>c.Users)
+             var companies = await _context.CompanyReadModels
+            .Include(c => c.PaymentMethods).Include(c => c.Users)
             .ToListAsync(cancellationToken: cancellationToken);
 
         var companyViewModels = await Task.WhenAll(companies.Select(async company => new CompanyViewModel
@@ -29,7 +30,7 @@ public class GetAllCompanyQueryHandler(ReadDbContext context, IMinioProvider min
             Id = company.Id,
             PersianName = company.PersianName,
             EnglishName = company.EnglishName,
-            Logo = await _minioProvider.PresignedGetObject(company.Logo),
+            Logo = await General.GetLogo(_minioProvider, company.Logo),
             NationalCodeMatchingRequied = company.NationalCodeMatchingRequied,
             SiteAddress = company.SiteAddress,
             IpgRedirectionMethodType = company.IpgRedirectionMethodType,
@@ -37,11 +38,10 @@ public class GetAllCompanyQueryHandler(ReadDbContext context, IMinioProvider min
             ModificationDate = company.ModificationDate,
             IsActive = company.IsActive,
             PaymentMethods = company.PaymentMethods.Select(p => p.MethodType).ToList(),
-            Users = company.Users?.Select(u => new UserCompanyViewModel { Id = u.Id, FirstName = u.FirstName, LastName = u.LastName, NationalCode=u.NationalCode }).ToList()
+            Users = company.Users?.Select(u => new UserCompanyViewModel { Id = u.Id, FirstName = u.FirstName, LastName = u.LastName, NationalCode = u.NationalCode }).ToList()
 
         })).ConfigureAwait(false);
-
+       
         return Result<IReadOnlyCollection<CompanyViewModel>>.SuccessResult(companyViewModels);
     }
-
 }

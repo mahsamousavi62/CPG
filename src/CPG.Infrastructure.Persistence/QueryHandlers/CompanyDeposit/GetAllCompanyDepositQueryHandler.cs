@@ -24,15 +24,15 @@ public class GetAllCompanyDepositQueryHandler(ReadDbContext context, IMinioProvi
             .Include(c => c.Company)
             .ToListAsync(cancellationToken);
 
-        var companyDepositViewModels = await Task.WhenAll( 
+        var companyDepositViewModels = await Task.WhenAll(
             companyDeposits.Select(async company => new CompanyDepositViewModel
             {
                 Id = company.Id,
                 Name = company.Name,
                 AccountNumber = company.AccountNumber,
                 Iban = company.Iban,
-                BankId=company.BankId,  
-                BankLogo = await _minioProvider.PresignedGetObject(company.Bank.Logo),
+                BankId = company.BankId,
+                BankLogo = await General.GetLogo(_minioProvider, company.Bank.Logo),
                 BankName = company.Bank.Name,
                 CompanyId = company.CompanyId,
                 CompanyName = company.Company.PersianName,

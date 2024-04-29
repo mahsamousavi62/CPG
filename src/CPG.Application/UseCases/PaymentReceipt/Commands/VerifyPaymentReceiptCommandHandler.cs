@@ -23,6 +23,7 @@ using CPG.Application.UseCases.PaymentReceipt.Exceptions;
 using CPG.Application.UseCases.Companies.Exceptions;
 using System.Security.Claims;
 using System.Globalization;
+using Ardalis.GuardClauses;
 
 namespace CPG.Application.UseCases.PaymentReceipt.Commands;
 
@@ -38,11 +39,8 @@ public class VerifyPaymentReceiptCommandHandler(IAggregateRepository<PaymentRequ
 
     public async Task<Result<string>> Handle(VerifiyPaymentReceiptCommand request, CancellationToken cancellationToken)
     {
-     var c=   CultureInfo.CurrentCulture;
-        if (request.VerifyTransaction.Id == 0)
-        {
-            throw new PaymentReceiptNotFoundException(request.VerifyTransaction.Id);
-        }
+
+        Guard.Against.NegativeOrZero(request.VerifyTransaction.Id, nameof(request.VerifyTransaction));  
 
         var transaction = await _transactionRepository.GetBySpecAsync
                                 (new TransactionByPaymentReceiptId(request.VerifyTransaction.Id), cancellationToken);

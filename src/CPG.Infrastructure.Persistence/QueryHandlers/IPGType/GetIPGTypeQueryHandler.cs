@@ -31,7 +31,7 @@ public class GetIPGTypeQueryHandler(ReadDbContext context, IMinioProvider minioP
             Id = ipgType.Id,
             PersianName = ipgType.PersianName,
             EnglishName = ipgType.EnglishName,
-            Logo = await _minioProvider.PresignedGetObject(ipgType.Logo),
+            Logo = await General.GetLogo( _minioProvider,ipgType.Logo),
         };
 
         return Result<IPGTypeViewModel>.SuccessResult(ipgTypeModel);
