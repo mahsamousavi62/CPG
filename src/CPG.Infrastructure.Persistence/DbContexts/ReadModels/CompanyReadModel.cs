@@ -12,6 +12,7 @@ public class CompanyReadModel
     public string SiteAddress { get; set; }
     public short IpgRedirectionMethodType { get; set; }
     public string Logo { get; set; }
+    public short? Code { get; set; }
     public bool IsActive { get; set; }
     public DateTime CreationDate { get; set; }
     public DateTime? ModificationDate { get; set; }
@@ -20,5 +21,4 @@ public class CompanyReadModel
     public ICollection<PaymentRequestReadModel> PaymentRequests { get; set; }
     public CompanyShaparakSettingReadModel ShaparakSetting { get; set; }
     public ICollection<UserReadModel> Users  { get; set; }
-
 }

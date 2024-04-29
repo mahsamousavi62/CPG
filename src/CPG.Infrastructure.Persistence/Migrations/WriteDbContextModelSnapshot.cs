@@ -260,6 +260,9 @@ namespace CPG.Infrastructure.Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
+                    b.Property<byte?>("Code")
+                        .HasColumnType("tinyint");
+
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
@@ -345,7 +348,7 @@ namespace CPG.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("CompanyPaymentMethods", (string)null);
+                    b.ToTable("CompanyPaymentMethod", (string)null);
                 });
 
             modelBuilder.Entity("CPG.Domain.AggregateModels.CompanyAggregate.CompanyShaparakSetting", b =>
@@ -459,6 +462,42 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.HasIndex("CompanyId");
 
                     b.ToTable("CompanyDeposit", (string)null);
+                });
+
+            modelBuilder.Entity("CPG.Domain.AggregateModels.CompanyDepositAggregate.CompanyDepositPaymentMethod", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("CompanyDepositId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("CreationUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<byte>("MethodType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<DateTime?>("ModificationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("ModificationUserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyDepositId");
+
+                    b.ToTable("CompanyDepositPaymentMethod", (string)null);
                 });
 
             modelBuilder.Entity("CPG.Domain.AggregateModels.CompanyIPGAggregate.CompanyIPG", b =>
@@ -673,6 +712,10 @@ namespace CPG.Infrastructure.Persistence.Migrations
                         .HasColumnName("Id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<byte>("Code")
+                        .HasColumnType("tinyint")
+                        .HasColumnName("Code");
 
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
@@ -1014,6 +1057,12 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.Property<byte>("Status")
                         .HasColumnType("tinyint");
 
+                    b.Property<DateTime?>("VerificationDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("VerifiedBy")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
 
                     b.ToTable("PaymentReceiptTransaction", (string)null);
@@ -1273,7 +1322,7 @@ namespace CPG.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Application_Settings", (string)null);
+                    b.ToTable("ApplicationSetting", (string)null);
                 });
 
             modelBuilder.Entity("PaymentRequest", b =>
@@ -1480,6 +1529,17 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.Navigation("Bank");
 
                     b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("CPG.Domain.AggregateModels.CompanyDepositAggregate.CompanyDepositPaymentMethod", b =>
+                {
+                    b.HasOne("CPG.Domain.AggregateModels.CompanyDepositAggregate.CompanyDeposit", "CompanyDeposit")
+                        .WithMany("PaymentMethods")
+                        .HasForeignKey("CompanyDepositId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CompanyDeposit");
                 });
 
             modelBuilder.Entity("CPG.Domain.AggregateModels.CompanyIPGAggregate.CompanyIPG", b =>
@@ -1702,6 +1762,8 @@ namespace CPG.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("CPG.Domain.AggregateModels.CompanyDepositAggregate.CompanyDeposit", b =>
                 {
                     b.Navigation("CompanyIPGDeposits");
+
+                    b.Navigation("PaymentMethods");
 
                     b.Navigation("Transactions");
                 });

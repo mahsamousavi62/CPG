@@ -22,30 +22,33 @@ public class GetCompanyDepositsByCompanyIdQueryHandler(ReadDbContext context, IM
     {
         try
         {
-            var companyDeposits = await _context.CompanyDepositReadModels.
-                Include(c => c.Bank).Include(c => c.Company)
-                .Where(t => t.CompanyId == request.CompanyId).ToListAsync();
+            var companyDeposits = await _context.CompanyDepositReadModels
+                .Include(t => t.Bank)
+                .Include(t => t.Company)
+                .Include(t => t.PaymentMethods)
+                .Where(t => t.CompanyId == request.CompanyId)
+                .ToListAsync();
 
             if (companyDeposits == null)
                 throw new CompanyDepositByCompanyIdNotFoundException(request.CompanyId);
 
             var companyViewModels = await Task.WhenAll(
-               companyDeposits.Select(async company => new CompanyDepositViewModel
+               companyDeposits.Select(async deposit => new CompanyDepositViewModel
                {
-                   Id = company.Id, 
-
-                   Name = company.Name,
-                   AccountNumber = company.AccountNumber,
-                   Iban = company.Iban,
-                   BankId = company.BankId,
-                   BankLogo = await _minioProvider.PresignedGetObject(company.Bank.Logo),
-                   BankName = company.Bank.Name,
-                   CompanyId = company.CompanyId,
-                   CompanyName = company.Company.PersianName,
-                   IsDefaultForDirectDebit = company.IsDefaultForDirectDebit,
-                   CreationDate = company.CreationDate,
-                   IsActive = company.IsActive,
-                   ModificationDate = company.ModificationDate,
+                   Id = deposit.Id,
+                   Name = deposit.Name,
+                   AccountNumber = deposit.AccountNumber,
+                   Iban = deposit.Iban,
+                   BankId = deposit.BankId,
+                   BankLogo = await _minioProvider.PresignedGetObject(deposit.Bank.Logo),
+                   BankName = deposit.Bank.Name,
+                   CompanyId = deposit.CompanyId,
+                   CompanyName = deposit.Company.PersianName,
+                   IsDefaultForDirectDebit = deposit.IsDefaultForDirectDebit,
+                   CreationDate = deposit.CreationDate,
+                   IsActive = deposit.IsActive,
+                   ModificationDate = deposit.ModificationDate,
+                   PaymentMethods = deposit.PaymentMethods.Select(p => p.MethodType).ToList(),
                }))
                .ConfigureAwait(false);
 
@@ -53,7 +56,7 @@ public class GetCompanyDepositsByCompanyIdQueryHandler(ReadDbContext context, IM
         }
         catch (System.Exception ex)
         {
-            return Result<IReadOnlyCollection<CompanyDepositViewModel>>.Failure(new Error("",""));
+            return Result<IReadOnlyCollection<CompanyDepositViewModel>>.Failure(new Error("", ""));
         }
     }
 }

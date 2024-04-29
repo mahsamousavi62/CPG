@@ -106,6 +106,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Amount.
+        /// </summary>
+        public static string Amount {
+            get {
+                return ResourceManager.GetString("Amount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ApplicationLogo.
         /// </summary>
         public static string ApplicationLogo {
@@ -466,6 +475,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CompanyName.
+        /// </summary>
+        public static string CompanyName {
+            get {
+                return ResourceManager.GetString("CompanyName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CompanyNotFound.
         /// </summary>
         public static string CompanyNotFound {
@@ -691,6 +709,24 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DestinationIban.
+        /// </summary>
+        public static string DestinationIban {
+            get {
+                return ResourceManager.GetString("DestinationIban", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DestinationIbanBank.
+        /// </summary>
+        public static string DestinationIbanBank {
+            get {
+                return ResourceManager.GetString("DestinationIbanBank", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dear user, a license has already been registered in the system with a different number, if possible, use other banks or available methods to pay the desired amount.
         /// </summary>
         public static string DiffrentNumber {
@@ -723,6 +759,15 @@ namespace CPG.Application.Shared.Resource {
         public static string DirectDebitProvider {
             get {
                 return ResourceManager.GetString("DirectDebitProvider", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Code &apos;{0}&apos; has already been used for another company.
+        /// </summary>
+        public static string DuplicateCompanyCode {
+            get {
+                return ResourceManager.GetString("DuplicateCompanyCode", resourceCulture);
             }
         }
         
@@ -1150,6 +1195,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to MethodType not allowed.
+        /// </summary>
+        public static string MethodTypeNotAllowed {
+            get {
+                return ResourceManager.GetString("MethodTypeNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to MethodTypes.
         /// </summary>
         public static string MethodTypes {
@@ -1236,6 +1290,15 @@ namespace CPG.Application.Shared.Resource {
         public static string NoShahabCode {
             get {
                 return ResourceManager.GetString("NoShahabCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NotAuthorizeToVerify.
+        /// </summary>
+        public static string NotAuthorizeToVerify {
+            get {
+                return ResourceManager.GetString("NotAuthorizeToVerify", resourceCulture);
             }
         }
         
@@ -1335,6 +1398,24 @@ namespace CPG.Application.Shared.Resource {
         public static string PaymentReceipt {
             get {
                 return ResourceManager.GetString("PaymentReceipt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to paymentReceiptNotFound.
+        /// </summary>
+        public static string paymentReceiptNotFound {
+            get {
+                return ResourceManager.GetString("paymentReceiptNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PaymentReceiptPropertiesById.
+        /// </summary>
+        public static string PaymentReceiptPropertiesById {
+            get {
+                return ResourceManager.GetString("PaymentReceiptPropertiesById", resourceCulture);
             }
         }
         
@@ -1690,6 +1771,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ReceiptProperties.
+        /// </summary>
+        public static string ReceiptProperties {
+            get {
+                return ResourceManager.GetString("ReceiptProperties", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ReferenceNumber.
         /// </summary>
         public static string ReferenceNumber {
@@ -1866,6 +1956,15 @@ namespace CPG.Application.Shared.Resource {
         public static string SourceIban {
             get {
                 return ResourceManager.GetString("SourceIban", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SourceIbanBank.
+        /// </summary>
+        public static string SourceIbanBank {
+            get {
+                return ResourceManager.GetString("SourceIbanBank", resourceCulture);
             }
         }
         
@@ -2181,6 +2280,15 @@ namespace CPG.Application.Shared.Resource {
         public static string VerificationTimeLimitIPG {
             get {
                 return ResourceManager.GetString("VerificationTimeLimitIPG", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VerifiedOperationIsSucccesseed.
+        /// </summary>
+        public static string VerifiedMessage {
+            get {
+                return ResourceManager.GetString("VerifiedMessage", resourceCulture);
             }
         }
         

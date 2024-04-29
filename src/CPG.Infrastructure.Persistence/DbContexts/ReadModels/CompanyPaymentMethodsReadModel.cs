@@ -9,4 +9,3 @@ public class CompanyPaymentMethodsReadModel
     public long CompanyId { get; set; }
     public CompanyReadModel Company { get; set; }
 }
-

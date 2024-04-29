@@ -1,4 +1,5 @@
-﻿using CPG.Application.UseCases.Users.Commands;
+﻿using CPG.Application.UseCases.PaymentRequests.ViewModels;
+using CPG.Application.UseCases.Users.Commands;
 using CPG.Application.UseCases.Users.Queries;
 using CPG.Application.UseCases.Users.ViewModel;
 using CPG.Domain.SharedKernel;
@@ -28,6 +29,17 @@ public class UsersController : ApiBaseController
     {
         return await Mediator.Send(new GetUserQuery());
     }
+
+
+    
+    [HttpGet("{paymentCode}")]
+    [ProducesResponseType(typeof(Result<UserViewModel>), (int)HttpStatusCode.OK)]
+    public async Task<Result<UserViewModel>> GetuserByPaymentCode(string paymentCode)
+    {
+        return await Mediator.Send(new GetUserByPaymentCodeQuery(paymentCode));
+    }
+
+
 
     /// <summary>
     /// 

@@ -8,7 +8,7 @@ public class ApplicationSettingReadModelConfiguration : IEntityTypeConfiguration
 {
     public void Configure(EntityTypeBuilder<ApplicationSettingReadModel> readModel)
     {
-        readModel.ToTable("Application_Settings");
+        readModel.ToTable("ApplicationSetting");
         readModel.HasKey(x => x.Id);
 
         readModel.Property(x => x.Id).HasColumnName("Id");

@@ -57,7 +57,11 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
             await _paymentRequestRepository.SaveChangesAsync(cancellationToken);
 
             var transaction = await _transactionRepository.GetBySpecAsync(new TransactionByPaymentRequestId(paymentRequest.Id), cancellationToken);
-            if (transaction is null || (transaction.IPGTransaction is null && transaction.DirectDebitTransaction is null && transaction.PaymentReceiptTransaction is null))
+            if (transaction is null 
+                || (transaction.IPGTransaction is null 
+                && transaction.DirectDebitTransaction is null 
+                && transaction.PaymentReceiptTransaction is null
+                && transaction.CharismaCardTransaction is null))
             {
                 throw new Exception("transaction or transactionDetail not found");
             }
@@ -163,13 +167,13 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
                 TrackerId = paymentRequest.TrackerId,
                 DestinationDepositIban = transaction.DestinationDeposit.Iban,
                 DestinationDepositAccountNumber = transaction?.DestinationDeposit?.AccountNumber,
-                ReferenceNumber = GetTransactionRefrenceNumber(transaction),
+                ReferenceNumber = General.GetTransactionRefrenceNumber(transaction),
                 PaymentMethodType = (short)transaction?.TransactionMethodType,
-                PaymentMethodTypeTitle = transaction is null ? string.Empty : GetPaymentMethodTypeTitle(transaction.TransactionMethodType),
+                PaymentMethodTypeTitle = transaction is null ? string.Empty : General.GetPaymentMethodTypeTitle(transaction.TransactionMethodType),
                 Status = (short)paymentRequest.Status,
                 StatusTitle = General.GetPaymentStatusTitle(paymentRequest.Status),
                 PredictedSettlementDateTime = transaction.PredictedSettlementDateTime?.ToString("yyyy-MM-dd HH:mm:ss zzz"),
-                CPGVerificationDateTime = GetTransactionVerificationDateTime(transaction),
+                CPGVerificationDateTime = General.GetTransactionVerificationDateTime(transaction),
             };
 
             return Result<VerifyTransactionResponseViewModel>.SuccessResult(response);
@@ -199,48 +203,5 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
         return date;
     }
 
-    private string GetPaymentMethodTypeTitle(TransactionType type)
-    {
-        return type switch
-        {
-            TransactionType.IPG => "INTERNET_PAYMENT_GATEWAY",
-            TransactionType.DirectDebit => "DIRECT_DEBIT",
-            TransactionType.PaymentReceipt => "PAYMENT_RECEIPT",
-            TransactionType.CharismaCard => "CHARISMA_CARD",
-            _ => string.Empty
-        };
-    }
-
-    private string GetTransactionRefrenceNumber(Transaction transaction)
-    {
-        switch (transaction.TransactionMethodType)
-        {
-            case TransactionType.IPG:
-                return transaction.IPGTransaction.ReferenceNumber;
-            case TransactionType.DirectDebit:
-                return string.Empty;
-            case TransactionType.PaymentReceipt:
-            case TransactionType.CharismaCard:
-                return transaction.PaymentReceiptTransaction.ReferenceNumber;
-            default:
-                return string.Empty;
-        }
-    }
-
-    private string GetTransactionVerificationDateTime(Transaction transaction)
-    {
-        switch (transaction.TransactionMethodType)
-        {
-            case TransactionType.IPG:
-                return transaction.IPGTransaction.VerificationDateTime?.ToString("yyyy-MM-dd HH:mm:ss zzz");
-            case TransactionType.DirectDebit:
-                return DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss zzz");
-            case TransactionType.PaymentReceipt:
-            case TransactionType.CharismaCard:
-                return DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss zzz");
-
-            default:
-                return string.Empty;
-        }
-    }
+    
 }

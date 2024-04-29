@@ -852,4 +852,40 @@
   <data name="VerificationDateTime" xml:space="preserve">
     <value>تاریخ و زمان تایید</value>
   </data>
+  <data name="paymentReceiptNotFound" xml:space="preserve">
+    <value>شناسه قبض یافت نشد</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>مبلغ</value>
+  </data>
+  <data name="CompanyName" xml:space="preserve">
+    <value>شرکت دریافت کننده وجه</value>
+  </data>
+  <data name="DestinationIban" xml:space="preserve">
+    <value>شبای حساب مقصد</value>
+  </data>
+  <data name="PaymentReceiptPropertiesById" xml:space="preserve">
+    <value>مشخصات فیش واریزی به شناسه </value>
+  </data>
+  <data name="ReceiptProperties" xml:space="preserve">
+    <value>مشخصات فیش</value>
+  </data>
+  <data name="DestinationIbanBank" xml:space="preserve">
+    <value>شبا و بانک حساب مقصد</value>
+  </data>
+  <data name="SourceIbanBank" xml:space="preserve">
+    <value>شبا و بانک حساب مبدا</value>
+  </data>
+  <data name="MethodTypeNotAllowed" xml:space="preserve">
+    <value> با توجه به روشهای پرداخت مجاز شرکت، امکان انتخاب این روش پرداخت وجود ندارد</value>
+  </data>
+  <data name="VerifiedMessage" xml:space="preserve">
+    <value>عملیات تایید موفقیت آمیز انجام شد</value>
+  </data>
+  <data name="NotAuthorizeToVerify" xml:space="preserve">
+    <value>شما مجاز به تایید این تراکنش نیستند.</value>
+  </data>
+  <data name="DuplicateCompanyCode" xml:space="preserve">
+    <value>کد '{0}' قبلا برای شرکت دیگری ثبت شده است</value>
+  </data>
 </root>

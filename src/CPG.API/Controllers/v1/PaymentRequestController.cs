@@ -17,16 +17,13 @@ using CPG.Application.UseCases.PaymentReceipt.Queries;
 using CPG.Infrastructure.File;
 using CPG.Application.UseCases.CharismaCard.Commands;
 using CPG.Application.UseCases.CharismaCard.ViewModels;
+using CPG.Application.UseCases.PaymentReceipt.Commands;
 
 namespace CPG.API.Controllers.v1;
 
 public class PaymentRequestController : ApiBaseController
 {
-    //[HttpGet]
-    //[ProducesResponseType(typeof(Result<IReadOnlyCollection<PaymentRequestViewModel>>), 200)]
-    //public async Task<Result<IReadOnlyCollection<PaymentRequestViewModel>>> Get()
-    //    => await Mediator.Send(new GetPaymentRequestQuery());
-           
+
     [Authorize]
     [HttpPost]
     [ProducesResponseType(typeof(Result<PaymentRequestResponseViewModel>), 200)]
@@ -45,8 +42,8 @@ public class PaymentRequestController : ApiBaseController
     public async Task<Result<CancelPaymentRequestResponseViewModel>> CancelPaymentRequest([FromBody] CancelPaymentRequestViewModel model)
         => await Mediator.Send(new CancelPaymentRequestCommand(model));
 
+    [AllowAnonymous]
     [HttpPost("CreateIPGJsonStr")]
-    [Authorize]
     [ProducesResponseType(typeof(ResultData<PaymentTokenResponseViewModel>), 200)]
     public async Task<Result<PaymentTokenResponseViewModel>> GetAsanPardakhatPaymentTicket([FromBody] PaymentTokenViewModel paymentTicketRequest)
         => await Mediator.Send(new GetPaymentTokenCommand(paymentTicketRequest));
@@ -79,11 +76,19 @@ public class PaymentRequestController : ApiBaseController
     [ProducesResponseType(typeof(Result<TransactionDetailResponseViewModel>), 200)]
     public async Task<Result<TransactionDetailResponseViewModel>> TransactionDetail([Required] TransactionDetailRequestViewModel model)
         => await Mediator.Send(new TransactionDetailQuery(model));
-    
+
     [HttpPost("TransactionVerify")]
     [ProducesResponseType(typeof(Result<VerifyTransactionResponseViewModel>), 200)]
     public async Task<Result<VerifyTransactionResponseViewModel>> TransactionVerify([Required] VerifyTransactionViewModel model)
         => await Mediator.Send(new VerifyTransactionQuery(model));
+
+
+    [Authorize(Policy = AuthPolicies.Roles.AdminOrCompanyUser)]
+    [HttpPost("PaymentReceiptTransactionVerify")]
+    [ProducesResponseType(typeof(Result<string>), 200)]
+    public async Task<Result<string>> PaymentReceiptTransactionVerify([Required] VerifyPaymentReceiptTransactionViewModel model)
+        => await Mediator.Send(new VerifiyPaymentReceiptCommand(model));
+
 
     [Authorize]
     [HttpPost("CreateCharismaCardRequest")]

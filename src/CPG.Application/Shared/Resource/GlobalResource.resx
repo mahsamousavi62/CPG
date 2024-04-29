@@ -831,4 +831,40 @@
   <data name="VerificationDateTime" xml:space="preserve">
     <value>VerificationDateTime</value>
   </data>
+  <data name="paymentReceiptNotFound" xml:space="preserve">
+    <value>paymentReceiptNotFound</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Amount</value>
+  </data>
+  <data name="CompanyName" xml:space="preserve">
+    <value>CompanyName</value>
+  </data>
+  <data name="DestinationIban" xml:space="preserve">
+    <value>DestinationIban</value>
+  </data>
+  <data name="PaymentReceiptPropertiesById" xml:space="preserve">
+    <value>PaymentReceiptPropertiesById</value>
+  </data>
+  <data name="ReceiptProperties" xml:space="preserve">
+    <value>ReceiptProperties</value>
+  </data>
+  <data name="DestinationIbanBank" xml:space="preserve">
+    <value>DestinationIbanBank</value>
+  </data>
+  <data name="SourceIbanBank" xml:space="preserve">
+    <value>SourceIbanBank</value>
+  </data>
+  <data name="MethodTypeNotAllowed" xml:space="preserve">
+    <value>MethodType not allowed</value>
+  </data>
+  <data name="VerifiedMessage" xml:space="preserve">
+    <value>VerifiedOperationIsSucccesseed</value>
+  </data>
+  <data name="NotAuthorizeToVerify" xml:space="preserve">
+    <value>NotAuthorizeToVerify</value>
+  </data>
+  <data name="DuplicateCompanyCode" xml:space="preserve">
+    <value>Code '{0}' has already been used for another company</value>
+  </data>
 </root>

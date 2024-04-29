@@ -12,6 +12,7 @@ using CPG.Domain.Exceptions;
 using CPG.Domain.SharedKernel;
 using MediatR;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -29,12 +30,12 @@ public class CreateCompanyDepositCommandHandler(IAggregateRepository<CompanyDepo
     {
         try
         {
-            var (persianName, iban) = await Validate(request.Model);
+            var (persianName, iban) = await Validate(request.Model, cancellationToken);
             var bankId = await GetBankId(iban);
 
             var isFirstDeposit = (await _companyDepositRepository.GetBySpecAsync(new CompanyHasAnyDepositSpec(request.Model.CompanyId), cancellationToken)) != null ? true : false;
-            var companyDeposit = CompanyDeposit.Create(persianName, iban, bankId,
-                                    request.Model.AccountNumber, request.Model.CompanyId, isFirstDeposit);
+            var companyDeposit = CompanyDeposit.Create(persianName, iban, bankId, request.Model.AccountNumber, request.Model.CompanyId,
+                isFirstDeposit, request.Model.MethodTypes);
 
             await _companyDepositRepository.AddAsync(companyDeposit, cancellationToken);
             await _companyDepositRepository.SaveChangesAsync(cancellationToken);
@@ -55,21 +56,27 @@ public class CreateCompanyDepositCommandHandler(IAggregateRepository<CompanyDepo
         }
     }
 
-    private async Task<(PersianName, Iban)> Validate(CreateCompanyDepositViewModel companyDeposit)
+    private async Task<(PersianName, Iban)> Validate(CreateCompanyDepositViewModel companyDeposit, CancellationToken cancellationToken)
     {
-        PersianName persianName = new(companyDeposit.Name);
+        var company = await _companyRepository.GetBySpecAsync(new CompanyPaymentMethodsDataByIdSpec(companyDeposit.CompanyId),
+            cancellationToken) ?? throw new CompanyNotFoundException(companyDeposit.CompanyId);
+
+        if (companyDeposit.MethodTypes.Any(t => !company.PaymentMethods.Select(x => x.MethodType).Contains(t)))
+        {
+            throw new MethodTypeNotAllowedException(string.Empty);
+        }
+
         Iban iban = new(companyDeposit.Iban);
         var sameIban = await _companyDepositRepository.GetBySpecAsync(new CompanyDepositByIban(companyDeposit.Iban));
         if (sameIban != null)
             throw new DuplicatCompanyDepositIbanException(companyDeposit.Iban);
 
-        var company = await _companyRepository.GetByIdAsync(companyDeposit.CompanyId) ?? throw new CompanyNotFoundException(companyDeposit.CompanyId);
-
+        PersianName persianName = new(companyDeposit.Name);
         var samePersianName = await _companyDepositRepository.GetBySpecAsync(new CompanyDepositByName(companyDeposit.Name));
         if (samePersianName != null)
             throw new DuplicatCompanyDepositPersianNameException(companyDeposit.Name);
-        
-        
+
+
         return (persianName, iban);
     }
 

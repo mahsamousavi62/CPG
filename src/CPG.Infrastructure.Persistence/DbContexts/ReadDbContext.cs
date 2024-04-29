@@ -57,6 +57,8 @@ public class ReadDbContext(DbContextOptions<ReadDbContext> options) : DbContext(
 
     public IQueryable<CharismaCardTransactionReadModel> CharismaCardTransactionReadModels => Set<CharismaCardTransactionReadModel>().AsNoTracking();
 
+    public IQueryable<CompanyDepositPaymentMethodReadModel> CompanyDepositPaymentMethodReadModels => Set<CompanyDepositPaymentMethodReadModel>().AsNoTracking();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
@@ -85,6 +87,7 @@ public class ReadDbContext(DbContextOptions<ReadDbContext> options) : DbContext(
             .ApplyConfiguration(new DirectDebitTransactionReadModelConfiguration())
             .ApplyConfiguration(new PaymentReceiptTransactionReadModelConfiguration())
             .ApplyConfiguration(new CharismaCardTransactionReadModelConfiguration())
+            .ApplyConfiguration(new CompanyDepositPaymentMethodReadModelConfiguration())
             ;
     }
 
