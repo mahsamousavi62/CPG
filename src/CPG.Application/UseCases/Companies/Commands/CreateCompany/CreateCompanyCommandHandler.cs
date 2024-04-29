@@ -4,7 +4,6 @@ using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Domain.AggregateModels.CompanyAggregate.Specifications;
 using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Domain.AggregateModels.UserAggregate.Specifications;
-using CPG.Domain.Exceptions;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Minio;
 using MediatR;
@@ -28,6 +27,7 @@ public class CreateCompanyCommandHandler(IAggregateRepository<Company> companyRe
         PersianName persianName = new(request.Model.PersianName);
         EnglishName englishName = new(request.Model.EnglishName);
         await CheckUniqueName(request.Model.PersianName, request.Model.EnglishName);
+        await CheckUniqueCode(request.Model.Code);
         Url siteAddress = new Url(request.Model.SiteAddress);
 
         if (!Enum.TryParse<Enums.IpgRedirectionMethodType>
@@ -49,7 +49,8 @@ public class CreateCompanyCommandHandler(IAggregateRepository<Company> companyRe
         }
 
         var company = Company.Create(persianName, englishName, request.Model.NationalCodeMatchingRequied, logo, request.Model.MethodTypes,
-            siteAddress, request.Model.IpgRedirectionMethodType, request.Model.Key, request.Model.IV, request.Model.ThirdPartyCode);
+            siteAddress, request.Model.IpgRedirectionMethodType, request.Model.Key, request.Model.IV, request.Model.ThirdPartyCode, 
+            request.Model.Code);
 
         await _companyRepository.AddAsync(company, cancellationToken);
         await _companyRepository.SaveChangesAsync(cancellationToken);
@@ -70,5 +71,12 @@ public class CreateCompanyCommandHandler(IAggregateRepository<Company> companyRe
         Company sameEnglishName = await _companyRepository.FirstOrDefaultAsync(new CompanyByEnglishName(englishName));
 
         if (sameEnglishName != null) throw new DuplicateEnglishNameException(englishName);
+    }
+
+    private async Task CheckUniqueCode(short code)
+    {
+        Company sameCode = await _companyRepository.FirstOrDefaultAsync(new CompanyByCodeSpec(code));
+
+        if (sameCode != null) throw new DuplicateCodeException(code);
     }
 }

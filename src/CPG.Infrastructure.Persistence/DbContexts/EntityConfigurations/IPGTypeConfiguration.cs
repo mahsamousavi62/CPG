@@ -15,6 +15,7 @@ public class IPGTypeConfiguration : IEntityTypeConfiguration<IPGType>
         entity.Property(x => x.Id).HasColumnName("Id").UseIdentityColumn();
         entity.Property(x => x.PersianName).HasColumnName("PersianName").HasMaxLength(256).HasColumnType("nvarchar").IsRequired();
         entity.Property(x => x.EnglishName).HasColumnName("EnglishName").HasMaxLength(256).HasColumnType("varchar").IsRequired();
-        entity.Property(x => x.Logo).HasColumnName("Logo").HasColumnType("nvarchar(max)").IsRequired();        
+        entity.Property(x => x.Logo).HasColumnName("Logo").HasColumnType("nvarchar(max)").IsRequired();
+        entity.Property(x => x.Code).HasColumnName("Code").HasColumnType("tinyint").IsRequired();
     }
 }

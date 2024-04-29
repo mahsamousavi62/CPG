@@ -33,6 +33,7 @@ public class GetAllCompanyQueryHandler(ReadDbContext context, IMinioProvider min
             Logo = await General.GetLogo(_minioProvider, company.Logo),
             NationalCodeMatchingRequied = company.NationalCodeMatchingRequied,
             SiteAddress = company.SiteAddress,
+            Code = company.Code,
             IpgRedirectionMethodType = company.IpgRedirectionMethodType,
             CreationDate = company.CreationDate,
             ModificationDate = company.ModificationDate,

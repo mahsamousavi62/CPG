@@ -14,6 +14,7 @@ public class IPGTypeReadModelConfiguration : IEntityTypeConfiguration<IPGTypeRea
         readModel.Property(x => x.PersianName).HasColumnName("PersianName");
         readModel.Property(x => x.EnglishName).HasColumnName("EnglishName");
         readModel.Property(x => x.Logo).HasColumnName("Logo");
+        readModel.Property(x => x.Code).HasColumnName("Code").HasColumnType("tinyint");
         readModel.Property(x => x.IsActive).HasColumnName("IsActive");
         readModel.Property(x => x.CreationDate).HasColumnName("CreationDate");
         readModel.Property(x => x.ModificationDate).HasColumnName("ModificationDate");

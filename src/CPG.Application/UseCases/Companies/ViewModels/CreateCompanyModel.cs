@@ -21,8 +21,10 @@ public class CreateCompanyModel
 
     [Required]
     public Enums.IpgRedirectionMethodType IpgRedirectionMethodType { get; set; }
+    
     [Required]
     public required List<Enums.PaymentMethodType> MethodTypes { get; set; }
+    
     [Required]
     public required List<long> Users { get; set; }
 
@@ -30,4 +32,7 @@ public class CreateCompanyModel
     public required IFormFile File { get; set; }
 
     public CompanyShaparakSettingModel? ShaparakSetting { get; set; }
+
+    [Required]
+    public short Code { get; set; }
 }

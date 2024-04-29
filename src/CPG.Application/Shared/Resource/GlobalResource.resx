@@ -864,4 +864,7 @@
   <data name="NotAuthorizeToVerify" xml:space="preserve">
     <value>NotAuthorizeToVerify</value>
   </data>
+  <data name="DuplicateCompanyCode" xml:space="preserve">
+    <value>Code '{0}' has already been used for another company</value>
+  </data>
 </root>

@@ -27,6 +27,7 @@ public class GetActiveIPGTypesQueryHandler(ReadDbContext context, IMinioProvider
             Id = x.Id,
             PersianName = x.PersianName,
             EnglishName = x.EnglishName,
+            Code = x.Code,
             Logo = !string.IsNullOrEmpty(x.Logo) ? await General.GetLogo(  _minioProvider,x.Logo) : "",
             CreationDate = x.CreationDate,
             ModificationDate = x.ModificationDate,
