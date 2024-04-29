@@ -4,10 +4,9 @@ using System.Collections.Generic;
 
 namespace CPG.Application.UseCases.Companies.Commands.CreateCompany;
 
-
-public class CreateCompanyViewModel(string persianName, string englishName, bool nationalCodeMatchingRequied, 
-    IFile file, Enums.PaymentMethodType[] methodTypes, List<long> users, string siteAddress, Enums.IpgRedirectionMethodType ipgRedirectionMethodType,
-    string key, string iv, int? thirdPartyCode)
+public class CreateCompanyViewModel(string persianName, string englishName, bool nationalCodeMatchingRequied, IFile file,
+    Enums.PaymentMethodType[] methodTypes, List<long> users, string siteAddress, Enums.IpgRedirectionMethodType ipgRedirectionMethodType,
+    string key, string iv, int? thirdPartyCode, short code)
 {
     public string PersianName { get; set; } = persianName;
     public string EnglishName { get; set; } = englishName;
@@ -20,4 +19,5 @@ public class CreateCompanyViewModel(string persianName, string englishName, bool
     public string Key { get; set; } = key;
     public string IV { get; set; } = iv;
     public int? ThirdPartyCode { get; set; } = thirdPartyCode;
+    public short Code { get; set; } = code;
 }

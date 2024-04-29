@@ -885,4 +885,7 @@
   <data name="NotAuthorizeToVerify" xml:space="preserve">
     <value>شما مجاز به تایید این تراکنش نیستند.</value>
   </data>
+  <data name="DuplicateCompanyCode" xml:space="preserve">
+    <value>کد '{0}' قبلا برای شرکت دیگری ثبت شده است</value>
+  </data>
 </root>

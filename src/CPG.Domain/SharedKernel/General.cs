@@ -134,8 +134,9 @@ public static class General
             case TransactionType.DirectDebit:
                 return string.Empty;
             case TransactionType.PaymentReceipt:
-            case TransactionType.CharismaCard:
                 return transaction.PaymentReceiptTransaction.ReferenceNumber;
+            case TransactionType.CharismaCard:
+                return transaction.CharismaCardTransaction.ReferenceNumber;
             default:
                 return string.Empty;
         }
