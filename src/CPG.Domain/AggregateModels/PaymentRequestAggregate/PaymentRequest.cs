@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using CPG.Domain.AggregateModels.ApplicationAggregate;
 using CPG.Domain.AggregateModels.CompanyAggregate;
+using CPG.Domain.AggregateModels.PaymentRequestAggregate;
 using CPG.Domain.AggregateModels.PaymentRequestAggregate.Exceptions;
 using CPG.Domain.AggregateModels.TransactionAggregate;
 using CPG.Domain.SeedWork;
@@ -47,7 +49,7 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
     public Application Application { get; set; }
     public Company Company { get; set; }
     public Transaction Transaction { get; set; }
-
+    public List<PaymentRequestMethod> PaymentRequestMethods { get; set; }
     public static PaymentRequest Create(PaymentRequest paymentRequest, int expireTime, string clientId, string applicationEnglishName)
     {
         if (!string.IsNullOrEmpty(paymentRequest.PaymentIdentifier) && (paymentRequest.PaymentIdentifier.Length < 5 || paymentRequest.PaymentIdentifier.Length > 255))

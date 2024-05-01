@@ -496,7 +496,7 @@
     <value>نشانی بازگشتی ارائه شده {0} مجاز نیست</value>
   </data>
   <data name="PaymentRequestNoCompanyFound" xml:space="preserve">
-    <value>با شناسه ارائه شده هیچ شرکتی یافت نشد</value>
+    <value>با کد ارائه شده هیچ شرکتی یافت نشد</value>
   </data>
   <data name="PaymentRequestNoCompanyPaymentMethodFound" xml:space="preserve">
     <value>شرکت مورد نظر هیچ روش پرداختی ندارد</value>
@@ -887,5 +887,20 @@
   </data>
   <data name="DuplicateCompanyCode" xml:space="preserve">
     <value>کد '{0}' قبلا برای شرکت دیگری ثبت شده است</value>
+  </data>
+  <data name="PaymentRequestCompanyMethods" xml:space="preserve">
+    <value>روش(های) پرداخت {0} بر روی شرکت {1} تعیین نشده است</value>
+  </data>
+  <data name="PaymentRequestInactiveDepositBanks" xml:space="preserve">
+    <value>بانک حساب های با قابلیت پرداخت {0} حساب های شرکت {1} غیرفعال است</value>
+  </data>
+  <data name="PaymentRequestInactiveDeposits" xml:space="preserve">
+    <value>در شرکت {0} هیچ حسابی تعریف نشده یا تمامی حساب ها غیرفعال هستند</value>
+  </data>
+  <data name="PaymentRequestNoMethod" xml:space="preserve">
+    <value>انتخاب یکی از روش های پرداخت الزامی است</value>
+  </data>
+  <data name="PaymentRequestNotExistDeposits" xml:space="preserve">
+    <value>روش(های) پرداخت {0ر} بر روی هیچ یک از حساب های فعال شرکت {1} تعیین نشده است</value>
   </data>
 </root>

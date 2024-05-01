@@ -867,4 +867,19 @@
   <data name="DuplicateCompanyCode" xml:space="preserve">
     <value>Code '{0}' has already been used for another company</value>
   </data>
+  <data name="PaymentRequestCompanyMethods" xml:space="preserve">
+    <value>The payment method(s) {0} has not been determined on the company {1}</value>
+  </data>
+  <data name="PaymentRequestInactiveDepositBanks" xml:space="preserve">
+    <value>Bank of accounts with the ability to pay {0} company accounts {1} is inactive</value>
+  </data>
+  <data name="PaymentRequestInactiveDeposits" xml:space="preserve">
+    <value>No account has been defined in the {0} company or all accounts are inactive</value>
+  </data>
+  <data name="PaymentRequestNoMethod" xml:space="preserve">
+    <value>Choosing one of the payment methods is mandatory</value>
+  </data>
+  <data name="PaymentRequestNotExistDeposits" xml:space="preserve">
+    <value>The payment method(s) {0} has not been set on any of the active accounts of the company {1}</value>
+  </data>
 </root>

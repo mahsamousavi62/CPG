@@ -1519,6 +1519,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The payment method(s) {0} has not been determined on the company {1}.
+        /// </summary>
+        public static string PaymentRequestCompanyMethods {
+            get {
+                return ResourceManager.GetString("PaymentRequestCompanyMethods", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All company payment methods are inactive.
         /// </summary>
         public static string PaymentRequestCompanyPaymentMethodAreInactive {
@@ -1542,6 +1551,24 @@ namespace CPG.Application.Shared.Resource {
         public static string PaymentRequestIbanCompanyInActive {
             get {
                 return ResourceManager.GetString("PaymentRequestIbanCompanyInActive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bank of accounts with the ability to pay {0} company accounts {1} is inactive.
+        /// </summary>
+        public static string PaymentRequestInactiveDepositBanks {
+            get {
+                return ResourceManager.GetString("PaymentRequestInactiveDepositBanks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No account has been defined in the {0} company or all accounts are inactive.
+        /// </summary>
+        public static string PaymentRequestInactiveDeposits {
+            get {
+                return ResourceManager.GetString("PaymentRequestInactiveDeposits", resourceCulture);
             }
         }
         
@@ -1573,11 +1600,29 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Choosing one of the payment methods is mandatory.
+        /// </summary>
+        public static string PaymentRequestNoMethod {
+            get {
+                return ResourceManager.GetString("PaymentRequestNoMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to NotDefinedCompanyDeposit.
         /// </summary>
         public static string PaymentRequestNotDefinedCompanyDeposit {
             get {
                 return ResourceManager.GetString("PaymentRequestNotDefinedCompanyDeposit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The payment method(s) {0} has not been set on any of the active accounts of the company {1}.
+        /// </summary>
+        public static string PaymentRequestNotExistDeposits {
+            get {
+                return ResourceManager.GetString("PaymentRequestNotExistDeposits", resourceCulture);
             }
         }
         
