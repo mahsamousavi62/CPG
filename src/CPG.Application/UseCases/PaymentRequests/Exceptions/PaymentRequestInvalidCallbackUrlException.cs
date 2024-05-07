@@ -5,5 +5,5 @@ namespace CPG.Application.UseCases.PaymentRequests.Exceptions;
 
 public class PaymentRequestInvalidCallbackUrlException(string callbackUrl) : AppException(string.Format(GlobalResource.PaymentRequestInvalidCallbackUrl, callbackUrl))
 {
-    public override string Code => "1001016";
+    public override string Code => "1001032";
 }

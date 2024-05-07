@@ -33,7 +33,7 @@ namespace CPG.Infrastructure.Persistence.Migrations
                         column: x => x.PaymentRequestId,
                         principalTable: "PaymentRequest",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -58,13 +58,13 @@ namespace CPG.Infrastructure.Persistence.Migrations
                         column: x => x.CompanyDepositId,
                         principalTable: "CompanyDeposit",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_PaymentRequestMethodDeposit_PaymentRequestMethod_PaymentRequestMethodId",
                         column: x => x.PaymentRequestMethodId,
                         principalTable: "PaymentRequestMethod",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -89,13 +89,13 @@ namespace CPG.Infrastructure.Persistence.Migrations
                         column: x => x.IpgTypeId,
                         principalTable: "IPGType",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_PaymentRequestMethodIpgType_PaymentRequestMethod_PaymentRequestMethodId",
                         column: x => x.PaymentRequestMethodId,
                         principalTable: "PaymentRequestMethod",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateIndex(

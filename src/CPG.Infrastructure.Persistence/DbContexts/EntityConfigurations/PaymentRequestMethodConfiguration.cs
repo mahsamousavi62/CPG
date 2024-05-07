@@ -18,6 +18,7 @@ public class PaymentRequestMethodConfiguration : IEntityTypeConfiguration<Paymen
 
         entity.HasOne(x => x.PaymentRequest)
             .WithMany(x => x.PaymentRequestMethods)
-            .HasForeignKey(x => x.PaymentRequestId);
+            .HasForeignKey(x => x.PaymentRequestId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

@@ -787,7 +787,7 @@ namespace CPG.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("PaymentRequestId");
 
-                    b.ToTable("PaymentRequestMethod");
+                    b.ToTable("PaymentRequestMethod", (string)null);
                 });
 
             modelBuilder.Entity("CPG.Domain.AggregateModels.PaymentRequestAggregate.PaymentRequestMethodDeposit", b =>
@@ -825,7 +825,7 @@ namespace CPG.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("PaymentRequestMethodId");
 
-                    b.ToTable("PaymentRequestMethodDeposit");
+                    b.ToTable("PaymentRequestMethodDeposit", (string)null);
                 });
 
             modelBuilder.Entity("CPG.Domain.AggregateModels.PaymentRequestAggregate.PaymentRequestMethodIpgType", b =>
@@ -863,7 +863,7 @@ namespace CPG.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("PaymentRequestMethodId");
 
-                    b.ToTable("PaymentRequestMethodIpgType");
+                    b.ToTable("PaymentRequestMethodIpgType", (string)null);
                 });
 
             modelBuilder.Entity("CPG.Domain.AggregateModels.ProviderAggregate.Provider", b =>
@@ -954,7 +954,7 @@ namespace CPG.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("ProviderId");
 
-                    b.ToTable("ProviderPaymentMethod");
+                    b.ToTable("ProviderPaymentMethod", (string)null);
                 });
 
             modelBuilder.Entity("CPG.Domain.AggregateModels.TransactionAggregate.CharismaCardTransaction", b =>
@@ -1561,7 +1561,7 @@ namespace CPG.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("CPG.Domain.AggregateModels.BankAggregate.Bank", b =>
                 {
-                    b.OwnsOne("CPG.Domain.AggregateModels.BankAggregate.IbanPrefix", "IbanPrefix", b1 =>
+                    b.OwnsOne("CPG.Domain.AggregateModels.BankAggregate.Bank.IbanPrefix#CPG.Domain.AggregateModels.BankAggregate.IbanPrefix", "IbanPrefix", b1 =>
                         {
                             b1.Property<int>("BankId")
                                 .HasColumnType("int");
@@ -1574,7 +1574,7 @@ namespace CPG.Infrastructure.Persistence.Migrations
 
                             b1.HasKey("BankId");
 
-                            b1.ToTable("Bank");
+                            b1.ToTable("Bank", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("BankId");
@@ -1724,7 +1724,7 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.HasOne("PaymentRequest", "PaymentRequest")
                         .WithMany("PaymentRequestMethods")
                         .HasForeignKey("PaymentRequestId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("PaymentRequest");
@@ -1735,13 +1735,13 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.HasOne("CPG.Domain.AggregateModels.CompanyDepositAggregate.CompanyDeposit", "CompanyDeposit")
                         .WithMany("PaymentRequestMethodDeposits")
                         .HasForeignKey("CompanyDepositId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("CPG.Domain.AggregateModels.PaymentRequestAggregate.PaymentRequestMethod", "PaymentRequestMethod")
                         .WithMany("PaymentRequestMethodDeposits")
                         .HasForeignKey("PaymentRequestMethodId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("CompanyDeposit");
@@ -1754,13 +1754,13 @@ namespace CPG.Infrastructure.Persistence.Migrations
                     b.HasOne("CPG.Domain.AggregateModels.IPGTypeAggregate.IPGType", "IPGType")
                         .WithMany("PaymentRequestMethodIpgTypes")
                         .HasForeignKey("IpgTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("CPG.Domain.AggregateModels.PaymentRequestAggregate.PaymentRequestMethod", "PaymentRequestMethod")
                         .WithMany("PaymentRequestMethodIpgTypes")
                         .HasForeignKey("PaymentRequestMethodId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("IPGType");

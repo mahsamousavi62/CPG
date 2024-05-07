@@ -18,10 +18,12 @@ public class PaymentRequestMethodIpgTypeConfiguration : IEntityTypeConfiguration
 
         entity.HasOne(x => x.PaymentRequestMethod)
             .WithMany(x => x.PaymentRequestMethodIpgTypes)
-            .HasForeignKey(x => x.PaymentRequestMethodId);
+            .HasForeignKey(x => x.PaymentRequestMethodId)
+            .OnDelete(DeleteBehavior.NoAction);
 
         entity.HasOne(x => x.IPGType)
             .WithMany(x => x.PaymentRequestMethodIpgTypes)
-            .HasForeignKey(x => x.IpgTypeId);
+            .HasForeignKey(x => x.IpgTypeId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

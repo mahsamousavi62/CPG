@@ -18,10 +18,12 @@ public class PaymentRequestMethodDepositConfiguration : IEntityTypeConfiguration
 
         entity.HasOne(x => x.PaymentRequestMethod)
             .WithMany(x => x.PaymentRequestMethodDeposits)
-            .HasForeignKey(x => x.PaymentRequestMethodId);
+            .HasForeignKey(x => x.PaymentRequestMethodId)
+            .OnDelete(DeleteBehavior.NoAction);
 
         entity.HasOne(x => x.CompanyDeposit)
             .WithMany(x => x.PaymentRequestMethodDeposits)
-            .HasForeignKey(x => x.CompanyDepositId);
+            .HasForeignKey(x => x.CompanyDepositId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

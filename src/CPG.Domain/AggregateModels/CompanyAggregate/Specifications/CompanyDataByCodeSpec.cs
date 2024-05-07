@@ -13,7 +13,14 @@ public class CompanyDataByCodeSpec : Specification<Company>, ISingleResultSpecif
             .ThenInclude(c => c.Bank)
             .Include(a => a.PaymentMethods)
             .Include(c => c.ShaparakSetting)
-            .Include(c => c.Users).ThenInclude(c => c.UserRoles)
+            .Include(c => c.Users)
+            .ThenInclude(c => c.UserRoles)
+            .Include(c => c.CompanyIPGs)
+            .ThenInclude(c => c.IPGDeposits)
+            .Include(c => c.CompanyIPGs)
+            .ThenInclude(c => c.IPGType)
+            .Include(c => c.CompanyIPGs)
+            .ThenInclude(c => c.Provider)
             .Where(company => company.Code == companyCode);
     }
 }

@@ -58,7 +58,7 @@ public class DirectDebitConfig : MethodConfigBase
 public class IpgConfig : MethodConfigBase
 {
     public List<string> DestinationDepositIban { get; set; }
-    public List<string> IpgTypeCode { get; set; }
+    public List<short> IpgTypeCode { get; set; }
 }
 
 public class PaymentReceiptConfig : MethodConfigBase
