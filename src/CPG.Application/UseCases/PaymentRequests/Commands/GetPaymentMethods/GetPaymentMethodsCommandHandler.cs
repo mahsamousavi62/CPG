@@ -213,7 +213,7 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
                 ipgResult = await Task.WhenAll(company.CompanyIPGs?.Select(t => new { t.IPGType, t.Id }).Select(async t => new IPGInfo
                 {
                     Id = t.Id,
-                    Logo = await _minioProvider.PresignedGetObject(t.IPGType.Logo),
+                    Logo =  !string.IsNullOrEmpty(t.IPGType.Logo) ? await General.GetLogo(_minioProvider, t.IPGType.Logo) : null,
                     PersianName = t.IPGType.PersianName,
                 })).ConfigureAwait(false);
             }
@@ -289,7 +289,8 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
                     {
                         Id = t.Key,
                         Name = t.FirstOrDefault().Bank.Name,
-                        Logo = await _minioProvider.PresignedGetObject(t.FirstOrDefault().Bank.Logo)
+                        Logo = !string.IsNullOrEmpty(t.FirstOrDefault().Bank.Logo) ?
+                        await General.GetLogo(_minioProvider, t.FirstOrDefault().Bank.Logo) : null
                     },
                     GrantInfo = t.Select(q => new DirectDebitGrantInfo
                     {

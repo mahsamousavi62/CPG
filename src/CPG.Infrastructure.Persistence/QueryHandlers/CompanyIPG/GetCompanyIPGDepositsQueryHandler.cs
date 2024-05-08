@@ -36,7 +36,7 @@ public class GetCompanyIPGDepositsQueryHandler(ReadDbContext context, IMinioProv
             IsDefaultForDirectDebit = deposit.IsDefaultForDirectDebit,
             CreationDate = deposit.CreationDate,
             ModificationDate = deposit.ModificationDate,
-            BankLogo = await _minioProvider.PresignedGetObject(deposit.Bank.Logo),
+            BankLogo = await General.GetLogo(  _minioProvider,deposit.Bank.Logo),
         })).ConfigureAwait(false);
 
         return Result<IReadOnlyCollection<CompanyDepositViewModel>>.SuccessResult(viewModels);

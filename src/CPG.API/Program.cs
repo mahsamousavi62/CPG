@@ -1,8 +1,12 @@
 using CPG.API.Helper;
+using CPG.API.Helper.Localization;
 using CPG.Application;
 using CPG.Application.Shared;
 using CPG.Infrastructure;
 using CPG.Infrastructure.Persistence;
+using MassTransit.Configuration;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Globalization;
@@ -63,6 +67,11 @@ const string DefaultCorsPolicyName = "localhost";
 var corsOrigins = configuration["CorsOrigins"]!
                             .Split(",", StringSplitOptions.RemoveEmptyEntries)
                             .ToArray();
+var supportedLanguages = new List<CultureInfo>
+    {
+        new("en"),
+        new("fa")
+    };
 
 builder.Services.AddCors(
                 options => options.AddPolicy(
@@ -73,13 +82,8 @@ builder.Services.AddCors(
                         .AllowAnyMethod()
                         .SetIsOriginAllowed((host) => true)
                         .AllowCredentials()));
-builder.Services.AddLocalization();
 
-var supportedLanguages = new List<CultureInfo>
-    {
-        new("en"),
-        new("fa")
-    };
+builder.Services.AddLocalization();
 
 builder.Services.Configure<RequestLocalizationOptions>(opt =>
 {
@@ -96,21 +100,17 @@ if (Convert.ToBoolean(configuration["EnableSwagger"]))
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseDeveloperExceptionPage();    
+    app.UseDeveloperExceptionPage();
 }
 
-app.UseRequestLocalization(new RequestLocalizationOptions
-{
-    SupportedCultures = supportedLanguages,
-    SupportedUICultures = supportedLanguages
-});
+
+app.UseRequestLocalization(LocalizationExtensions.RequestLocalizationOptions);
 app.MapHub<NotificationHub>("/Notify");
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseFileServer();
 app.UseStaticFiles();
 app.UseInfrastructure(configuration, app.Environment);
-
 app.UseSerilogRequestLogging();
 app.UseExceptionHandler();
 app.MapGraphQL();

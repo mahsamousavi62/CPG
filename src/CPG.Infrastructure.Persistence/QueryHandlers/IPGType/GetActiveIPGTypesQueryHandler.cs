@@ -1,5 +1,6 @@
 ﻿using CPG.Application.UseCases.IPGTypes.Queries;
 using CPG.Application.UseCases.IPGTypes.ViewModels;
+using CPG.Domain.AggregateModels.BankAggregate;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Minio;
 using CPG.Infrastructure.Persistence.DbContexts;
@@ -26,8 +27,8 @@ public class GetActiveIPGTypesQueryHandler(ReadDbContext context, IMinioProvider
             Id = x.Id,
             PersianName = x.PersianName,
             EnglishName = x.EnglishName,
-            Logo = await _minioProvider.PresignedGetObject(x.Logo),
             Code = x.Code,
+            Logo = !string.IsNullOrEmpty(x.Logo) ? await General.GetLogo(  _minioProvider,x.Logo) : "",
             CreationDate = x.CreationDate,
             ModificationDate = x.ModificationDate,
         })).ConfigureAwait(false);
