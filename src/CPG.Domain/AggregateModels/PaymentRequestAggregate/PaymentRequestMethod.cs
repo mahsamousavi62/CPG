@@ -4,6 +4,7 @@ using CPG.Domain.SharedKernel;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Domain.AggregateModels.PaymentRequestAggregate;
 
@@ -21,7 +22,7 @@ public class PaymentRequestMethod : AuditableEntity<long>
 
     public PaymentRequestMethod()
     {
-        
+
     }
 
     public PaymentRequestMethod(Enums.PaymentMethodType methodType, long paymentRequestId)
@@ -31,21 +32,29 @@ public class PaymentRequestMethod : AuditableEntity<long>
         IsActive = true;
     }
 
-    public PaymentRequestMethod(Enums.PaymentMethodType methodType)
+    public PaymentRequestMethod(Enums.PaymentMethodType methodType, List<PaymentRequestMethodIpgType> ipgTypes, List<PaymentRequestMethodDeposit> deposits)
     {
         PaymentMethodType = methodType;
+        if (deposits != null)
+            PaymentRequestMethodDeposits = deposits;
+        if (ipgTypes != null)
+            PaymentRequestMethodIpgTypes = ipgTypes;
         IsActive = true;
     }
 
-    public static List<PaymentRequestMethod> Create(Enums.PaymentMethodType[] methodTypes)
+    public static PaymentRequestMethod Create(PaymentMethodType methodType, long[] ipgTypeIds = null, long[] companyDepositIds = null)
     {
-        if (methodTypes is null || methodTypes.Length == 0)
-            throw new ArgumentNullException(nameof(methodTypes));
+        List<PaymentRequestMethodIpgType> ipgTypes = null;
+        if (methodType == PaymentMethodType.InternetPaymentGateway && ipgTypeIds?.Any() is true)
+        {
+            ipgTypes = PaymentRequestMethodIpgType.Create(ipgTypeIds);
+        }
+        List<PaymentRequestMethodDeposit> deposits = null;
+        if (companyDepositIds?.Any() is true)
+        {
+            deposits = PaymentRequestMethodDeposit.Create(companyDepositIds);
+        }
 
-        if (methodTypes.Select(x => x).Distinct().Count() != methodTypes.Length)
-            throw new DuplicatePaymentMethodTypeException(nameof(methodTypes));
-
-        var paymentMethods = methodTypes.Select(i => new PaymentRequestMethod(i)).ToList();
-        return paymentMethods;
+        return new PaymentRequestMethod(methodType, ipgTypes, deposits);        
     }
 }

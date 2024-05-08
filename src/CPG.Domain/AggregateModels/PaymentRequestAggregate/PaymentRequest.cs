@@ -50,9 +50,12 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
     public Company Company { get; set; }
     public Transaction Transaction { get; set; }
     public List<PaymentRequestMethod> PaymentRequestMethods { get; set; }
-    public static PaymentRequest Create(PaymentRequest paymentRequest, int expireTime, string clientId, string applicationEnglishName)
+
+    public static PaymentRequest Create(PaymentRequest paymentRequest, int expireTime, string clientId, string applicationEnglishName,
+        List<PaymentRequestMethod> methods = null)
     {
-        if (!string.IsNullOrEmpty(paymentRequest.PaymentIdentifier) && (paymentRequest.PaymentIdentifier.Length < 5 || paymentRequest.PaymentIdentifier.Length > 255))
+        if (!string.IsNullOrEmpty(paymentRequest.PaymentIdentifier) && (paymentRequest.PaymentIdentifier.Length < 5 ||
+            paymentRequest.PaymentIdentifier.Length > 255))
             throw new InvalidPaymentIdLengthException();
         paymentRequest.UrlExpirationDateTime = DateTime.Now.AddMinutes(expireTime);
         paymentRequest.IsActive = true;
@@ -62,6 +65,8 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
         paymentRequest.Status = 0;
         paymentRequest.IsActive = true;
         paymentRequest.IsUsed = false;
+        if (methods != null)
+            paymentRequest.PaymentRequestMethods = methods;
         return paymentRequest;
     }
 

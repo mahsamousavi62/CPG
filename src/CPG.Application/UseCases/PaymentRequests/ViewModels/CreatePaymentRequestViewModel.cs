@@ -1,6 +1,7 @@
 ﻿using Mapster;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Application.UseCases.PaymentRequests.ViewModels;
@@ -26,6 +27,7 @@ public class CreatePaymentRequestViewModel : IRegister
 
     public string Description { get; set; }
 
+    [AllowNull]
     public PaymentMethodConfig PaymentMethodConfig { get; set; }
 
     public void Register(TypeAdapterConfig config)
