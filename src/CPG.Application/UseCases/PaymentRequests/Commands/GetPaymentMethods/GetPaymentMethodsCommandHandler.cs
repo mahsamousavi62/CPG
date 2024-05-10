@@ -157,19 +157,23 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
 
             if (availablePaymentMethodTypes?.Contains(PaymentMethodType.InternetPaymentGateway) is true)
             {
-                var toBeRemoved = new List<CompanyIPG>();
-                foreach (var companyIPGItem in company?.CompanyIPGs)
+                if (!availableIpg(company))
                 {
-                    var defaultDeposit = companyIPGItem.IPGDeposits.FirstOrDefault(t => t.IsDefault);
-                    if (defaultDeposit == null) throw new Exception("company not found");
-                    if (!defaultDeposit.IsActive)
+
+                    var toBeRemoved = new List<CompanyIPG>();
+                    foreach (var companyIPGItem in company?.CompanyIPGs)
                     {
-                        toBeRemoved.Add(companyIPGItem);
+                        var defaultDeposit = companyIPGItem.IPGDeposits.FirstOrDefault(t => t.IsDefault);
+                        if (defaultDeposit == null) throw new Exception("company not found");
+                        if (!defaultDeposit.IsActive)
+                        {
+                            toBeRemoved.Add(companyIPGItem);
+                        }
                     }
-                }
-                foreach (var companyIPGItem in toBeRemoved)
-                {
-                    company.CompanyIPGs.Remove(companyIPGItem);
+                    foreach (var companyIPGItem in toBeRemoved)
+                    {
+                        company.CompanyIPGs.Remove(companyIPGItem);
+                    }
                 }
             }
             if (availablePaymentMethodTypes?.Contains(PaymentMethodType.PaymentReceipt) is true)
@@ -311,4 +315,128 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
             CompanyName = company?.PersianName,
         });
     }
+
+    private bool availableIpg(Company company)
+    {
+        if (company is null || !company.IsActive)
+        {
+            return false;
+        }
+        if (company.PaymentMethods.Any(x => x.MethodType == PaymentMethodType.InternetPaymentGateway))
+        {
+            return false;
+        }
+        if (company.CompanyDeposits?.Any() is false && company.CompanyDeposits.All(t => t.IsActive is false))
+        {
+            return false;
+        }
+        var activeMethodDeposits = company.CompanyDeposits.Where(t => t.PaymentMethods.Select(x => x.MethodType).Contains(PaymentMethodType.InternetPaymentGateway)).ToList();
+        
+        if (!activeMethodDeposits.Any())
+        {
+            return false;
+        }
+        var inactiveBankMethods = activeMethodDeposits.All(x => x.Bank.IsActive is false);
+        if (!inactiveBankMethods)
+        {
+            return false;
+
+        }
+        var ipgDeposits = company.CompanyDeposits.Where(t => t.IsActive && t.Bank.IsActive && t.PaymentMethods.Select(t => t.MethodType).Contains(PaymentMethodType.InternetPaymentGateway));
+        var companyDefaultIpgDeposits = company.CompanyIPGs.SelectMany(t => t.IPGDeposits.Where(t => t.IsDefault is true));
+        var defaultIpgDeposits = ipgDeposits?.Where(x => companyDefaultIpgDeposits.Select(t => t.Id).Contains(x.Id));
+        if (defaultIpgDeposits?.Any() is false)
+            return false;
+
+        var companyActiveIpgDeposits = companyDefaultIpgDeposits.Select(x => new { x.Id, x.CompanyIPG }).Where(t => defaultIpgDeposits.Select(x => x.Id).Contains(t.Id));
+        if (companyActiveIpgDeposits?.Any(t => t.CompanyIPG.IsActive is true) is false)
+            return false;
+
+        if (companyActiveIpgDeposits?.Any(t => t.CompanyIPG.IPGType.IsActive is true) is false)
+            return false;
+
+        if (companyActiveIpgDeposits?.Any(t => t.CompanyIPG.Provider.IsActive is true) is false)
+            return false;
+
+        return true;
+    }
+
+    private bool availableIpg(Company company, PaymentRequest paymentRequest)
+    {
+        if (company is null || !company.IsActive)
+        {
+            return false;
+        }
+        if (company.PaymentMethods.Any(x => x.MethodType == PaymentMethodType.InternetPaymentGateway))
+        {
+            return false;
+        }
+        if (company.CompanyDeposits?.Any() is false && company.CompanyDeposits.All(t => t.IsActive is false))
+        {
+            return false;
+        }
+        var activeMethodDeposits = company.CompanyDeposits.Where(t => t.PaymentMethods.Select(x => x.MethodType).Contains(PaymentMethodType.InternetPaymentGateway)).ToList();
+
+        if (!activeMethodDeposits.Any())
+        {
+            return false;
+        }
+        var inactiveBankMethods = activeMethodDeposits.All(x => x.Bank.IsActive is false);
+        if (!inactiveBankMethods)
+        {
+            return false;
+
+        }
+        var ipgDeposits = company.CompanyDeposits.Where(t => t.IsActive && t.Bank.IsActive && t.PaymentMethods.Select(t => t.MethodType).Contains(PaymentMethodType.InternetPaymentGateway));
+        
+       // var dds=List<paymentrequestmethod>
+        //var t=ipgDeposits.Select(t => t.Id).ToList().Contains();
+
+        var companyDefaultIpgDeposits = company.CompanyIPGs.SelectMany(t => t.IPGDeposits.Where(t => t.IsDefault is true));
+        var defaultIpgDeposits = ipgDeposits?.Where(x => companyDefaultIpgDeposits.Select(t => t.Id).Contains(x.Id));
+        if (defaultIpgDeposits?.Any() is false)
+            return false;
+
+        var companyActiveIpgDeposits = companyDefaultIpgDeposits.Select(x => new { x.Id, x.CompanyIPG }).Where(t => defaultIpgDeposits.Select(x => x.Id).Contains(t.Id));
+        if (companyActiveIpgDeposits?.Any(t => t.CompanyIPG.IsActive is true) is false)
+            return false;
+
+        if (companyActiveIpgDeposits?.Any(t => t.CompanyIPG.IPGType.IsActive is true) is false)
+            return false;
+
+        if (companyActiveIpgDeposits?.Any(t => t.CompanyIPG.Provider.IsActive is true) is false)
+            return false;
+
+        return true;
+    }
+    private bool availableCharismaCard(Company company)
+    {
+        if (company is null || !company.IsActive)
+        {
+            return false;
+        }
+        if (company.PaymentMethods.Any(x => x.MethodType == PaymentMethodType.CharismaCard))
+        {
+            return false;
+        }
+        if (company.CompanyDeposits?.Any() is false && company.CompanyDeposits.All(t => t.IsActive is false))
+        {
+            return false;
+        }
+        var activeMethodDeposits = company.CompanyDeposits.Where(t => t.PaymentMethods.Select(x => x.MethodType).Contains(PaymentMethodType.CharismaCard)).ToList();
+
+        if (!activeMethodDeposits.Any())
+        {
+            return false;
+        }
+
+        var isDefault = activeMethodDeposits.FirstOrDefault(c => c.IsDefaultForCharismaCard.Value && c.IsActive);
+       
+        if (isDefault.Bank.IsActive && isDefault.Bank.IbanPrefix != MiddleEastIbanPrefix)
+        {
+            return false;
+        }
+        return true;
+    }
+
 }
