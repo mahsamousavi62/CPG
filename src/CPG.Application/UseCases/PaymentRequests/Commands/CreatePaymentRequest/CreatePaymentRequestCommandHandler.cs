@@ -54,17 +54,6 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
     {
         try
         {
-            if (request.Model.PaymentMethodConfig is null)
-            {
-                request.Model.PaymentMethodConfig = new PaymentMethodConfig
-                {
-                    CharismaCardConfig = new CharismaCardConfig { IsActive = true },
-                    DirectDebitConfig = new DirectDebitConfig { IsActive = true },
-                    IpgConfig = new IpgConfig { IsActive = true },
-                    PaymentReceiptConfig = new PaymentReceiptConfig { IsActive = true },
-                };
-            }
-
             var validationOutputData = await Validate(request.Model, cancellationToken);
 
             PaymentRequest paymentRequest = request.Model.Adapt<PaymentRequest>();
@@ -133,8 +122,19 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
     private async Task<ConfigData> Validate(CreatePaymentRequestViewModel model, CancellationToken cancellationToken)
     {
         var amount = new Amount(model.Amount);
-        var callBackUrl = new Url(model.CallBackUrl);
-        var nationalCode = new NationalCode(model.NationalCode);
+               
+        try
+        {
+            var nationalCode = new NationalCode(model.NationalCode);
+        }
+        catch (Exception exc)
+        {
+            throw new PaymentRequestInvalidNationalCodeException();
+        }
+
+        var sameTrackerId = await _paymentRequestRepository.GetBySpecAsync(new PaymentRequestByTrackerId(model.TrackerId));
+        if (sameTrackerId != null)
+            throw new PaymentRequestDuplicateTrackerIdException(sameTrackerId.TrackerId);
 
         var company = await _companyRepository.GetBySpecAsync(new CompanyDataByCodeSpec(model.CompanyCode), cancellationToken);
 
@@ -144,9 +144,56 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
         if (!company.IsActive)
             throw new PamentRequestInactiveCompanyException();
 
-        var sameTrackerId = await _paymentRequestRepository.GetBySpecAsync(new PaymentRequestByTrackerId(model.TrackerId));
-        if (sameTrackerId != null)
-            throw new PaymentRequestDuplicateTrackerIdException(sameTrackerId.TrackerId);
+        if (model.PaymentMethodConfig is null)
+        {
+            if (company.CompanyDeposits?.Any(t => t.IsActive) is false)
+                throw new PaymentRequestNoActiveCompanyDepositFoundException(company.PersianName);
+
+            if (company.CompanyDeposits?.Any(t => t.Bank.IsActive) is false)
+                throw new PaymentRequestNoActiveDepositBankException(company.PersianName);
+
+            if (company.CompanyDeposits?.Any(t => t.PaymentMethods != null && t.PaymentMethods.Count > 0) is false)
+                throw new PaymentRequestNoDepositPaymentMethodException(company.PersianName);
+
+            var companyIpgs = company.CompanyIPGs.Where(t => t.IsActive &&
+                                                             t.Provider.IsActive &&
+                                                             t.Provider.PaymentMethods != null &&
+                                                             t.Provider.PaymentMethods.Select(x => x.MethodType)
+                                                                                      .Contains(PaymentMethodType.InternetPaymentGateway));
+
+            var ipgDeposits = company.CompanyDeposits.Where(t => t.IsActive &&
+                                                                 t.Bank.IsActive &&
+                                                                 t.PaymentMethods != null &&
+                                                                 t.PaymentMethods.Select(x => x.MethodType)
+                                                                                 .Contains(PaymentMethodType.InternetPaymentGateway) &&
+                                                                 companyIpgs.SelectMany(x => x.IPGDeposits.Where(q => q.IsDefault)
+                                                                                                          .Select(q => q.CompanyDepositId))
+                                                                            .Contains(t.Id));
+
+            var ddDeposits = company.CompanyDeposits.Where(t => t.IsActive &&
+                                                                t.Bank.IsActive &&
+                                                                t.IsDefaultForDirectDebit is true &&
+                                                                t.PaymentMethods != null &&
+                                                                t.PaymentMethods.Select(x => x.MethodType)
+                                                                                .Contains(PaymentMethodType.DirectDebit));
+
+            var receiptDeposits = company.CompanyDeposits.Where(t => t.IsActive &&
+                                                                     t.Bank.IsActive &&
+                                                                     t.PaymentMethods != null &&
+                                                                     t.PaymentMethods.Select(x => x.MethodType)
+                                                                                     .Contains(PaymentMethodType.PaymentReceipt));
+
+            var cardDeposits = company.CompanyDeposits.Where(t => t.IsActive &&
+                                                                  t.Bank.IsActive &&
+                                                                  t.IsDefaultForCharismaCard is true &&
+                                                                  t.PaymentMethods != null &&
+                                                                  t.PaymentMethods.Select(x => x.MethodType)
+                                                                                  .Contains(PaymentMethodType.CharismaCard));
+
+            if (ipgDeposits?.Any() is false && ddDeposits?.Any() is false && receiptDeposits?.Any() is false && cardDeposits?.Any() is false)
+                throw new PaymentRequestNoUsableMethodsException(company.PersianName);
+
+        }
 
         List<MethodData> methodData = null;
         List<IPGType> ipgTypes = null;

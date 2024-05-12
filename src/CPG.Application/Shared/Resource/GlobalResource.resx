@@ -945,4 +945,16 @@
   <data name="PaymentRequestNotExistIpgTypes" xml:space="preserve">
     <value>All port types provided are invalid</value>
   </data>
+  <data name="PaymentRequestInvalidNationalCode" xml:space="preserve">
+    <value>The national code is not entered in the correct format</value>
+  </data>
+  <data name="PaymentRequestNoActiveCompanyDepositFound" xml:space="preserve">
+    <value>No account has been defined in the {0} or all accounts are inactive</value>
+  </data>
+  <data name="PaymentRequestNoActiveDepositBank" xml:space="preserve">
+    <value>The bank of all accounts of the company {0} is inactive</value>
+  </data>
+  <data name="PaymentRequestNoDepositPaymentMethod" xml:space="preserve">
+    <value>The payment method has not been determined on any of the active accounts of the company {0}</value>
+  </data>
 </root>

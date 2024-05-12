@@ -5,5 +5,5 @@ namespace CPG.Application.UseCases.PaymentRequests.Exceptions;
 
 public class PaymentRequestNoDepositFoundForIbanException(string methodTypes, string companyName) : AppException(string.Format(GlobalResource.PaymentRequestNoDepositFoundForIban, methodTypes, companyName))
 {
-    public override string Code => "1001018";
+    public override string Code => "1001021";
 }

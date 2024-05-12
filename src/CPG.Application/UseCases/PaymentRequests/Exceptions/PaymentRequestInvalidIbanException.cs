@@ -5,5 +5,5 @@ namespace CPG.Application.UseCases.PaymentRequests.Exceptions;
 
 public class PaymentRequestInvalidIbanException(string methodTypes) : AppException(string.Format(GlobalResource.PaymentRequestInvalidIban, methodTypes))
 {
-    public override string Code => "1001017";
+    public override string Code => "1001040";
 }

@@ -5,5 +5,5 @@ namespace CPG.Application.UseCases.PaymentRequests.Exceptions;
 
 public class PaymentRequestInvalidUrlPatternException() : AppException(GlobalResource.PaymentRequestInvalidUrlPattern)
 {
-    public override string Code => "1001031";
+    public override string Code => "1001034";
 }

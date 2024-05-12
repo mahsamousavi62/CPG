@@ -5,5 +5,5 @@ namespace CPG.Application.UseCases.PaymentRequests.Exceptions;
 
 public class PaymentRequestNoActiveDirectDebitProviderException() : AppException(GlobalResource.PaymentRequestNoActiveDirectDebitProvider)
 {
-    public override string Code => "1001014";
+    public override string Code => "1001018";
 }

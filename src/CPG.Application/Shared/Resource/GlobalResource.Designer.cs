@@ -1627,6 +1627,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The national code is not entered in the correct format.
+        /// </summary>
+        public static string PaymentRequestInvalidNationalCode {
+            get {
+                return ResourceManager.GetString("PaymentRequestInvalidNationalCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The callback url is not provided in the correct format.
         /// </summary>
         public static string PaymentRequestInvalidUrlPattern {
@@ -1636,11 +1645,29 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No account has been defined in the {0} or all accounts are inactive.
+        /// </summary>
+        public static string PaymentRequestNoActiveCompanyDepositFound {
+            get {
+                return ResourceManager.GetString("PaymentRequestNoActiveCompanyDepositFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to None of the corresponding accounts have been set up on any active port of the specified type in the company {0}.
         /// </summary>
         public static string PaymentRequestNoActiveCompanyIpgDepositForIpgCode {
             get {
                 return ResourceManager.GetString("PaymentRequestNoActiveCompanyIpgDepositForIpgCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The bank of all accounts of the company {0} is inactive.
+        /// </summary>
+        public static string PaymentRequestNoActiveDepositBank {
+            get {
+                return ResourceManager.GetString("PaymentRequestNoActiveDepositBank", resourceCulture);
             }
         }
         
@@ -1767,6 +1794,15 @@ namespace CPG.Application.Shared.Resource {
         public static string PaymentRequestNoDepositFoundForIban {
             get {
                 return ResourceManager.GetString("PaymentRequestNoDepositFoundForIban", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The payment method has not been determined on any of the active accounts of the company {0}.
+        /// </summary>
+        public static string PaymentRequestNoDepositPaymentMethod {
+            get {
+                return ResourceManager.GetString("PaymentRequestNoDepositPaymentMethod", resourceCulture);
             }
         }
         

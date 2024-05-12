@@ -5,5 +5,5 @@ namespace CPG.Application.UseCases.PaymentRequests.Exceptions;
 
 internal class PaymentRequestNoActiveCompanyIpgDepositForIpgCodeException(string companyName) : AppException(string.Format(GlobalResource.PaymentRequestNoActiveCompanyIpgDepositForIpgCode, companyName))
 {
-    public override string Code => "1001027";
+    public override string Code => "1001030";
 }

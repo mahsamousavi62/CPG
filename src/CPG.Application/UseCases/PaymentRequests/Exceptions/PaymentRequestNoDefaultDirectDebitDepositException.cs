@@ -5,5 +5,5 @@ namespace CPG.Application.UseCases.PaymentRequests.Exceptions;
 
 public class PaymentRequestNoDefaultDirectDebitDepositException(string companyName) : AppException(string.Format(GlobalResource.PaymentRequestNoDefaultDirectDebitDeposit, companyName))
 {
-    public override string Code => "1001015";
+    public override string Code => "1001019";
 }

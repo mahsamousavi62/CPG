@@ -5,5 +5,5 @@ namespace CPG.Application.UseCases.PaymentRequests.Exceptions;
 
 public class PaymentRequestNotExistDepositsException(string methods, string companyName) : AppException(string.Format(GlobalResource.PaymentRequestNotExistDeposits, methods,companyName))
 {
-    public override string Code => "1001007";
+    public override string Code => "1001011";
 }

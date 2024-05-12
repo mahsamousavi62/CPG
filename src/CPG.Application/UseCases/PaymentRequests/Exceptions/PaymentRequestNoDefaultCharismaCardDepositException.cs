@@ -5,5 +5,5 @@ namespace CPG.Application.UseCases.PaymentRequests.Exceptions;
 
 public class PaymentRequestNoDefaultCharismaCardDepositException(string companyName) : AppException(string.Format(GlobalResource.PaymentRequestNoDefaultCharismaCardDeposit, companyName))
 {
-    public override string Code => "1001016";
+    public override string Code => "1001020";
 }

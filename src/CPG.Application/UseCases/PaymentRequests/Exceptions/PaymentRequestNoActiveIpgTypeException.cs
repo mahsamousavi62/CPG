@@ -5,5 +5,5 @@ namespace CPG.Application.UseCases.PaymentRequests.Exceptions;
 
 public class PaymentRequestNoActiveIpgTypeException(string companyName) : AppException(string.Format(GlobalResource.PaymentRequestNoActiveIpgType, companyName))
 {
-    public override string Code => "1001012";
+    public override string Code => "1001016";
 }
