@@ -389,7 +389,7 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
 
         var paymentRequestMethodIpgTypes = paymentRequestMethod.PaymentRequestMethodIpgTypes.Where(prm => prm.PaymentRequestMethodId == paymentRequest.Id);
         var paymentRequestMethodDeposits = paymentRequestMethod.PaymentRequestMethodDeposits.Where(prm => prm.PaymentRequestMethodId == paymentRequest.Id);
-        if (company.PaymentMethods.Any(x => x.MethodType == PaymentMethodType.InternetPaymentGateway))
+        if (!company.PaymentMethods.Any(x => x.MethodType == PaymentMethodType.InternetPaymentGateway))
         {
             return false;
         }
@@ -405,23 +405,21 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
             return false;
         }
 
-        var ipgDeposits = company.CompanyDeposits.Where(t => t.PaymentMethods.Select(t => t.MethodType).Contains(PaymentMethodType.InternetPaymentGateway));
-        if (ipgDeposits.Any())
+        var ipgDeposits = company.CompanyIPGs.Where(t => t.Provider.PaymentMethods != null &&
+                                                    t.Provider.PaymentMethods.Select(x => x.MethodType)
+                                                    .Contains(PaymentMethodType.InternetPaymentGateway));
+        if (!ipgDeposits.Any())
         { return false; }
 
-        if (paymentRequestMethodIpgTypes is null && paymentRequestMethodDeposits is null)
+        if (!paymentRequestMethodIpgTypes.Any() && !paymentRequestMethodDeposits.Any())
         {
-           
-            var companyDefaultIpgDeposits = company.CompanyIPGs.SelectMany(t => t.IPGDeposits.Where(t => t.IsDefault is true));
-            var defaultIpgDeposits = ipgDeposits?.Where(x => companyDefaultIpgDeposits.Select(t => t.Id).Contains(x.Id));
-            if (defaultIpgDeposits?.Any() is false)
+
+            var companyDefaultIpgDeposits = ipgDeposits.SelectMany(t => t.IPGDeposits.Where(t => t.IsDefault));
+            if (!companyDefaultIpgDeposits.Any())
                 return false;
 
-            var companyActiveIpgDeposits = companyDefaultIpgDeposits.Select(x => new { x.Id, x.CompanyIPG }).Where(t => defaultIpgDeposits.Select(x => x.Id).Contains(t.Id));
-            if (companyActiveIpgDeposits?.Any() is false)
-                return false;
         }
-        if (paymentRequestMethodIpgTypes is null && paymentRequestMethodDeposits is not null)
+        if (!paymentRequestMethodIpgTypes.Any() && paymentRequestMethodDeposits.Any())
         {
             var SuggestCompanyDeposits = paymentRequestMethodDeposits.Select(c => c.CompanyDepositId).ToList();
 
