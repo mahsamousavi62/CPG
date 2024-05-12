@@ -83,13 +83,13 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
             paymentRequest.ApplicationId = application.Id;
             paymentRequest.CompanyId = validationOutputData.Company.Id;
 
-            List<PaymentRequestMethod> paymentRequestMethods = null;
+            var paymentRequestMethods = new List<PaymentRequestMethod>();
             if (validationOutputData.MethodDataList?.Any() is true)
             {
                 foreach (var item in validationOutputData.MethodDataList)
                 {
-                    paymentRequestMethods.Add(PaymentRequestMethod.Create(item.MethodType, item.IPGTypeList.Select(t => t.Id).ToArray(),
-                        item.IbanInfoList.Select(t => t.Deposit.Id).ToArray()));
+                    paymentRequestMethods.Add(PaymentRequestMethod.Create(item.MethodType, item.IPGTypeList?.Select(t => t.Id)?.ToArray(),
+                        item.IbanInfoList?.Select(t => t.Deposit.Id)?.ToArray()));
                 }
             }
             PaymentRequest.Create(paymentRequest, int.Parse(appConfig.ExpireTime), clientId, application.EnglishName, paymentRequestMethods);
@@ -467,7 +467,7 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
         var charismaCardConfig = paymentMethodConfig.CharismaCardConfig;
         var recieptConfig = paymentMethodConfig.PaymentReceiptConfig;
         var response = new List<MethodData>();
-        if (ipgConfig != null)
+        if (ipgConfig != null && ipgConfig.IsActive)
         {
             var ibanList = new List<IbanInfo>();
             foreach (var ipgIban in ipgConfig.DestinationDepositIban?.Where(t => !string.IsNullOrEmpty(t)))
@@ -479,10 +479,9 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
                     IsValid = true
                 });
             }
-            if (ibanList?.Any() is true)
-                response.Add(new MethodData { MethodType = PaymentMethodType.InternetPaymentGateway, IbanInfoList = ibanList, IPGTypeList = iPGTypes });
+            response.Add(new MethodData { MethodType = PaymentMethodType.InternetPaymentGateway, IbanInfoList = ibanList, IPGTypeList = iPGTypes });
         }
-        if (directDebitConfig != null && !string.IsNullOrEmpty(directDebitConfig.DestinationDepositIban))
+        if (directDebitConfig != null && directDebitConfig.IsActive)
         {
             var ibanList = new List<IbanInfo>
             {
@@ -493,9 +492,9 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
                     IsValid = true
                 }
             };
-            response.Add(new MethodData { MethodType = PaymentMethodType.DirectDebit, IbanInfoList = ibanList });
+            response.Add(new MethodData { MethodType = PaymentMethodType.DirectDebit, IbanInfoList = !string.IsNullOrEmpty(directDebitConfig.DestinationDepositIban) ? ibanList : new List<IbanInfo>() });
         }
-        if (recieptConfig != null)
+        if (recieptConfig != null && recieptConfig.IsActive)
         {
             var ibanList = new List<IbanInfo>();
             foreach (var ipgIban in recieptConfig.DestinationDepositIban?.Where(t => !string.IsNullOrEmpty(t)))
@@ -507,8 +506,11 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
                     IsValid = true
                 });
             }
-            if (ibanList?.Any() is true)
-                response.Add(new MethodData { MethodType = PaymentMethodType.InternetPaymentGateway, IbanInfoList = ibanList });
+            response.Add(new MethodData { MethodType = PaymentMethodType.PaymentReceipt, IbanInfoList = ibanList });
+        }
+        if (charismaCardConfig != null && charismaCardConfig.IsActive)
+        {
+            response.Add(new MethodData { MethodType = PaymentMethodType.CharismaCard, IbanInfoList = new List<IbanInfo>() });
         }
         return response;
     }
