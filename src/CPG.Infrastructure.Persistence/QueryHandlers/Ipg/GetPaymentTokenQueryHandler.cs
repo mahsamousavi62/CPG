@@ -91,18 +91,18 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
 
             long destinationDepositId;
             Domain.AggregateModels.CompanyDepositAggregate.CompanyDeposit companyDeposit;
-            if (!string.IsNullOrWhiteSpace(paymentRequest.DestinationDepositIban))
-            {
-                companyDeposit = await _companyDepositRepository.GetBySpecAsync(new CompanyDepositByIban(paymentRequest.DestinationDepositIban), cancellationToken);
-                if (companyDeposit is null) throw new Exception("CompanyDeposit not found!");
-                if (companyDeposit.CompanyId != paymentRequest.CompanyId) { throw new PaymentTokenDepositNotBelongsCompanyException(); }
-            }
-            else
-            {
+            //if (!string.IsNullOrWhiteSpace(paymentRequest.DestinationDepositIban))
+            //{
+            //    companyDeposit = await _companyDepositRepository.GetBySpecAsync(new CompanyDepositByIban(paymentRequest.DestinationDepositIban), cancellationToken);
+            //    if (companyDeposit is null) throw new Exception("CompanyDeposit not found!");
+            //    if (companyDeposit.CompanyId != paymentRequest.CompanyId) { throw new PaymentTokenDepositNotBelongsCompanyException(); }
+            //}
+            //else
+            //{
                 var tempcompanyIpg = await _companyIPGRepository.GetBySpecAsync(new CompanyIPGByIpgDeposit(companyIpg.Id), cancellationToken);
                 companyDeposit = tempcompanyIpg.IPGDeposits.SingleOrDefault().CompanyDeposit;
                 if (companyDeposit is null) throw new Exception("CompanyDeposit not found!");
-            }
+            //}
 
             if (!companyDeposit.IsActive) throw new PaymentTokenInactiveDepositException();
             if (!companyDeposit.Bank.IsActive) throw new PaymentTokenInactiveBankException();

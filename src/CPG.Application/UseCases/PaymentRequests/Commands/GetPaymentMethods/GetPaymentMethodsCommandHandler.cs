@@ -79,71 +79,71 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
         ViewModels.CharismaCard charismaCard = null;
         var sub = await _authenticationService.GetDataFromClaim<string>("sub", string.Empty);
 
-        if (!string.IsNullOrEmpty(paymentRequest.DestinationDepositIban))
-        {
-            company = await _companyRepository.GetBySpecAsync(new CompanyPaymentMethodsByIbanSpec(paymentRequest.CompanyId,
-                            paymentRequest.DestinationDepositIban), cancellationToken);
+        //if (!string.IsNullOrEmpty(paymentRequest.DestinationDepositIban))
+        //{
+        //    company = await _companyRepository.GetBySpecAsync(new CompanyPaymentMethodsByIbanSpec(paymentRequest.CompanyId,
+        //                    paymentRequest.DestinationDepositIban), cancellationToken);
 
-            if (string.IsNullOrEmpty(sub))
-            {
-                availablePaymentMethodTypes = new List<PaymentMethodType> { PaymentMethodType.InternetPaymentGateway };
-            }
-            else
-            {
-                availablePaymentMethodTypes = company?.PaymentMethods?.Select(p => p.MethodType).ToList();
-            }
+        //    if (string.IsNullOrEmpty(sub))
+        //    {
+        //        availablePaymentMethodTypes = new List<PaymentMethodType> { PaymentMethodType.InternetPaymentGateway };
+        //    }
+        //    else
+        //    {
+        //        availablePaymentMethodTypes = company?.PaymentMethods?.Select(p => p.MethodType).ToList();
+        //    }
 
-            if (availablePaymentMethodTypes?.Contains(PaymentMethodType.InternetPaymentGateway) is true)
-            {
-                var toBeRemoved = new List<CompanyIPG>();
-                foreach (var companyIPGItem in company?.CompanyIPGs)
-                {
-                    var found = companyIPGItem.IPGDeposits.Any(t => t.CompanyDeposit.Iban == paymentRequest.DestinationDepositIban);
-                    if (!found)
-                    {
-                        toBeRemoved.Add(companyIPGItem);
-                    }
-                }
-                foreach (var companyIPGItem in toBeRemoved)
-                {
-                    company.CompanyIPGs.Remove(companyIPGItem);
-                }
-            }
-            var companyDeposit = company.CompanyDeposits?.Where(t => t.Iban == paymentRequest.DestinationDepositIban).FirstOrDefault();
-            if (availablePaymentMethodTypes?.Contains(PaymentMethodType.PaymentReceipt) is true)
-            {
-                if (companyDeposit is not null)
-                {
-                    receipt = new Receipt
-                    {
-                        AccountNumber = companyDeposit?.AccountNumber,
-                        BankName = companyDeposit?.Bank?.Name,
-                        DestinationDepositId = companyDeposit?.Id
-                    };
-                }
-            }
+        //    if (availablePaymentMethodTypes?.Contains(PaymentMethodType.InternetPaymentGateway) is true)
+        //    {
+        //        var toBeRemoved = new List<CompanyIPG>();
+        //        foreach (var companyIPGItem in company?.CompanyIPGs)
+        //        {
+        //            var found = companyIPGItem.IPGDeposits.Any(t => t.CompanyDeposit.Iban == paymentRequest.DestinationDepositIban);
+        //            if (!found)
+        //            {
+        //                toBeRemoved.Add(companyIPGItem);
+        //            }
+        //        }
+        //        foreach (var companyIPGItem in toBeRemoved)
+        //        {
+        //            company.CompanyIPGs.Remove(companyIPGItem);
+        //        }
+        //    }
+        //    var companyDeposit = company.CompanyDeposits?.Where(t => t.Iban == paymentRequest.DestinationDepositIban).FirstOrDefault();
+        //    if (availablePaymentMethodTypes?.Contains(PaymentMethodType.PaymentReceipt) is true)
+        //    {
+        //        if (companyDeposit is not null)
+        //        {
+        //            receipt = new Receipt
+        //            {
+        //                AccountNumber = companyDeposit?.AccountNumber,
+        //                BankName = companyDeposit?.Bank?.Name,
+        //                DestinationDepositId = companyDeposit?.Id
+        //            };
+        //        }
+        //    }
 
-            if (availablePaymentMethodTypes?.Contains(PaymentMethodType.CharismaCard) is true &&
-                 companyDeposit.Bank.IbanPrefix == MiddleEastIbanPrefix)
-            {
-                var userDepositBalance = await _neoBankService.GetUserDepositBalance();
+        //    if (availablePaymentMethodTypes?.Contains(PaymentMethodType.CharismaCard) is true &&
+        //         companyDeposit.Bank.IbanPrefix == MiddleEastIbanPrefix)
+        //    {
+        //        var userDepositBalance = await _neoBankService.GetUserDepositBalance();
 
-                if (userDepositBalance?.Data is not null)
-                {
+        //        if (userDepositBalance?.Data is not null)
+        //        {
 
-                    charismaCard = new ViewModels.CharismaCard
-                    {
-                        BalanceAmount = userDepositBalance.Data.Balance,
-                        CardNumber = userDepositBalance.Data.CardNumber,
-                        CustomerSurname = $"{userDepositBalance.Data.CustomerFirstName} {userDepositBalance.Data.CustomerLastName}",
-                        DepositStatus = userDepositBalance.Data.DepositStatus,
-                        ExpirationDate = userDepositBalance.Data.ExpirationDate
-                    };
-                }
-            }
-        }
-        else
-        {
+        //            charismaCard = new ViewModels.CharismaCard
+        //            {
+        //                BalanceAmount = userDepositBalance.Data.Balance,
+        //                CardNumber = userDepositBalance.Data.CardNumber,
+        //                CustomerSurname = $"{userDepositBalance.Data.CustomerFirstName} {userDepositBalance.Data.CustomerLastName}",
+        //                DepositStatus = userDepositBalance.Data.DepositStatus,
+        //                ExpirationDate = userDepositBalance.Data.ExpirationDate
+        //            };
+        //        }
+        //    }
+        //}
+        //else
+        //{
             company = await _companyRepository.GetBySpecAsync(new CompanyPaymentMethodsByIdSpec(paymentRequest.CompanyId), cancellationToken);
 
             if (string.IsNullOrEmpty(sub))
@@ -202,7 +202,7 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
                 }
             }
 
-        }
+        //}
 
         IPGInfo[] ipgResult = null;
         DirectDebitInfo[] directDebits = null;
