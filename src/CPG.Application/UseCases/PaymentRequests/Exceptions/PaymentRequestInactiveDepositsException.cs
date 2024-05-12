@@ -5,5 +5,5 @@ namespace CPG.Application.UseCases.PaymentRequests.Exceptions;
 
 public class PaymentRequestInactiveDepositsException(string companyName) : AppException(string.Format(GlobalResource.PaymentRequestInactiveDeposits, companyName))
 {
-    public override string Code => "1001005";
+    public override string Code => "1001009";
 }

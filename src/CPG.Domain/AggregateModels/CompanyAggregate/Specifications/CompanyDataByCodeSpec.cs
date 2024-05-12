@@ -11,6 +11,8 @@ public class CompanyDataByCodeSpec : Specification<Company>, ISingleResultSpecif
             .ThenInclude(c => c.PaymentMethods)
             .Include(c => c.CompanyDeposits)
             .ThenInclude(c => c.Bank)
+            .Include(c => c.CompanyDeposits)
+            .ThenInclude(c => c.PaymentMethods)
             .Include(a => a.PaymentMethods)
             .Include(c => c.ShaparakSetting)
             .Include(c => c.Users)

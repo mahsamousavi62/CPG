@@ -5,5 +5,5 @@ namespace CPG.Application.UseCases.PaymentRequests.Exceptions;
 
 public class PaymentRequestCompanyMethodsException(string methods, string companyName) : AppException(string.Format(GlobalResource.PaymentRequestCompanyMethods, methods, companyName))
 {
-    public override string Code => "1001004";
+    public override string Code => "1001008";
 }

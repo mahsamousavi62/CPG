@@ -5,5 +5,5 @@ namespace CPG.Application.UseCases.PaymentRequests.Exceptions;
 
 public class PaymentRequestNotExistIpgTypesException() : AppException(GlobalResource.PaymentRequestNotExistIpgTypes)
 {
-    public override string Code => "1001008";
+    public override string Code => "1001012";
 }

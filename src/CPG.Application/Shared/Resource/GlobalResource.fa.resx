@@ -961,9 +961,21 @@
     <value>انتخاب یکی از روش های پرداخت الزامی است</value>
   </data>
   <data name="PaymentRequestNotExistDeposits" xml:space="preserve">
-    <value>روش(های) پرداخت {0ر} بر روی هیچ یک از حساب های فعال شرکت {1} تعیین نشده است</value>
+    <value>روش(های) پرداخت {0} بر روی هیچ یک از حساب های فعال شرکت {1} تعیین نشده است</value>
   </data>
   <data name="PaymentRequestNotExistIpgTypes" xml:space="preserve">
     <value>تمامی نوع درگاه های ارائه شده نامعتبر هستند</value>
+  </data>
+  <data name="PaymentRequestNoActiveCompanyDepositFound" xml:space="preserve">
+    <value>در شرکت {0} هیچ حسابی تعریف نشده یا تمامی حساب ها غیرفعال هستند</value>
+  </data>
+  <data name="PaymentRequestNoActiveDepositBank" xml:space="preserve">
+    <value>بانک تمامی حساب های شرکت {0} غیرفعال است</value>
+  </data>
+  <data name="PaymentRequestNoDepositPaymentMethod" xml:space="preserve">
+    <value>بر روی هیچ یک از حساب های فعال شرکت {0} روش پرداختی تعیین نشده است</value>
+  </data>
+  <data name="PaymentRequestInvalidNationalCode" xml:space="preserve">
+    <value>کدملی در قالب صحیح ارائه نشده است</value>
   </data>
 </root>

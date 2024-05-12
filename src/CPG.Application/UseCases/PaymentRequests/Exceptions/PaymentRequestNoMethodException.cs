@@ -5,5 +5,5 @@ namespace CPG.Application.UseCases.PaymentRequests.Exceptions;
 
 public class PaymentRequestNoMethodException() : AppException(GlobalResource.PaymentRequestNoMethod)
 {
-    public override string Code => "1001003";
+    public override string Code => "1001007";
 }

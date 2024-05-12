@@ -71,17 +71,17 @@ public class GetWithdrawalRequestQueryHandler(
             if (DateTime.Now.Date > grant.ExpirationDate.Date) throw new PaymentRequestGrantExpirationDateException();
             long destinationDepositId;
             Domain.AggregateModels.CompanyDepositAggregate.CompanyDeposit companyDeposit;
-            if (!string.IsNullOrWhiteSpace(paymentRequest.DestinationDepositIban))
-            {
-                companyDeposit = await _companyDepositRepository.GetBySpecAsync(new CompanyDepositByIban(paymentRequest.DestinationDepositIban), cancellationToken);
-                if (companyDeposit is null) throw new Exception("CompanyDeposit not found!");
-                if (companyDeposit.CompanyId != paymentRequest.CompanyId) { throw new PaymentTokenDepositNotBelongsCompanyException(); }
-            }
-            else
-            {
+            //if (!string.IsNullOrWhiteSpace(paymentRequest.DestinationDepositIban))
+            //{
+            //    companyDeposit = await _companyDepositRepository.GetBySpecAsync(new CompanyDepositByIban(paymentRequest.DestinationDepositIban), cancellationToken);
+            //    if (companyDeposit is null) throw new Exception("CompanyDeposit not found!");
+            //    if (companyDeposit.CompanyId != paymentRequest.CompanyId) { throw new PaymentTokenDepositNotBelongsCompanyException(); }
+            //}
+            //else
+            //{
                 companyDeposit = await _companyDepositRepository.GetBySpecAsync(new DefaultDirectDebitDepositSpec(paymentRequest.CompanyId), cancellationToken);
                 if (companyDeposit is null) throw new Exception("Default CompanyDeposit for DirectDebit not found!");
-            }
+            //}
 
             if (!companyDeposit.IsActive) { throw new PaymentTokenInactiveDepositException(); }
             var bank = grant.Bank;
