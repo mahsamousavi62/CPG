@@ -16,6 +16,6 @@ public class CompanyPaymentMethodsByIdSpec : Specification<Company>, ISingleResu
              .ThenInclude(c => c.Provider)
              .Include(a => a.CompanyIPGs)
              .ThenInclude(c => c.IPGDeposits.Where(d => d.IsActive))             
-             .Where(company => company.Id == companyId);
+             .Where(company => company.Id == companyId && company.IsActive);
     }
 }

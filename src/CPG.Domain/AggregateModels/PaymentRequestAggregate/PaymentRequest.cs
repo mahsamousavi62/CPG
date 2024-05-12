@@ -15,11 +15,10 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
 
     }
 
-    public PaymentRequest(long companyId, string destinationIban, long applicationId, string nationalCode, string description, decimal amount,
+    public PaymentRequest(long companyId, long applicationId, string nationalCode, string description, decimal amount,
         string callBackUrl, string code, string trackerId, Enums.PaymentStatus status, bool isUsed, string paymentIdentifier)
     {
         CompanyId = companyId;
-        DestinationDepositIban = destinationIban;
         ApplicationId = applicationId;
         NationalCode = nationalCode;
         Description = description;
@@ -34,7 +33,6 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
 
     public long CompanyId { get; set; }
     public long ApplicationId { get; set; }
-    public string DestinationDepositIban { get; set; }
     public string NationalCode { get; set; }
     public string Description { get; set; }
     public decimal Amount { get; set; }
