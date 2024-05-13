@@ -26,7 +26,7 @@ public class GetAllProvidersQueryHandler(ReadDbContext context, IMinioProvider m
             Id = x.Id,
             PersianName = x.PersianName,
             EnglishName = x.EnglishName,
-            Logo = await _minioProvider.PresignedGetObject(x.Logo),
+            Logo = await General.GetLogo(_minioProvider,x.Logo),
             ProviderData = x.ProviderData,
             ProviderType = x.ProviderType,
             CreationDate = x.CreationDate,

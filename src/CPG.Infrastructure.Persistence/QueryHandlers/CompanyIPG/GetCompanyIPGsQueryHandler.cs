@@ -42,7 +42,7 @@ public class GetCompanyIPGsQueryHandler(ReadDbContext context, IMinioProvider mi
                 ModificationDate = entity.ModificationDate,
                 IsActive = entity.IsActive,
                 DefaultDeposit = entity.CompanyIPGDeposits.Where(t => t.IsDefault == true).Select(t => new CompanyIPGDepositDataViewModel { Id = t.Id, AccountNumber = t.CompanyDeposit.AccountNumber, Name = t.CompanyDeposit.Name }).FirstOrDefault(),
-                IPGTypeLogo = await _minioProvider.PresignedGetObject(entity.IPGType.Logo),
+                IPGTypeLogo = await General.GetLogo( _minioProvider,entity.IPGType.Logo),
                 IPGTypeName = entity.IPGType.PersianName,
                 ProviderName = entity.Provider.PersianName,
             })).ConfigureAwait(false);
