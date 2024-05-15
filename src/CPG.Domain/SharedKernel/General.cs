@@ -4,11 +4,15 @@ using CPG.Domain.SharedKernel.Minio;
 using System.Threading.Tasks;
 using static CPG.Domain.SharedKernel.Enums;
 using CPG.Domain.AggregateModels.TransactionAggregate;
+using System.Globalization;
+using System.Threading;
 
 namespace CPG.Domain.SharedKernel;
 
 public static class General
 {
+    public static CultureInfo CurrentCulture => Thread.CurrentThread.CurrentUICulture;
+
     public static string GetPaymentStatusTitle(PaymentStatus status)
     {
         return status switch

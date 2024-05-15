@@ -1,7 +1,9 @@
 ﻿using CPG.Application.Shared.Resource;
 using CPG.Application.UseCases.Common.Queries;
 using CPG.Application.UseCases.Common.ViewModels;
+using CPG.Application.UseCases.Files.Commands.UploadFile;
 using CPG.Domain.SharedKernel;
+using CPG.Infrastructure.File;
 using HotChocolate.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -30,5 +32,6 @@ public class CommonController : ApiBaseController
         return await Mediator.Send(new GetApplicationSettingsQuery(entityTypeEnum));
     }
 
-   
+  
+
 }

@@ -32,7 +32,8 @@ public class GetAvailableBankListQueryHandler(ReadDbContext contebankt, IMinioPr
             {
                 Id = bank.Id,
                 Name = bank.Name,
-                Logo = !string.IsNullOrEmpty(bank.Logo) ? await _minioProvider.PresignedGetObject(bank.Logo) : "",
+                Logo = !string.IsNullOrEmpty(bank.Logo) ? await General.GetLogo(_minioProvider, bank.Logo) : null,
+
             }))
             .ConfigureAwait(false);
 

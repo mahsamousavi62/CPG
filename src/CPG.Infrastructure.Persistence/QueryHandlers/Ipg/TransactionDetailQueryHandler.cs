@@ -61,7 +61,7 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
                     DestinationDepositIban = transaction is null ? string.Empty : transaction.DestinationDeposit?.Iban,
                     DestinationDepositAccountNumber = transaction is null ? string.Empty : transaction.DestinationDeposit?.AccountNumber,
                     PredictedExpirationDateTime = transaction is null ? string.Empty : GetTransactionPredictedExpirationDateTime(transaction),
-                    ReceiptContent = transaction is null ? string.Empty : transaction.TransactionMethodType == TransactionType.PaymentReceipt ? await _minioProvider.PresignedGetObject(transaction.PaymentReceiptTransaction?.ReceiptImage) : string.Empty,
+                    ReceiptContent = transaction is null ? string.Empty : transaction.TransactionMethodType == TransactionType.PaymentReceipt ? await General.GetLogo(  _minioProvider,transaction.PaymentReceiptTransaction?.ReceiptImage) : string.Empty,
                     PredictedSettlementDateTime = transaction is null ? string.Empty : transaction.PredictedSettlementDateTime?.ToString("yyyy-MM-dd HH:mm:ss zzz"),
                     PaymentIdentifier = paymentRequest.PaymentIdentifier,
                 });
@@ -102,6 +102,8 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
                 return string.Empty;
             case TransactionType.PaymentReceipt:
                 return transaction.PaymentReceiptTransaction.ReferenceNumber;
+            case TransactionType.CharismaCard:
+                return transaction.CharismaCardTransaction.ReferenceNumber;
             default:
                 return string.Empty;
         }
