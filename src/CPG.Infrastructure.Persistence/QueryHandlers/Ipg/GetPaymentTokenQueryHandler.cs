@@ -265,7 +265,7 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                 {
                     response.JsonBody.jsonStr = new ExpandoObject();
                     response.JsonBody.jsonStr.url = result.IpgBaseUrl;
-                    response.JsonBody.jsonStr.method = "POST";
+                    response.JsonBody.jsonStr.method = "GET";
                     response.JsonBody.jsonStr.@body = new ExpandoObject();
                     response.JsonBody.jsonStr.@body.Token = result.Token;
                     break;
