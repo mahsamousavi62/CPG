@@ -266,8 +266,8 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                     response.JsonBody.jsonStr = new ExpandoObject();
                     response.JsonBody.jsonStr.url = result.IpgBaseUrl;
                     response.JsonBody.jsonStr.method = "GET";
-                    response.JsonBody.jsonStr.@body = new ExpandoObject();
-                    response.JsonBody.jsonStr.@body.Token = result.Token;
+                    response.JsonBody.jsonStr.@params = new ExpandoObject();
+                    response.JsonBody.jsonStr.@params.Token = result.Token;
                     break;
                 }
             case Enums.ProviderType.BehPardakht:
