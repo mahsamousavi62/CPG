@@ -104,7 +104,13 @@ if (Convert.ToBoolean(configuration["EnableSwagger"]))
 }
 
 
-app.UseRequestLocalization(LocalizationExtensions.RequestLocalizationOptions);
+
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    SupportedCultures = supportedLanguages,
+    SupportedUICultures = supportedLanguages
+});
+
 app.MapHub<NotificationHub>("/Notify");
 app.UseHttpsRedirection();
 app.UseRouting();
