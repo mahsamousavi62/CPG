@@ -20,6 +20,7 @@ using CPG.Domain.SharedKernel.Communication.NeoBank;
 using CPG.Domain.SharedKernel.Interfaces;
 using CPG.Domain.SharedKernel.Minio;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.HttpSys;
 using System;
 using System.Buffers.Text;
@@ -53,6 +54,33 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
     private readonly IAggregateRepository<CompanyDeposit> _companyDepositRepository = companyDepositRepository;
     private readonly string MiddleEastIbanPrefix = "078";
     private readonly IAuthenticationService _authenticationService = authenticationService;
+
+
+
+    public class Director
+    {
+        public void Construct(Builder builder)
+        {
+            builder.BuildIpg();
+            builder.BuildPaymentReceipt();
+            builder.BuildDirectDebit();
+            builder.BuildCharismaCard();
+        }
+    }
+
+    public abstract class Builder
+    {
+        public abstract void BuildIpg();
+        public abstract void BuildPaymentReceipt();
+        public abstract void BuildDirectDebit();
+        public abstract void BuildCharismaCard();
+        public abstract PaymentMethodsViewModel GetResult();
+    }
+
+
+
+
+
     public async Task<Result<PaymentMethodsViewModel>> Handle(GetPaymentMethodsCommand request, CancellationToken cancellationToken)
     {
         var paymentRequest = await _paymentRequestRepository.FirstOrDefaultAsync(new PaymentRequestWithChildsByCode(request.ViewModel.PaymentCode));
@@ -93,11 +121,6 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
             availablePaymentMethodTypes = company?.PaymentMethods?.Select(p => p.MethodType).ToList();
         }
 
-        if (availablePaymentMethodTypes?.Contains(PaymentMethodType.InternetPaymentGateway) is true)
-        {
-
-
-        }
         if (availablePaymentMethodTypes?.Contains(PaymentMethodType.PaymentReceipt) is true)
         {
             receipt = new Receipt
@@ -135,7 +158,8 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
         {
             if (availablePaymentMethodTypes?.Contains(PaymentMethodType.InternetPaymentGateway) is true)
             {
-                ipgResult = await Task.WhenAll(company.CompanyIPGs?.Select(t => new { t.IPGType, t.Id }).Select(async t => new IPGInfo
+                var companyIpgs = AvailableIpg(company, paymentRequest);
+                ipgResult = await Task.WhenAll(companyIpgs?.Select(t => new { t.IPGType, t.Id }).Select(async t => new IPGInfo
                 {
                     Id = t.Id,
                     Logo = await _minioProvider.PresignedGetObject(t.IPGType.Logo),
@@ -411,35 +435,35 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
 
     }
 
-    private bool AvailableDirectDebit(Company company, PaymentRequest paymentRequest)
+    private List<CompanyDeposit> AvailableDirectDebit(Company company, PaymentRequest paymentRequest)
     {
         var paymentRequestMethod = paymentRequest.PaymentRequestMethods
                                            .FirstOrDefault(p => p.PaymentMethodType == PaymentMethodType.DirectDebit);
-
+        List<CompanyDeposit> companyDeposits =  null;
         if (paymentRequestMethod == null)
         {
-            return false;
+            return companyDeposits;
         }
 
         var paymentRequestMethodDeposits = paymentRequestMethod.PaymentRequestMethodDeposits;
 
         if (company.PaymentMethods.Any(x => x.MethodType == PaymentMethodType.DirectDebit))
         {
-            return false;
+            return companyDeposits;
         }
         if (!company.CompanyDeposits.Any())
         {
-            return false;
+            return companyDeposits;
         }
         var activeMethodDeposits = company.CompanyDeposits.Where(t => t.PaymentMethods.Select(x => x.MethodType).Contains(PaymentMethodType.DirectDebit)).ToList();
 
         if (!activeMethodDeposits.Any())
         {
-            return false;
+            return companyDeposits;
         }
         if (paymentRequestMethodDeposits.Any())
         {
-            var result = activeMethodDeposits.Where(a => paymentRequestMethodDeposits.Select(x => x.Id).Contains(a.Id));
+            companyDeposits = activeMethodDeposits.Where(a => paymentRequestMethodDeposits.Select(x => x.Id).Contains(a.Id)).ToList();
         }
         else
         {
@@ -447,10 +471,10 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
 
             if (!isDefault)
             {
-                return false;
+                return companyDeposits;
             }
         }
-        return true;
+        return companyDeposits;
     }
 
 
