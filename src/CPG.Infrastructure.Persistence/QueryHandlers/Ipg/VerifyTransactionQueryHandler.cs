@@ -174,6 +174,7 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
                 StatusTitle = General.GetPaymentStatusTitle(paymentRequest.Status),
                 PredictedSettlementDateTime = transaction.PredictedSettlementDateTime?.ToString("yyyy-MM-dd HH:mm:ss zzz"),
                 CPGVerificationDateTime = General.GetTransactionVerificationDateTime(transaction),
+                CompanyCode = paymentRequest.Company.Code,
             };
 
             return Result<VerifyTransactionResponseViewModel>.SuccessResult(response);

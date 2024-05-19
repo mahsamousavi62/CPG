@@ -64,6 +64,8 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
                     ReceiptContent = transaction is null ? string.Empty : transaction.TransactionMethodType == TransactionType.PaymentReceipt ? await General.GetLogo(  _minioProvider,transaction.PaymentReceiptTransaction?.ReceiptImage) : string.Empty,
                     PredictedSettlementDateTime = transaction is null ? string.Empty : transaction.PredictedSettlementDateTime?.ToString("yyyy-MM-dd HH:mm:ss zzz"),
                     PaymentIdentifier = paymentRequest.PaymentIdentifier,
+                    CompanyCode = paymentRequest.Company.Code,
+                    PaymentPatternCode = transaction is null ? null : transaction.IPGTransaction?.CompanyIPG?.IPGType?.Code,
                 });
         }
         catch (DomainException exc)
