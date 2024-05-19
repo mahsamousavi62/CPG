@@ -33,6 +33,8 @@ using Serilog;
 using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Domain.SharedKernel.Logging;
 using Serilog.Context;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CPG.Infrastructure.Providers.NeoBank;
 
@@ -43,7 +45,7 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
     private readonly IConfiguration configuration = configuration;
     private readonly IAuthService authService = authService;
     private readonly IHttpContextAccessor httpContextAccessor = httpContextAccessor;
-    private readonly ILogger<NeoBankProvider> logger  = logger;
+    private readonly ILogger<NeoBankProvider> logger = logger;
 
     public async Task<Result<ClientDirectDebitResponse>> ClientDirectDebit(ClientDirectDebitRequest model)
     {
@@ -68,6 +70,9 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
 
             var resultContent = await result.Content.ReadAsStringAsync();
 
+            result.Headers.TryGetValues("x-correlation-id", out IEnumerable<string> res);
+            var neoBankCorroletionId = res.FirstOrDefault();
+
             var response = JsonConvert.DeserializeObject<ResultData<ClientDirectDebitResponse>>(resultContent);
 
             var callLog = new CallLogModel
@@ -81,7 +86,8 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
                 CreationDate = DateTime.Now,
                 CreationUserId = 1,
                 ProviderType = Enums.ProviderType.NeoBank,
-                AuditType = Enums.AuditType.Provider
+                AuditType = Enums.AuditType.Provider,
+                CorrolationId = neoBankCorroletionId,
             };
 
             using (LogContext.PushProperty("CallLog", callLog, true))
@@ -130,6 +136,10 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
                 return Result<UserDepositBalanceResponse>.Failure(new Error("2201001", ReasonPhrases.GetReasonPhrase((int)result.StatusCode)));
 
             var resultContent = await result.Content.ReadAsStringAsync();
+
+            result.Headers.TryGetValues("x-correlation-id", out IEnumerable<string> res);
+            var neoBankCorroletionId = res.FirstOrDefault();
+
             try
             {
                 var response = JsonConvert.DeserializeObject<ResultData<UserDepositBalanceResponse>>(resultContent);
@@ -145,7 +155,8 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
                     CreationDate = DateTime.Now,
                     CreationUserId = 1,
                     ProviderType = Enums.ProviderType.NeoBank,
-                    AuditType = Enums.AuditType.Provider
+                    AuditType = Enums.AuditType.Provider,
+                    CorrolationId = neoBankCorroletionId
                 };
 
                 using (LogContext.PushProperty("CallLog", callLog, true))
