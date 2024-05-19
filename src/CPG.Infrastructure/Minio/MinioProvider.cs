@@ -1,13 +1,19 @@
 ﻿using CPG.Application.Shared.Resource;
+using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.File;
 using CPG.Domain.SharedKernel.Minio;
+using CPG.Infrastructure.Logging;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Minio;
 using Minio.DataModel.Args;
 using Minio.Exceptions;
+using Serilog;
+using Serilog.Core;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -19,14 +25,14 @@ public class MinioProvider : IMinioProvider
     private readonly IMinioClient _minioClient;
     private readonly IConfiguration _configuration;
     private readonly IMinioClientFactory _minioClientFactory;
+    private readonly ILogger<MinioProvider> _logger;
 
-
-    public MinioProvider(
-      IConfiguration configuration, IMinioClientFactory minioClientFactory)
+    public MinioProvider(IConfiguration configuration, IMinioClientFactory minioClientFactory, ILogger<MinioProvider> logger)
     {
         _configuration = configuration;
         _minioClientFactory = minioClientFactory;
         _minioClient = _minioClientFactory.CreateClient();
+        _logger = logger;
     }
 
     public async Task<List<string>> GetBucketNamesAsync(CancellationToken cancellationToken = default)
@@ -57,9 +63,10 @@ public class MinioProvider : IMinioProvider
 
             return response.ObjectName;
         }
-        catch (MinioException e)
+        catch (MinioException exc)
         {
-            return e.Message;
+            _logger.LogError(exc, $"Request: Unhandled Exception for Request {nameof(PutObject)}{exc.Message} ");
+            return exc.Message;
         }
     }
 
@@ -86,8 +93,9 @@ public class MinioProvider : IMinioProvider
             {
                 _ = await _minioClient.GetObjectAsync(gArgs).ConfigureAwait(true);
             }
-            catch (Exception)
+            catch (Exception exc)
             {
+                _logger.LogError(exc, $"Request: Unhandled Exception for Request {nameof(GetObjectByName)}{exc.Message} ");
                 throw new Exception(GlobalResource.FileNotFound);
             }
 
@@ -99,9 +107,10 @@ public class MinioProvider : IMinioProvider
                 ContentType = objectInfo.ContentType
             };
         }
-        catch (MinioException e)
+        catch (MinioException exc)
         {
-            throw new Exception($"{GlobalResource.MinioException} : {e.Message}");
+            _logger.LogError(exc, $"Request: Unhandled Exception for Request {nameof(GetObjectByName)}{exc.Message} ");
+            throw new Exception($"{GlobalResource.MinioException} : {exc.Message}");
         }
     }
 
@@ -134,9 +143,11 @@ public class MinioProvider : IMinioProvider
 
             return serviceUrl + objectName; // Path.Combine("wwwroot", objectName);
         }
-        catch (Exception e)
+        catch (Exception exc)
         {
-            throw new Exception($"{GlobalResource.MinioException} : {e.Message}");
+            _logger.LogError(exc, $"Request: Unhandled Exception for Request {nameof(PresignedGetObject)}{exc.Message} ");
+
+            throw new Exception($"{GlobalResource.MinioException} : {exc.Message}");
         }
     }
 

@@ -1,4 +1,5 @@
-﻿using CPG.Application.UseCases.CompanyDeposits.Queries;
+﻿using Ardalis.GuardClauses;
+using CPG.Application.UseCases.CompanyDeposits.Queries;
 using CPG.Application.UseCases.CompanyDeposits.ViewModels;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Minio;
@@ -22,6 +23,8 @@ public class GetCompanyDepositsByPaymentCodeQueryHandler(ReadDbContext context, 
     {
         try
         {
+            Guard.Against.NullOrWhiteSpace(request.PaymentCode, nameof(request.PaymentCode));
+
             var paymentRequestCompanyId = await _context.PaymentRequestReadModels
                 .Where(t => t.PaymentCode == request.PaymentCode)
                 .Select(t => t.CompanyId)
@@ -41,7 +44,7 @@ public class GetCompanyDepositsByPaymentCodeQueryHandler(ReadDbContext context, 
                    AccountNumber = deposit.AccountNumber,
                    Iban = deposit.Iban,
                    BankId = deposit.BankId,
-                   BankLogo = await _minioProvider.PresignedGetObject(deposit.Bank.Logo),
+                   BankLogo = await General.GetLogo( _minioProvider,deposit.Bank.Logo),
                    BankName = deposit.Bank.Name,
                    CompanyId = deposit.CompanyId,
                    CompanyName = deposit.Company.PersianName,
