@@ -56,7 +56,7 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
                     StatusTitle = General.GetPaymentStatusTitle(paymentRequest.Status),
                     PaymentMethodType = (short?)transaction?.TransactionMethodType,
                     PaymentMethodTypeTitle = transaction is null ? string.Empty : GetPaymentMethodTypeTitle(transaction.TransactionMethodType),
-                    PaymentPattern = transaction is null ? string.Empty : transaction.IPGTransaction?.CompanyIPG?.IPGType?.Code.ToString(),
+                    PaymentPattern = transaction is null ? string.Empty : transaction.IPGTransaction?.CompanyIPG?.IPGType?.EnglishName,
                     ReferenceNumber = transaction is null ? string.Empty : GetTransactionRefrenceNumber(transaction),
                     DestinationDepositIban = transaction is null ? string.Empty : transaction.DestinationDeposit?.Iban,
                     DestinationDepositAccountNumber = transaction is null ? string.Empty : transaction.DestinationDeposit?.AccountNumber,
