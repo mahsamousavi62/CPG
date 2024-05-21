@@ -102,6 +102,8 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
                 return string.Empty;
             case TransactionType.PaymentReceipt:
                 return transaction.PaymentReceiptTransaction.ReferenceNumber;
+            case TransactionType.CharismaCard:
+                return transaction.CharismaCardTransaction.ReferenceNumber;
             default:
                 return string.Empty;
         }
