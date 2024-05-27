@@ -48,4 +48,10 @@ public class TransactionDetailResponseViewModel
 
     [JsonPropertyName("paymentIdentifier")]
     public string PaymentIdentifier { get; set; }
+
+    [JsonPropertyName("companyCode")]
+    public short? CompanyCode { get; set; }
+
+    [JsonPropertyName("paymentPatternTitle")]
+    public string PaymentPatternTitle { get; set; }
 }

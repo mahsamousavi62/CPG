@@ -56,7 +56,7 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
                     StatusTitle = General.GetPaymentStatusTitle(paymentRequest.Status),
                     PaymentMethodType = (short?)transaction?.TransactionMethodType,
                     PaymentMethodTypeTitle = transaction is null ? string.Empty : GetPaymentMethodTypeTitle(transaction.TransactionMethodType),
-                    PaymentPattern = transaction is null ? string.Empty : transaction.IPGTransaction?.CompanyIPG?.IPGType?.EnglishName,
+                    PaymentPatternTitle = transaction is null ? string.Empty : transaction.IPGTransaction?.CompanyIPG?.IPGType?.EnglishName,
                     ReferenceNumber = transaction is null ? string.Empty : GetTransactionRefrenceNumber(transaction),
                     DestinationDepositIban = transaction is null ? string.Empty : transaction.DestinationDeposit?.Iban,
                     DestinationDepositAccountNumber = transaction is null ? string.Empty : transaction.DestinationDeposit?.AccountNumber,
@@ -64,6 +64,8 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
                     ReceiptContent = transaction is null ? string.Empty : transaction.TransactionMethodType == TransactionType.PaymentReceipt ? await General.GetLogo(  _minioProvider,transaction.PaymentReceiptTransaction?.ReceiptImage) : string.Empty,
                     PredictedSettlementDateTime = transaction is null ? string.Empty : transaction.PredictedSettlementDateTime?.ToString("yyyy-MM-dd HH:mm:ss zzz"),
                     PaymentIdentifier = paymentRequest.PaymentIdentifier,
+                    CompanyCode = paymentRequest.Company.Code,
+                    PaymentPattern = transaction is null ? null : transaction.IPGTransaction?.CompanyIPG?.IPGType?.Code.ToString(),
                 });
         }
         catch (DomainException exc)
