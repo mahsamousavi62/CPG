@@ -49,6 +49,7 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
     private readonly IAuthenticationService _authenticationService = authenticationService;
     private readonly IAggregateRepository<Domain.AggregateModels.ApplicationAggregate.Application> _applicationRepository = applicationRepository;
     private readonly IAuthService _authService = authService;
+    private readonly string MiddleEastIbanPrefix = "078";
 
     public async Task<Result<PaymentRequestResponseViewModel>> Handle(CreatePaymentRequestCommand request, CancellationToken cancellationToken)
     {
@@ -185,6 +186,7 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
 
             var cardDeposits = company.CompanyDeposits.Where(t => t.IsActive &&
                                                                   t.Bank.IsActive &&
+                                                                  t.Bank.IbanPrefix == MiddleEastIbanPrefix &&
                                                                   t.IsDefaultForCharismaCard is true &&
                                                                   t.PaymentMethods != null &&
                                                                   t.PaymentMethods.Select(x => x.MethodType)

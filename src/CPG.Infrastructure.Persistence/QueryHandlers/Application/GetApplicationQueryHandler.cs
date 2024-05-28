@@ -32,7 +32,7 @@ public class GetApplicationQueryHandler(ReadDbContext context, IMinioProvider mi
             Id = app.Id,
             PersianName = app.PersianName,
             EnglishName = app.EnglishName,
-            Logo = await _minioProvider.PresignedGetObject(app.Logo),
+            Logo = await General.GetLogo(_minioProvider, app.Logo),
             CreationDate = app.CreationDate,
             ModificationDate = app.ModificationDate,
             IsActive = app.IsActive,
