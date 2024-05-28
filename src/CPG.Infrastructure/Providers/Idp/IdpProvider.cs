@@ -24,17 +24,20 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
 using Serilog.Context;
+using CPG.Domain.SharedKernel.Communication.Idp.Models.UserStatus;
 
 namespace CPG.Infrastructure.Providers.Idp;
-public class IdpProvider(IHttpClientFactory httpClientFactory,
-    IApplicationSettingsRepository applicationSettingsRepository,
-    IAuthService authService, IHttpProvider httpProvider, ILogger<IdpProvider> logger,
+public class IdpProvider(
+    IAuthService authService,
+    IHttpProvider httpProvider,
+    ILogger<IdpProvider> logger,
+    IHttpClientFactory httpClientFactory,
     IHttpContextAccessor httpContextAccessor) : IIdpProvider
 {
-    public readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
+    private readonly ILogger<IdpProvider> _logger = logger;
     private readonly IAuthService _authService = authService;
     private readonly IHttpProvider _httpProvider = httpProvider;
-    private readonly ILogger<IdpProvider> _logger = logger;
+    public readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     public async Task<ResultData<UserProfileResponse>> GetUserProfile(string idpId)
     {
@@ -102,7 +105,7 @@ public class IdpProvider(IHttpClientFactory httpClientFactory,
             ResponseBody = System.Text.Json.JsonSerializer.Serialize(tokenResponse),
             ServiceCallDate = DateTime.Now,
             ServiceCallUrl = disco.TokenEndpoint,
-            ServiceCallStatus = tokenResponse is not null?true:false,
+            ServiceCallStatus = tokenResponse is not null ? true : false,
             ServiceType = Enums.ServiceType.GetIdpToken,
             CreationDate = DateTime.Now,
             CreationUserId = UserId == 0 ? 1 : UserId,
@@ -131,5 +134,40 @@ public class IdpProvider(IHttpClientFactory httpClientFactory,
             OperationResult = Enums.OperationResult.Succeeded
         };
     }
+
+    public async Task<ResultData<UserStatusResponse>> GetUserStatus(string idpId)
+    {
+        var appConfig = _authService.GetJwtConfig();
+
+        var accessTokenResult = await GetClientCredentialsToken(appConfig);
+        if (accessTokenResult.OperationResult == Enums.OperationResult.Failed)
+            return new ResultData<UserStatusResponse> { Error = accessTokenResult.Error, OperationResult = Enums.OperationResult.Failed };
+
+        List<(string Key, string Value)> list = [("Authorization", string.Concat("BEARER ", accessTokenResult.Data))];
+        IdpProfileRequest request = new() { IdpId = idpId };
+        var result = await _httpProvider.GetAsync<IdpProfileRequest, UserStatusResponse, IdpProfileRequest>
+         (new HttpProviderRequest<IdpProfileRequest, IdpProfileRequest>
+         {
+            BaseAddress = appConfig.Authority,
+            Request = request,
+            Body = request,
+            Uri = $"{appConfig!.IdpGetUserStatusUrl}{idpId}?idType=UserId",
+            ProviderType = Enums.ProviderType.Idp,
+            HeaderParameters = list,
+            Service = Enums.ServiceType.GetIdpUserStatus
+        });
+
+        return result is null
+            ? new ResultData<UserStatusResponse>
+            {
+                OperationResult = OperationResult.NotFound,
+            }
+            : new ResultData<UserStatusResponse>
+            {
+                Data = result,
+                OperationResult = OperationResult.Succeeded,
+            };
+    }
+
 }
 
