@@ -11,7 +11,7 @@ public class PaymentMethodsViewModel
     public string PaymentCode { get; set; }
     public List<IPGInfo> IPGs { get; set; }
     public List<DirectDebitInfo> DirectDebits { get; set; }
-    public Receipt Receipt { get; set; }
+    public List<Receipt> Receipt { get; set; }
     public CharismaCard CharismaCard { get; set; }
     public string CompanyName { get; set; }
 }
