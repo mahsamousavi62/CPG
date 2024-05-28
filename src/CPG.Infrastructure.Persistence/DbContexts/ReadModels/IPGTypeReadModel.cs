@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace CPG.Infrastructure.Persistence.DbContexts.ReadModels;
 
@@ -12,4 +13,5 @@ public class IPGTypeReadModel
     public bool IsActive { get; set; }
     public DateTime CreationDate { get; set; }
     public DateTime? ModificationDate { get; set; }
+    public List<PaymentRequestMethodIpgTypeReadModel> PaymentRequestMethodIpgTypes { get; set; }
 }

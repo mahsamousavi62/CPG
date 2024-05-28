@@ -4,10 +4,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="UseCases\Application\**" />
+    <Compile Remove="UseCases\PaymentRequests\test\**" />
     <Compile Remove="UseCases\PaymentRequest\**" />
     <EmbeddedResource Remove="UseCases\Application\**" />
+    <EmbeddedResource Remove="UseCases\PaymentRequests\test\**" />
     <EmbeddedResource Remove="UseCases\PaymentRequest\**" />
     <None Remove="UseCases\Application\**" />
+    <None Remove="UseCases\PaymentRequests\test\**" />
     <None Remove="UseCases\PaymentRequest\**" />
   </ItemGroup>
   <ItemGroup>
@@ -15,8 +18,13 @@
     <EmbeddedResource Remove="UseCases\CompanyIPG\**" />
     <None Remove="UseCases\CompanyIPG\**" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="UseCases\PaymentRequests\Commands\GetPaymentMethods\GetPaymentMethods2CommandHandler.cs" />
+  </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="11.9.1" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageReference Include="IdentityModel" Version="6.2.0" />
     <PackageReference Include="Mapster" Version="7.4.0" />
     <PackageReference Include="MediatR" Version="12.2.0" />

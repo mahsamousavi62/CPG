@@ -496,7 +496,7 @@
     <value>نشانی بازگشتی ارائه شده {0} مجاز نیست</value>
   </data>
   <data name="PaymentRequestNoCompanyFound" xml:space="preserve">
-    <value>با شناسه ارائه شده هیچ شرکتی یافت نشد</value>
+    <value>با کد ارائه شده هیچ شرکتی یافت نشد</value>
   </data>
   <data name="PaymentRequestNoCompanyPaymentMethodFound" xml:space="preserve">
     <value>شرکت مورد نظر هیچ روش پرداختی ندارد</value>
@@ -887,5 +887,95 @@
   </data>
   <data name="DuplicateCompanyCode" xml:space="preserve">
     <value>کد '{0}' قبلا برای شرکت دیگری ثبت شده است</value>
+  </data>
+  <data name="PaymentRequestAllDepositBanksAreInactive" xml:space="preserve">
+    <value>بانک تمامی حساب های متناظر شبا(های) ارائه شده در روش(های) {0} غیرفعال هستند</value>
+  </data>
+  <data name="PaymentRequestAllDepositsAreInactive" xml:space="preserve">
+    <value>تمامی حساب های متناظر شبا(های) ارائه شده در روش(های) {0} غیرفعال هستند</value>
+  </data>
+  <data name="PaymentRequestAllDepositsNotSupportMethod" xml:space="preserve">
+    <value>هیچ یک از حساب های ارائه شده در روش(های) {0} از روش پرداختی مورد نظر پشتیبانی نمی کنند، لطفا آنها را تصحیح کنید یا درخواست تنظیم روش پرداختی برای حساب(های) مورد نظر را برای مدیر سیستم ارسال کنید</value>
+  </data>
+  <data name="PaymentRequestCompanyMethods" xml:space="preserve">
+    <value>روش(های) پرداخت {0} بر روی شرکت {1} تعیین نشده است</value>
+  </data>
+  <data name="PaymentRequestInactiveDepositBanks" xml:space="preserve">
+    <value>بانک حساب های با قابلیت پرداخت {0} حساب های شرکت {1} غیرفعال است</value>
+  </data>
+  <data name="PaymentRequestInactiveDeposits" xml:space="preserve">
+    <value>در شرکت {0} هیچ حسابی تعریف نشده یا تمامی حساب ها غیرفعال هستند</value>
+  </data>
+  <data name="PaymentRequestInactiveIpgTypes" xml:space="preserve">
+    <value>نوع درگاه(های) متناظر با کد(های) ارائه شده غیرفعال هستند</value>
+  </data>
+  <data name="PaymentRequestInvalidIban" xml:space="preserve">
+    <value>شبا(های) ارائه شده در روش(های) {0} در قالب صحیح مقداردهی نشده اند، لطفا آنها را تصحیح کنید</value>
+  </data>
+  <data name="PaymentRequestInvalidUrlPattern" xml:space="preserve">
+    <value>نشانی بازگشتی (callback url) در قالب صحیح ارائه نشده است</value>
+  </data>
+  <data name="PaymentRequestNoActiveCompanyIpgDepositForIpgCode" xml:space="preserve">
+    <value>هیچ یک از حساب های متناظر بر روی هیچ درگاه فعالی از نوع تعیین شده، در شرکت {0} تنظیم نشده است</value>
+  </data>
+  <data name="PaymentRequestNoActiveDirectDebitProvider" xml:space="preserve">
+    <value>به منظور استفاده از روش برداشت مستقیم بایستی حداقل یک سرویس دهنده فعال با قابلیت برداشت مستقیم تعریف شده باشد</value>
+  </data>
+  <data name="PaymentRequestNoActiveIpg" xml:space="preserve">
+    <value>به منظور استفاده از روش درگاه پرداخت بایستی حداقل یک درگاه فعال برای حساب های موجود شرکت {0} تعریف شده باشد</value>
+  </data>
+  <data name="PaymentRequestNoActiveIpgDepositForIbans" xml:space="preserve">
+    <value>هیچ یک از حساب های متناظر بر روی هیچ یک از درگاه فعالی در شرکت {0} تنظیم نشده اند</value>
+  </data>
+  <data name="PaymentRequestNoActiveIpgType" xml:space="preserve">
+    <value>به منظور استفاده از روش درگاه پرداخت بایستی حداقل یک درگاه با نوع فعال در شرکت {0} تعریف شده یا موجود باشد</value>
+  </data>
+  <data name="PaymentRequestNoActiveIpgTypeDepositForIbans" xml:space="preserve">
+    <value>هیچ یک از نوع درگاه(های) متناظر با شبا(های) ارائه شده فعال نیست</value>
+  </data>
+  <data name="PaymentRequestNoActiveProvider" xml:space="preserve">
+    <value>به منظور استفاده از روش درگاه پرداخت بایستی حداقل یک درگاه با سرویس دهنده فعال و قابلیت درگاه پرداخت در شرکت {0} تعریف شده باشد</value>
+  </data>
+  <data name="PaymentRequestNoActiveProviderDepositForIbans" xml:space="preserve">
+    <value>به منظور استفاده از روش درگاه پرداخت روی حساب های متناظر بایستی حداقل یک درگاه با سرویس دهنده فعال و قابلیت درگاه پرداخت در شرکت {0} تعریف شده باشد</value>
+  </data>
+  <data name="PaymentRequestNoCompanyIpgDepositForIpgCode" xml:space="preserve">
+    <value>هیچ یک از حساب های متناظر بر روی هیچ درگاهی از نوع تعیین شده، در شرکت {0} تعریف نشده است</value>
+  </data>
+  <data name="PaymentRequestNoDefaultCharismaCardDeposit" xml:space="preserve">
+    <value>به منظور استفاده از روش کاریزما کارت بایستی حداقل یک حساب فعال، از بانک خاورمیانه و با قابلیت کاریزما کارت به عنوان حساب پیشفرض برای این نوع از تراکنش های شرکت {0} تعیین شده باشد</value>
+  </data>
+  <data name="PaymentRequestNoDefaultDeposit" xml:space="preserve">
+    <value>هیچ یک از حساب های پیشفرض درگاه های پرداخت شرکت {0} فعال نیستند</value>
+  </data>
+  <data name="PaymentRequestNoDefaultDirectDebitDeposit" xml:space="preserve">
+    <value>به منظور استفاده از روش برداشت مستقیم بایستی حداقل یک حساب فعال و با قابلیت برداشت مستقیم به عنوان حساب پیشفرض برای این نوع از تراکنش های شرکت {0} تعیین شده باشد</value>
+  </data>
+  <data name="PaymentRequestNoDepositFoundForIban" xml:space="preserve">
+    <value>ما به ازای شبا(های) ارائه شده در روش(های) {0} هیچ حسابی در شرکت {1} تعریف نشده است</value>
+  </data>
+  <data name="PaymentRequestNoIpgDepositForIbans" xml:space="preserve">
+    <value>هیچ یک از حساب های متناظر بر روی هیچ یک از درگاه های پرداخت شرکت {0} تنظیم نشده اند</value>
+  </data>
+  <data name="PaymentRequestNoMethod" xml:space="preserve">
+    <value>انتخاب یکی از روش های پرداخت الزامی است</value>
+  </data>
+  <data name="PaymentRequestNotExistDeposits" xml:space="preserve">
+    <value>روش(های) پرداخت {0} بر روی هیچ یک از حساب های فعال شرکت {1} تعیین نشده است</value>
+  </data>
+  <data name="PaymentRequestNotExistIpgTypes" xml:space="preserve">
+    <value>تمامی نوع درگاه های ارائه شده نامعتبر هستند</value>
+  </data>
+  <data name="PaymentRequestNoActiveCompanyDepositFound" xml:space="preserve">
+    <value>در شرکت {0} هیچ حسابی تعریف نشده یا تمامی حساب ها غیرفعال هستند</value>
+  </data>
+  <data name="PaymentRequestNoActiveDepositBank" xml:space="preserve">
+    <value>بانک تمامی حساب های شرکت {0} غیرفعال است</value>
+  </data>
+  <data name="PaymentRequestNoDepositPaymentMethod" xml:space="preserve">
+    <value>بر روی هیچ یک از حساب های فعال شرکت {0} روش پرداختی تعیین نشده است</value>
+  </data>
+  <data name="PaymentRequestInvalidNationalCode" xml:space="preserve">
+    <value>کدملی در قالب صحیح ارائه نشده است</value>
   </data>
 </root>

@@ -48,22 +48,22 @@ public class AddPaymentReceiptQueryHandler(
 
         long destinationDepositId;
         Domain.AggregateModels.CompanyDepositAggregate.CompanyDeposit companyDeposit;
-        if (!string.IsNullOrWhiteSpace(paymentRequest.DestinationDepositIban))
-        {
-            companyDeposit = await _companyDepositRepository
-                .FirstOrDefaultAsync(new CompanyDepositByIban(paymentRequest.DestinationDepositIban), cancellationToken);
+        //if (!string.IsNullOrWhiteSpace(paymentRequest.DestinationDepositIban))
+        //{
+        //    companyDeposit = await _companyDepositRepository
+        //        .FirstOrDefaultAsync(new CompanyDepositByIban(paymentRequest.DestinationDepositIban), cancellationToken);
 
-            if (companyDeposit is null) throw new Exception("CompanyDeposit not found!");
-            if (companyDeposit.CompanyId != paymentRequest.CompanyId)
-            {
-                throw new PaymentTokenDepositNotBelongsCompanyException();
-            }
-        }
-        else
-        {
+        //    if (companyDeposit is null) throw new Exception("CompanyDeposit not found!");
+        //    if (companyDeposit.CompanyId != paymentRequest.CompanyId)
+        //    {
+        //        throw new PaymentTokenDepositNotBelongsCompanyException();
+        //    }
+        //}
+        //else
+        //{
             companyDeposit = await _companyDepositRepository.FirstOrDefaultAsync(new CompanyDepositsByIdList([request.viewModel.CompanyDepositId]), cancellationToken);
             if (companyDeposit is null) throw new Exception("Default CompanyDeposit for DirectDebit not found!");
-        }
+        //}
         destinationDepositId = companyDeposit.Id;
 
         if (!companyDeposit.IsActive) { throw new PaymentTokenInactiveDepositException(); }

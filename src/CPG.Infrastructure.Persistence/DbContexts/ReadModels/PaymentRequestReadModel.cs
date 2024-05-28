@@ -1,6 +1,7 @@
 ﻿using CPG.Domain.AggregateModels.TransactionAggregate;
 using CPG.Domain.SharedKernel;
 using System;
+using System.Collections.Generic;
 
 namespace CPG.Infrastructure.Persistence.DbContexts.ReadModels;
 
@@ -9,7 +10,6 @@ public class PaymentRequestReadModel
     public long Id { get; set; }
     public long CompanyId { get; set; }
     public long ApplicationId { get; set; }
-    public string DestinationDepositIban { get; set; }
     public string NationalCode { get; set; }
     public string Description { get; set; }
     public decimal Amount { get; set; }
@@ -27,4 +27,5 @@ public class PaymentRequestReadModel
     public ApplicationReadModel Application { get; set; }
     public CompanyReadModel Company { get; set; }
     public TransactionReadModel Transaction { get; set; }
+    public List<PaymentRequestMethodReadModel> PaymentRequestMethods { get; set; }
 }

@@ -3,6 +3,7 @@ using CPG.Domain.AggregateModels.BankAggregate;
 using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Domain.AggregateModels.CompanyDepositAggregate.Events;
 using CPG.Domain.AggregateModels.CompanyIPGAggregate;
+using CPG.Domain.AggregateModels.PaymentRequestAggregate;
 using CPG.Domain.AggregateModels.ProviderAggregate;
 using CPG.Domain.AggregateModels.TransactionAggregate;
 using CPG.Domain.SeedWork;
@@ -28,6 +29,7 @@ public class CompanyDeposit : AuditableEntity<long>, IAggregateRoot
     public List<CompanyIPGDeposit> CompanyIPGDeposits { get; set; }
     public List<Transaction> Transactions { get; set; }
     public List<CompanyDepositPaymentMethod> PaymentMethods { get; set; } = [];
+    public List<PaymentRequestMethodDeposit> PaymentRequestMethodDeposits { get; set; }
 
     public CompanyDeposit()
     {

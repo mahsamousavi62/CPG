@@ -1420,6 +1420,33 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The bank of all the corresponding accounts of the Shaba(s) provided in method {0} is inactive.
+        /// </summary>
+        public static string PaymentRequestAllDepositBanksAreInactive {
+            get {
+                return ResourceManager.GetString("PaymentRequestAllDepositBanksAreInactive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All the corresponding accounts of the provided sheba(s) in method(s) {0} are inactive.
+        /// </summary>
+        public static string PaymentRequestAllDepositsAreInactive {
+            get {
+                return ResourceManager.GetString("PaymentRequestAllDepositsAreInactive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to None of the accounts provided in the method(s) {0} support the desired payment method, please correct them or request to set the payment method for the desired account(s) for Send system administrator.
+        /// </summary>
+        public static string PaymentRequestAllDepositsNotSupportMethod {
+            get {
+                return ResourceManager.GetString("PaymentRequestAllDepositsNotSupportMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Application {0}-{1} is inactive.
         /// </summary>
         public static string PaymentRequestApplicationIsInactive {
@@ -1519,6 +1546,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The payment method(s) {0} has not been determined on the company {1}.
+        /// </summary>
+        public static string PaymentRequestCompanyMethods {
+            get {
+                return ResourceManager.GetString("PaymentRequestCompanyMethods", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All company payment methods are inactive.
         /// </summary>
         public static string PaymentRequestCompanyPaymentMethodAreInactive {
@@ -1546,11 +1582,155 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bank of accounts with the ability to pay company {0} accounts {1} is inactive.
+        /// </summary>
+        public static string PaymentRequestInactiveDepositBanks {
+            get {
+                return ResourceManager.GetString("PaymentRequestInactiveDepositBanks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No account has been defined in the company {0} or all accounts are inactive.
+        /// </summary>
+        public static string PaymentRequestInactiveDeposits {
+            get {
+                return ResourceManager.GetString("PaymentRequestInactiveDeposits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The IpgType(s) corresponding to the provided code(s) are disabled.
+        /// </summary>
+        public static string PaymentRequestInactiveIpgTypes {
+            get {
+                return ResourceManager.GetString("PaymentRequestInactiveIpgTypes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Callback url {0} is invalid.
         /// </summary>
         public static string PaymentRequestInvalidCallbackUrl {
             get {
                 return ResourceManager.GetString("PaymentRequestInvalidCallbackUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The sheba(s) provided in {0} method(s) are not initialized in the correct format, please correct them.
+        /// </summary>
+        public static string PaymentRequestInvalidIban {
+            get {
+                return ResourceManager.GetString("PaymentRequestInvalidIban", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The national code is not entered in the correct format.
+        /// </summary>
+        public static string PaymentRequestInvalidNationalCode {
+            get {
+                return ResourceManager.GetString("PaymentRequestInvalidNationalCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The callback url is not provided in the correct format.
+        /// </summary>
+        public static string PaymentRequestInvalidUrlPattern {
+            get {
+                return ResourceManager.GetString("PaymentRequestInvalidUrlPattern", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No account has been defined in the {0} or all accounts are inactive.
+        /// </summary>
+        public static string PaymentRequestNoActiveCompanyDepositFound {
+            get {
+                return ResourceManager.GetString("PaymentRequestNoActiveCompanyDepositFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to None of the corresponding accounts have been set up on any active port of the specified type in the company {0}.
+        /// </summary>
+        public static string PaymentRequestNoActiveCompanyIpgDepositForIpgCode {
+            get {
+                return ResourceManager.GetString("PaymentRequestNoActiveCompanyIpgDepositForIpgCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The bank of all accounts of the company {0} is inactive.
+        /// </summary>
+        public static string PaymentRequestNoActiveDepositBank {
+            get {
+                return ResourceManager.GetString("PaymentRequestNoActiveDepositBank", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In order to use the direct withdrawal method, at least one active server with direct withdrawal capability must be defined.
+        /// </summary>
+        public static string PaymentRequestNoActiveDirectDebitProvider {
+            get {
+                return ResourceManager.GetString("PaymentRequestNoActiveDirectDebitProvider", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In order to use the payment gateway method, at least one active gateway must be defined for the existing accounts of the company {0}.
+        /// </summary>
+        public static string PaymentRequestNoActiveIpg {
+            get {
+                return ResourceManager.GetString("PaymentRequestNoActiveIpg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to None of the corresponding accounts are set on any active payment gateways of company {0}.
+        /// </summary>
+        public static string PaymentRequestNoActiveIpgDepositForIbans {
+            get {
+                return ResourceManager.GetString("PaymentRequestNoActiveIpgDepositForIbans", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In order to use the payment gateway method, at least one gateway with active type must be defined or available in company {0}.
+        /// </summary>
+        public static string PaymentRequestNoActiveIpgType {
+            get {
+                return ResourceManager.GetString("PaymentRequestNoActiveIpgType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to None of the port type(s) corresponding to the provided sheba(s) is active.
+        /// </summary>
+        public static string PaymentRequestNoActiveIpgTypeDepositForIbans {
+            get {
+                return ResourceManager.GetString("PaymentRequestNoActiveIpgTypeDepositForIbans", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In order to use the payment gateway method, at least one gateway with an active server and payment gateway capability must be defined in the company {0}.
+        /// </summary>
+        public static string PaymentRequestNoActiveProvider {
+            get {
+                return ResourceManager.GetString("PaymentRequestNoActiveProvider", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In order to use the payment gateway method on the corresponding accounts, at least one gateway with an active server and payment gateway capability must be defined in company {0}.
+        /// </summary>
+        public static string PaymentRequestNoActiveProviderDepositForIbans {
+            get {
+                return ResourceManager.GetString("PaymentRequestNoActiveProviderDepositForIbans", resourceCulture);
             }
         }
         
@@ -1564,6 +1744,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to None of the corresponding accounts have been defined on any port of the specified type in the company {0}.
+        /// </summary>
+        public static string PaymentRequestNoCompanyIpgDepositForIpgCode {
+            get {
+                return ResourceManager.GetString("PaymentRequestNoCompanyIpgDepositForIpgCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No company payment method found.
         /// </summary>
         public static string PaymentRequestNoCompanyPaymentMethodFound {
@@ -1573,11 +1762,92 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to In order to use the Charisma Card method, at least one active account from the Middle East Bank with the Charisma Card feature must be set as the default account for this type of transaction of the company {0}.
+        /// </summary>
+        public static string PaymentRequestNoDefaultCharismaCardDeposit {
+            get {
+                return ResourceManager.GetString("PaymentRequestNoDefaultCharismaCardDeposit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to None of the default payment gateway accounts of company {0} are active.
+        /// </summary>
+        public static string PaymentRequestNoDefaultDeposit {
+            get {
+                return ResourceManager.GetString("PaymentRequestNoDefaultDeposit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In order to use the direct withdrawal method, at least one active account with direct withdrawal capability must be designated as the default account for this type of transaction of the company {0}.
+        /// </summary>
+        public static string PaymentRequestNoDefaultDirectDebitDeposit {
+            get {
+                return ResourceManager.GetString("PaymentRequestNoDefaultDirectDebitDeposit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to We have no account defined in the company {1} for the sample(s) provided in method(s) {0}.
+        /// </summary>
+        public static string PaymentRequestNoDepositFoundForIban {
+            get {
+                return ResourceManager.GetString("PaymentRequestNoDepositFoundForIban", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The payment method has not been determined on any of the active accounts of the company {0}.
+        /// </summary>
+        public static string PaymentRequestNoDepositPaymentMethod {
+            get {
+                return ResourceManager.GetString("PaymentRequestNoDepositPaymentMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to None of the corresponding accounts are set on any payment gateways of company {0}.
+        /// </summary>
+        public static string PaymentRequestNoIpgDepositForIbans {
+            get {
+                return ResourceManager.GetString("PaymentRequestNoIpgDepositForIbans", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choosing one of the payment methods is mandatory.
+        /// </summary>
+        public static string PaymentRequestNoMethod {
+            get {
+                return ResourceManager.GetString("PaymentRequestNoMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to NotDefinedCompanyDeposit.
         /// </summary>
         public static string PaymentRequestNotDefinedCompanyDeposit {
             get {
                 return ResourceManager.GetString("PaymentRequestNotDefinedCompanyDeposit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The payment method(s) {0} has not been set on any of the active accounts of the company {1}.
+        /// </summary>
+        public static string PaymentRequestNotExistDeposits {
+            get {
+                return ResourceManager.GetString("PaymentRequestNotExistDeposits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All port types provided are invalid.
+        /// </summary>
+        public static string PaymentRequestNotExistIpgTypes {
+            get {
+                return ResourceManager.GetString("PaymentRequestNotExistIpgTypes", resourceCulture);
             }
         }
         

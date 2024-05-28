@@ -6,6 +6,7 @@ public class Constants
 {
     public const string Pattern = "(usr|pwd|merchantConfigurationId|key|iv|userPassword)\\\"\\s*(:)\\s*\"([^\"]*)\"";
     public const string Replaceformat = "$1$2*****";
+    public const string UrlPattern = @"^(https?|http?):\/\/[^\s\/$.?#].[^\s]*$";
 }
 public static class EnumHelper
 {

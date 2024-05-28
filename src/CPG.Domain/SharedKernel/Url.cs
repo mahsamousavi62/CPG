@@ -19,8 +19,7 @@ public class Url
         if (url.Length < 10 || url.Length > 2048)
             throw new InvalidUrlCharacterLimitException(url);
 
-        const string pattern = @"^(https?|http?):\/\/[^\s\/$.?#].[^\s]*$";
-        if (!Regex.IsMatch(url, pattern))
+        if (!Regex.IsMatch(url, Constants.UrlPattern))
             throw new InvalidUrlFormatException(url);
         Value = url;
     }

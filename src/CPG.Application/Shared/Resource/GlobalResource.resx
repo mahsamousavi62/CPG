@@ -867,4 +867,94 @@
   <data name="DuplicateCompanyCode" xml:space="preserve">
     <value>Code '{0}' has already been used for another company</value>
   </data>
+  <data name="PaymentRequestAllDepositBanksAreInactive" xml:space="preserve">
+    <value>The bank of all the corresponding accounts of the Shaba(s) provided in method {0} is inactive</value>
+  </data>
+  <data name="PaymentRequestAllDepositsAreInactive" xml:space="preserve">
+    <value>All the corresponding accounts of the provided sheba(s) in method(s) {0} are inactive</value>
+  </data>
+  <data name="PaymentRequestAllDepositsNotSupportMethod" xml:space="preserve">
+    <value>None of the accounts provided in the method(s) {0} support the desired payment method, please correct them or request to set the payment method for the desired account(s) for Send system administrator</value>
+  </data>
+  <data name="PaymentRequestCompanyMethods" xml:space="preserve">
+    <value>The payment method(s) {0} has not been determined on the company {1}</value>
+  </data>
+  <data name="PaymentRequestInactiveDepositBanks" xml:space="preserve">
+    <value>Bank of accounts with the ability to pay company {0} accounts {1} is inactive</value>
+  </data>
+  <data name="PaymentRequestInactiveDeposits" xml:space="preserve">
+    <value>No account has been defined in the company {0} or all accounts are inactive</value>
+  </data>
+  <data name="PaymentRequestInactiveIpgTypes" xml:space="preserve">
+    <value>The IpgType(s) corresponding to the provided code(s) are disabled</value>
+  </data>
+  <data name="PaymentRequestInvalidIban" xml:space="preserve">
+    <value>The sheba(s) provided in {0} method(s) are not initialized in the correct format, please correct them</value>
+  </data>
+  <data name="PaymentRequestInvalidUrlPattern" xml:space="preserve">
+    <value>The callback url is not provided in the correct format</value>
+  </data>
+  <data name="PaymentRequestNoActiveCompanyIpgDepositForIpgCode" xml:space="preserve">
+    <value>None of the corresponding accounts have been set up on any active port of the specified type in the company {0}</value>
+  </data>
+  <data name="PaymentRequestNoActiveDirectDebitProvider" xml:space="preserve">
+    <value>In order to use the direct withdrawal method, at least one active server with direct withdrawal capability must be defined</value>
+  </data>
+  <data name="PaymentRequestNoActiveIpg" xml:space="preserve">
+    <value>In order to use the payment gateway method, at least one active gateway must be defined for the existing accounts of the company {0}</value>
+  </data>
+  <data name="PaymentRequestNoActiveIpgDepositForIbans" xml:space="preserve">
+    <value>None of the corresponding accounts are set on any active payment gateways of company {0}</value>
+  </data>
+  <data name="PaymentRequestNoActiveIpgType" xml:space="preserve">
+    <value>In order to use the payment gateway method, at least one gateway with active type must be defined or available in company {0}</value>
+  </data>
+  <data name="PaymentRequestNoActiveIpgTypeDepositForIbans" xml:space="preserve">
+    <value>None of the port type(s) corresponding to the provided sheba(s) is active</value>
+  </data>
+  <data name="PaymentRequestNoActiveProvider" xml:space="preserve">
+    <value>In order to use the payment gateway method, at least one gateway with an active server and payment gateway capability must be defined in the company {0}</value>
+  </data>
+  <data name="PaymentRequestNoActiveProviderDepositForIbans" xml:space="preserve">
+    <value>In order to use the payment gateway method on the corresponding accounts, at least one gateway with an active server and payment gateway capability must be defined in company {0}</value>
+  </data>
+  <data name="PaymentRequestNoCompanyIpgDepositForIpgCode" xml:space="preserve">
+    <value>None of the corresponding accounts have been defined on any port of the specified type in the company {0}</value>
+  </data>
+  <data name="PaymentRequestNoDefaultCharismaCardDeposit" xml:space="preserve">
+    <value>In order to use the Charisma Card method, at least one active account from the Middle East Bank with the Charisma Card feature must be set as the default account for this type of transaction of the company {0}</value>
+  </data>
+  <data name="PaymentRequestNoDefaultDeposit" xml:space="preserve">
+    <value>None of the default payment gateway accounts of company {0} are active</value>
+  </data>
+  <data name="PaymentRequestNoDefaultDirectDebitDeposit" xml:space="preserve">
+    <value>In order to use the direct withdrawal method, at least one active account with direct withdrawal capability must be designated as the default account for this type of transaction of the company {0}</value>
+  </data>
+  <data name="PaymentRequestNoDepositFoundForIban" xml:space="preserve">
+    <value>We have no account defined in the company {1} for the sample(s) provided in method(s) {0}</value>
+  </data>
+  <data name="PaymentRequestNoIpgDepositForIbans" xml:space="preserve">
+    <value>None of the corresponding accounts are set on any payment gateways of company {0}</value>
+  </data>
+  <data name="PaymentRequestNoMethod" xml:space="preserve">
+    <value>Choosing one of the payment methods is mandatory</value>
+  </data>
+  <data name="PaymentRequestNotExistDeposits" xml:space="preserve">
+    <value>The payment method(s) {0} has not been set on any of the active accounts of the company {1}</value>
+  </data>
+  <data name="PaymentRequestNotExistIpgTypes" xml:space="preserve">
+    <value>All port types provided are invalid</value>
+  </data>
+  <data name="PaymentRequestInvalidNationalCode" xml:space="preserve">
+    <value>The national code is not entered in the correct format</value>
+  </data>
+  <data name="PaymentRequestNoActiveCompanyDepositFound" xml:space="preserve">
+    <value>No account has been defined in the {0} or all accounts are inactive</value>
+  </data>
+  <data name="PaymentRequestNoActiveDepositBank" xml:space="preserve">
+    <value>The bank of all accounts of the company {0} is inactive</value>
+  </data>
+  <data name="PaymentRequestNoDepositPaymentMethod" xml:space="preserve">
+    <value>The payment method has not been determined on any of the active accounts of the company {0}</value>
+  </data>
 </root>
