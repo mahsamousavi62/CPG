@@ -1,23 +1,13 @@
-﻿
-using System.Security.Claims;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using CPG.Application.UseCases.CharismaCard.ViewModels;
 using CPG.Application.UseCases.PaymentRequests.Exceptions;
 using CPG.Domain.AggregateModels.CompanyAggregate.Specifications;
 using CPG.Domain.AggregateModels.CompanyDepositAggregate.Specifications;
 using CPG.Domain.AggregateModels.PaymentRequestAggregate.Specifications;
 using CPG.Domain.AggregateModels.TransactionAggregate;
-using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Communication.NeoBank;
 using CPG.Domain.SharedKernel.Communication.NeoBank.Models;
-using MediatR;
 using CPG.Domain.SharedKernel.Helper;
 using static CPG.Domain.SharedKernel.Enums;
-using System.Linq;
-using System.Text.RegularExpressions;
-using CPG.Application.UseCases.CharismaCard.ViewModels;
-using CPG.Application.Shared.Resource;
 
 namespace CPG.Application.UseCases.CharismaCard.Commands;
 
@@ -68,7 +58,9 @@ public class CreateCharismaCardTransactionCommandHandler(
 
         if (!companyDeposit.IsActive) { throw new PaymentTokenInactiveDepositException(); }
         var bank = companyDeposit.Bank;
+        
         if (!bank.IsActive) { throw new PaymentTokenInactiveBankException(); }
+        
         if (company.PaymentMethods?.Any(t => t.MethodType == Enums.PaymentMethodType.CharismaCard) is false)
         { throw new PaymentRequestCompanyHasNoCharismaCardMethodException(); }
 

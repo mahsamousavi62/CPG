@@ -1,7 +1,5 @@
 ﻿
 using CPG.Application.UseCases.CharismaCard.ViewModels;
-using CPG.Domain.SharedKernel;
-using MediatR;
 
 namespace CPG.Application.UseCases.CharismaCard.Commands;
 
