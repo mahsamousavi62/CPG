@@ -33,6 +33,7 @@ public class CreateCharismaCardTransactionCommandHandler(
     )
     : IRequestHandler<CreateCharismaCardTransactionCommand, Result<CharismaCardResponseViewModel>>
 {
+    private string notGrantForDirectDebitError = "10";
     private readonly INeoBankService neoBankService = neoBankService;
     private readonly IAuthenticationService _authenticationService = authenticationService;
     private readonly IAggregateRepository<Transaction> _transactionRepository = transactionRepository;
@@ -41,22 +42,28 @@ public class CreateCharismaCardTransactionCommandHandler(
     private readonly IAggregateRepository<Domain.AggregateModels.CompanyAggregate.Company> _companyRepository = companyRepository;
     private readonly IAggregateRepository<Domain.AggregateModels.ProviderAggregate.Provider> _providerRepository = providerRepository;
     private readonly IAggregateRepository<Domain.AggregateModels.CompanyDepositAggregate.CompanyDeposit> _companyDepositRepository = companyDepositRepository;
-    public async Task<Result<CharismaCardResponseViewModel>> Handle(CreateCharismaCardTransactionCommand request,
-        CancellationToken cancellationToken)
+    public async Task<Result<CharismaCardResponseViewModel>> Handle(CreateCharismaCardTransactionCommand request, CancellationToken cancellationToken)
     {
         var paymentRequest = await _paymentRequestRepository.GetBySpecAsync(new PaymentRequestByCode(request.Model.PaymentCode), cancellationToken);
-        if (paymentRequest is null) throw new PaymentRequestNotFoundByCodeException();
-        if (!paymentRequest.Company.IsActive) throw new PaymentTokenInactiveCompanyException();
-        if (paymentRequest.UrlExpirationDateTime < DateTime.Now) throw new PaymentRequestCodeExpiredException();
-        if (paymentRequest.IsUsed) throw new PaymentRequestCodeIsUsedBeforeException();
+
+        PaymentRequest.Validate(paymentRequest);
+
+        //if (paymentRequest is null) throw new PaymentRequestNotFoundByCodeException();
+
+        //if (!paymentRequest.Company.IsActive) throw new PaymentTokenInactiveCompanyException();
+
+        //if (paymentRequest.UrlExpirationDateTime < DateTime.Now) throw new PaymentRequestCodeExpiredException();
+
+        //if (paymentRequest.IsUsed) throw new PaymentRequestCodeIsUsedBeforeException();
+
         if (paymentRequest.Status != Enums.PaymentStatus.RedirectedToCpg) throw new PaymentRequestCodeInvalidStatusException();
 
-        var company = await _companyRepository.GetBySpecAsync(new CompanyByIdSpec(paymentRequest.CompanyId), cancellationToken);
+        var company = await _companyRepository.FirstOrDefaultAsync(new CompanyByIdSpec(paymentRequest.CompanyId), cancellationToken);
 
         long destinationDepositId;
         Domain.AggregateModels.CompanyDepositAggregate.CompanyDeposit companyDeposit;
 
-        companyDeposit = await _companyDepositRepository.GetBySpecAsync(new DefaultCharismaCardDepositSpec(paymentRequest.CompanyId), cancellationToken);
+        companyDeposit = await _companyDepositRepository.FirstOrDefaultAsync(new DefaultCharismaCardDepositSpec(paymentRequest.CompanyId), cancellationToken);
         if (companyDeposit is null) throw new Exception("Default CompanyDeposit for charismCard not found!");
 
         if (!companyDeposit.IsActive) { throw new PaymentTokenInactiveDepositException(); }
@@ -67,8 +74,6 @@ public class CreateCharismaCardTransactionCommandHandler(
 
         var mobileNumber = await _authenticationService.GetDataFromClaim<string>(ClaimTypes.MobilePhone);
         destinationDepositId = companyDeposit.Id;
-
-
         var trackId = RandomGenerator.GenerateRandomDigitNumber(16);
         var accountNumber = Regex.Replace(companyDeposit.AccountNumber, @"(\d{4})(\d{2})(\d{3})(\d+)", "$1/$2/$3/$4");
         var clientDirectDebitResponse = await neoBankService.ClientDirectDebit(new ClientDirectDebitRequest
@@ -79,12 +84,13 @@ public class CreateCharismaCardTransactionCommandHandler(
             TrackerId = trackId,
         });
 
+
         if (clientDirectDebitResponse?.IsSuccess == true)
         {
             ClientDirectDebitResponse clientDirectDebit = clientDirectDebitResponse.Data;
             if (!string.IsNullOrEmpty(clientDirectDebitResponse?.Data?.ErrorCode))
             {
-                if (clientDirectDebit.ErrorCode == "10")
+                if (clientDirectDebit.ErrorCode == notGrantForDirectDebitError)
                 {
                     return Result<CharismaCardResponseViewModel>.Failure(new Error("2202005", string.Format(GlobalResource.DirectDebitGrantError, company.PersianName)));
                 }
