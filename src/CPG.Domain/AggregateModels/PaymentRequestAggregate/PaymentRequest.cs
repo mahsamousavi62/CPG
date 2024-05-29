@@ -83,5 +83,7 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
         if (paymentRequest.UrlExpirationDateTime < DateTime.Now) throw new PaymentRequestCodeExpiredException();
 
         if (paymentRequest.IsUsed) throw new PaymentRequestCodeIsUsedBeforeException();
+                                                                                     
+        if (paymentRequest.Status != Enums.PaymentStatus.RedirectedToCpg) throw new PaymentRequestCodeInvalidStatusException();
     }
 }

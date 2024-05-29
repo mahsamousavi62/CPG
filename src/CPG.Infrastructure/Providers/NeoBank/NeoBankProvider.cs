@@ -71,7 +71,7 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
             var resultContent = await result.Content.ReadAsStringAsync();
 
             result.Headers.TryGetValues("x-correlation-id", out IEnumerable<string> res);
-            var neoBankCorroletionId = res.FirstOrDefault();
+            var neoBankCorroletionId = res?.FirstOrDefault();
 
             var response = JsonConvert.DeserializeObject<ResultData<ClientDirectDebitResponse>>(resultContent);
 

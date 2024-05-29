@@ -1,7 +1,6 @@
 ﻿
 
 using CPG.Domain.Exceptions;
-using System;
 
 namespace CPG.Domain.AggregateModels.PaymentRequestAggregate.Exceptions;
 
@@ -12,3 +11,4 @@ public class PaymentRequestCodeExpiredException : DomainException
     {
     }
 }
+

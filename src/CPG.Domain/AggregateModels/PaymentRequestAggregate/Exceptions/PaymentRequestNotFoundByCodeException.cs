@@ -1,9 +1,8 @@
 ﻿
 
-using CPG.Domain.AggregateModels.PaymentRequestAggregate;
 using CPG.Domain.Exceptions;
 
-namespace CPG.Application.UseCases.PaymentRequests.Exceptions;
+namespace CPG.Domain.AggregateModels.PaymentRequestAggregate.Exceptions;
 
 public class PaymentRequestNotFoundByCodeException : DomainException
 {

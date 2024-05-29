@@ -38,14 +38,6 @@ public class CreateCharismaCardTransactionCommandHandler(
 
         PaymentRequest.Validate(paymentRequest);
 
-        //if (paymentRequest is null) throw new PaymentRequestNotFoundByCodeException();
-
-        //if (!paymentRequest.Company.IsActive) throw new PaymentTokenInactiveCompanyException();
-
-        //if (paymentRequest.UrlExpirationDateTime < DateTime.Now) throw new PaymentRequestCodeExpiredException();
-
-        //if (paymentRequest.IsUsed) throw new PaymentRequestCodeIsUsedBeforeException();
-
         if (paymentRequest.Status != Enums.PaymentStatus.RedirectedToCpg) throw new PaymentRequestCodeInvalidStatusException();
 
         var company = await _companyRepository.FirstOrDefaultAsync(new CompanyByIdSpec(paymentRequest.CompanyId), cancellationToken);
@@ -58,9 +50,9 @@ public class CreateCharismaCardTransactionCommandHandler(
 
         if (!companyDeposit.IsActive) { throw new PaymentTokenInactiveDepositException(); }
         var bank = companyDeposit.Bank;
-        
+
         if (!bank.IsActive) { throw new PaymentTokenInactiveBankException(); }
-        
+
         if (company.PaymentMethods?.Any(t => t.MethodType == Enums.PaymentMethodType.CharismaCard) is false)
         { throw new PaymentRequestCompanyHasNoCharismaCardMethodException(); }
 
