@@ -76,7 +76,7 @@ public class CreateCharismaCardTransactionCommandHandler(
             {
                 if (clientDirectDebit.ErrorCode == notGrantForDirectDebitError)
                 {
-                    return Result<CharismaCardResponseViewModel>.Failure(new Error("2202005", string.Format(GlobalResource.DirectDebitGrantError, company.PersianName)));
+                    return Result<CharismaCardResponseViewModel>.Failure(new Error("2202005", string.Empty));
                 }
             }
             var CharismaCardstatus = clientDirectDebit.TransferStatus == NeoBankTransferStatus.Failed ?
