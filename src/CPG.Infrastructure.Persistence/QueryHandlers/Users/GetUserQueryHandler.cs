@@ -35,12 +35,16 @@ public class GetUserQueryHandler(ReadDbContext context, IAuthenticationService a
 
         var sub = await _authenticationService.GetDataFromClaim<string>("sub", string.Empty);
 
-        var idpUserProfileResponse = await _idpClient.GetUserStatus(sub);
+        var kycStatus = await _authenticationService.GetDataFromClaim<string>("status", string.Empty);
+        if (kycStatus != userKycStatus)
+        {
+            var idpUserProfileResponse = await _idpClient.GetUserStatus(sub);
 
-        if (idpUserProfileResponse.Data.StatusCode == (short)HttpStatusCode.NotFound ||
-          idpUserProfileResponse.OperationResult == Enums.OperationResult.Failed
-          || idpUserProfileResponse.Data?.Result?.Status != userKycStatus)
-            throw new UserNotVerifyStatusException(string.Empty);
+            if (idpUserProfileResponse.Data.StatusCode == (short)HttpStatusCode.NotFound ||
+              idpUserProfileResponse.OperationResult == Enums.OperationResult.Failed
+              || idpUserProfileResponse.Data?.Result?.Status != userKycStatus)
+                throw new UserNotVerifyStatusException(string.Empty); 
+        }
 
 
         var user = await _context.UserReadModels.Include(u => u.UserRoles).Include(c => c.Company)
