@@ -32,36 +32,48 @@ public class IdpProvider(
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     public async Task<ResultData<UserProfileResponse>> GetUserProfile(string idpId)
     {
-        var appConfig = _authService.GetJwtConfig();
-
-        var accessTokenResult = await GetClientCredentialsToken(appConfig);
-        if (accessTokenResult.OperationResult == Enums.OperationResult.Failed)
-            return new ResultData<UserProfileResponse> { Error = accessTokenResult.Error, OperationResult = Enums.OperationResult.Failed };
-
-        List<(string Key, string Value)> list = [("Authorization", string.Concat("BEARER ", accessTokenResult.Data))];
-        IdpProfileRequest request = new() { IdpId = idpId };
-        var result = await _httpProvider.GetAsync<IdpProfileRequest, UserProfileResponse, IdpProfileRequest>
-        (new HttpProviderRequest<IdpProfileRequest, IdpProfileRequest>
+        try
         {
-            BaseAddress = appConfig.Authority,
-            Request = request,
-            Body = request,
-            Uri = $"{appConfig!.IdpGetProfileUrl}{idpId}",
-            ProviderType = Enums.ProviderType.Idp,
-            HeaderParameters = list,
-            Service = Enums.ServiceType.GetIdpProfile
-        });
+            var appConfig = _authService.GetJwtConfig();
 
-        return result is null
-            ? new ResultData<UserProfileResponse>
+            var accessTokenResult = await GetClientCredentialsToken(appConfig);
+            if (accessTokenResult.OperationResult == Enums.OperationResult.Failed)
+                return new ResultData<UserProfileResponse> { Error = accessTokenResult.Error, OperationResult = Enums.OperationResult.Failed };
+
+            List<(string Key, string Value)> list = [("Authorization", string.Concat("BEARER ", accessTokenResult.Data))];
+            IdpProfileRequest request = new() { IdpId = idpId };
+            var result = await _httpProvider.GetAsync<IdpProfileRequest, UserProfileResponse, IdpProfileRequest>
+            (new HttpProviderRequest<IdpProfileRequest, IdpProfileRequest>
             {
-                OperationResult = OperationResult.NotFound,
-            }
-            : new ResultData<UserProfileResponse>
+                BaseAddress = appConfig.Authority,
+                Request = request,
+                Body = request,
+                Uri = $"{appConfig!.IdpGetProfileUrl}{idpId}",
+                ProviderType = Enums.ProviderType.Idp,
+                HeaderParameters = list,
+                Service = Enums.ServiceType.GetIdpProfile
+            });
+
+            return result is null
+                ? new ResultData<UserProfileResponse>
+                {
+                    OperationResult = OperationResult.NotFound,
+                }
+                : new ResultData<UserProfileResponse>
+                {
+                    Data = result,
+                    OperationResult = OperationResult.Succeeded,
+                };
+        }
+        catch (Exception ex)
+        {
+
+            return new ResultData<UserProfileResponse>
             {
-                Data = result,
-                OperationResult = OperationResult.Succeeded,
+                OperationResult = OperationResult.Failed,
+                Error = ex.Message
             };
+        }
     }
 
     private async Task<ResultData<string>> GetClientCredentialsToken(JwtConfigViewModel appConfig)
@@ -128,36 +140,47 @@ public class IdpProvider(
 
     public async Task<ResultData<UserStatusResponse>> GetUserStatus(string idpId)
     {
-        var appConfig = _authService.GetJwtConfig();
+        try
+        {
+            var appConfig = _authService.GetJwtConfig();
 
-        var accessTokenResult = await GetClientCredentialsToken(appConfig);
-        if (accessTokenResult.OperationResult == Enums.OperationResult.Failed)
-            return new ResultData<UserStatusResponse> { Error = accessTokenResult.Error, OperationResult = Enums.OperationResult.Failed };
+            var accessTokenResult = await GetClientCredentialsToken(appConfig);
+            if (accessTokenResult.OperationResult == Enums.OperationResult.Failed)
+                return new ResultData<UserStatusResponse> { Error = accessTokenResult.Error, OperationResult = Enums.OperationResult.Failed };
 
-        List<(string Key, string Value)> list = [("Authorization", string.Concat("BEARER ", accessTokenResult.Data))];
-        IdpProfileRequest request = new() { IdpId = idpId };
-        var result = await _httpProvider.GetAsync<IdpProfileRequest, UserStatusResponse, IdpProfileRequest>
-         (new HttpProviderRequest<IdpProfileRequest, IdpProfileRequest>
-         {
-            BaseAddress = appConfig.Authority,
-            Request = request,
-            Body = request,
-            Uri = $"{appConfig!.IdpGetUserStatusUrl}{idpId}?idType=UserId",
-            ProviderType = Enums.ProviderType.Idp,
-            HeaderParameters = list,
-            Service = Enums.ServiceType.GetIdpUserStatus
-        });
+            List<(string Key, string Value)> list = [("Authorization", string.Concat("BEARER ", accessTokenResult.Data))];
+            IdpProfileRequest request = new() { IdpId = idpId };
+            var result = await _httpProvider.GetAsync<IdpProfileRequest, UserStatusResponse, IdpProfileRequest>
+             (new HttpProviderRequest<IdpProfileRequest, IdpProfileRequest>
+             {
+                 BaseAddress = appConfig.Authority,
+                 Request = request,
+                 Body = request,
+                 Uri = $"{appConfig!.IdpGetUserStatusUrl}{idpId}?idType=UserId",
+                 ProviderType = Enums.ProviderType.Idp,
+                 HeaderParameters = list,
+                 Service = Enums.ServiceType.GetIdpUserStatus
+             });
 
-        return result is null
-            ? new ResultData<UserStatusResponse>
+            return result is null
+                ? new ResultData<UserStatusResponse>
+                {
+                    OperationResult = OperationResult.NotFound,
+                }
+                : new ResultData<UserStatusResponse>
+                {
+                    Data = result,
+                    OperationResult = OperationResult.Succeeded,
+                };
+        }
+        catch (Exception ex)
+        {
+            return new ResultData<UserStatusResponse>
             {
-                OperationResult = OperationResult.NotFound,
-            }
-            : new ResultData<UserStatusResponse>
-            {
-                Data = result,
-                OperationResult = OperationResult.Succeeded,
+                OperationResult = OperationResult.Failed,
+                Error = ex.Message
             };
+        }
     }
 
 }
