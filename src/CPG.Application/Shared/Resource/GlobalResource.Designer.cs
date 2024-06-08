@@ -745,6 +745,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dear user, you have not granted the required permission to pay through Karisma card to the company {0}, please click on the request permission option to grant permission if necessary.
+        /// </summary>
+        public static string DirectDebitGrantError {
+            get {
+                return ResourceManager.GetString("DirectDebitGrantError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No record found with this authorizationId.
         /// </summary>
         public static string DirectDebitGrantNotFoundException {

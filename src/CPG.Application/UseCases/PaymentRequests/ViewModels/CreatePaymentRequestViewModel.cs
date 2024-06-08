@@ -1,5 +1,6 @@
 ﻿using Mapster;
 using System.ComponentModel.DataAnnotations;
+using IRegister = Mapster.IRegister;
 
 namespace CPG.Application.UseCases.PaymentRequests.ViewModels;
 

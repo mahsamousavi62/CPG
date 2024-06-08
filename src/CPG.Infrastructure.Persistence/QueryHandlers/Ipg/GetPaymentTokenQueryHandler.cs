@@ -30,7 +30,7 @@ using System.Net;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
-
+using CPG.Application.UseCases.PaymentRequests.Exceptions;
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 
 public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,

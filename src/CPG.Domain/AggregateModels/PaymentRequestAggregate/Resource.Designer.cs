@@ -77,5 +77,50 @@ namespace CPG.Domain.AggregateModels.PaymentRequestAggregate {
                 return ResourceManager.GetString("InvalidPaymentIdLength", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to کاربر گرامی، نشانی پرداخت منقضی شده است، در صورت نیاز مجددا عملیات را تکرار کنید.
+        /// </summary>
+        internal static string PaymentRequestCodeExpired {
+            get {
+                return ResourceManager.GetString("PaymentRequestCodeExpired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to کاربر گرامی، درخواست در وضعیت غیرمجاز است.
+        /// </summary>
+        internal static string PaymentRequestCodeInvalidStatus {
+            get {
+                return ResourceManager.GetString("PaymentRequestCodeInvalidStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to کاربر گرامی، این نشانی قبلا یکبار استفاده شده است، در صورت نیاز مجددا عملیات را تکرار کنید.
+        /// </summary>
+        internal static string PaymentRequestCodeIsUsedBefore {
+            get {
+                return ResourceManager.GetString("PaymentRequestCodeIsUsedBefore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  کاربر گرامی، شرکت مورد نظر غیرفعال است.
+        /// </summary>
+        internal static string PaymentRequestInActiveCompany {
+            get {
+                return ResourceManager.GetString("PaymentRequestInActiveCompany", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to کاربر گرامی، نشانی پرداخت نامعتبر است.
+        /// </summary>
+        internal static string PaymentRequestNotFoundByCode {
+            get {
+                return ResourceManager.GetString("PaymentRequestNotFoundByCode", resourceCulture);
+            }
+        }
     }
 }

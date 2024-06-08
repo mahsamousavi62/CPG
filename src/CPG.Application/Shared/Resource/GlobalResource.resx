@@ -867,4 +867,7 @@
   <data name="DuplicateCompanyCode" xml:space="preserve">
     <value>Code '{0}' has already been used for another company</value>
   </data>
+  <data name="DirectDebitGrantError" xml:space="preserve">
+    <value>Dear user, you have not granted the required permission to pay through Karisma card to the company {0}, please click on the request permission option to grant permission if necessary</value>
+  </data>
 </root>

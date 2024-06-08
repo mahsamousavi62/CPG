@@ -888,4 +888,7 @@
   <data name="DuplicateCompanyCode" xml:space="preserve">
     <value>کد '{0}' قبلا برای شرکت دیگری ثبت شده است</value>
   </data>
+  <data name="DirectDebitGrantError" xml:space="preserve">
+    <value>کاربر گرامی، شما مجوز لازم جهت پرداخت وجه از طریق کاریزما کارت به شرکت {0} را اعطا نکرده اید، خواهشمند است در صورت نیاز جهت اعطای مجوز بر روی گزینه درخواست مجوز کلیک کنید.</value>
+  </data>
 </root>
