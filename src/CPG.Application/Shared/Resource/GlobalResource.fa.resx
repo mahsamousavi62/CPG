@@ -978,4 +978,10 @@
   <data name="PaymentRequestInvalidNationalCode" xml:space="preserve">
     <value>کدملی در قالب صحیح ارائه نشده است</value>
   </data>
+  <data name="CountinueCreateDeposit" xml:space="preserve">
+    <value>ادامه افتتاح حساب</value>
+  </data>
+  <data name="YourCardIsDeActive" xml:space="preserve">
+    <value>کاربر گرامی کارت شما غیرفعال شده است، در صورت نیاز می توانید با مدیریت سیستم تماس بگیرید</value>
+  </data>
 </root>

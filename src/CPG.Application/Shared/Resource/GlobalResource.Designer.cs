@@ -502,6 +502,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CountinueCreateDeposit.
+        /// </summary>
+        public static string CountinueCreateDeposit {
+            get {
+                return ResourceManager.GetString("CountinueCreateDeposit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CPGReferencePage.
         /// </summary>
         public static string CPGReferencePage {
@@ -2577,6 +2586,15 @@ namespace CPG.Application.Shared.Resource {
         public static string VerifyInvalidStatus {
             get {
                 return ResourceManager.GetString("VerifyInvalidStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to YourCardIsDeActive.
+        /// </summary>
+        public static string YourCardIsDeActive {
+            get {
+                return ResourceManager.GetString("YourCardIsDeActive", resourceCulture);
             }
         }
     }

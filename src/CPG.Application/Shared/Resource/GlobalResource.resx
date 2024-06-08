@@ -957,4 +957,10 @@
   <data name="PaymentRequestNoDepositPaymentMethod" xml:space="preserve">
     <value>The payment method has not been determined on any of the active accounts of the company {0}</value>
   </data>
+  <data name="CountinueCreateDeposit" xml:space="preserve">
+    <value>CountinueCreateDeposit</value>
+  </data>
+  <data name="YourCardIsDeActive" xml:space="preserve">
+    <value>YourCardIsDeActive</value>
+  </data>
 </root>
