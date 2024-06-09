@@ -70,6 +70,13 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
             throw new PaymentRequestCodeIsUsedException();
         }
 
+        var nationalCode = await _authenticationService.GetDataFromClaim<string>("NationalCode");
+
+        if (paymentRequest.NationalCode != nationalCode)
+        {
+            throw new PaymentRequestNationalCodeConflictException();
+        }
+
         paymentRequest.Status = Enums.PaymentStatus.RedirectedToCpg;
         await _paymentRequestRepository.UpdateAsync(paymentRequest);
 
