@@ -9,26 +9,20 @@ using CPG.Infrastructure.Persistence.GraphQL.Types.Bank;
 using CPG.Infrastructure.Persistence.GraphQL.Types.Company;
 using Microsoft.EntityFrameworkCore;
 using CPG.Infrastructure.Persistence.GraphQL.Types.Provider;
-using CPG.Application.UseCases.IPGTypes.ViewModels;
 using System.Threading.Tasks;
-using System.Threading;
 using CPG.Infrastructure.Persistence.GraphQL.Types.CompanyDeposit;
-using static HotChocolate.ErrorCodes;
 using CPG.Domain.AggregateModels.TransactionAggregate;
 using CPG.Infrastructure.Persistence.GraphQL.Model;
 using System;
 using System.Collections.Generic;
 using CPG.Infrastructure.Persistence.GraphQL.Types.Transaction;
-using Mapster;
 using CPG.Domain.SharedKernel;
 using HotChocolate.Authorization;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using static CPG.Domain.SharedKernel.Enums;
 using CPG.Infrastructure.Persistence.Redis;
-using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Infrastructure.Persistence.GraphQL.Types.IPGTransaction;
-using System.Security.Cryptography.X509Certificates;
 using CPG.Infrastructure.Persistence.GraphQL.Types.PaymentReceiptTransaction;
 using CPG.Infrastructure.Persistence.GraphQL.Types.CharismaCard;
 using CPG.Application.UseCases.Companies.Exceptions;
@@ -521,7 +515,7 @@ public class ReadModelQueries
     {
         var query = dbContext.TransactionReadModels
             .Include(c => c.PaymentReceiptTransaction).Where(c => c.PaymentReceiptTransactionId.HasValue)
-            .Include(c => c.Company).Include(c => c.PaymentRequest).Include(c=>c.DestinationDeposit).AsQueryable();
+            .Include(c => c.Company).Include(c => c.PaymentRequest).Include(c => c.DestinationDeposit).AsQueryable();
 
         var roleClaim = httpContext.HttpContext.User.FindFirst(c => c.Type == ClaimTypes.Role &&
                c.Value == UserRoleType.SuperAdmin.GetValue());
@@ -544,7 +538,7 @@ public class ReadModelQueries
         var entity = query.FirstOrDefault(c => c.PaymentReceiptTransactionId == id);
         if (entity == null)
         {
-            throw new PaymentReceiptNotFoundException(id) ;
+            throw new PaymentReceiptNotFoundException(id);
         }
 
         var bankscacheData = cacheService.GetData<List<BankReadModel>>("AllBank_key");
@@ -559,7 +553,7 @@ public class ReadModelQueries
 
         var destIbanPrefix = entity.DestinationDeposit.Iban.Substring(4, 3);
         var destinationbank = bankscacheData.FirstOrDefault(c => c.IbanPrefix == destIbanPrefix);
-        
+
         var viewModel = new PaymentReceiptTransactionReportViewModel
         {
             Id = entity.PaymentReceiptTransaction.Id,
@@ -583,7 +577,7 @@ public class ReadModelQueries
             SourceIban = entity.PaymentReceiptTransaction.SourceIban,
             ModificationDate = entity.PaymentReceiptTransaction.ModificationDate,
             Description = entity.PaymentReceiptTransaction.Description,
-            DestinationIban=entity.DestinationDeposit?.Iban,
+            DestinationIban = entity.DestinationDeposit?.Iban,
             DestinationBankId = destinationbank?.Id ?? 0,
             DestinationBankLogo = await General.GetLogo(minioProvider, destinationbank?.Logo),
             DestinationBankName = destinationbank?.Name,
@@ -591,7 +585,7 @@ public class ReadModelQueries
         return viewModel;
     }
 
-# endregion
+    #endregion
 
     #region [ CharismaCardTransactionReport ]
 
@@ -787,4 +781,74 @@ public class ReadModelQueries
     }
 
     #endregion
+
+
+    #region [ PaymentRequest ]
+
+    [Authorize(Policy = AuthPolicies.Roles.AdminOrCompanyUser)]
+    [UseFiltering<TransactionFilterType>]
+    [UseSorting<TransactionSortType>]
+    public async Task<ReportViewModel<PaymentRequestReportViewModel>> GetPaymentRequests
+                                                                   ([Service] ReadDbContext dbContext,
+                                                                    [Service] IMinioProvider minioProvider,
+                                                                    [Service] IRedisCacheService cacheService,
+                                                                    [Service] IHttpContextAccessor httpContext,
+                                                                    int? pageNumber, int? pageSize)
+    {
+        pageNumber ??= 1;
+        pageSize ??= 10;
+
+        IQueryable<PaymentRequestReadModel> query = dbContext.PaymentRequestReadModels;
+
+        var roleClaim = httpContext.HttpContext.User.FindFirst(c => c.Type == ClaimTypes.Role &&
+              c.Value == UserRoleType.SuperAdmin.GetValue());
+        if (roleClaim == null)
+        {
+            var companyIdClaim = httpContext.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "CompanyId");
+            if (companyIdClaim == null ||
+            !long.TryParse(companyIdClaim.Value, out long companyId) || companyId == 0)
+            {
+                throw new CompanyNotFoundException(0);
+            }
+            else
+            {
+                query = query.Where(c => c.CompanyId == companyId);
+            }
+        }
+        int totalCount = await query.CountAsync();
+        int totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+        var data = await query.OrderByDescending(c => c.Id)
+         .Select(c => new
+         {
+
+         })
+         .Skip((pageNumber.Value - 1) * pageSize.Value)
+         .Take(pageSize.Value)
+         .ToListAsync();
+
+        var UserscacheData = cacheService.GetData<List<UserReadModel>>("AllUser_key");
+
+        if (UserscacheData == null)
+        {
+            UserscacheData = await dbContext.UserReadModels.ToListAsync();
+            cacheService.SetData("AllUser_key", UserscacheData);
+        }
+        var viewModels = await Task.WhenAll(data.Select(async entity => new TransactionReportViewModel
+        {
+
+        }));
+
+        return new ReportViewModel<PaymentRequestReportViewModel>
+        {
+            TotalCount = totalCount,
+            CurrentPage = pageNumber.Value,
+            TotalPages = totalPages,
+            HasNextPage = pageNumber < totalPages,
+            HasPreviousPage = pageNumber > 1,
+            //Models = viewModels
+        };
+    }
+    #endregion
+
 }
