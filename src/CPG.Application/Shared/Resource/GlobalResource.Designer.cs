@@ -1879,6 +1879,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to None of the subcategories of payment methods {0} can be used, please send a request to activate or set up one of the methods to the system administrator..
+        /// </summary>
+        public static string PaymentRequestNoUsableMethods {
+            get {
+                return ResourceManager.GetString("PaymentRequestNoUsableMethods", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to PaymentRequestRequiredIbanOrCompany.
         /// </summary>
         public static string PaymentRequestRequiredIbanOrCompany {

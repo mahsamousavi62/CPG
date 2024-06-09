@@ -957,4 +957,7 @@
   <data name="PaymentRequestNoDepositPaymentMethod" xml:space="preserve">
     <value>The payment method has not been determined on any of the active accounts of the company {0}</value>
   </data>
+  <data name="PaymentRequestNoUsableMethods" xml:space="preserve">
+    <value>None of the subcategories of payment methods {0} can be used, please send a request to activate or set up one of the methods to the system administrator.</value>
+  </data>
 </root>

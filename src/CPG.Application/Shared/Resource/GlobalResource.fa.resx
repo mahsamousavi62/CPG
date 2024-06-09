@@ -978,4 +978,7 @@
   <data name="PaymentRequestInvalidNationalCode" xml:space="preserve">
     <value>کدملی در قالب صحیح ارائه نشده است</value>
   </data>
+  <data name="PaymentRequestNoUsableMethod" xml:space="preserve">
+    <value>هیچ یک از زیرمجموعه های روش های پرداختی {0} قابل استفاده نیست، لطفا درخواست فعال سازی یا راه اندازی یکی از روش ها را به مدیر سیستم ارسال کنید</value>
+  </data>
 </root>

@@ -26,6 +26,9 @@ using CPG.Domain.AggregateModels.IPGTypeAggregate.Specifications;
 using CPG.Domain.AggregateModels.ProviderAggregate;
 using CPG.Domain.AggregateModels.ProviderAggregate.Specifications;
 using System.Text.RegularExpressions;
+using CPG.Application.UseCases.PaymentRequests.Commands.CreatePaymentRequest.ValidationHandlers;
+using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Token;
+using CPG.Application.UseCases.PaymentRequests.Commands.CreatePaymentRequest.Models;
 
 namespace CPG.Application.UseCases.PaymentRequests.Commands.CreatePaymentRequest;
 
@@ -49,7 +52,6 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
     private readonly IAuthenticationService _authenticationService = authenticationService;
     private readonly IAggregateRepository<Domain.AggregateModels.ApplicationAggregate.Application> _applicationRepository = applicationRepository;
     private readonly IAuthService _authService = authService;
-    private readonly string MiddleEastIbanPrefix = "078";
 
     public async Task<Result<PaymentRequestResponseViewModel>> Handle(CreatePaymentRequestCommand request, CancellationToken cancellationToken)
     {
@@ -133,143 +135,57 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
             throw new PaymentRequestInvalidNationalCodeException();
         }
 
-        var sameTrackerId = await _paymentRequestRepository.GetBySpecAsync(new PaymentRequestByTrackerId(model.TrackerId));
-        if (sameTrackerId != null)
-            throw new PaymentRequestDuplicateTrackerIdException(sameTrackerId.TrackerId);
+        var sameTrackerId = await _paymentRequestRepository.FirstOrDefaultAsync(new PaymentRequestByTrackerId(model.TrackerId));
+        var trackIdValidator = new TrackIdValidator<PaymentRequest>();
+        trackIdValidator.Handle(sameTrackerId);
 
         var company = await _companyRepository.GetBySpecAsync(new CompanyDataByCodeSpec(model.CompanyCode), cancellationToken);
-
-        if (company is null)
-            throw new PaymentRequestNoCompanyFoundException();
-
-        if (!company.IsActive)
-            throw new PamentRequestInactiveCompanyException();
+        var companyValidator = new CompanyValidator<Company>();
+        companyValidator.Handle(company);
 
         if (model.PaymentMethodConfig is null)
         {
-            if (company.CompanyDeposits?.Any(t => t.IsActive) is false)
-                throw new PaymentRequestNoActiveCompanyDepositFoundException(company.PersianName);
-
-            if (company.CompanyDeposits?.Any(t => t.Bank.IsActive) is false)
-                throw new PaymentRequestNoActiveDepositBankException(company.PersianName);
-
-            if (company.CompanyDeposits?.Any(t => t.PaymentMethods != null && t.PaymentMethods.Count > 0) is false)
-                throw new PaymentRequestNoDepositPaymentMethodException(company.PersianName);
-
-            var companyIpgs = company.CompanyIPGs.Where(t => t.IsActive &&
-                                                             t.Provider.IsActive &&
-                                                             t.Provider.PaymentMethods != null &&
-                                                             t.Provider.PaymentMethods.Select(x => x.MethodType)
-                                                                                      .Contains(PaymentMethodType.InternetPaymentGateway));
-
-            var ipgDeposits = company.CompanyDeposits.Where(t => t.IsActive &&
-                                                                 t.Bank.IsActive &&
-                                                                 t.PaymentMethods != null &&
-                                                                 t.PaymentMethods.Select(x => x.MethodType)
-                                                                                 .Contains(PaymentMethodType.InternetPaymentGateway) &&
-                                                                 companyIpgs.SelectMany(x => x.IPGDeposits.Where(q => q.IsDefault)
-                                                                                                          .Select(q => q.CompanyDepositId))
-                                                                            .Contains(t.Id));
-
-            var ddDeposits = company.CompanyDeposits.Where(t => t.IsActive &&
-                                                                t.Bank.IsActive &&
-                                                                t.IsDefaultForDirectDebit is true &&
-                                                                t.PaymentMethods != null &&
-                                                                t.PaymentMethods.Select(x => x.MethodType)
-                                                                                .Contains(PaymentMethodType.DirectDebit));
-
-            var receiptDeposits = company.CompanyDeposits.Where(t => t.IsActive &&
-                                                                     t.Bank.IsActive &&
-                                                                     t.PaymentMethods != null &&
-                                                                     t.PaymentMethods.Select(x => x.MethodType)
-                                                                                     .Contains(PaymentMethodType.PaymentReceipt));
-
-            var cardDeposits = company.CompanyDeposits.Where(t => t.IsActive &&
-                                                                  t.Bank.IsActive &&
-                                                                  t.Bank.IbanPrefix == MiddleEastIbanPrefix &&
-                                                                  t.IsDefaultForCharismaCard is true &&
-                                                                  t.PaymentMethods != null &&
-                                                                  t.PaymentMethods.Select(x => x.MethodType)
-                                                                                  .Contains(PaymentMethodType.CharismaCard));
-
-            if (ipgDeposits?.Any() is false && ddDeposits?.Any() is false && receiptDeposits?.Any() is false && cardDeposits?.Any() is false)
-                throw new PaymentRequestNoUsableMethodsException(company.PersianName);
-
+            var nullPaymentMethodConfigValidator = new NullPaymentMethodConfigValidator<Company>();
+            nullPaymentMethodConfigValidator.Handle(company);
         }
-
-        List<MethodData> methodData = null;
-        List<IPGType> ipgTypes = null;
 
         var activeMethods = GetActiveMethods(model.PaymentMethodConfig);
-
-        if (activeMethods?.Any() is false || activeMethods.Count == 0)
-            throw new PaymentRequestNoMethodException();
-
-        var notExistMethods = activeMethods.Where(t => !company.PaymentMethods.Select(x => x.MethodType).Contains(t));
-        if (notExistMethods?.Any() is true)
-        {
-            var methodTitles = notExistMethods.Select(t => t.ToString()).ToList();
-            throw new PaymentRequestCompanyMethodsException(string.Join(',', methodTitles), company.PersianName);
-        }
+        var activeMethodValidator = new ActiveMethodValidator<ActiveMethodValidatorModel>();
+        activeMethodValidator.Handle(new ActiveMethodValidatorModel { Company = company, ActiveMethods = activeMethods });
 
         var destinationDeposits = GetDestinationIbans(model.PaymentMethodConfig);
+        var destinationDepositValidator = new DestinationDepositValidator<DestinationDepositValidatorModel>();
+        destinationDepositValidator.Handle(new DestinationDepositValidatorModel
+        {
+            ActiveMethods = activeMethods,
+            Company = company,
+            DestinationDeposits = destinationDeposits,
+            PaymentMethodConfig = model.PaymentMethodConfig,
+        });
 
-        if (destinationDeposits?.Any() is false && company.CompanyDeposits?.Any() is false && company.CompanyDeposits.All(t => t.IsActive is false))
-            throw new PaymentRequestInactiveDepositsException(company.PersianName);
-
-        var activeMethodDeposits = GetActiveMethodsDestinationDeposits(model.PaymentMethodConfig, company, activeMethods);
-        var notExistDeposits = activeMethodDeposits.Where(t => t.Deposits?.Any() is false).Select(t => t.MethodType);
-        if (notExistDeposits?.Any() is true)
-            throw new PaymentRequestNotExistDepositsException(string.Join(',', notExistDeposits), company.PersianName);
-
-        var inactiveBankMethods = activeMethodDeposits.Where(t => t.Deposits.All(x => x.Bank.IsActive is false)).Select(t => t.MethodType);
-        if (destinationDeposits?.Any() is false && inactiveBankMethods?.Any() is true)
-            throw new PaymentRequestInactiveDepositBanksException(string.Join(',', inactiveBankMethods), company.PersianName);
-
+        List<IPGType> ipgTypes = null;
         if (activeMethods.Contains(PaymentMethodType.InternetPaymentGateway))
         {
             if (model.PaymentMethodConfig.IpgConfig.IpgTypeCode?.Any(t => t != null) is true)
             {
                 ipgTypes = await _ipgTypeRepository.ListAsync(new IPGTypeByCodeSpec(model.PaymentMethodConfig.IpgConfig.IpgTypeCode.ToArray()));
-                if (ipgTypes?.Any() is false)
-                    throw new PaymentRequestNotExistIpgTypesException();
-
-                if (ipgTypes.All(t => t.IsActive is false))
-                    throw new PaymentRequestInactiveIpgTypesException();
+                var ipgTypeValidator = new IpgTypeValidator<List<IPGType>>();
+                ipgTypeValidator.Handle(ipgTypes);
             }
 
             if (destinationDeposits?.Any() is false)
             {
-                var ipgDeposits = company.CompanyDeposits.Where(t => t.IsActive && t.Bank.IsActive && t.PaymentMethods.Select(t => t.MethodType).Contains(PaymentMethodType.InternetPaymentGateway));
-                var companyDefaultIpgDeposits = company.CompanyIPGs.SelectMany(t => t.IPGDeposits.Where(t => t.IsDefault is true));
-                var defaultIpgDeposits = ipgDeposits?.Where(x => companyDefaultIpgDeposits.Select(t => t.Id).Contains(x.Id));
-                if (defaultIpgDeposits?.Any() is false)
-                    throw new PaymentRequestNoDefaultDepositException(company.PersianName);
-
-                var companyActiveIpgDeposits = companyDefaultIpgDeposits.Select(x => new { x.Id, x.CompanyIPG }).Where(t => defaultIpgDeposits.Select(x => x.Id).Contains(t.Id));
-                if (companyActiveIpgDeposits?.Any(t => t.CompanyIPG.IsActive is true) is false)
-                    throw new PaymentRequestNoActiveIpgException(company.PersianName);
-
-                if (companyActiveIpgDeposits?.Any(t => t.CompanyIPG.IPGType.IsActive is true) is false)
-                    throw new PaymentRequestNoActiveIpgTypeException(company.PersianName);
-
-                if (companyActiveIpgDeposits?.Any(t => t.CompanyIPG.Provider.IsActive is true) is false)
-                    throw new PaymentRequestNoActiveProviderException(company.PersianName);
+                var ipgTypeDestinationDepositValidator = new IpgTypeDestinationDepositValidator<Company>();
+                ipgTypeDestinationDepositValidator.Handle(company);
             }
         }
 
         if (activeMethods.Contains(PaymentMethodType.DirectDebit))
         {
             var anyDirectDebitProvider = await _providerRepository.AnyAsync(new ProviderByPaymentMethodSpec(PaymentMethodType.DirectDebit));
-            if (anyDirectDebitProvider is false)
-                throw new PaymentRequestNoActiveDirectDebitProviderException();
 
-            var deposits = company.CompanyDeposits.Where(t => t.IsActive &&
-                                                              t.Bank.IsActive &&
-                                                              t.PaymentMethods.Select(t => t.MethodType)
-                                                                              .Contains(PaymentMethodType.DirectDebit));
-            if (deposits?.Any(t => t.IsDefaultForDirectDebit is true) is false)
-                throw new PaymentRequestNoDefaultDirectDebitDepositException(company.PersianName);
+            var directDebitValidator = new DirectDebitValidator<DirectDebitValidatorModel>();
+            directDebitValidator.Handle(new DirectDebitValidatorModel { Company = company, AnyDirectDebitProvider = anyDirectDebitProvider });
         }
 
         if (activeMethods.Contains(PaymentMethodType.CharismaCard))
@@ -277,113 +193,39 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
             var deposits = company.CompanyDeposits.Where(t => t.IsActive &&
                                                               t.Bank.IsActive &&
                                                               t.PaymentMethods.Select(t => t.MethodType)
-                                                                              .Contains(PaymentMethodType.CharismaCard));
+                                                                              .Contains(PaymentMethodType.CharismaCard))
+                                                  .ToList();
 
-            if (deposits?.Any(t => t.IsDefaultForCharismaCard is true && t.Bank.IbanPrefix == "078") is false)
-                throw new PaymentRequestNoDefaultCharismaCardDepositException(company.PersianName);
+            var charismaCardtValidator = new CharismaCardValidator<List<CompanyDeposit>>();
+            charismaCardtValidator.Handle(deposits);           
         }
 
-        methodData = GetMethodData(model.PaymentMethodConfig, company, ipgTypes);
-        var invalidIbanMethods = methodData?.Where(t => t.IbanInfoList.Any(x => x.IsValid is false));
-        if (invalidIbanMethods?.Any() is true)
-        {
-            throw new PaymentRequestInvalidIbanException(string.Join(',', invalidIbanMethods.Select(t => t.MethodType.ToString())));
-        }
+        var methodData = GetMethodData(model.PaymentMethodConfig, company, ipgTypes);
+        var ibanValidator = new IbanValidator<List<MethodData>>();
+        ibanValidator.Handle(methodData);
 
-        var noDepositFoundForIbans = methodData.Where(t => t.IbanInfoList.Any(x => x.Deposit == null));
-        if (noDepositFoundForIbans?.Any() is true)
-            throw new PaymentRequestNoDepositFoundForIbanException(string.Join(',', noDepositFoundForIbans.Select(t => t.MethodType.ToString())), company.PersianName);
-
-        var allDepositsAreInactive = methodData.Where(t => t.IbanInfoList?.Any() is true && t.IbanInfoList.All(x => x.Deposit.IsActive is false));
-        if (allDepositsAreInactive?.Any() is true)
-            throw new PaymentRequestAllDepositsAreInactiveException(string.Join(',', allDepositsAreInactive.Select(t => t.MethodType.ToString())));
-
-        var allDepositBanksAreInactive = methodData.Where(t => t.IbanInfoList?.Any() is true && t.IbanInfoList.All(x => x.Deposit.Bank.IsActive is false));
-        if (allDepositBanksAreInactive?.Any() is true)
-            throw new PaymentRequestAllDepositBanksAreInactiveException(string.Join(',', allDepositBanksAreInactive.Select(t => t.MethodType.ToString())));
-
-        var allDepositsNotSupportMethod = methodData.Where(t => t.IbanInfoList?.Any() is true && t.IbanInfoList.All(x => !x.Deposit.PaymentMethods.Select(q => q.MethodType).Contains(t.MethodType)));
-        if (allDepositsNotSupportMethod?.Any() is true)
-            throw new PaymentRequestAllDepositsNotSupportMethodException(string.Join(',', allDepositsNotSupportMethod.Select(t => t.MethodType.ToString())));
+        var destinationDepositIbanValidator = new DestinationDepositIbanValidator<DestinationDepositIbanValidatorModel>();
+        destinationDepositIbanValidator.Handle(new DestinationDepositIbanValidatorModel { Company = company, MethodData = methodData });
 
         if (activeMethods.Contains(PaymentMethodType.InternetPaymentGateway) && destinationDeposits?.Any() is true)
         {
-            var companyIpgDeposits = company.CompanyIPGs.SelectMany(t => t.IPGDeposits.Select(x => x.CompanyDeposit))
-                                                        .ToList();
-            var existInIpg = methodData.Select(t => t.IbanInfoList.Where(t => t.Deposit.IsActive &&
-                                                                            t.Deposit.Bank.IsActive &&
-                                                                            t.Deposit.PaymentMethods.Select(x => x.MethodType)
-                                                                                                    .Contains(PaymentMethodType.InternetPaymentGateway))
-                                                                .Any(t => companyIpgDeposits.Contains(t.Deposit)));
+            var depositExistInIpgValidator = new DepositExistInIpgValidator<DepositExistInIpgValidatorModel>();
+            depositExistInIpgValidator.Handle(new DepositExistInIpgValidatorModel { Company = company, MethodData = methodData });
 
-            if (existInIpg?.Any() is false)
-                throw new PaymentRequestNoIpgDepositForIbansException(company.PersianName);
+            var depositExistInActiveIpgValidator = new DepositExistInActiveIpgValidator<DepositExistInIpgValidatorModel>();
+            depositExistInActiveIpgValidator.Handle(new DepositExistInIpgValidatorModel { Company = company, MethodData = methodData });
 
-            var activeCompanyIpgDeposits = company.CompanyIPGs.Where(t => t.IsActive)
-                                                              .SelectMany(t => t.IPGDeposits.Select(x => x.CompanyDeposit))
-                                                              .ToList();
-            var existInActiveIpg = methodData.Select(t => t.IbanInfoList.Where(t => t.Deposit.IsActive &&
-                                                                                  t.Deposit.Bank.IsActive &&
-                                                                                  t.Deposit.PaymentMethods.Select(x => x.MethodType)
-                                                                                                          .Contains(PaymentMethodType.InternetPaymentGateway))
-                                                                      .Any(t => activeCompanyIpgDeposits.Contains(t.Deposit)));
+            var depositExistInActiveIpgTypeValidator = new DepositExistInActiveIpgTypeValidator<DepositExistInIpgValidatorModel>();
+            depositExistInActiveIpgTypeValidator.Handle(new DepositExistInIpgValidatorModel { Company = company, MethodData = methodData });
 
-            if (existInActiveIpg?.Any() is false)
-                throw new PaymentRequestNoActiveIpgDepositForIbansException(company.PersianName);
+            var depositExistInActiveProviderValidator = new DepositExistInActiveProviderValidator<DepositExistInIpgValidatorModel>();
+            depositExistInActiveProviderValidator.Handle(new DepositExistInIpgValidatorModel { Company = company, MethodData = methodData });
 
-            var activeIpgTypeCompanyIpgDeposits = company.CompanyIPGs.Where(t => t.IsActive && t.IPGType.IsActive)
-                                                                     .SelectMany(t => t.IPGDeposits.Select(x => x.CompanyDeposit))
-                                                                     .ToList();
-            var existInActiveIpgType = methodData.Select(t => t.IbanInfoList.Where(t => t.Deposit.IsActive &&
-                                                                                      t.Deposit.Bank.IsActive &&
-                                                                                      t.Deposit.PaymentMethods.Select(x => x.MethodType)
-                                                                                                              .Contains(PaymentMethodType.InternetPaymentGateway))
-                                                                          .Any(t => activeIpgTypeCompanyIpgDeposits.Contains(t.Deposit)));
+            var depositExistInCompanyIpgValidator = new DepositExistInCompanyIpgValidator<DepositExistInIpgValidatorModel>();
+            depositExistInCompanyIpgValidator.Handle(new DepositExistInIpgValidatorModel { Company = company, MethodData = methodData });
 
-            if (existInActiveIpgType?.Any() is false)
-                throw new PaymentRequestNoActiveIpgTypeDepositForIbansException(company.PersianName);
-
-            var activeProviderCompanyIpgDeposits = company.CompanyIPGs.Where(t => t.IsActive && t.Provider.IsActive)
-                                                                      .SelectMany(t => t.IPGDeposits.Select(x => x.CompanyDeposit))
-                                                                      .ToList();
-
-            var existInActiveProvider = methodData.Select(t => t.IbanInfoList.Where(t => t.Deposit.IsActive &&
-                                                                                       t.Deposit.Bank.IsActive &&
-                                                                                       t.Deposit.PaymentMethods.Select(x => x.MethodType)
-                                                                                                               .Contains(PaymentMethodType.InternetPaymentGateway))
-                                                                           .Any(t => activeProviderCompanyIpgDeposits.Contains(t.Deposit)));
-
-            if (existInActiveProvider?.Any() is false)
-                throw new PaymentRequestNoActiveProviderDepositForIbansException(company.PersianName);
-
-            var comanyIpgDeposits = company.CompanyIPGs.Where(t => t.IsActive &&
-                                                                   model.PaymentMethodConfig.IpgConfig.IpgTypeCode.Contains(t.IPGType.Code))
-                                                       .SelectMany(t => t.IPGDeposits.Select(x => x.CompanyDeposit))
-                                                       .ToList();
-
-            var existInComanyIpgDeposits = methodData.Select(t => t.IbanInfoList.Where(t => t.Deposit.IsActive &&
-                                                                                          t.Deposit.Bank.IsActive &&
-                                                                                          t.Deposit.PaymentMethods.Select(x => x.MethodType)
-                                                                                                                  .Contains(PaymentMethodType.InternetPaymentGateway))
-                                                                              .Any(t => comanyIpgDeposits.Contains(t.Deposit)));
-
-            if (existInComanyIpgDeposits?.Any() is false)
-                throw new PaymentRequestNoCompanyIpgDepositForIpgCodeException(company.PersianName);
-
-            var activeComanyIpgDeposits = company.CompanyIPGs.Where(t => t.IsActive &&
-                                                                         t.IPGType.IsActive &&
-                                                                         model.PaymentMethodConfig.IpgConfig.IpgTypeCode.Contains(t.IPGType.Code))
-                                                             .SelectMany(t => t.IPGDeposits.Select(x => x.CompanyDeposit))
-                                                             .ToList();
-
-            var existInActiveComanyIpgDeposits = methodData.Select(t => t.IbanInfoList.Where(t => t.Deposit.IsActive &&
-                                                                                                t.Deposit.Bank.IsActive &&
-                                                                                                t.Deposit.PaymentMethods.Select(x => x.MethodType)
-                                                                                                                        .Contains(PaymentMethodType.InternetPaymentGateway))
-                                                                              .Any(t => activeComanyIpgDeposits.Contains(t.Deposit)));
-
-            if (existInActiveComanyIpgDeposits?.Any() is false)
-                throw new PaymentRequestNoActiveCompanyIpgDepositForIpgCodeException(company.PersianName);
+            var depositExistInActiveCompanyIpgValidator = new DepositExistInActiveCompanyIpgValidator<DepositExistInIpgValidatorModel>();
+            depositExistInActiveCompanyIpgValidator.Handle(new DepositExistInIpgValidatorModel { Company = company, MethodData = methodData });
         }
 
         return new ConfigData
@@ -419,47 +261,6 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
         if (!string.IsNullOrEmpty(paymentMethodConfig.DirectDebitConfig.DestinationDepositIban))
             ibans.Add(paymentMethodConfig.DirectDebitConfig.DestinationDepositIban);
         return ibans;
-    }
-
-    private List<DepositData> GetActiveMethodsDestinationDeposits(PaymentMethodConfig paymentMethodConfig, Company company, List<PaymentMethodType> activeMethods)
-    {
-        var deposits = new List<DepositData>();
-
-        foreach (var item in activeMethods)
-        {
-            switch (item)
-            {
-                case PaymentMethodType.InternetPaymentGateway:
-                    {
-                        deposits.Add(new DepositData
-                        {
-                            Deposits = company.CompanyDeposits.Where(t => t.PaymentMethods.Select(x => x.MethodType).Contains(PaymentMethodType.InternetPaymentGateway)).ToList(),
-                            MethodType = PaymentMethodType.InternetPaymentGateway,
-                        });
-                        break;
-                    }
-                case PaymentMethodType.PaymentReceipt:
-                    {
-                        deposits.Add(new DepositData
-                        {
-                            Deposits = company.CompanyDeposits.Where(t => t.PaymentMethods.Select(x => x.MethodType).Contains(PaymentMethodType.PaymentReceipt)).ToList(),
-                            MethodType = PaymentMethodType.PaymentReceipt,
-                        });
-                        break;
-                    }
-                case PaymentMethodType.DirectDebit:
-                    {
-                        deposits.Add(new DepositData
-                        {
-                            Deposits = company.CompanyDeposits.Where(t => t.PaymentMethods.Select(x => x.MethodType).Contains(PaymentMethodType.DirectDebit)).ToList(),
-                            MethodType = PaymentMethodType.DirectDebit,
-                        });
-                        break;
-                    }
-            }
-        }
-
-        return deposits;
     }
 
     private List<MethodData> GetMethodData(PaymentMethodConfig paymentMethodConfig, Company company, List<IPGType> iPGTypes = null)
@@ -526,27 +327,7 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
             return false;
         return true;
     }
-
-    private class DepositData
-    {
-        public PaymentMethodType MethodType { get; set; }
-        public List<CompanyDeposit> Deposits { get; set; }
-    }
-
-    private class MethodData
-    {
-        public PaymentMethodType MethodType { get; set; }
-        public List<IbanInfo> IbanInfoList { get; set; }
-        public List<IPGType> IPGTypeList { get; set; }
-    }
-
-    private class IbanInfo
-    {
-        public string Iban { get; set; }
-        public bool IsValid { get; set; }
-        public CompanyDeposit Deposit { get; set; }
-    }
-
+    
     private class ConfigData
     {
         public Company Company { get; set; }
