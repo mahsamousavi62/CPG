@@ -24,6 +24,7 @@ public class PaymentRequestReadModel
     public bool IsActive { get; set; }
     public DateTime CreationDate { get; set; }
     public DateTime? ModificationDate { get; set; }
+    public long CreationUserId { get; set; }
     public ApplicationReadModel Application { get; set; }
     public CompanyReadModel Company { get; set; }
     public TransactionReadModel Transaction { get; set; }

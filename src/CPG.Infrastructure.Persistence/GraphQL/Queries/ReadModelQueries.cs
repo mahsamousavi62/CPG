@@ -821,6 +821,8 @@ public class ReadModelQueries
         var data = await query.OrderByDescending(c => c.Id)
          .Select(c => new
          {
+             PaymentRequest = c,
+             Company = c.Company,
 
          })
          .Skip((pageNumber.Value - 1) * pageSize.Value)
@@ -834,8 +836,28 @@ public class ReadModelQueries
             UserscacheData = await dbContext.UserReadModels.ToListAsync();
             cacheService.SetData("AllUser_key", UserscacheData);
         }
-        var viewModels = await Task.WhenAll(data.Select(async entity => new TransactionReportViewModel
+        var viewModels = await Task.WhenAll(data.Select(async entity => new PaymentRequestReportViewModel
         {
+            Amount = entity.PaymentRequest.Amount,
+            CompanyName = entity.Company.PersianName,
+            CreationDate = entity.PaymentRequest.CreationDate,
+            Description = entity.PaymentRequest.Description,
+            DestinationDepositIban = entity.PaymentRequest.DestinationDepositIban,
+            ModificationDate = entity.PaymentRequest.ModificationDate,
+            CompanyId = entity.PaymentRequest.CompanyId,
+            Id = entity.PaymentRequest.Id,
+            NationalCode = entity.PaymentRequest.NationalCode,
+            PaymentCode = entity.PaymentRequest.PaymentCode,
+            ApplicationId = entity.PaymentRequest.ApplicationId,
+            PaymentIdentifier = entity.PaymentRequest.PaymentIdentifier,
+            TrackerId = entity.PaymentRequest.TrackerId,
+            UrlExpirationDateTime = entity.PaymentRequest.UrlExpirationDateTime,
+            VerificationDateTime = entity.PaymentRequest.VerificationDateTime,
+            StatusName = General.GetPaymentStatusTitle(entity.PaymentRequest.Status),
+            Status = entity.PaymentRequest.Status,
+            StatusCode = entity.PaymentRequest.Status.GetValue(),
+            FirstName = UserscacheData.FirstOrDefault(c => c.Id == entity.PaymentRequest.CreationUserId)?.FirstName,
+            LastName = UserscacheData.FirstOrDefault(c => c.Id == entity.PaymentRequest.CreationUserId)?.LastName,
 
         }));
 
@@ -846,7 +868,7 @@ public class ReadModelQueries
             TotalPages = totalPages,
             HasNextPage = pageNumber < totalPages,
             HasPreviousPage = pageNumber > 1,
-            //Models = viewModels
+            Models = viewModels
         };
     }
     #endregion
