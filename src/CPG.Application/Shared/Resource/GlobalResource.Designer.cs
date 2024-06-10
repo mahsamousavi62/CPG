@@ -1564,6 +1564,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dear user, you are not authorized to pay this payment request.
+        /// </summary>
+        public static string PaymentRequestNationalCodeConflict {
+            get {
+                return ResourceManager.GetString("PaymentRequestNationalCodeConflict", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No company found.
         /// </summary>
         public static string PaymentRequestNoCompanyFound {

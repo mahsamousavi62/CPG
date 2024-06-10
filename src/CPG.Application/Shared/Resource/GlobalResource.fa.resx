@@ -891,4 +891,7 @@
   <data name="DirectDebitGrantError" xml:space="preserve">
     <value>کاربر گرامی، شما مجوز لازم جهت پرداخت وجه از طریق کاریزما کارت به شرکت {0} را اعطا نکرده اید، خواهشمند است در صورت نیاز جهت اعطای مجوز بر روی گزینه درخواست مجوز کلیک کنید.</value>
   </data>
+  <data name="PaymentRequestNationalCodeConflict" xml:space="preserve">
+    <value>کاربر گرامی، شما مجاز به پرداخت این درخواست پرداخت نیستید</value>
+  </data>
 </root>
