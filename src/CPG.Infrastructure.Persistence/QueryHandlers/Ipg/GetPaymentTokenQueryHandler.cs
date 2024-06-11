@@ -143,6 +143,12 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
             else
             {
                 mobileNumber = await _authenticationService.GetDataFromClaim<string>(ClaimTypes.MobilePhone);
+
+                if (string.IsNullOrEmpty(mobileNumber))
+                {
+                    user = await _userRepository.FirstOrDefaultAsync(new UserByNationalCodeSpec(nationalCode));
+                    mobileNumber = user.PhoneNumber;
+                }
             }
 
             var result = await ipg.GetPaymentTokenAsync(
