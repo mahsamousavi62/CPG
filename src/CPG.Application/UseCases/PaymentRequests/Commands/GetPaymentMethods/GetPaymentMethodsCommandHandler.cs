@@ -76,7 +76,11 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
         {
             throw new PaymentRequestNationalCodeConflictException();
         }
-
+        if (paymentRequest.Status != PaymentStatus.Draft &&
+           paymentRequest.Status != PaymentStatus.RedirectedToCpg)
+        {
+            throw new PaymentRequestStatusIsInvalidException();
+        }
         paymentRequest.Status = Enums.PaymentStatus.RedirectedToCpg;
         await _paymentRequestRepository.UpdateAsync(paymentRequest);
 
