@@ -36,9 +36,11 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
             {
                 throw new RequiredCodeOrTrackIdException();
             }
-            var paymentRequest = await _context.PaymentRequestReadModels.FirstOrDefaultAsync(t => t.PaymentCode == request.RequestViewModel.Code ||
-                                                                                                  t.TrackerId == request.RequestViewModel.TrackerId,
-                                                                                                  cancellationToken: cancellationToken) ?? throw new InvalidCodeOrTrackIdException();
+            var paymentRequest = await _context.PaymentRequestReadModels.FirstOrDefaultAsync(t => t.PaymentCode == request.RequestViewModel.Code, cancellationToken: cancellationToken);
+            if (paymentRequest is null)
+            {
+                paymentRequest = await _context.PaymentRequestReadModels.FirstOrDefaultAsync(t => t.TrackerId == request.RequestViewModel.TrackerId, cancellationToken: cancellationToken) ?? throw new InvalidCodeOrTrackIdException();
+            }
 
             _ = long.TryParse(_httpContext.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out long applicationId);
 
@@ -61,7 +63,7 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
                     DestinationDepositIban = transaction is null ? string.Empty : transaction.DestinationDeposit?.Iban,
                     DestinationDepositAccountNumber = transaction is null ? string.Empty : transaction.DestinationDeposit?.AccountNumber,
                     PredictedExpirationDateTime = transaction is null ? string.Empty : GetTransactionPredictedExpirationDateTime(transaction),
-                    ReceiptContent = transaction is null ? string.Empty : transaction.TransactionMethodType == TransactionType.PaymentReceipt ? await General.GetLogo(  _minioProvider,transaction.PaymentReceiptTransaction?.ReceiptImage) : string.Empty,
+                    ReceiptContent = transaction is null ? string.Empty : transaction.TransactionMethodType == TransactionType.PaymentReceipt ? await General.GetLogo(_minioProvider, transaction.PaymentReceiptTransaction?.ReceiptImage) : string.Empty,
                     PredictedSettlementDateTime = transaction is null ? string.Empty : transaction.PredictedSettlementDateTime?.ToString("yyyy-MM-dd HH:mm:ss zzz"),
                     PaymentIdentifier = paymentRequest.PaymentIdentifier,
                 });
