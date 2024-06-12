@@ -115,6 +115,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to AmountIsNotInRange.
+        /// </summary>
+        public static string AmountIsNotInRange {
+            get {
+                return ResourceManager.GetString("AmountIsNotInRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ApplicationLogo.
         /// </summary>
         public static string ApplicationLogo {
@@ -583,6 +592,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to d.
+        /// </summary>
+        public static string d {
+            get {
+                return ResourceManager.GetString("d", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dear user, the transaction amount is more than the daily limit of this license, if possible, use other banks or available methods to pay the desired amount.
         /// </summary>
         public static string DailyTransactionAmount {
@@ -943,6 +961,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to FromDateGreatherThanToDate.
+        /// </summary>
+        public static string FromDateGreatherThanToDate {
+            get {
+                return ResourceManager.GetString("FromDateGreatherThanToDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An unexpected error has occurred, please try again or contact support.
         /// </summary>
         public static string GetPaymentTicketUnexpectedError {
@@ -1083,6 +1110,15 @@ namespace CPG.Application.Shared.Resource {
         public static string InvalidGrant {
             get {
                 return ResourceManager.GetString("InvalidGrant", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to InvalidNationalCode.
+        /// </summary>
+        public static string InvalidNationalCode {
+            get {
+                return ResourceManager.GetString("InvalidNationalCode", resourceCulture);
             }
         }
         

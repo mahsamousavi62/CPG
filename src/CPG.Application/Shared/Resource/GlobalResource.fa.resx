@@ -894,4 +894,13 @@
   <data name="PaymentRequestNationalCodeConflict" xml:space="preserve">
     <value>کاربر گرامی، شما مجاز به پرداخت این درخواست پرداخت نیستید</value>
   </data>
+  <data name="AmountIsNotInRange" xml:space="preserve">
+    <value>بازه ی مبلغ  10000ريال تا 100000000000ريال می باشد</value>
+  </data>
+  <data name="FromDateGreatherThanToDate" xml:space="preserve">
+    <value> از تاریخ بزرگتر از تا تاریخ می باشد</value>
+  </data>
+  <data name="InvalidNationalCode" xml:space="preserve">
+    <value>کد ملی صحیح نمی باشد</value>
+  </data>
 </root>

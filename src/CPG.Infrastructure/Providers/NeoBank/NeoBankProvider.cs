@@ -35,18 +35,19 @@ using CPG.Domain.SharedKernel.Logging;
 using Serilog.Context;
 using System.Collections.Generic;
 using System.Linq;
+using CPG.Domain.SharedKernel.Interfaces;
 
 namespace CPG.Infrastructure.Providers.NeoBank;
 
 public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configuration, IAuthService authService,
-    IHttpContextAccessor httpContextAccessor, ILogger<NeoBankProvider> logger) : INeoBankService
+    IHttpContextAccessor httpContextAccessor, ILogger<NeoBankProvider> logger, ICurrentUser currentUser) : INeoBankService
 {
     private readonly IHttpClientFactory factory = factory;
     private readonly IConfiguration configuration = configuration;
     private readonly IAuthService authService = authService;
     private readonly IHttpContextAccessor httpContextAccessor = httpContextAccessor;
     private readonly ILogger<NeoBankProvider> logger = logger;
-
+    private readonly ICurrentUser currentUser=currentUser;
     public async Task<Result<ClientDirectDebitResponse>> ClientDirectDebit(ClientDirectDebitRequest model)
     {
         var neobankConfig = configuration.GetSection("Infrastructure:NeoBank").Get<NeoBankConfig>();
@@ -84,7 +85,7 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
                 ServiceCallStatus = result.StatusCode == System.Net.HttpStatusCode.OK,
                 ServiceType = Enums.ServiceType.ClientDirectDebit,
                 CreationDate = DateTime.Now,
-                CreationUserId = 1,
+                CreationUserId = currentUser.UserId,
                 ProviderType = Enums.ProviderType.NeoBank,
                 AuditType = Enums.AuditType.Provider,
                 CorrolationId = neoBankCorroletionId,
@@ -153,7 +154,7 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
                     ServiceCallStatus = result.StatusCode == System.Net.HttpStatusCode.OK,
                     ServiceType = Enums.ServiceType.GetUserDepositBalance,
                     CreationDate = DateTime.Now,
-                    CreationUserId = 1,
+                    CreationUserId = currentUser.UserId,
                     ProviderType = Enums.ProviderType.NeoBank,
                     AuditType = Enums.AuditType.Provider,
                     CorrolationId = neoBankCorroletionId
