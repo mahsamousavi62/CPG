@@ -1114,6 +1114,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to InvalidIbanFormat.
+        /// </summary>
+        public static string InvalidIbanFormat {
+            get {
+                return ResourceManager.GetString("InvalidIbanFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to InvalidNationalCode.
         /// </summary>
         public static string InvalidNationalCode {

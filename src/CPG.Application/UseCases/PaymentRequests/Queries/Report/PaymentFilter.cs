@@ -1,4 +1,4 @@
-﻿namespace CPG.Application.UseCases.PaymentRequests.Queries;
+﻿namespace CPG.Application.UseCases.PaymentRequests.Queries.Report;
 
 public class PaymentFilter
 {

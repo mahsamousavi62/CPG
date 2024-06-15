@@ -1,10 +1,9 @@
 ﻿using CPG.Domain.SharedKernel;
 using CPG.Infrastructure.Persistence.DbContexts.ReadModels;
 using Mapster;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using PaymentRequestReportViewModel = CPG.Application.UseCases.PaymentRequests.Queries.PaymentRequestReportViewModel;
+using CPG.Application.UseCases.PaymentRequests.Queries.Report;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.PaymentRequests;
 

@@ -18,12 +18,15 @@ using CPG.Infrastructure.File;
 using CPG.Application.UseCases.CharismaCard.Commands;
 using CPG.Application.UseCases.CharismaCard.ViewModels;
 using CPG.Application.UseCases.PaymentReceipt.Commands;
-using CPG.Application.UseCases.PaymentRequests.Queries;
 using CPG.Application.Shared;
 using Microsoft.AspNetCore.Http.HttpResults;
+using CPG.Application.UseCases.PaymentRequests.Queries.Report;
 
 namespace CPG.API.Controllers.v1;
 
+/// <summary>
+/// 
+/// </summary>
 public class PaymentRequestController : ApiBaseController
 {
 
@@ -100,12 +103,7 @@ public class PaymentRequestController : ApiBaseController
     public async Task<Result<CharismaCardResponseViewModel>> GetClientDirectDebit(CharismaCardRequsetViewModel model)
        => await Mediator.Send(new CreateCharismaCardTransactionCommand(model));
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="searchTerm"></param>
-    /// <param name="pagedFilter"></param>
-    /// <returns></returns>
+    
     [Authorize]
     [HttpGet("PaymentRequestReport")]
     [ProducesResponseType(typeof(Result<PagedList<PaymentRequestReportViewModel>>), 200)]

@@ -2,7 +2,7 @@ using CPG.API.Helper;
 using CPG.API.Helper.Localization;
 using CPG.Application;
 using CPG.Application.Shared;
-using CPG.Application.UseCases.PaymentRequests.Queries;
+using CPG.Application.UseCases.PaymentRequests.Queries.Report;
 using CPG.Infrastructure;
 using CPG.Infrastructure.Persistence;
 using FluentValidation;

@@ -885,4 +885,7 @@
   <data name="d" xml:space="preserve">
     <value>d</value>
   </data>
+  <data name="InvalidIbanFormat" xml:space="preserve">
+    <value>InvalidIbanFormat</value>
+  </data>
 </root>

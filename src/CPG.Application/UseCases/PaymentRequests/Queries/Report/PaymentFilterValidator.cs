@@ -1,13 +1,25 @@
-﻿using FluentValidation;
+﻿using CPG.Domain.AggregateModels.BankAggregate;
+using CPG.Domain.AggregateModels.CompanyDepositAggregate.Exceptions;
+using FluentValidation;
 
-namespace CPG.Application.UseCases.PaymentRequests.Queries;
+namespace CPG.Application.UseCases.PaymentRequests.Queries.Report;
 
 public class PaymentFilterValidator : AbstractValidator<PaymentFilter>
 {
     public PaymentFilterValidator()
     {
 
+     RuleFor(x => x.DestinationDepositIban).Cascade(CascadeMode.Stop)
+            .NotEmpty().WithMessage(GlobalResource.InvalidIbanFormat)
+            .Length(26).WithMessage(GlobalResource.InvalidIbanFormat)
+            .Must(iban =>
+            {
+                if (!iban[..2].ToCharArray().All(t => char.IsLetter(t)) || iban[..2] != "IR")
+                    return false;
 
+                return true;
+            }).WithMessage(GlobalResource.InvalidIbanFormat)
+            .When(x => !string.IsNullOrEmpty(x.DestinationDepositIban));
 
         RuleFor(p => p.NationalCode)
             .Matches("^[0-9]{10}$").WithMessage(GlobalResource.InvalidNationalCode);
