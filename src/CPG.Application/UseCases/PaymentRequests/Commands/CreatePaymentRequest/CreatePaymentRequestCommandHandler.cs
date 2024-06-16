@@ -119,7 +119,7 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
             if (company.CompanyDeposits.Count == 0)
                 throw new CompanyHasNotCompanyDepositException(model.CompanyId.Value);
 
-            if (!company.CompanyDeposits.All(cd => cd.IsActive))
+            if (!company.CompanyDeposits.Any(cd => cd.IsActive))
                 throw new AllCompanyDepositsIsInActiveException(model.CompanyId.Value);
         }
 
