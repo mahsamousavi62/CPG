@@ -49,7 +49,7 @@ public class IdpProvider(
                 Request = request,
                 Body = request,
                 Uri = $"{appConfig!.IdpGetProfileUrl}{idpId}",
-                ProviderType = Enums.ProviderType.Idp,
+                ProviderTypeInLog = Enums.ProviderTypeInLog.Idp,
                 HeaderParameters = list,
                 Service = Enums.ServiceType.GetIdpProfile
             });
@@ -112,7 +112,7 @@ public class IdpProvider(
             ServiceType = Enums.ServiceType.GetIdpToken,
             CreationDate = DateTime.Now,
             CreationUserId = UserId == 0 ? 1 : UserId,
-            ProviderType = Enums.ProviderType.Idp,
+            ProviderType = Enums.ProviderTypeInLog.Idp,
             AuditType = Enums.AuditType.Provider
         };
 
@@ -157,7 +157,7 @@ public class IdpProvider(
                  Request = request,
                  Body = request,
                  Uri = $"{appConfig!.IdpGetUserStatusUrl}{idpId}?idType=UserId",
-                 ProviderType = Enums.ProviderType.Idp,
+                 ProviderTypeInLog = Enums.ProviderTypeInLog.Idp,
                  HeaderParameters = list,
                  Service = Enums.ServiceType.GetIdpUserStatus
              });
