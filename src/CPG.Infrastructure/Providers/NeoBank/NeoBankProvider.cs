@@ -86,7 +86,7 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
                 ServiceType = Enums.ServiceType.ClientDirectDebit,
                 CreationDate = DateTime.Now,
                 CreationUserId = currentUser.UserId,
-                ProviderType = Enums.ProviderLogType.NeoBank,
+                ProviderType = Enums.ProviderTypeInLog.NeoBank,
                 AuditType = Enums.AuditType.Provider,
                 CorrolationId = neoBankCorroletionId,
             };
@@ -153,7 +153,7 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
                     CreationDate = DateTime.Now,
                     CreationUserId = currentUser.UserId,
                     CorrolationId = neoBankCorroletionId,
-                    ProviderType = Enums.ProviderLogType.NeoBank,
+                    ProviderType = Enums.ProviderTypeInLog.NeoBank,
                     AuditType = Enums.AuditType.Provider
                 };
 

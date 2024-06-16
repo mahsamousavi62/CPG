@@ -179,7 +179,7 @@ public class Enums
         Develop = 4,
     }
 
-    public enum ProviderLogType
+    public enum ProviderTypeInLog
     {
         Vandar = 1,
         AsanPardakht = 2,

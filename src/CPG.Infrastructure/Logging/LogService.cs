@@ -23,7 +23,7 @@ public partial class LogService(ILogger<LogService> logger, IHttpContextAccessor
 
     public string ServiceName { get; set; }
     public Enums.ServiceType ServiceType { get; set; }
-    public Enums.ProviderLogType ProviderType { get; set; }
+    public Enums.ProviderTypeInLog ProviderTypeInLog { get; set; }
 
     public void AddServiceCallLog<TBody>(HttpProviderRequest<TBody> request, HttpResponseMessage response, string resString)
     {
@@ -76,7 +76,7 @@ public partial class LogService(ILogger<LogService> logger, IHttpContextAccessor
             CreationUserId = UserId == 0 ? 1 : UserId,
             ErrorCode = status < 0 ? message : "",
             ErrorType = status < 0 ? status.ToString() : "",
-            ProviderType = ProviderType,
+            ProviderType = ProviderTypeInLog,
             AuditType = Enums.AuditType.Provider
         };
 
@@ -112,7 +112,7 @@ public partial class LogService(ILogger<LogService> logger, IHttpContextAccessor
             CreationUserId = UserId == 0 ? 1 : UserId,
             ErrorCode = response.IsSuccessStatusCode ? null : ReasonPhrases.GetReasonPhrase((int)response.StatusCode),
             ErrorType = response.IsSuccessStatusCode ? null : response.StatusCode.ToString(),
-            ProviderType = request.ProviderType,
+            ProviderType = request.ProviderTypeInLog,
             AuditType = Enums.AuditType.Provider
         };
 

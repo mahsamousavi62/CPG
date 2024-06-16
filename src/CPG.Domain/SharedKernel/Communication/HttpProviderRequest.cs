@@ -30,5 +30,5 @@ public sealed class HttpProviderRequest<TBody, TRequest>
 
     public ServiceType? Service { get; set; }
 
-    public ProviderLogType? ProviderType { get; set; }
+    public ProviderTypeInLog? ProviderTypeInLog { get; set; }
 }

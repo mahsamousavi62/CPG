@@ -24,7 +24,7 @@ public class CallLogModel
 
     public long CreationUserId { get; set; }
 
-    public ProviderLogType? ProviderType { get; set; }
+    public ProviderTypeInLog? ProviderType { get; set; }
     
     public string CorrolationId { get; set; }
 }

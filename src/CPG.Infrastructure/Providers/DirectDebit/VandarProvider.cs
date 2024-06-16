@@ -70,7 +70,7 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
                 {
                     RefreshToken = refreshToken,
                 },
-                Provider = Enums.ProviderLogType.Vandar,
+                Provider = Enums.ProviderTypeInLog.Vandar,
                 Service = Enums.ServiceType.VandarToken,
             }, request, PaymentTokenErrorHandler, (string stringResponse) =>
             {
@@ -116,7 +116,7 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
                     NationalCode = request.NationalCode,
                     ExpirationDate = request.ExpirationDate.ToString("yyyy-MM-dd")
                 },
-                Provider = Enums.ProviderLogType.Vandar,
+                Provider = Enums.ProviderTypeInLog.Vandar,
                 Service = Enums.ServiceType.VandarStore,
             }, request, StoreErrorHandler);
 
@@ -140,7 +140,7 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
                 BaseAddress = "https://api.vandar.io/",
                 Uri = $"v3/business/{businessData}/subscription/authorization/{request.AuthorizationId}",
                 HeaderParameters = headers,
-                Provider = Enums.ProviderLogType.Vandar,
+                Provider = Enums.ProviderTypeInLog.Vandar,
                 Service = Enums.ServiceType.VandarShow,
             }, request, ShowErrorHandler);
 
@@ -171,7 +171,7 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
                 BaseAddress = "https://api.vandar.io/",
                 Uri = $"v3/business/{businessData}/subscription/authorization?mobile={request.MobileNumber}",
                 HeaderParameters = headers,
-                Provider = Enums.ProviderLogType.Vandar,
+                Provider = Enums.ProviderTypeInLog.Vandar,
                 Service = Enums.ServiceType.VandarShow,
             }, request, GetUserGrantsErrorHandler);
 
@@ -208,7 +208,7 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
                 BaseAddress = "https://api.vandar.io/",
                 Uri = $"v3/business/{businessData}/subscription/authorization/{request.AuthorizationId}/verify",
                 HeaderParameters = headers,
-                Provider = Enums.ProviderLogType.Vandar,
+                Provider = Enums.ProviderTypeInLog.Vandar,
                 Service = Enums.ServiceType.VandarVerify,
             }, request, VerifyErrorHandler);
 
@@ -245,7 +245,7 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
                     TrackId = trackerId,
                     WithdrawalDate = request.WithdrawalDate != null ? request.WithdrawalDate?.ToString("yyyy-MM-dd") : ""
                 },
-                Provider = Enums.ProviderLogType.Vandar,
+                Provider = Enums.ProviderTypeInLog.Vandar,
                 Service = Enums.ServiceType.VandarStore,
             }, request, WithdrawalErrorHandler);
 
