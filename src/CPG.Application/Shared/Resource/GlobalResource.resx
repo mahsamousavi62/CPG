@@ -873,4 +873,19 @@
   <data name="PaymentRequestNationalCodeConflict" xml:space="preserve">
     <value>Dear user, you are not authorized to pay this payment request</value>
   </data>
+  <data name="AmountIsNotInRange" xml:space="preserve">
+    <value>AmountIsNotInRange</value>
+  </data>
+  <data name="FromDateGreatherThanToDate" xml:space="preserve">
+    <value>FromDateGreatherThanToDate</value>
+  </data>
+  <data name="InvalidNationalCode" xml:space="preserve">
+    <value>InvalidNationalCode</value>
+  </data>
+  <data name="d" xml:space="preserve">
+    <value>d</value>
+  </data>
+  <data name="InvalidIbanFormat" xml:space="preserve">
+    <value>InvalidIbanFormat</value>
+  </data>
 </root>

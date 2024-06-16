@@ -112,4 +112,12 @@ public class Application : AuditableEntity<long>, IAggregateRoot
             }
         }
     }
+
+    public static void Validate(Application application)
+    {
+        if (application == null)
+            throw new ApplicationNotFoundException();
+        if (!application.IsActive)
+            throw new ApplicationIsNotActiveException(application.Id);
+    }
 }

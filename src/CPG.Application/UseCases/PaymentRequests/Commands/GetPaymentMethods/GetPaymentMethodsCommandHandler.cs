@@ -77,11 +77,10 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
             throw new PaymentRequestNationalCodeConflictException();
         }
 
-        if (paymentRequest.Status!= PaymentStatus.Draft 
-            && paymentRequest.Status!= PaymentStatus.RedirectedToCpg)
+        if (paymentRequest.Status != PaymentStatus.Draft &&
+           paymentRequest.Status != PaymentStatus.RedirectedToCpg)
         {
             throw new PaymentRequestStatusIsInvalidException();
-
         }
 
         paymentRequest.Status = Enums.PaymentStatus.RedirectedToCpg;
@@ -227,7 +226,7 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
                 ipgResult = await Task.WhenAll(company.CompanyIPGs?.Select(t => new { t.IPGType, t.Id }).Select(async t => new IPGInfo
                 {
                     Id = t.Id,
-                    Logo =  !string.IsNullOrEmpty(t.IPGType.Logo) ? await General.GetLogo(_minioProvider, t.IPGType.Logo) : null,
+                    Logo = !string.IsNullOrEmpty(t.IPGType.Logo) ? await General.GetLogo(_minioProvider, t.IPGType.Logo) : null,
                     PersianName = t.IPGType.PersianName,
                 })).ConfigureAwait(false);
             }

@@ -2,8 +2,11 @@ using CPG.API.Helper;
 using CPG.API.Helper.Localization;
 using CPG.Application;
 using CPG.Application.Shared;
+using CPG.Application.UseCases.PaymentRequests.Queries.Report;
 using CPG.Infrastructure;
 using CPG.Infrastructure.Persistence;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using MassTransit.Configuration;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Options;
@@ -58,6 +61,8 @@ builder.Services.AddSignalR();
 builder.Services
     .AddApplication(configuration)
     .AddInfrastructure(configuration);
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<PaymentFilterValidator>();
 
 builder.Host.UseSerilog((context, configuation) =>
     configuation.ReadFrom.Configuration(context.Configuration));

@@ -1,6 +1,11 @@
 ﻿@CPG.API_HostAddress = https://localhost:44318
 @idp_HostAddress=https://authapi-stage.charisma.digital/v1/profile
 
+###
+
+
+GET https://localhost:44318/api/paymentrequest/PaymentRequests
+
 POST {{CPG.API_HostAddress}}/api/paymentrequest
 Content-Type: application/json
 
@@ -196,5 +201,7 @@ Authorization: bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjA2NzNGRUQ0RTdCODRGNzhEMjIzOU
 
 
 
+
+###
 
 ###
