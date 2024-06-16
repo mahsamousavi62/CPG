@@ -23,7 +23,7 @@ public partial class LogService(ILogger<LogService> logger, IHttpContextAccessor
 
     public string ServiceName { get; set; }
     public Enums.ServiceType ServiceType { get; set; }
-    public Enums.ProviderType ProviderType { get; set; }
+    public Enums.ProviderLogType ProviderType { get; set; }
 
     public void AddServiceCallLog<TBody>(HttpProviderRequest<TBody> request, HttpResponseMessage response, string resString)
     {

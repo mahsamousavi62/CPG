@@ -142,7 +142,7 @@ public class PecProvider(
     {
         _logService.ServiceName = serviceName;
         _logService.ServiceType = serviceType;
-        _logService.ProviderType = Enums.ProviderType.Pec;
+        _logService.ProviderType = Enums.ProviderLogType.Pec;
 
         _logService.AddServiceCallLog(JsonConvert.SerializeObject(request),
             JsonConvert.SerializeObject(response),status,message);

@@ -80,8 +80,7 @@ public class Enums
         Pec = 4,
         BehPardakht = 5,
         Ayandeh = 6,
-        Idp = 101,
-        NeoBank = 102,
+        IranKish=7,
     }
 
     public enum ServiceType : byte
@@ -180,7 +179,20 @@ public class Enums
         Develop = 4,
     }
 
-    public enum ProviderLogType { }
+    public enum ProviderLogType
+    {
+        Vandar = 1,
+        AsanPardakht = 2,
+        Sep = 3,
+        Pec = 4,
+        BehPardakht = 5,
+        Ayandeh = 6,
+        IranKish= 7,
+        Idp = 101,
+        NeoBank = 102,
+        CharisPay=103
+
+    }
 
     public enum ValidityDuration
     {

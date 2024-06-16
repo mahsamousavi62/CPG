@@ -6,5 +6,5 @@ namespace CPG.Domain.SharedKernel.Communication;
 public class RequestBase
 {
     [JsonIgnore]
-    public ProviderType Provider { get; set; }
+    public ProviderLogType Provider { get; set; }
 }

@@ -69,7 +69,7 @@ namespace CPG.Infrastructure.Providers.Charispay
                     ServiceType = Enums.ServiceType.GetAccountNumber,
                     CreationDate = DateTime.Now,
                     CreationUserId = _currentUser.UserId,
-                    ProviderType = Enums.ProviderType.NeoBank,
+                    ProviderType = Enums.ProviderLogType.CharisPay,
                     AuditType = Enums.AuditType.Provider
                 };
 

@@ -74,7 +74,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
                                                             AmountInRials = (long)request.PaymentRequestAmount,
                                                             LocalInvoiceId = trackerId.ToString(),
                                                         },
-                                                        Provider = Enums.ProviderType.AsanPardakht,
+                                                        Provider = Enums.ProviderLogType.AsanPardakht,
                                                         Service = Enums.ServiceType.AsanPardakhtToken,
                                                     }, request, PaymentTokenErrorHandler, (string stringResponse) =>
                                                     {
@@ -109,7 +109,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
                                                         BaseAddress = "https://ipgrest.asanpardakht.ir/",
                                                         Uri = "v1/TranResult",
                                                         HeaderParameters = headers,
-                                                        Provider = Enums.ProviderType.AsanPardakht,
+                                                        Provider = Enums.ProviderLogType.AsanPardakht,
                                                         Service = Enums.ServiceType.AsanPardakhtTransResult,
                                                     }, request, TransactionResultErrorHandler);
 
@@ -132,7 +132,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
                                                         BaseAddress = "https://ipgrest.asanpardakht.ir/",
                                                         Uri = "v1/Verify",
                                                         HeaderParameters = headers,
-                                                        Provider = Enums.ProviderType.AsanPardakht,
+                                                        Provider = Enums.ProviderLogType.AsanPardakht,
                                                         Service = Enums.ServiceType.AsanPardakhtVerify,
                                                     }, request, VerifyErrorHandler, (string stringResponse) =>
                                                     {

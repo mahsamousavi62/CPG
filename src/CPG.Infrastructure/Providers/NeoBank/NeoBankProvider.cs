@@ -47,7 +47,7 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
     private readonly IAuthService authService = authService;
     private readonly IHttpContextAccessor httpContextAccessor = httpContextAccessor;
     private readonly ILogger<NeoBankProvider> logger = logger;
-    private readonly ICurrentUser currentUser=currentUser;
+    private readonly ICurrentUser currentUser = currentUser;
     public async Task<Result<ClientDirectDebitResponse>> ClientDirectDebit(ClientDirectDebitRequest model)
     {
         var neobankConfig = configuration.GetSection("Infrastructure:NeoBank").Get<NeoBankConfig>();
@@ -86,7 +86,7 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
                 ServiceType = Enums.ServiceType.ClientDirectDebit,
                 CreationDate = DateTime.Now,
                 CreationUserId = currentUser.UserId,
-                ProviderType = Enums.ProviderType.NeoBank,
+                ProviderType = Enums.ProviderLogType.NeoBank,
                 AuditType = Enums.AuditType.Provider,
                 CorrolationId = neoBankCorroletionId,
             };
@@ -119,11 +119,8 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
 
     public async Task<Result<UserDepositBalanceResponse>> GetUserDepositBalance()
     {
-
         var neobankConfig = configuration.GetSection("Infrastructure:NeoBank").Get<NeoBankConfig>();
-        ResultData<UserDepositBalanceResponse> resultData = new();
         var appConfig = authService.GetJwtConfig();
-
         var accessTokenResult = await ExchangeToken(appConfig);
         if (accessTokenResult.OperationResult == Enums.OperationResult.Failed)
             return Result<UserDepositBalanceResponse>.Failure(new Error("2201001", accessTokenResult.Error));
@@ -139,7 +136,7 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
             var resultContent = await result.Content.ReadAsStringAsync();
 
             result.Headers.TryGetValues("x-correlation-id", out IEnumerable<string> res);
-            var neoBankCorroletionId = res.FirstOrDefault();
+            var neoBankCorroletionId = res?.FirstOrDefault();
 
             try
             {
@@ -155,9 +152,9 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
                     ServiceType = Enums.ServiceType.GetUserDepositBalance,
                     CreationDate = DateTime.Now,
                     CreationUserId = currentUser.UserId,
-                    ProviderType = Enums.ProviderType.NeoBank,
-                    AuditType = Enums.AuditType.Provider,
-                    CorrolationId = neoBankCorroletionId
+                    CorrolationId = neoBankCorroletionId,
+                    ProviderType = Enums.ProviderLogType.NeoBank,
+                    AuditType = Enums.AuditType.Provider
                 };
 
                 using (LogContext.PushProperty("CallLog", callLog, true))

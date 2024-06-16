@@ -81,7 +81,7 @@ internal class AyandehProvider(IHttpProvider httpProvider, ReadDbContext context
                                                             Mobile = !string.IsNullOrEmpty(request.MobileNumber) ? $"{request.MobileNumber.Remove(0, 1)}" : null,
                                                             SettleDate = settleDate,
                                                         },
-                                                        Provider = Enums.ProviderType.Ayandeh,
+                                                        Provider = Enums.ProviderLogType.Ayandeh,
                                                         Service = Enums.ServiceType.AyandehToken,
                                                     }, request, PaymentTokenErrorHandler);
 
@@ -115,7 +115,7 @@ internal class AyandehProvider(IHttpProvider httpProvider, ReadDbContext context
                                                         },
                                                         BaseAddress = "https://mpg.ba24.ir/",
                                                         Uri = "mpg/api/ipgPurchaseVerify",
-                                                        Provider = Enums.ProviderType.Ayandeh,
+                                                        Provider = Enums.ProviderLogType.Ayandeh,
                                                         Service = Enums.ServiceType.AyandehVerify,
                                                     }, request, VerifyErrorHandler);
 
