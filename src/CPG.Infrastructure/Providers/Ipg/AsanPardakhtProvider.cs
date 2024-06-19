@@ -15,7 +15,6 @@ using CPG.Domain.SharedKernel.Communication.Ipg.Models.TransactionResult;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
 using CPG.Domain.SharedKernel.Helper;
 using CPG.Infrastructure.Persistence.DbContexts;
-using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -33,6 +32,11 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
     private string userName;
     private string password;
     private int merchantConfigurationId;
+    private short[] VerificationSucceededCodes = [200, 472, 473, 475];
+    private short[] VerificationVerifyingCodes = [400, 401, 477, 571, 572, 573, 504];
+    private short[] VerificationFailedCodes = [471, 474, 476, 478];
+    private short[] TransactionResultFetchingCodes = [400, 401, 471, 571, 504];
+    private short[] TransactionResultFailedCodes = [472];
 
     private void GetDataFromJsonProvider(string providerData)
     {
@@ -194,8 +198,8 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
     {
         return statusCode switch
         {
-            400 or 401 or 471 or 571 or 504 => transactionResultFailCounter < serviceCallMaxTryCounter ? await Retry() : new TransactionResultResponse { Status = 1 } as TResponse,
-            472 => new TransactionResultResponse { Status = 3 } as TResponse,
+            _ when statusCode.IsIn(TransactionResultFetchingCodes) => await FetchingAction(),
+            _ when statusCode.IsIn(TransactionResultFailedCodes) => new TransactionResultResponse { Status = 3 } as TResponse,
             _ => new TransactionResultResponse { Status = 1 } as TResponse,
         };
 
@@ -203,6 +207,13 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
         {
             transactionResultFailCounter++;
             return await GetTransactionResult(baseRequest) as TResponse;
+        }
+
+        async Task<TResponse> FetchingAction()
+        {
+            return transactionResultFailCounter < serviceCallMaxTryCounter ?
+                await Retry() :
+                new TransactionResultResponse { Status = 1 } as TResponse;
         }
     }
 
@@ -213,9 +224,9 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
     {
         return statusCode switch
         {
-            400 or 401 or 477 or 571 or 573 or 504 => verifyFailCounter < serviceCallMaxTryCounter ? await Retry() : new VerifyTransactionResponse { Status = Enums.IPGTransactionStatus.Verifying } as TResponse,
-            200 or 472 or 473 or 475 => new VerifyTransactionResponse { Status = Enums.IPGTransactionStatus.VerificationSucceeded } as TResponse,
-            471 or 474 or 476 or 478 or 572 => new VerifyTransactionResponse { Status = Enums.IPGTransactionStatus.VerificationFailed } as TResponse,
+            _ when statusCode.IsIn(VerificationVerifyingCodes) => await VerifyingAction(),
+            _ when statusCode.IsIn(VerificationSucceededCodes) => new VerifyTransactionResponse { Status = Enums.IPGTransactionStatus.VerificationSucceeded } as TResponse,
+            _ when statusCode.IsIn(VerificationFailedCodes) => new VerifyTransactionResponse { Status = Enums.IPGTransactionStatus.VerificationFailed } as TResponse,
             _ => new VerifyTransactionResponse { Status = Enums.IPGTransactionStatus.Verifying } as TResponse,
         };
 
@@ -224,13 +235,19 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
             verifyFailCounter++;
             return await Verify(baseRequest) as TResponse;
         }
+
+        async Task<TResponse> VerifyingAction()
+        {
+            return verifyFailCounter < serviceCallMaxTryCounter ?
+                await Retry() :
+                new VerifyTransactionResponse { Status = Enums.IPGTransactionStatus.Verifying } as TResponse;
+        }
     }
 
     private TResponse BaseErrorHandler<TResponse, TError, TBaseRequest>(AsanPardakhtResponseBase? error)
        where TResponse : AsanPardakhtResponseBase
        where TError : AsanPardakhtResponseBase
        where TBaseRequest : class
-
     {
         if (error is null || error.ErrorResult is null)
         {
