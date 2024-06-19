@@ -40,8 +40,7 @@ public class GetUserQueryHandler(ReadDbContext context, IAuthenticationService a
         {
             var idpUserProfileResponse = await _idpClient.GetUserStatus(sub);
 
-            if (idpUserProfileResponse.Data.StatusCode == (short)HttpStatusCode.NotFound ||
-              idpUserProfileResponse.OperationResult == Enums.OperationResult.Failed
+              if(idpUserProfileResponse.OperationResult is not Enums.OperationResult.Succeeded
               || idpUserProfileResponse.Data?.Result?.Status != userKycStatus)
                 throw new UserNotVerifyStatusException(string.Empty); 
         }
