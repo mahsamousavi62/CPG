@@ -984,4 +984,7 @@
   <data name="YourCardIsDeActive" xml:space="preserve">
     <value>کاربر گرامی کارت شما غیرفعال شده است، در صورت نیاز می توانید با مدیریت سیستم تماس بگیرید</value>
   </data>
+  <data name="PaymentRequestNoUsableMethod" xml:space="preserve">
+    <value>هیچ یک از زیرمجموعه های روش های پرداختی {0} قابل استفاده نیست، لطفا درخواست فعال سازی یا راه اندازی یکی از روش ها را به مدیر سیستم ارسال کنید</value>
+  </data>
 </root>
