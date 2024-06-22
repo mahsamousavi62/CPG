@@ -1,14 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CPG.Application.UseCases.PaymentRequests.ViewModels;
-using CPG.Domain.AggregateModels.CompanyDepositAggregate;
-using CPG.Domain.AggregateModels.TransactionAggregate;
 using CPG.Domain.SharedKernel;
-using CPG.Infrastructure.Persistence.DbContexts.ReadModels;
-using Mapster;
 
 namespace CPG.Infrastructure.Persistence.GraphQL.Model
 {

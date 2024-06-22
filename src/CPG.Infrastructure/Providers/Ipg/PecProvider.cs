@@ -45,7 +45,7 @@ public class PecProvider(
                     CallBackUrl = callBack,
                     LoginAccount = GetDataFromJsonProvider(request.ProviderData),
                     OrderId = long.Parse(trackerId),
-                    Originator = request.MobileNumber
+                    Originator =string.IsNullOrEmpty( request.MobileNumber)?null:request.MobileNumber,
                 };
                 var response = await SaleSvc.SalePaymentRequestAsync(clientSaleRequestData);
 
@@ -142,7 +142,7 @@ public class PecProvider(
     {
         _logService.ServiceName = serviceName;
         _logService.ServiceType = serviceType;
-        _logService.ProviderType = Enums.ProviderType.Pec;
+        _logService.ProviderTypeInLog = Enums.ProviderTypeInLog.Pec;
 
         _logService.AddServiceCallLog(JsonConvert.SerializeObject(request),
             JsonConvert.SerializeObject(response),status,message);

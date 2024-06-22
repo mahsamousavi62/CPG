@@ -17,6 +17,7 @@ using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Logging;
 using CPG.Domain.SharedKernel.Communication.Idp.Models.UserProfile;
 using System.Diagnostics.CodeAnalysis;
+using CPG.Domain.SharedKernel.Interfaces;
 
 namespace CPG.Infrastructure.Providers;
 
@@ -25,7 +26,7 @@ public class HttpProvider : IHttpProvider
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<HttpProvider> _logger;
     private readonly ILogService _logService;
-
+    private readonly ICurrentUser _currentUser;
     public HttpProvider(IHttpClientFactory httpClientFactory, ILogger<HttpProvider> logger, ILogService logService)
     {
         _httpClientFactory = httpClientFactory;
@@ -591,7 +592,7 @@ public class HttpProvider : IHttpProvider
             ServiceType = request.Service,
             CreationDate = DateTime.Now,
             //ToDo: Add current user id
-            CreationUserId = 1,
+            CreationUserId = _currentUser.UserId,
             ErrorCode = response.IsSuccessStatusCode ? null : ReasonPhrases.GetReasonPhrase((int)response.StatusCode),
             ErrorType = response.IsSuccessStatusCode ? null : response.StatusCode.ToString(),
             Provider = request.Provider,

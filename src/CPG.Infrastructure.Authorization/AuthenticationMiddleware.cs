@@ -44,15 +44,15 @@ public class AuthenticationMiddleware(IAuthenticationSchemeProvider schemes, Req
         if (user is null)
             return principal;
 
-        newIdentity.AddClaim(new Claim(ClaimTypes.Name, user?.FirstName, ClaimValueTypes.String));
-        newIdentity.AddClaim(new Claim(ClaimTypes.Surname, user?.LastName, ClaimValueTypes.String));
-        newIdentity.AddClaim(new Claim(ClaimTypes.Sid, user?.IDPId, ClaimValueTypes.String));
-        newIdentity.AddClaim(new Claim(ClaimTypes.MobilePhone, user?.PhoneNumber, ClaimValueTypes.String));
-        newIdentity.AddClaim(new Claim(type: "NationalCode", value: user?.NationalCode));
-        newIdentity.AddClaim(new Claim(type: "CompanyId", value: user?.CompanyId.ToString()));
-        newIdentity.AddClaim(new Claim(type: "UserId", value: user?.Id.ToString()));
-        newIdentity.AddClaim(new Claim(type: "ApplicationId", value: user?.ApplicationId.ToString()));
-        newIdentity.AddClaim(new Claim(type: "ClientId", value: user?.IDPId.ToString()));
+        newIdentity.AddClaim(new Claim(ClaimTypes.Name, user.FirstName, ClaimValueTypes.String));
+        newIdentity.AddClaim(new Claim(ClaimTypes.Surname, user.LastName, ClaimValueTypes.String));
+        newIdentity.AddClaim(new Claim(ClaimTypes.Sid, user.IDPId, ClaimValueTypes.String));
+        newIdentity.AddClaim(new Claim(ClaimTypes.MobilePhone, user.PhoneNumber, ClaimValueTypes.String));
+        newIdentity.AddClaim(new Claim(type: "NationalCode", value: user.NationalCode));
+        newIdentity.AddClaim(new Claim(type: "CompanyId", value: user.CompanyId.ToString()));
+        newIdentity.AddClaim(new Claim(type: "UserId", value: user.Id.ToString()));
+        newIdentity.AddClaim(new Claim(type: "ApplicationId", value: user.ApplicationId.ToString()));
+        newIdentity.AddClaim(new Claim(type: "ClientId", value: user.IDPId.ToString()));
 
         if (user.UserRoles?.Any() is true)
         {

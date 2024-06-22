@@ -30,7 +30,7 @@ using System.Net;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
-
+using CPG.Application.UseCases.PaymentRequests.Exceptions;
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 
 public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
@@ -143,6 +143,12 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
             else
             {
                 mobileNumber = await _authenticationService.GetDataFromClaim<string>(ClaimTypes.MobilePhone);
+
+                if (string.IsNullOrEmpty(mobileNumber))
+                {
+                    user = await _userRepository.FirstOrDefaultAsync(new UserByNationalCodeSpec(nationalCode));
+                    mobileNumber = user.PhoneNumber;
+                }
             }
 
             var result = await ipg.GetPaymentTokenAsync(

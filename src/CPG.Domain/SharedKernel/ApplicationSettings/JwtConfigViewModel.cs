@@ -26,6 +26,8 @@ public class JwtConfigViewModel
 
     public string IdpGetProfileUrl { get; set; }
 
+    public string IdpGetUserStatusUrl { get; set; }
+
     public int ExpireTime { get; set; }
     
     public string NeoBankScope { get; set; }

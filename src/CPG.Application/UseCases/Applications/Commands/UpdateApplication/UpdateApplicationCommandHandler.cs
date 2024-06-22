@@ -15,6 +15,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ApplicationNotFoundException = CPG.Application.UseCases.Application.Exceptions.ApplicationNotFoundException;
 
 namespace CPG.Application.UseCases.Applications.Commands.UpdateApplication;
 

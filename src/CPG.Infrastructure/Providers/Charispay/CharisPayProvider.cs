@@ -5,6 +5,7 @@ using CPG.Domain.SharedKernel.Communication.Charispay;
 using CPG.Domain.SharedKernel.Communication.Charispay.Models;
 using CPG.Domain.SharedKernel.Communication.Charispay.Models.AccountNumber;
 using CPG.Domain.SharedKernel.Communication.NeoBank.Models;
+using CPG.Domain.SharedKernel.Interfaces;
 using CPG.Domain.SharedKernel.Logging;
 using CPG.Infrastructure.Providers.NeoBank;
 using HotChocolate.Execution.Processing;
@@ -29,13 +30,14 @@ namespace CPG.Infrastructure.Providers.Charispay
         public readonly IHttpClientFactory _factory;
         private readonly IConfiguration configuration;
         private readonly ILogger<CharisPayProvider> _logger;
+        private readonly ICurrentUser _currentUser;
 
-
-        public CharisPayProvider(IHttpClientFactory factory, IConfiguration configuration, ILogger<CharisPayProvider> logger)
+        public CharisPayProvider(IHttpClientFactory factory, IConfiguration configuration, ILogger<CharisPayProvider> logger, ICurrentUser currentUser)
         {
             _factory = factory;
             this.configuration = configuration;
             _logger = logger;
+            _currentUser = currentUser;
         }
 
         public async Task<Result<AccountNumberResponse>> GetAccountNumber(string iban)
@@ -66,8 +68,8 @@ namespace CPG.Infrastructure.Providers.Charispay
                     ServiceCallStatus = result.StatusCode == System.Net.HttpStatusCode.OK,
                     ServiceType = Enums.ServiceType.GetAccountNumber,
                     CreationDate = DateTime.Now,
-                    CreationUserId = 1,
-                    ProviderType = Enums.ProviderType.NeoBank,
+                    CreationUserId = _currentUser.UserId,
+                    ProviderType = Enums.ProviderTypeInLog.CharisPay,
                     AuditType = Enums.AuditType.Provider
                 };
 
