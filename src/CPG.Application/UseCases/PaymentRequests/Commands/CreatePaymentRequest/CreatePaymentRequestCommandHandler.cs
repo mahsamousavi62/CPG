@@ -63,7 +63,7 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
             var validCallBackUrl = application.ApplicationCallbackUrls.Select(a => a.CallbackUrl);
             var compareUri = new Uri(request.Model.CallBackUrl, UriKind.Absolute);
 
-            if (validCallBackUrl.All(url => !Uri.TryCreate(url, UriKind.Absolute, out var baseUri) || 
+            if (validCallBackUrl.All(url => !Uri.TryCreate(url, UriKind.Absolute, out var baseUri) ||
                 !string.Equals(baseUri.Host, compareUri.Host, StringComparison.OrdinalIgnoreCase)))
             {
                 throw new PaymentRequestInvalidCallbackUrlException(request.Model.CallBackUrl);
@@ -103,8 +103,13 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
             throw new PaymentRequestRequiredDataException();
 
         var amount = new Amount(model.Amount);
+
         var callBackUrl = new Url(model.CallBackUrl);
-        var nationalCode = new NationalCode(model.NationalCode);
+
+        if (!string.IsNullOrEmpty(model.NationalCode))
+        {
+            var nationalCode = new NationalCode(model.NationalCode);
+        }
 
         if (model.CompanyId.HasValue && model.CompanyId != 0)
         {
