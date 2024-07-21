@@ -85,6 +85,14 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
         ViewModels.CharismaCard charismaCard = null;
         var sub = await _authenticationService.GetDataFromClaim<string>("sub", string.Empty);
 
+
+        var nationalCode = await _authenticationService.GetDataFromClaim<string>("NationalCode");
+
+        if (!string.IsNullOrEmpty(nationalCode) || !string.IsNullOrEmpty(paymentRequest.NationalCode))
+        {
+            if(paymentRequest.NationalCode != nationalCode)
+            throw new PaymentRequestNationalCodeConflictException();
+        }
         if (!string.IsNullOrEmpty(paymentRequest.DestinationDepositIban))
         {
             company = await _companyRepository.GetBySpecAsync(new CompanyPaymentMethodsByIbanSpec(paymentRequest.CompanyId,

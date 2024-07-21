@@ -906,4 +906,10 @@
   <data name="InvalidIbanFormat" xml:space="preserve">
     <value>فرمت شماره شبا معتبر نمی باشد</value>
   </data>
+  <data name="Guest" xml:space="preserve">
+    <value>مهمان</value>
+  </data>
+  <data name="UserName" xml:space="preserve">
+    <value>کاربر</value>
+  </data>
 </root>
