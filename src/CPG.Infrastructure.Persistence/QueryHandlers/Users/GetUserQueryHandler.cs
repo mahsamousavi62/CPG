@@ -51,11 +51,17 @@ public class GetUserQueryHandler(
 
         var user = await _context.UserReadModels.Include(u => u.UserRoles).Include(c => c.Company)
                                                         .SingleOrDefaultAsync(u => u.IsActive && u.IDPId == sub);
+
+        if (kycStatus == userKycStatus && user is null)
+        {
+            throw new UserNotFoundException(sub);
+        }
+
         if (user != null)
         {
             var applicationId = (await _context.ApplicationIdentifierReadModels.SingleOrDefaultAsync(a => a.IdpClientId == sub))?.ApplicationId;
         }
-
+       
         var userViewModel = new UserViewModel
         {
             CompanyId = user?.Company?.Id,
