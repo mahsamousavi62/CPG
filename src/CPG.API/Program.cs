@@ -75,7 +75,7 @@ var corsOrigins = configuration["CorsOrigins"]!
 var supportedLanguages = new List<CultureInfo>
     {
         new("en"),
-        new("fa")
+        new("fa"),
     };
 
 builder.Services.AddCors(
