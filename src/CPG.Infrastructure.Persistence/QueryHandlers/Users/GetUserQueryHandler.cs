@@ -1,16 +1,9 @@
-﻿using System;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CPG.Application.UseCases.Users.Exceptions;
 using CPG.Application.UseCases.Users.Queries;
 using CPG.Application.UseCases.Users.ViewModel;
-using CPG.Domain.AggregateModels.CompanyAggregate;
-using CPG.Domain.AggregateModels.UserAggregate;
-using CPG.Domain.Exceptions;
-using CPG.Domain.SeedWork;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Communication.Idp;
 using CPG.Domain.SharedKernel.Minio;
@@ -31,7 +24,6 @@ public class GetUserQueryHandler(
     private readonly IAuthenticationService _authenticationService = authenticationService;
     private readonly string userKycStatus = "KycVerified";
     private readonly string demo = "Demo";
-    private readonly IMinioProvider _minioProvider = minioProvider;
     private readonly IIdpProvider _idpClient = idpClient;
 
     public async Task<Result<UserViewModel>> Handle(GetUserQuery request, CancellationToken cancellationToken)
