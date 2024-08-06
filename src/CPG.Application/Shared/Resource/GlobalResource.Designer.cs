@@ -115,15 +115,6 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to AmountIsNotInRange.
-        /// </summary>
-        public static string AmountIsNotInRange {
-            get {
-                return ResourceManager.GetString("AmountIsNotInRange", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to ApplicationLogo.
         /// </summary>
         public static string ApplicationLogo {
@@ -592,15 +583,6 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to d.
-        /// </summary>
-        public static string d {
-            get {
-                return ResourceManager.GetString("d", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Dear user, the transaction amount is more than the daily limit of this license, if possible, use other banks or available methods to pay the desired amount.
         /// </summary>
         public static string DailyTransactionAmount {
@@ -759,15 +741,6 @@ namespace CPG.Application.Shared.Resource {
         public static string DirectDebit {
             get {
                 return ResourceManager.GetString("DirectDebit", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Dear user, you have not granted the required permission to pay through Karisma card to the company {0}, please click on the request permission option to grant permission if necessary.
-        /// </summary>
-        public static string DirectDebitGrantError {
-            get {
-                return ResourceManager.GetString("DirectDebitGrantError", resourceCulture);
             }
         }
         
@@ -961,15 +934,6 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to FromDateGreatherThanToDate.
-        /// </summary>
-        public static string FromDateGreatherThanToDate {
-            get {
-                return ResourceManager.GetString("FromDateGreatherThanToDate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to An unexpected error has occurred, please try again or contact support.
         /// </summary>
         public static string GetPaymentTicketUnexpectedError {
@@ -1110,24 +1074,6 @@ namespace CPG.Application.Shared.Resource {
         public static string InvalidGrant {
             get {
                 return ResourceManager.GetString("InvalidGrant", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to InvalidIbanFormat.
-        /// </summary>
-        public static string InvalidIbanFormat {
-            get {
-                return ResourceManager.GetString("InvalidIbanFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to InvalidNationalCode.
-        /// </summary>
-        public static string InvalidNationalCode {
-            get {
-                return ResourceManager.GetString("InvalidNationalCode", resourceCulture);
             }
         }
         
@@ -1605,15 +1551,6 @@ namespace CPG.Application.Shared.Resource {
         public static string PaymentRequestInvalidCallbackUrl {
             get {
                 return ResourceManager.GetString("PaymentRequestInvalidCallbackUrl", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Dear user, you are not authorized to pay this payment request.
-        /// </summary>
-        public static string PaymentRequestNationalCodeConflict {
-            get {
-                return ResourceManager.GetString("PaymentRequestNationalCodeConflict", resourceCulture);
             }
         }
         

@@ -117,6 +117,33 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AccountDoesNotHaveEnoughBalance" xml:space="preserve">
+    <value>Dear user, your account does not have enough balance to pay the amount. If possible, use other available methods to pay the desired amount.</value>
+  </data>
+  <data name="AccountNumber" xml:space="preserve">
+    <value>AccountNumber</value>
+  </data>
+  <data name="Activate" xml:space="preserve">
+    <value>Activate</value>
+  </data>
+  <data name="Active" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="Active/DeActive" xml:space="preserve">
+    <value>Active/DeActive</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Amount</value>
+  </data>
+  <data name="ApplicationLogo" xml:space="preserve">
+    <value>ApplicationLogo</value>
+  </data>
+  <data name="ApplicationName" xml:space="preserve">
+    <value>ApplicationName</value>
+  </data>
+  <data name="ApplicationNotFound" xml:space="preserve">
+    <value>Application with Id {0} has not been found.</value>
+  </data>
   <data name="ApplicationSettings" xml:space="preserve">
     <value>ApplicationSettings</value>
   </data>
@@ -126,449 +153,20 @@
   <data name="Apps" xml:space="preserve">
     <value>Apps</value>
   </data>
-  <data name="Banks" xml:space="preserve">
-    <value>Banks</value>
-  </data>
-  <data name="Companies" xml:space="preserve">
-    <value>Companies</value>
-  </data>
-  <data name="Create" xml:space="preserve">
-    <value>Create</value>
-  </data>
-  <data name="DirectDebit" xml:space="preserve">
-    <value>DirectDebit</value>
-  </data>
-  <data name="Edit" xml:space="preserve">
-    <value>Edit</value>
-  </data>
-  <data name="Filter" xml:space="preserve">
-    <value>Filter</value>
-  </data>
-  <data name="InternetPaymentGateway" xml:space="preserve">
-    <value>InternetPaymentGateway</value>
-  </data>
-  <data name="PaymentReceipt" xml:space="preserve">
-    <value>PaymentReceipt</value>
-  </data>
-  <data name="Providers" xml:space="preserve">
-    <value>Providers</value>
-  </data>
-  <data name="Search" xml:space="preserve">
-    <value>Search</value>
-  </data>
-  <data name="SetActive" xml:space="preserve">
-    <value>SetActive</value>
-  </data>
-  <data name="SetDeActive" xml:space="preserve">
-    <value>SetDeActive</value>
-  </data>
-  <data name="DuplicateEnglishName" xml:space="preserve">
-    <value> EnglishName '{0}' has already been created</value>
-  </data>
-  <data name="DuplicatePersianName" xml:space="preserve">
-    <value> PersianName '{0}' has already been created</value>
-  </data>
-  <data name="Test" xml:space="preserve">
-    <value>test</value>
-  </data>
-  <data name="TitleMainMenu" xml:space="preserve">
-    <value>TitleMainMenu</value>
-  </data>
-  <data name="Users" xml:space="preserve">
-    <value>Users</value>
-  </data>
-  <data name="ApplicationNotFound" xml:space="preserve">
-    <value>Application with Id {0} has not been found.</value>
-  </data>
-  <data name="BankNotFound" xml:space="preserve">
-    <value>Bank with Id {0} has not been found</value>
-  </data>
-  <data name="ProviderNotFound" xml:space="preserve">
-    <value>Provider with Id {0} has not been found.</value>
-  </data>
-  <data name="CompanyDepositNotFound" xml:space="preserve">
-    <value>companyDepositNotFound</value>
-  </data>
-  <data name="DuplicateIban" xml:space="preserve">
-    <value>DuplicateIban</value>
-  </data>
-  <data name="CompanyNotFound" xml:space="preserve">
-    <value>CompanyNotFound</value>
-  </data>
-  <data name="UsersNotFound" xml:space="preserve">
-    <value>UsersNotFound</value>
-  </data>
-  <data name="Active" xml:space="preserve">
-    <value>Active</value>
-  </data>
-  <data name="Active/DeActive" xml:space="preserve">
-    <value>Active/DeActive</value>
-  </data>
-  <data name="Cancel" xml:space="preserve">
-    <value>Cancel</value>
-  </data>
-  <data name="CreateCompany" xml:space="preserve">
-    <value>CreateCompany</value>
-  </data>
-  <data name="DeActive" xml:space="preserve">
-    <value>DeActive</value>
-  </data>
-  <data name="EnglishName" xml:space="preserve">
-    <value>EnglishName</value>
-  </data>
-  <data name="False" xml:space="preserve">
-    <value>False</value>
-  </data>
-  <data name="IbanPrefix" xml:space="preserve">
-    <value>IbanPrefix</value>
-  </data>
-  <data name="MethodTypes" xml:space="preserve">
-    <value>MethodTypes</value>
-  </data>
-  <data name="NationalCodeMatchingRequired" xml:space="preserve">
-    <value>NationalCodeMatchingRequied</value>
-  </data>
-  <data name="NationalCodeMatchingRequiredWithCardNumber" xml:space="preserve">
-    <value>NationalCodeMatchingRequiedWithCardNumber</value>
-  </data>
-  <data name="PersianName" xml:space="preserve">
-    <value>PersianName</value>
-  </data>
-  <data name="Submit" xml:space="preserve">
-    <value>Submit</value>
-  </data>
-  <data name="True" xml:space="preserve">
-    <value>True</value>
-  </data>
-  <data name="CompanyLogo" xml:space="preserve">
-    <value>CompanyLogo</value>
-  </data>
-  <data name="CreateApplication" xml:space="preserve">
-    <value>CreateApplication</value>
-  </data>
-  <data name="IdpClientIds" xml:space="preserve">
-    <value>IdpClientIds</value>
-  </data>
-  <data name="ResponseApiUrl" xml:space="preserve">
-    <value>ResponseApiUrl</value>
-  </data>
-  <data name="ApplicationLogo" xml:space="preserve">
-    <value>ApplicationLogo</value>
-  </data>
-  <data name="IPGTypeNotFound" xml:space="preserve">
-    <value>IPGType with Id {0} has not been found</value>
-  </data>
-  <data name="Delete" xml:space="preserve">
-    <value>Delete</value>
-  </data>
-  <data name="BrokerageCharisma" xml:space="preserve">
-    <value>BrokerageCharisma</value>
-  </data>
-  <data name="Validation_Required" xml:space="preserve">
-    <value>{0} is required</value>
-  </data>
-  <data name="AccountNumber" xml:space="preserve">
-    <value>AccountNumber</value>
-  </data>
-  <data name="BankName" xml:space="preserve">
-    <value>BankName</value>
-  </data>
-  <data name="CreateDeposit" xml:space="preserve">
-    <value>CreateDeposit</value>
-  </data>
-  <data name="CreateDepositCompanyFor" xml:space="preserve">
-    <value>CreateDepositCompanyFor</value>
-  </data>
-  <data name="Deposits" xml:space="preserve">
-    <value>Deposits</value>
-  </data>
-  <data name="Iban" xml:space="preserve">
-    <value>Iban</value>
-  </data>
-  <data name="IPGs" xml:space="preserve">
-    <value>IPGs</value>
-  </data>
-  <data name="Name" xml:space="preserve">
-    <value>Name</value>
-  </data>
-  <data name="Validation_IBan" xml:space="preserve">
-    <value>IBan Validation</value>
-  </data>
-  <data name="CreateProvider" xml:space="preserve">
-    <value>CreateProvider</value>
-  </data>
-  <data name="ProviderLogo" xml:space="preserve">
-    <value>ProviderLogo</value>
-  </data>
-  <data name="ProviderType" xml:space="preserve">
-    <value>ProviderType</value>
-  </data>
-  <data name="Type" xml:space="preserve">
-    <value>Type</value>
-  </data>
-  <data name="Vandar" xml:space="preserve">
-    <value>Vandar</value>
-  </data>
-  <data name="CompanyIPGNotFound" xml:space="preserve">
-    <value>CompanyIPGNotFound</value>
-  </data>
-  <data name="CallbackUrls" xml:space="preserve">
-    <value>CallbackUrls</value>
-  </data>
-  <data name="CompanySettings" xml:space="preserve">
-    <value>CompanySettings</value>
-  </data>
-  <data name="PaymentRequestRequiredIbanOrCompany" xml:space="preserve">
-    <value>PaymentRequestRequiredIbanOrCompany</value>
-  </data>
-  <data name="PaymentRequestDuplicateTrackerId" xml:space="preserve">
-    <value>TrackerId {0} is used before</value>
-  </data>
-  <data name="PaymentRequestIbanCompanyInActive" xml:space="preserve">
-    <value>IbanCompanyInActive</value>
-  </data>
-  <data name="PaymentRequestNotDefinedCompanyDeposit" xml:space="preserve">
-    <value>NotDefinedCompanyDeposit</value>
-  </data>
-  <data name="PaymentRequestNotMatchIbanAndCompany" xml:space="preserve">
-    <value>NotMatchIbanAndCompany</value>
-  </data>
-  <data name="CompanyIsInactive" xml:space="preserve">
-    <value>Dear user, company "{0}" is inactive right now and unable for payment. Call support team or try later</value>
-  </data>
-  <data name="PaymentMessage" xml:space="preserve">
-    <value>Pay : "{0} rial" | {1} tooman for company : {2}</value>
-  </data>
-  <data name="PaymentRequestCodeIsExpired" xml:space="preserve">
-    <value>Dear user, the payment address has expired, repeat the operation if necessary</value>
-  </data>
-  <data name="PaymentRequestCodeIsFinalized" xml:space="preserve">
-    <value>Dear user, this request has already been finalized</value>
-  </data>
-  <data name="PaymentRequestCodeIsUsed" xml:space="preserve">
-    <value>Dear user, this address has already been used, repeat the operation if necessary</value>
-  </data>
-  <data name="PaymentRequestCodeNotFound" xml:space="preserve">
-    <value>Dear user, the payment address is invalid</value>
-  </data>
-  <data name="PaymentRequestStatusIsInvalid" xml:space="preserve">
-    <value>Dear user, the request status is invalid</value>
-  </data>
-  <data name="UnexpectedError" xml:space="preserve">
-    <value>An unexpected error has occurred, please try again or contact support</value>
-  </data>
-  <data name="CompanyDepositByCompanyIdNotFound" xml:space="preserve">
-    <value>CompanyDepositByCompanyIdNotFound</value>
-  </data>
-  <data name="ErrorTitle" xml:space="preserve">
-    <value>Error :{0}</value>
-  </data>
-  <data name="UserNotFound" xml:space="preserve">
-    <value>UserNotFound</value>
-  </data>
-  <data name="FileNotFound" xml:space="preserve">
-    <value>File Not Found</value>
-  </data>
   <data name="AsanPardakht" xml:space="preserve">
     <value>AsanPardakht</value>
   </data>
-  <data name="BaseOnMinute" xml:space="preserve">
-    <value>BaseOnMinute</value>
-  </data>
-  <data name="CompanyIPGDeposits" xml:space="preserve">
-    <value>CompanyIPGDeposits</value>
-  </data>
-  <data name="CreateIPG" xml:space="preserve">
-    <value>CreateIPG</value>
-  </data>
-  <data name="CreateIPGCompanyFor" xml:space="preserve">
-    <value>CreateIPGCompanyFor</value>
-  </data>
-  <data name="DefaultDeposit" xml:space="preserve">
-    <value>DefaultDeposit</value>
-  </data>
-  <data name="DefaultIPGDeposit" xml:space="preserve">
-    <value>DefaultIPGDeposit</value>
-  </data>
-  <data name="IPGTypeId" xml:space="preserve">
-    <value>IPGTypeId</value>
-  </data>
-  <data name="Minute" xml:space="preserve">
-    <value>Minute</value>
-  </data>
-  <data name="ProviderId" xml:space="preserve">
-    <value>ProviderId</value>
-  </data>
-  <data name="IpgVerificationTimeLimit" xml:space="preserve">
-    <value>IpgVerificationTimeLimit</value>
-  </data>
-  <data name="VerificationTimeLimitIPG" xml:space="preserve">
-    <value>VerificationTimeLimitIPG</value>
-  </data>
-  <data name="PaymentRequestNotFound" xml:space="preserve">
-    <value>PaymentRequestNotFound</value>
-  </data>
-  <data name="CPGReferencePage" xml:space="preserve">
-    <value>CPGReferencePage</value>
-  </data>
-  <data name="IpgRedirectionMethodType" xml:space="preserve">
-    <value>IpgRedirectionMethodType</value>
-  </data>
-  <data name="RayanReferencePage" xml:space="preserve">
-    <value>RayanReferencePage</value>
-  </data>
-  <data name="SiteAddressCompany" xml:space="preserve">
-    <value>SiteAddressCompany</value>
-  </data>
-  <data name="MinioException" xml:space="preserve">
-    <value>MinioException</value>
-  </data>
-  <data name="Before" xml:space="preserve">
-    <value>Before</value>
-  </data>
-  <data name="ChooseMethodPayment" xml:space="preserve">
-    <value>ChooseMethodPayment</value>
-  </data>
-  <data name="DepositAmount" xml:space="preserve">
-    <value>DepositAmount</value>
-  </data>
-  <data name="ForCompany" xml:space="preserve">
-    <value>ForCompany</value>
-  </data>
-  <data name="Rial" xml:space="preserve">
-    <value>Rial</value>
-  </data>
-  <data name="Tooman" xml:space="preserve">
-    <value>Tooman</value>
-  </data>
-  <data name="ParseCompanyIpgProviderData" xml:space="preserve">
-    <value>ParseCompanyIpgProviderData</value>
-  </data>
-  <data name="NotFoundTrackIdException" xml:space="preserve">
-    <value>TrackId not found</value>
-  </data>
-  <data name="TrackIdInvalidStatusException" xml:space="preserve">
-    <value>TrackId status is invalid</value>
-  </data>
-  <data name="TransactionNotFound" xml:space="preserve">
-    <value>TransactionNotFound</value>
-  </data>
-  <data name="InvalidCodeOrTrackIdException" xml:space="preserve">
-    <value>No PaymentRequest found having this Code or TrackId</value>
-  </data>
-  <data name="RequiredCodeOrTrackIdException" xml:space="preserve">
-    <value>Code or TrackId is required</value>
-  </data>
-  <data name="Error" xml:space="preserve">
-    <value>Error</value>
-  </data>
-  <data name="ErrorInConnection" xml:space="preserve">
-    <value>ErrorInConnection</value>
-  </data>
-  <data name="IpgRedirectionMethodTypeNotFound" xml:space="preserve">
-    <value>IpgRedirectionMethodTypeNotFound</value>
-  </data>
-  <data name="DuplicateProviderType" xml:space="preserve">
-    <value>DuplicateProviderType</value>
-  </data>
-  <data name="PaymentRequestCompanyInactive" xml:space="preserve">
-    <value>Company is inactive</value>
-  </data>
-  <data name="PaymentRequestApplicationIsInactive" xml:space="preserve">
-    <value>Application {0}-{1} is inactive</value>
-  </data>
-  <data name="PaymentRequestApplicationNotFound" xml:space="preserve">
-    <value>This application is not defined</value>
-  </data>
-  <data name="PaymentRequestBankInactive" xml:space="preserve">
-    <value>Bank is inactive</value>
-  </data>
-  <data name="PaymentRequestCompanyPaymentMethodAreInactive" xml:space="preserve">
-    <value>All company payment methods are inactive</value>
-  </data>
-  <data name="PaymentRequestInvalidCallbackUrl" xml:space="preserve">
-    <value>Callback url {0} is invalid</value>
-  </data>
-  <data name="PaymentRequestNoCompanyFound" xml:space="preserve">
-    <value>No company found</value>
-  </data>
-  <data name="PaymentRequestNoCompanyPaymentMethodFound" xml:space="preserve">
-    <value>No company payment method found</value>
-  </data>
-  <data name="PaymentRequestCodeExpired" xml:space="preserve">
-    <value>Dear user, the payment code has expired, repeat the operation if necessary</value>
-  </data>
-  <data name="PaymentRequestNotFoundByCode" xml:space="preserve">
-    <value>Dear user, the payment address is invalid</value>
-  </data>
-  <data name="GetPaymentTicketUnexpectedError" xml:space="preserve">
-    <value>An unexpected error has occurred, please try again or contact support</value>
-  </data>
-  <data name="PaymentMethodsUnexpectedError" xml:space="preserve">
-    <value>An unexpected error has occurred, please try again or contact support</value>
-  </data>
-  <data name="PaymentRequestCodeInvalidStatus" xml:space="preserve">
-    <value>Dear user, the request status is invalid</value>
-  </data>
-  <data name="PaymentRequestCodeIsUsedBefore" xml:space="preserve">
-    <value>Dear user, this address has already been used, repeat the operation if necessary</value>
-  </data>
-  <data name="PaymentRequestUnexpectedError" xml:space="preserve">
-    <value>An unexpected error has occurred, please try again or contact support</value>
-  </data>
-  <data name="PaymentTokenUnexpectedError" xml:space="preserve">
-    <value>An unexpected error has occurred, please try again or contact support</value>
-  </data>
-  <data name="ProviderUnexpectedError" xml:space="preserve">
-    <value>An unexpected error has occurred, please try again or contact support</value>
-  </data>
-  <data name="TransactionDetailUnexpectedError" xml:space="preserve">
-    <value>An unexpected error has occurred, please try again or contact support</value>
-  </data>
-  <data name="VerifyInvalidStatus" xml:space="preserve">
-    <value>The payment request status is invalid</value>
-  </data>
-  <data name="IpgBaseUrl" xml:space="preserve">
-    <value>IpgBaseUrl</value>
-  </data>
-  <data name="Validation_MaxLength" xml:space="preserve">
-    <value>{0} cant be more than {1} charachter</value>
-  </data>
-  <data name="Validation_MinLength" xml:space="preserve">
-    <value>{0} cant be less than {1} charachter</value>
-  </data>
-  <data name="VerificationTimeLimit" xml:space="preserve">
-    <value>VerificationTimeLimit</value>
-  </data>
-  <data name="TransactionDetailInvalidApplication" xml:space="preserve">
-    <value>the application {0} is unable to fetch this transaction detail</value>
-  </data>
-  <data name="VerifyInvalidApplication" xml:space="preserve">
-    <value>the application is unable to verify this transaction</value>
-  </data>
-  <data name="RequiredShaparakSettings" xml:space="preserve">
-    <value>Shaparak settings are required</value>
-  </data>
-  <data name="CompanyDepositNotBelongToCompany" xml:space="preserve">
-    <value>CompanyDeposit not belong to company</value>
-  </data>
-  <data name="BusinessID" xml:space="preserve">
-    <value>Business_ID</value>
-  </data>
-  <data name="DDGrantBaseURL" xml:space="preserve">
-    <value>DD_Grant_Base_URL</value>
-  </data>
-  <data name="DDNotifyWebhookURL" xml:space="preserve">
-    <value>DD_Notify_Webhook_URL</value>
-  </data>
-  <data name="RefreshToken" xml:space="preserve">
-    <value>Refresh_Token</value>
-  </data>
-  <data name="EmptyRefreshToken" xml:space="preserve">
-    <value>Refresh token is empty</value>
-  </data>
   <data name="AuthenticationType" xml:space="preserve">
     <value>AuthenticationType</value>
+  </data>
+  <data name="Ayandeh" xml:space="preserve">
+    <value>Ayandeh</value>
+  </data>
+  <data name="BalanceIsNotEnought" xml:space="preserve">
+    <value>BalanceIsNotEnought</value>
+  </data>
+  <data name="BankAmountLimit" xml:space="preserve">
+    <value>Dear user, the amount allowed in the bank has been reached, if possible, use other banks or available methods to pay the desired amount</value>
   </data>
   <data name="BankIsActiveInProvider" xml:space="preserve">
     <value>BankIsActiveInProvider</value>
@@ -576,86 +174,122 @@
   <data name="BankLogo" xml:space="preserve">
     <value>BankLogo</value>
   </data>
+  <data name="BankMalfunction" xml:space="preserve">
+    <value>Dear user, this bank and license have been disrupted, if possible, use other banks or available methods to pay the desired amount</value>
+  </data>
+  <data name="BankName" xml:space="preserve">
+    <value>BankName</value>
+  </data>
+  <data name="BankNotFound" xml:space="preserve">
+    <value>Bank with Id {0} has not been found</value>
+  </data>
+  <data name="Banks" xml:space="preserve">
+    <value>Banks</value>
+  </data>
+  <data name="BaseOnMinute" xml:space="preserve">
+    <value>BaseOnMinute</value>
+  </data>
+  <data name="Before" xml:space="preserve">
+    <value>Before</value>
+  </data>
+  <data name="BehPardakht" xml:space="preserve">
+    <value>BehPardakht</value>
+  </data>
+  <data name="BlockedAccount" xml:space="preserve">
+    <value>Dear user, the account related to this license has been blocked, if possible, use other banks or available methods to pay the desired amount</value>
+  </data>
+  <data name="BrokerageCharisma" xml:space="preserve">
+    <value>BrokerageCharisma</value>
+  </data>
+  <data name="BusinessID" xml:space="preserve">
+    <value>Business_ID</value>
+  </data>
+  <data name="CallbackUrls" xml:space="preserve">
+    <value>CallbackUrls</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="CardBalance" xml:space="preserve">
+    <value>CardBalance</value>
+  </data>
   <data name="CardInfoCOnfirmation" xml:space="preserve">
     <value>CardInfoCOnfirmation</value>
+  </data>
+  <data name="CharismaCard" xml:space="preserve">
+    <value>CharismaCard</value>
   </data>
   <data name="CheckMobileAndDepositOwnershipMatching" xml:space="preserve">
     <value>CheckMobileAndDepositOwnershipMatching</value>
   </data>
-  <data name="DDBankCodeDirectDebit" xml:space="preserve">
-    <value>DDBankCodeDirectDebit</value>
+  <data name="ChooseMethodPayment" xml:space="preserve">
+    <value>ChooseMethodPayment</value>
   </data>
-  <data name="DirectDebitProvider" xml:space="preserve">
-    <value>DirectDebitProvider</value>
+  <data name="Companies" xml:space="preserve">
+    <value>Companies</value>
   </data>
-  <data name="FiveYears" xml:space="preserve">
-    <value>FiveYears</value>
+  <data name="CompanyDeposit" xml:space="preserve">
+    <value>CompanyDeposit</value>
   </data>
-  <data name="FourYears" xml:space="preserve">
-    <value>FourYears</value>
+  <data name="CompanyDepositByCompanyIdNotFound" xml:space="preserve">
+    <value>CompanyDepositByCompanyIdNotFound</value>
   </data>
-  <data name="HasDirectDebitFeature" xml:space="preserve">
-    <value>HasDirectDebitFeature</value>
+  <data name="CompanyDepositId" xml:space="preserve">
+    <value>CompanyDepositId</value>
   </data>
-  <data name="IsActive" xml:space="preserve">
-    <value>IsActive</value>
+  <data name="CompanyDepositNotBelongToCompany" xml:space="preserve">
+    <value>CompanyDeposit not belong to company</value>
   </data>
-  <data name="MaxMandateValidityDurationPerMonth" xml:space="preserve">
-    <value>MaxMandateValidityDurationPerMonth</value>
+  <data name="CompanyDepositNotFound" xml:space="preserve">
+    <value>companyDepositNotFound</value>
   </data>
-  <data name="MaxWithdrawalAmountPerDay" xml:space="preserve">
-    <value>MaxWithdrawalAmountPerDay</value>
+  <data name="CompanyIPGDeposits" xml:space="preserve">
+    <value>CompanyIPGDeposits</value>
   </data>
-  <data name="NineMonths" xml:space="preserve">
-    <value>NineMonths</value>
+  <data name="CompanyIPGNotFound" xml:space="preserve">
+    <value>CompanyIPGNotFound</value>
   </data>
-  <data name="OneMonth" xml:space="preserve">
-    <value>OneMonth</value>
+  <data name="CompanyIsInactive" xml:space="preserve">
+    <value>Dear user, company "{0}" is inactive right now and unable for payment. Call support team or try later</value>
   </data>
-  <data name="OneYear" xml:space="preserve">
-    <value>OneYear</value>
+  <data name="CompanyLogo" xml:space="preserve">
+    <value>CompanyLogo</value>
   </data>
-  <data name="SendOtpCode" xml:space="preserve">
-    <value>SendOtpCode</value>
+  <data name="CompanyName" xml:space="preserve">
+    <value>CompanyName</value>
   </data>
-  <data name="ShaparakIv" xml:space="preserve">
-    <value>ShaparakIv</value>
+  <data name="CompanyNotFound" xml:space="preserve">
+    <value>CompanyNotFound</value>
   </data>
-  <data name="ShaparakKey" xml:space="preserve">
-    <value>ShaparakKey</value>
+  <data name="CompanySettings" xml:space="preserve">
+    <value>CompanySettings</value>
   </data>
-  <data name="ShaparakThirdPartyCode" xml:space="preserve">
-    <value>ShaparakThirdPartyCode</value>
+  <data name="CPGReferencePage" xml:space="preserve">
+    <value>CPGReferencePage</value>
   </data>
-  <data name="SixMonths" xml:space="preserve">
-    <value>SixMonths</value>
+  <data name="Create" xml:space="preserve">
+    <value>Create</value>
   </data>
-  <data name="ThreeMonths" xml:space="preserve">
-    <value>ThreeMonths</value>
+  <data name="CreateApplication" xml:space="preserve">
+    <value>CreateApplication</value>
   </data>
-  <data name="ThreeYears" xml:space="preserve">
-    <value>ThreeYears</value>
+  <data name="CreateCompany" xml:space="preserve">
+    <value>CreateCompany</value>
   </data>
-  <data name="TwoYears" xml:space="preserve">
-    <value>TwoYears</value>
+  <data name="CreateDeposit" xml:space="preserve">
+    <value>CreateDeposit</value>
   </data>
-  <data name="PlanNotFound" xml:space="preserve">
-    <value>Plan with Id {0} has not been found</value>
+  <data name="CreateDepositCompanyFor" xml:space="preserve">
+    <value>CreateDepositCompanyFor</value>
   </data>
-  <data name="InvalidRefreshToken" xml:space="preserve">
-    <value>RefreshToken is invalid</value>
+  <data name="CreateIPG" xml:space="preserve">
+    <value>CreateIPG</value>
   </data>
-  <data name="MorethanOneDefaultDepositFoundException" xml:space="preserve">
-    <value>MorethanOneDefaultDepositFoundException</value>
+  <data name="CreateIPGCompanyFor" xml:space="preserve">
+    <value>CreateIPGCompanyFor</value>
   </data>
-  <data name="BankAmountLimit" xml:space="preserve">
-    <value>Dear user, the amount allowed in the bank has been reached, if possible, use other banks or available methods to pay the desired amount</value>
-  </data>
-  <data name="BankMalfunction" xml:space="preserve">
-    <value>Dear user, this bank and license have been disrupted, if possible, use other banks or available methods to pay the desired amount</value>
-  </data>
-  <data name="BlockedAccount" xml:space="preserve">
-    <value>Dear user, the account related to this license has been blocked, if possible, use other banks or available methods to pay the desired amount</value>
+  <data name="CreateProvider" xml:space="preserve">
+    <value>CreateProvider</value>
   </data>
   <data name="DailyTransactionAmount" xml:space="preserve">
     <value>Dear user, the transaction amount is more than the daily limit of this license, if possible, use other banks or available methods to pay the desired amount</value>
@@ -663,35 +297,131 @@
   <data name="DailyTransactionLimit" xml:space="preserve">
     <value>Dear user, the daily transaction limit of this license has been reached. If possible, use other banks or available methods to pay the desired amount.</value>
   </data>
+  <data name="DDBankCodeDirectDebit" xml:space="preserve">
+    <value>DDBankCodeDirectDebit</value>
+  </data>
+  <data name="DDGrantBaseURL" xml:space="preserve">
+    <value>DD_Grant_Base_URL</value>
+  </data>
+  <data name="DDNotifyWebhookURL" xml:space="preserve">
+    <value>DD_Notify_Webhook_URL</value>
+  </data>
+  <data name="DeActive" xml:space="preserve">
+    <value>DeActive</value>
+  </data>
+  <data name="DefaultDeposit" xml:space="preserve">
+    <value>DefaultDeposit</value>
+  </data>
+  <data name="DefaultIPGDeposit" xml:space="preserve">
+    <value>DefaultIPGDeposit</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="DepositAmount" xml:space="preserve">
+    <value>DepositAmount</value>
+  </data>
   <data name="DepositProblem" xml:space="preserve">
     <value>Dear user, there is a problem with the bank deposit related to this license, if possible, use other banks or available methods to pay the desired amount.</value>
   </data>
-  <data name="DiffrentNumber" xml:space="preserve">
-    <value>Dear user, a license has already been registered in the system with a different number, if possible, use other banks or available methods to pay the desired amount</value>
+  <data name="Deposits" xml:space="preserve">
+    <value>Deposits</value>
   </data>
-  <data name="DirectDebitGrantNotFoundException" xml:space="preserve">
-    <value>No record found with this authorizationId</value>
-  </data>
-  <data name="UserHasnotCharismaCart" xml:space="preserve">
-    <value>UserHasnotCharismaCart</value>
-  </data>
-  <data name="AccountDoesNotHaveEnoughBalance" xml:space="preserve">
-    <value>Dear user, your account does not have enough balance to pay the amount. If possible, use other available methods to pay the desired amount.</value>
+  <data name="Description" xml:space="preserve">
+    <value>Description</value>
   </data>
   <data name="DestinationAccountDoesNotBelong" xml:space="preserve">
     <value>Dear user, it is not possible to transfer money to the destination account. If possible, use other available methods to pay the desired amount.</value>
   </data>
-  <data name="InvalidDepositNumber" xml:space="preserve">
-    <value>Dear user, the deposit number related to this license is invalid, if possible, use other banks or available methods to pay the desired amount</value>
+  <data name="DestinationIban" xml:space="preserve">
+    <value>DestinationIban</value>
   </data>
-  <data name="ServiceDisrupted" xml:space="preserve">
-    <value>Dear user, the service has been disrupted and we are fixing the problem. If possible, use other available methods to pay the desired amount.</value>
+  <data name="DestinationIbanBank" xml:space="preserve">
+    <value>DestinationIbanBank</value>
+  </data>
+  <data name="DiffrentNumber" xml:space="preserve">
+    <value>Dear user, a license has already been registered in the system with a different number, if possible, use other banks or available methods to pay the desired amount</value>
+  </data>
+  <data name="DirectDebit" xml:space="preserve">
+    <value>DirectDebit</value>
+  </data>
+  <data name="DirectDebitGrantNotFoundException" xml:space="preserve">
+    <value>No record found with this authorizationId</value>
+  </data>
+  <data name="DirectDebitProvider" xml:space="preserve">
+    <value>DirectDebitProvider</value>
+  </data>
+  <data name="DuplicateCompanyCode" xml:space="preserve">
+    <value>Code '{0}' has already been used for another company</value>
+  </data>
+  <data name="DuplicateEnglishName" xml:space="preserve">
+    <value> EnglishName '{0}' has already been created</value>
+  </data>
+  <data name="DuplicateIban" xml:space="preserve">
+    <value>DuplicateIban</value>
+  </data>
+  <data name="DuplicatePersianName" xml:space="preserve">
+    <value> PersianName '{0}' has already been created</value>
+  </data>
+  <data name="DuplicateProviderType" xml:space="preserve">
+    <value>DuplicateProviderType</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="EmptyRefreshToken" xml:space="preserve">
+    <value>Refresh token is empty</value>
+  </data>
+  <data name="EnglishName" xml:space="preserve">
+    <value>EnglishName</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="ErrorInConnection" xml:space="preserve">
+    <value>ErrorInConnection</value>
+  </data>
+  <data name="ErrorTitle" xml:space="preserve">
+    <value>Error :{0}</value>
   </data>
   <data name="ExpiredCard" xml:space="preserve">
     <value>Dear user, the card related to this license has expired, if possible, use other banks or available methods to pay the desired amount.</value>
   </data>
   <data name="ExpiredGrant" xml:space="preserve">
     <value>Dear user, this license has expired, if possible, use other banks or available methods to pay the desired amount</value>
+  </data>
+  <data name="False" xml:space="preserve">
+    <value>False</value>
+  </data>
+  <data name="FileNotFound" xml:space="preserve">
+    <value>File Not Found</value>
+  </data>
+  <data name="Filter" xml:space="preserve">
+    <value>Filter</value>
+  </data>
+  <data name="FiveYears" xml:space="preserve">
+    <value>FiveYears</value>
+  </data>
+  <data name="ForCompany" xml:space="preserve">
+    <value>ForCompany</value>
+  </data>
+  <data name="FourYears" xml:space="preserve">
+    <value>FourYears</value>
+  </data>
+  <data name="GetPaymentTicketUnexpectedError" xml:space="preserve">
+    <value>An unexpected error has occurred, please try again or contact support</value>
+  </data>
+  <data name="HasDirectDebitFeature" xml:space="preserve">
+    <value>HasDirectDebitFeature</value>
+  </data>
+  <data name="Iban" xml:space="preserve">
+    <value>Iban</value>
+  </data>
+  <data name="IbanPrefix" xml:space="preserve">
+    <value>IbanPrefix</value>
+  </data>
+  <data name="IdpClientIds" xml:space="preserve">
+    <value>IdpClientIds</value>
   </data>
   <data name="IllegalTransactionAmount" xml:space="preserve">
     <value>Dear user, the transaction amount is illegal, if possible, use other banks or available methods to pay the desired amount</value>
@@ -702,190 +432,439 @@
   <data name="InactiveGrant" xml:space="preserve">
     <value>Dear user, this permission has been disabled in the bank, if possible, use other banks or available methods to pay the desired amount</value>
   </data>
+  <data name="IncreaseBalance" xml:space="preserve">
+    <value>IncreaseBalance</value>
+  </data>
+  <data name="InternetPaymentGateway" xml:space="preserve">
+    <value>InternetPaymentGateway</value>
+  </data>
   <data name="InvalidCardData" xml:space="preserve">
     <value>Dear user, the card information related to this license is invalid, if possible, use other banks or available methods to pay the desired amount.</value>
   </data>
   <data name="InvalidCardOrDeposit" xml:space="preserve">
     <value>Dear user, the card or deposit related to this license is invalid, if possible, use other banks or available methods to pay the desired amount</value>
   </data>
+  <data name="InvalidCodeOrTrackIdException" xml:space="preserve">
+    <value>No PaymentRequest found having this Code or TrackId</value>
+  </data>
   <data name="InvalidDeposit" xml:space="preserve">
     <value>Dear user, the deposit related to this license does not belong to you or it is not possible to withdraw from it, if possible, use other banks or available methods to pay the desired amount</value>
+  </data>
+  <data name="InvalidDepositNumber" xml:space="preserve">
+    <value>Dear user, the deposit number related to this license is invalid, if possible, use other banks or available methods to pay the desired amount</value>
   </data>
   <data name="InvalidGrant" xml:space="preserve">
     <value>Dear user, this license is invalid, if possible, use other banks or available methods to pay the desired amount</value>
   </data>
+  <data name="InvalidRefreshToken" xml:space="preserve">
+    <value>RefreshToken is invalid</value>
+  </data>
   <data name="InvalidTransactionTime" xml:space="preserve">
     <value>Dear user, the transaction time for this license is invalid, if possible, use other banks or available methods to pay the desired amount</value>
   </data>
-  <data name="MonthlyTransactionNumber" xml:space="preserve">
-    <value>Dear user, the limit of the number of monthly transactions of this license has been reached. If possible, use other banks or available methods to pay the desired amount</value>
+  <data name="IpgBaseUrl" xml:space="preserve">
+    <value>IpgBaseUrl</value>
   </data>
-  <data name="NoShahabCode" xml:space="preserve">
-    <value>Dear user, the account related to this license does not have Shahab code, if possible, use other banks or available methods to pay the desired amount</value>
+  <data name="IpgRedirectionMethodType" xml:space="preserve">
+    <value>IpgRedirectionMethodType</value>
   </data>
-  <data name="NotEnoughBalance" xml:space="preserve">
-    <value>Dear user, the selected account does not have the necessary balance for payment. If possible, use other banks or available methods to pay the desired amount</value>
+  <data name="IpgRedirectionMethodTypeNotFound" xml:space="preserve">
+    <value>IpgRedirectionMethodTypeNotFound</value>
   </data>
-  <data name="ServerMalfunction" xml:space="preserve">
-    <value>Dear user, the service provider/bank has a problem and we are trying to fix it. If possible, use other banks or available methods to pay the desired amount</value>
-  </data>
-  <data name="UseOtherBanks" xml:space="preserve">
-    <value>Dear user, in order to carry out direct withdrawal operations, if possible, pay the desired amount from other banks</value>
-  </data>
-  <data name="CompanyDepositId" xml:space="preserve">
-    <value>CompanyDepositId</value>
-  </data>
-  <data name="Description" xml:space="preserve">
-    <value>Description</value>
-  </data>
-  <data name="Receipt" xml:space="preserve">
-    <value>Receipt</value>
-  </data>
-  <data name="ReceiptIdentifier" xml:space="preserve">
-    <value>ReceiptIdentifier</value>
-  </data>
-  <data name="SettlementDateTime" xml:space="preserve">
-    <value>SettlementDateTime</value>
-  </data>
-  <data name="SourceIban" xml:space="preserve">
-    <value>SourceIban</value>
-  </data>
-  <data name="SubmitAndPay" xml:space="preserve">
-    <value>SubmitAndPay</value>
-  </data>
-  <data name="Activate" xml:space="preserve">
-    <value>Activate</value>
-  </data>
-  <data name="CardBalance" xml:space="preserve">
-    <value>CardBalance</value>
-  </data>
-  <data name="CharismaCard" xml:space="preserve">
-    <value>CharismaCard</value>
-  </data>
-  <data name="Special" xml:space="preserve">
-    <value>Special</value>
-  </data>
-  <data name="BalanceIsNotEnought" xml:space="preserve">
-    <value>BalanceIsNotEnought</value>
-  </data>
-  <data name="IncreaseBalance" xml:space="preserve">
-    <value>IncreaseBalance</value>
-  </data>
-  <data name="PayBy" xml:space="preserve">
-    <value>PayBy</value>
-  </data>
-  <data name="UserNotVerifyStatus" xml:space="preserve">
-    <value>UserNotVerifyStatus</value>
-  </data>
-  <data name="Ayandeh" xml:space="preserve">
-    <value>Ayandeh</value>
-  </data>
-  <data name="BehPardakht" xml:space="preserve">
-    <value>BehPardakht</value>
-  </data>
-  <data name="NotHasResponse" xml:space="preserve">
-    <value>Response is null</value>
-  </data>
-  <data name="UnAuthorizeRequest" xml:space="preserve">
-    <value>UnAuthorizeRequest</value>
-  </data>
-  <data name="ApplicationName" xml:space="preserve">
-    <value>ApplicationName</value>
-  </data>
-  <data name="CompanyDeposit" xml:space="preserve">
-    <value>CompanyDeposit</value>
+  <data name="IPGs" xml:space="preserve">
+    <value>IPGs</value>
   </data>
   <data name="IpgToken" xml:space="preserve">
     <value>IpgToken</value>
   </data>
-  <data name="PaymentCode" xml:space="preserve">
-    <value>PaymentCode</value>
+  <data name="IPGTypeId" xml:space="preserve">
+    <value>IPGTypeId</value>
   </data>
-  <data name="PredictedSettlementDateTime" xml:space="preserve">
-    <value>PredictedSettlementDateTime</value>
+  <data name="IPGTypeNotFound" xml:space="preserve">
+    <value>IPGType with Id {0} has not been found</value>
   </data>
-  <data name="ProviderTrackerId" xml:space="preserve">
-    <value>ProviderTrackerId</value>
+  <data name="IpgVerificationTimeLimit" xml:space="preserve">
+    <value>IpgVerificationTimeLimit</value>
   </data>
-  <data name="ReceiptDateTime" xml:space="preserve">
-    <value>ReceiptDateTime</value>
+  <data name="IsActive" xml:space="preserve">
+    <value>IsActive</value>
   </data>
-  <data name="ReferenceNumber" xml:space="preserve">
-    <value>ReferenceNumber</value>
+  <data name="MaxMandateValidityDurationPerMonth" xml:space="preserve">
+    <value>MaxMandateValidityDurationPerMonth</value>
   </data>
-  <data name="SourceBank" xml:space="preserve">
-    <value>SourceBank</value>
-  </data>
-  <data name="Status" xml:space="preserve">
-    <value>Status</value>
-  </data>
-  <data name="TrackerId" xml:space="preserve">
-    <value>TrackerId</value>
-  </data>
-  <data name="Transactions" xml:space="preserve">
-    <value>Transactions</value>
-  </data>
-  <data name="User" xml:space="preserve">
-    <value>User</value>
-  </data>
-  <data name="VerificationDateTime" xml:space="preserve">
-    <value>VerificationDateTime</value>
-  </data>
-  <data name="paymentReceiptNotFound" xml:space="preserve">
-    <value>paymentReceiptNotFound</value>
-  </data>
-  <data name="Amount" xml:space="preserve">
-    <value>Amount</value>
-  </data>
-  <data name="CompanyName" xml:space="preserve">
-    <value>CompanyName</value>
-  </data>
-  <data name="DestinationIban" xml:space="preserve">
-    <value>DestinationIban</value>
-  </data>
-  <data name="PaymentReceiptPropertiesById" xml:space="preserve">
-    <value>PaymentReceiptPropertiesById</value>
-  </data>
-  <data name="ReceiptProperties" xml:space="preserve">
-    <value>ReceiptProperties</value>
-  </data>
-  <data name="DestinationIbanBank" xml:space="preserve">
-    <value>DestinationIbanBank</value>
-  </data>
-  <data name="SourceIbanBank" xml:space="preserve">
-    <value>SourceIbanBank</value>
+  <data name="MaxWithdrawalAmountPerDay" xml:space="preserve">
+    <value>MaxWithdrawalAmountPerDay</value>
   </data>
   <data name="MethodTypeNotAllowed" xml:space="preserve">
     <value>MethodType not allowed</value>
   </data>
-  <data name="VerifiedMessage" xml:space="preserve">
-    <value>VerifiedOperationIsSucccesseed</value>
+  <data name="MethodTypes" xml:space="preserve">
+    <value>MethodTypes</value>
+  </data>
+  <data name="MinioException" xml:space="preserve">
+    <value>MinioException</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>Minute</value>
+  </data>
+  <data name="MonthlyTransactionNumber" xml:space="preserve">
+    <value>Dear user, the limit of the number of monthly transactions of this license has been reached. If possible, use other banks or available methods to pay the desired amount</value>
+  </data>
+  <data name="MorethanOneDefaultDepositFoundException" xml:space="preserve">
+    <value>MorethanOneDefaultDepositFoundException</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="NationalCodeMatchingRequired" xml:space="preserve">
+    <value>NationalCodeMatchingRequied</value>
+  </data>
+  <data name="NationalCodeMatchingRequiredWithCardNumber" xml:space="preserve">
+    <value>NationalCodeMatchingRequiedWithCardNumber</value>
+  </data>
+  <data name="NineMonths" xml:space="preserve">
+    <value>NineMonths</value>
+  </data>
+  <data name="NoShahabCode" xml:space="preserve">
+    <value>Dear user, the account related to this license does not have Shahab code, if possible, use other banks or available methods to pay the desired amount</value>
   </data>
   <data name="NotAuthorizeToVerify" xml:space="preserve">
     <value>NotAuthorizeToVerify</value>
   </data>
-  <data name="DuplicateCompanyCode" xml:space="preserve">
-    <value>Code '{0}' has already been used for another company</value>
+  <data name="NotEnoughBalance" xml:space="preserve">
+    <value>Dear user, the selected account does not have the necessary balance for payment. If possible, use other banks or available methods to pay the desired amount</value>
   </data>
-  <data name="DirectDebitGrantError" xml:space="preserve">
-    <value>Dear user, you have not granted the required permission to pay through Karisma card to the company {0}, please click on the request permission option to grant permission if necessary</value>
+  <data name="NotFoundTrackIdException" xml:space="preserve">
+    <value>TrackId not found</value>
   </data>
-  <data name="PaymentRequestNationalCodeConflict" xml:space="preserve">
-    <value>Dear user, you are not authorized to pay this payment request</value>
+  <data name="NotHasResponse" xml:space="preserve">
+    <value>Response is null</value>
   </data>
-  <data name="AmountIsNotInRange" xml:space="preserve">
-    <value>AmountIsNotInRange</value>
+  <data name="OneMonth" xml:space="preserve">
+    <value>OneMonth</value>
   </data>
-  <data name="FromDateGreatherThanToDate" xml:space="preserve">
-    <value>FromDateGreatherThanToDate</value>
+  <data name="OneYear" xml:space="preserve">
+    <value>OneYear</value>
   </data>
-  <data name="InvalidNationalCode" xml:space="preserve">
-    <value>InvalidNationalCode</value>
+  <data name="ParseCompanyIpgProviderData" xml:space="preserve">
+    <value>ParseCompanyIpgProviderData</value>
   </data>
-  <data name="d" xml:space="preserve">
-    <value>d</value>
+  <data name="PayBy" xml:space="preserve">
+    <value>PayBy</value>
   </data>
-  <data name="InvalidIbanFormat" xml:space="preserve">
-    <value>InvalidIbanFormat</value>
+  <data name="PaymentCode" xml:space="preserve">
+    <value>PaymentCode</value>
+  </data>
+  <data name="PaymentMessage" xml:space="preserve">
+    <value>Pay : "{0} rial" | {1} tooman for company : {2}</value>
+  </data>
+  <data name="PaymentMethodsUnexpectedError" xml:space="preserve">
+    <value>An unexpected error has occurred, please try again or contact support</value>
+  </data>
+  <data name="PaymentReceipt" xml:space="preserve">
+    <value>PaymentReceipt</value>
+  </data>
+  <data name="paymentReceiptNotFound" xml:space="preserve">
+    <value>paymentReceiptNotFound</value>
+  </data>
+  <data name="PaymentReceiptPropertiesById" xml:space="preserve">
+    <value>PaymentReceiptPropertiesById</value>
+  </data>
+  <data name="PaymentRequestApplicationIsInactive" xml:space="preserve">
+    <value>Application {0}-{1} is inactive</value>
+  </data>
+  <data name="PaymentRequestApplicationNotFound" xml:space="preserve">
+    <value>This application is not defined</value>
+  </data>
+  <data name="PaymentRequestBankInactive" xml:space="preserve">
+    <value>Bank is inactive</value>
+  </data>
+  <data name="PaymentRequestCodeExpired" xml:space="preserve">
+    <value>Dear user, the payment code has expired, repeat the operation if necessary</value>
+  </data>
+  <data name="PaymentRequestCodeInvalidStatus" xml:space="preserve">
+    <value>Dear user, the request status is invalid</value>
+  </data>
+  <data name="PaymentRequestCodeIsExpired" xml:space="preserve">
+    <value>Dear user, the payment address has expired, repeat the operation if necessary</value>
+  </data>
+  <data name="PaymentRequestCodeIsFinalized" xml:space="preserve">
+    <value>Dear user, this request has already been finalized</value>
+  </data>
+  <data name="PaymentRequestCodeIsUsed" xml:space="preserve">
+    <value>Dear user, this address has already been used, repeat the operation if necessary</value>
+  </data>
+  <data name="PaymentRequestCodeIsUsedBefore" xml:space="preserve">
+    <value>Dear user, this address has already been used, repeat the operation if necessary</value>
+  </data>
+  <data name="PaymentRequestCodeNotFound" xml:space="preserve">
+    <value>Dear user, the payment address is invalid</value>
+  </data>
+  <data name="PaymentRequestCompanyInactive" xml:space="preserve">
+    <value>Company is inactive</value>
+  </data>
+  <data name="PaymentRequestCompanyPaymentMethodAreInactive" xml:space="preserve">
+    <value>All company payment methods are inactive</value>
+  </data>
+  <data name="PaymentRequestDuplicateTrackerId" xml:space="preserve">
+    <value>TrackerId {0} is used before</value>
+  </data>
+  <data name="PaymentRequestIbanCompanyInActive" xml:space="preserve">
+    <value>IbanCompanyInActive</value>
+  </data>
+  <data name="PaymentRequestInvalidCallbackUrl" xml:space="preserve">
+    <value>Callback url {0} is invalid</value>
+  </data>
+  <data name="PaymentRequestNoCompanyFound" xml:space="preserve">
+    <value>No company found</value>
+  </data>
+  <data name="PaymentRequestNoCompanyPaymentMethodFound" xml:space="preserve">
+    <value>No company payment method found</value>
+  </data>
+  <data name="PaymentRequestNotDefinedCompanyDeposit" xml:space="preserve">
+    <value>NotDefinedCompanyDeposit</value>
+  </data>
+  <data name="PaymentRequestNotFound" xml:space="preserve">
+    <value>PaymentRequestNotFound</value>
+  </data>
+  <data name="PaymentRequestNotFoundByCode" xml:space="preserve">
+    <value>Dear user, the payment address is invalid</value>
+  </data>
+  <data name="PaymentRequestNotMatchIbanAndCompany" xml:space="preserve">
+    <value>NotMatchIbanAndCompany</value>
+  </data>
+  <data name="PaymentRequestRequiredIbanOrCompany" xml:space="preserve">
+    <value>PaymentRequestRequiredIbanOrCompany</value>
+  </data>
+  <data name="PaymentRequestStatusIsInvalid" xml:space="preserve">
+    <value>Dear user, the request status is invalid</value>
+  </data>
+  <data name="PaymentRequestUnexpectedError" xml:space="preserve">
+    <value>An unexpected error has occurred, please try again or contact support</value>
+  </data>
+  <data name="PaymentTokenUnexpectedError" xml:space="preserve">
+    <value>An unexpected error has occurred, please try again or contact support</value>
+  </data>
+  <data name="PersianName" xml:space="preserve">
+    <value>PersianName</value>
+  </data>
+  <data name="PlanNotFound" xml:space="preserve">
+    <value>Plan with Id {0} has not been found</value>
+  </data>
+  <data name="PredictedSettlementDateTime" xml:space="preserve">
+    <value>PredictedSettlementDateTime</value>
+  </data>
+  <data name="ProviderId" xml:space="preserve">
+    <value>ProviderId</value>
+  </data>
+  <data name="ProviderLogo" xml:space="preserve">
+    <value>ProviderLogo</value>
+  </data>
+  <data name="ProviderNotFound" xml:space="preserve">
+    <value>Provider with Id {0} has not been found.</value>
+  </data>
+  <data name="Providers" xml:space="preserve">
+    <value>Providers</value>
+  </data>
+  <data name="ProviderTrackerId" xml:space="preserve">
+    <value>ProviderTrackerId</value>
+  </data>
+  <data name="ProviderType" xml:space="preserve">
+    <value>ProviderType</value>
+  </data>
+  <data name="ProviderUnexpectedError" xml:space="preserve">
+    <value>An unexpected error has occurred, please try again or contact support</value>
+  </data>
+  <data name="RayanReferencePage" xml:space="preserve">
+    <value>RayanReferencePage</value>
+  </data>
+  <data name="Receipt" xml:space="preserve">
+    <value>Receipt</value>
+  </data>
+  <data name="ReceiptDateTime" xml:space="preserve">
+    <value>ReceiptDateTime</value>
+  </data>
+  <data name="ReceiptIdentifier" xml:space="preserve">
+    <value>ReceiptIdentifier</value>
+  </data>
+  <data name="ReceiptProperties" xml:space="preserve">
+    <value>ReceiptProperties</value>
+  </data>
+  <data name="ReferenceNumber" xml:space="preserve">
+    <value>ReferenceNumber</value>
+  </data>
+  <data name="RefreshToken" xml:space="preserve">
+    <value>Refresh_Token</value>
+  </data>
+  <data name="RequiredCodeOrTrackIdException" xml:space="preserve">
+    <value>Code or TrackId is required</value>
+  </data>
+  <data name="RequiredShaparakSettings" xml:space="preserve">
+    <value>Shaparak settings are required</value>
+  </data>
+  <data name="ResponseApiUrl" xml:space="preserve">
+    <value>ResponseApiUrl</value>
+  </data>
+  <data name="Rial" xml:space="preserve">
+    <value>Rial</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="SendOtpCode" xml:space="preserve">
+    <value>SendOtpCode</value>
+  </data>
+  <data name="ServerMalfunction" xml:space="preserve">
+    <value>Dear user, the service provider/bank has a problem and we are trying to fix it. If possible, use other banks or available methods to pay the desired amount</value>
+  </data>
+  <data name="ServiceDisrupted" xml:space="preserve">
+    <value>Dear user, the service has been disrupted and we are fixing the problem. If possible, use other available methods to pay the desired amount.</value>
+  </data>
+  <data name="SetActive" xml:space="preserve">
+    <value>SetActive</value>
+  </data>
+  <data name="SetDeActive" xml:space="preserve">
+    <value>SetDeActive</value>
+  </data>
+  <data name="SettlementDateTime" xml:space="preserve">
+    <value>SettlementDateTime</value>
+  </data>
+  <data name="ShaparakIv" xml:space="preserve">
+    <value>ShaparakIv</value>
+  </data>
+  <data name="ShaparakKey" xml:space="preserve">
+    <value>ShaparakKey</value>
+  </data>
+  <data name="ShaparakThirdPartyCode" xml:space="preserve">
+    <value>ShaparakThirdPartyCode</value>
+  </data>
+  <data name="SiteAddressCompany" xml:space="preserve">
+    <value>SiteAddressCompany</value>
+  </data>
+  <data name="SixMonths" xml:space="preserve">
+    <value>SixMonths</value>
+  </data>
+  <data name="SourceBank" xml:space="preserve">
+    <value>SourceBank</value>
+  </data>
+  <data name="SourceIban" xml:space="preserve">
+    <value>SourceIban</value>
+  </data>
+  <data name="SourceIbanBank" xml:space="preserve">
+    <value>SourceIbanBank</value>
+  </data>
+  <data name="Special" xml:space="preserve">
+    <value>Special</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Submit</value>
+  </data>
+  <data name="SubmitAndPay" xml:space="preserve">
+    <value>SubmitAndPay</value>
+  </data>
+  <data name="Test" xml:space="preserve">
+    <value>test</value>
+  </data>
+  <data name="ThreeMonths" xml:space="preserve">
+    <value>ThreeMonths</value>
+  </data>
+  <data name="ThreeYears" xml:space="preserve">
+    <value>ThreeYears</value>
+  </data>
+  <data name="TitleMainMenu" xml:space="preserve">
+    <value>TitleMainMenu</value>
+  </data>
+  <data name="Tooman" xml:space="preserve">
+    <value>Tooman</value>
+  </data>
+  <data name="TrackerId" xml:space="preserve">
+    <value>TrackerId</value>
+  </data>
+  <data name="TrackIdInvalidStatusException" xml:space="preserve">
+    <value>TrackId status is invalid</value>
+  </data>
+  <data name="TransactionDetailInvalidApplication" xml:space="preserve">
+    <value>the application {0} is unable to fetch this transaction detail</value>
+  </data>
+  <data name="TransactionDetailUnexpectedError" xml:space="preserve">
+    <value>An unexpected error has occurred, please try again or contact support</value>
+  </data>
+  <data name="TransactionNotFound" xml:space="preserve">
+    <value>TransactionNotFound</value>
+  </data>
+  <data name="Transactions" xml:space="preserve">
+    <value>Transactions</value>
+  </data>
+  <data name="True" xml:space="preserve">
+    <value>True</value>
+  </data>
+  <data name="TwoYears" xml:space="preserve">
+    <value>TwoYears</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="UnAuthorizeRequest" xml:space="preserve">
+    <value>UnAuthorizeRequest</value>
+  </data>
+  <data name="UnexpectedError" xml:space="preserve">
+    <value>An unexpected error has occurred, please try again or contact support</value>
+  </data>
+  <data name="UseOtherBanks" xml:space="preserve">
+    <value>Dear user, in order to carry out direct withdrawal operations, if possible, pay the desired amount from other banks</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="UserHasnotCharismaCart" xml:space="preserve">
+    <value>UserHasnotCharismaCart</value>
+  </data>
+  <data name="UserNotFound" xml:space="preserve">
+    <value>UserNotFound</value>
+  </data>
+  <data name="UserNotVerifyStatus" xml:space="preserve">
+    <value>UserNotVerifyStatus</value>
+  </data>
+  <data name="Users" xml:space="preserve">
+    <value>Users</value>
+  </data>
+  <data name="UsersNotFound" xml:space="preserve">
+    <value>UsersNotFound</value>
+  </data>
+  <data name="Validation_IBan" xml:space="preserve">
+    <value>IBan Validation</value>
+  </data>
+  <data name="Validation_MaxLength" xml:space="preserve">
+    <value>{0} cant be more than {1} charachter</value>
+  </data>
+  <data name="Validation_MinLength" xml:space="preserve">
+    <value>{0} cant be less than {1} charachter</value>
+  </data>
+  <data name="Validation_Required" xml:space="preserve">
+    <value>{0} is required</value>
+  </data>
+  <data name="Vandar" xml:space="preserve">
+    <value>Vandar</value>
+  </data>
+  <data name="VerificationDateTime" xml:space="preserve">
+    <value>VerificationDateTime</value>
+  </data>
+  <data name="VerificationTimeLimit" xml:space="preserve">
+    <value>VerificationTimeLimit</value>
+  </data>
+  <data name="VerificationTimeLimitIPG" xml:space="preserve">
+    <value>VerificationTimeLimitIPG</value>
+  </data>
+  <data name="VerifiedMessage" xml:space="preserve">
+    <value>VerifiedOperationIsSucccesseed</value>
+  </data>
+  <data name="VerifyInvalidApplication" xml:space="preserve">
+    <value>the application is unable to verify this transaction</value>
+  </data>
+  <data name="VerifyInvalidStatus" xml:space="preserve">
+    <value>The payment request status is invalid</value>
   </data>
 </root>
