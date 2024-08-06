@@ -1,6 +1,4 @@
-﻿using CPG.Application.Shared.Resource;
-using CPG.Application.UseCases.Exceptions;
-
+﻿using CPG.Application.UseCases.Exceptions;
 
 namespace CPG.Application.UseCases.PaymentRequests.Exceptions;
 

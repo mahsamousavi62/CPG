@@ -135,6 +135,9 @@
   <data name="Amount" xml:space="preserve">
     <value>Amount</value>
   </data>
+  <data name="AmountIsNotInRange" xml:space="preserve">
+    <value>AmountIsNotInRange</value>
+  </data>
   <data name="ApplicationLogo" xml:space="preserve">
     <value>ApplicationLogo</value>
   </data>
@@ -614,6 +617,9 @@
   </data>
   <data name="PaymentRequestInvalidCallbackUrl" xml:space="preserve">
     <value>Callback url {0} is invalid</value>
+  </data>
+  <data name="PaymentRequestNationalCodeConflict" xml:space="preserve">
+    <value>Dear user, you are not authorized to pay this payment request</value>
   </data>
   <data name="PaymentRequestNoCompanyFound" xml:space="preserve">
     <value>No company found</value>

@@ -115,6 +115,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to AmountIsNotInRange.
+        /// </summary>
+        public static string AmountIsNotInRange {
+            get {
+                return ResourceManager.GetString("AmountIsNotInRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ApplicationLogo.
         /// </summary>
         public static string ApplicationLogo {
@@ -932,7 +941,18 @@ namespace CPG.Application.Shared.Resource {
                 return ResourceManager.GetString("FourYears", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to FromDateGreatherThanToDate.
+        /// </summary>
+        public static string FromDateGreatherThanToDate
+        {
+            get
+            {
+                return ResourceManager.GetString("FromDateGreatherThanToDate", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to An unexpected error has occurred, please try again or contact support.
         /// </summary>
@@ -1076,7 +1096,29 @@ namespace CPG.Application.Shared.Resource {
                 return ResourceManager.GetString("InvalidGrant", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to InvalidIbanFormat.
+        /// </summary>
+        public static string InvalidIbanFormat
+        {
+            get
+            {
+                return ResourceManager.GetString("InvalidIbanFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to InvalidNationalCode.
+        /// </summary>
+        public static string InvalidNationalCode
+        {
+            get
+            {
+                return ResourceManager.GetString("InvalidNationalCode", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to RefreshToken is invalid.
         /// </summary>
@@ -1551,6 +1593,15 @@ namespace CPG.Application.Shared.Resource {
         public static string PaymentRequestInvalidCallbackUrl {
             get {
                 return ResourceManager.GetString("PaymentRequestInvalidCallbackUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dear user, you are not authorized to pay this payment request.
+        /// </summary>
+        public static string PaymentRequestNationalCodeConflict {
+            get {
+                return ResourceManager.GetString("PaymentRequestNationalCodeConflict", resourceCulture);
             }
         }
         

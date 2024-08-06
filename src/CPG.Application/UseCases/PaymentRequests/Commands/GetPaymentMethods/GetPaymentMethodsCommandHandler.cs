@@ -1,6 +1,4 @@
-﻿using CPG.Application.Shared.Resource;
-using CPG.Application.UseCases.Exceptions;
-using CPG.Application.UseCases.PaymentRequests.Exceptions;
+﻿using CPG.Application.UseCases.PaymentRequests.Exceptions;
 using CPG.Application.UseCases.PaymentRequests.ViewModels;
 using CPG.Domain.AggregateModels.BankAggregate;
 using CPG.Domain.AggregateModels.CompanyAggregate;
@@ -13,21 +11,10 @@ using CPG.Domain.AggregateModels.DirectDebitGrantAggregate.Specifications;
 using CPG.Domain.AggregateModels.PaymentRequestAggregate.Specifications;
 using CPG.Domain.AggregateModels.TransactionAggregate;
 using CPG.Domain.AggregateModels.TransactionAggregate.Specifications;
-using CPG.Domain.AggregateModels.UserAggregate;
-using CPG.Domain.Exceptions;
-using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Communication.NeoBank;
 using CPG.Domain.SharedKernel.Interfaces;
 using CPG.Domain.SharedKernel.Minio;
-using MediatR;
-using Microsoft.AspNetCore.Server.HttpSys;
-using System;
-using System.Buffers.Text;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
 using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Application.UseCases.PaymentRequests.Commands.GetPaymentMethods;
@@ -175,7 +162,7 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
                 foreach (var companyIPGItem in company?.CompanyIPGs)
                 {
                     var defaultDeposit = companyIPGItem.IPGDeposits.FirstOrDefault(t => t.IsDefault);
-                    if (defaultDeposit == null) throw new Exception("company not found");
+                    if (defaultDeposit == null) throw new PaymentRequestCompanyNotFoundException();
                     if (!defaultDeposit.IsActive)
                     {
                         toBeRemoved.Add(companyIPGItem);
