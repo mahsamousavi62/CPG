@@ -654,6 +654,9 @@
   <data name="PersianName" xml:space="preserve">
     <value>PersianName</value>
   </data>
+  <data name="PersianName" xml:space="preserve">
+    <value>نام فارسی</value>
+  </data>
   <data name="PlanNotFound" xml:space="preserve">
     <value>Plan with Id {0} has not been found</value>
   </data>

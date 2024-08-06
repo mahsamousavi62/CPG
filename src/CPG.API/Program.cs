@@ -74,6 +74,7 @@ var corsOrigins = configuration["CorsOrigins"]!
                             .ToArray();
 var supportedLanguages = new List<CultureInfo>
     {
+        new("fa"),
         new("en"),
         new("fa"),
     };

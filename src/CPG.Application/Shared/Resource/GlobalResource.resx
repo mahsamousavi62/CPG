@@ -138,6 +138,9 @@
   <data name="AmountIsNotInRange" xml:space="preserve">
     <value>بازه ی مبلغ  10000ريال تا 100000000000ريال می باشد</value>
   </data>
+  <data name="AmountIsNotInRange" xml:space="preserve">
+    <value>AmountIsNotInRange</value>
+  </data>
   <data name="ApplicationLogo" xml:space="preserve">
     <value>لوگوی برنامه</value>
   </data>
@@ -707,6 +710,9 @@
   </data>
   <data name="PaymentRequestNoActiveProviderDepositForIbans" xml:space="preserve">
     <value>به منظور استفاده از روش درگاه پرداخت روی حساب های متناظر بایستی حداقل یک درگاه با سرویس دهنده فعال و قابلیت درگاه پرداخت در شرکت {0} تعریف شده باشد</value>
+  </data>
+  <data name="PaymentRequestNationalCodeConflict" xml:space="preserve">
+    <value>Dear user, you are not authorized to pay this payment request</value>
   </data>
   <data name="PaymentRequestNoCompanyFound" xml:space="preserve">
     <value>با کد ارائه شده هیچ شرکتی یافت نشد</value>
