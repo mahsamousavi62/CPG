@@ -76,7 +76,6 @@ var supportedLanguages = new List<CultureInfo>
     {
         new("fa"),
         new("en"),
-        new("fa"),
     };
 
 builder.Services.AddCors(

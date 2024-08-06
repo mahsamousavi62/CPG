@@ -115,7 +115,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to بازه ی مبلغ  10000ريال تا 100000000000ريال می باشد.
+        ///   Looks up a localized string similar to مبلغ خارج از رنج است.
         /// </summary>
         public static string AmountIsNotInRange {
             get {
@@ -977,7 +977,7 @@ namespace CPG.Application.Shared.Resource {
                 return ResourceManager.GetString("FourYears", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to  از تاریخ بزرگتر از تا تاریخ می باشد.
         /// </summary>
@@ -1130,7 +1130,7 @@ namespace CPG.Application.Shared.Resource {
                 return ResourceManager.GetString("InvalidGrant", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to فرمت شماره شبا معتبر نمی باشد.
         /// </summary>
