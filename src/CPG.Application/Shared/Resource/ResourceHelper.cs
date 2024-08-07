@@ -20,7 +20,7 @@ namespace CPG.Application.Shared.Resource
         {
             var resourceDictionary = new Dictionary<string, string>();
 
-            System.Globalization.CultureInfo.CurrentCulture = System.Globalization.CultureInfo.GetCultureInfoByIetfLanguageTag("fa");
+            //System.Globalization.CultureInfo.CurrentCulture = System.Globalization.CultureInfo.GetCultureInfoByIetfLanguageTag("fa");
 
             string[] resourceNames = typeof(GlobalResource).Assembly.GetManifestResourceNames();
 
