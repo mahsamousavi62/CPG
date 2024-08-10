@@ -22,6 +22,17 @@ public class Address
     public object Email { get; set; }
 }
 
+public class Agent
+{
+    public string Type { get; set; }
+    public DateTime? ExpirationDate { get; set; }
+    public string Description { get; set; }
+    public string UniqueIdentifier { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public bool? IsConfirmed { get; set; }
+}
+
 public class BankAccount
 {
     public string AccountNumber { get; set; }
@@ -104,7 +115,7 @@ public class Result
     public LegalPerson LegalPerson { get; set; }
     public List<Address> Addresses { get; set; }
     public List<TradingCode> TradingCodes { get; set; }
-    public object Agent { get; set; }
+    public Agent Agent { get; set; }
     public List<BankAccount> BankAccounts { get; set; }
     public JobInfo JobInfo { get; set; }
     public FinancialInfo FinancialInfo { get; set; }
@@ -126,6 +137,7 @@ public class TradingCode
     public string ThirdPart { get; set; }
     public string Code { get; set; }
 }
+
 public class IdpProfileRequest : IHttpRequest
 {
     public string IdpId { get; set; }
