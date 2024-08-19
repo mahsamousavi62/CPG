@@ -55,7 +55,6 @@ public class FinancialInfo
     public long? SExchangeTransaction { get; set; }
     public long? CExchangeTransaction { get; set; }
     public long? OutExchangeTransaction { get; set; }
-    public string TransactionLevel { get; set; }
     public string TradingKnowledgeLevel { get; set; }
     public object CompanyPurpose { get; set; }
     public object ReferenceRateCompany { get; set; }
