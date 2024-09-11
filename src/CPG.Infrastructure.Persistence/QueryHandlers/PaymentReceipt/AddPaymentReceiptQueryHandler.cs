@@ -114,7 +114,7 @@ public class AddPaymentReceiptQueryHandler(
 
         return Result<PaymentReceiptResponseViewModel>.SuccessResult(new PaymentReceiptResponseViewModel
         {
-            CallbackUrl = $"{transaction.PaymentRequest.CallBackUrl}/paymentResult?paymentCode={transaction.PaymentRequest.PaymentCode}&paymentStatus={General.GetPaymentStatusTitle(transaction.PaymentRequest.Status)}"
+            CallbackUrl = transaction.PaymentRequest.CallBackUrl.Contains("?") ? $"{transaction.PaymentRequest.CallBackUrl.Split("?")[0]}/paymentResult?{transaction.PaymentRequest.CallBackUrl.Split("?")[1]}&paymentCode={transaction.PaymentRequest.PaymentCode}&paymentStatus={General.GetPaymentStatusTitle(transaction.PaymentRequest.Status)}" : $"{transaction.PaymentRequest.CallBackUrl}/paymentResult?paymentCode={transaction.PaymentRequest.PaymentCode}&paymentStatus={General.GetPaymentStatusTitle(transaction.PaymentRequest.Status)}"
         });
     }
 }
