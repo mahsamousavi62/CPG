@@ -15,5 +15,5 @@ public class PaymentFilter
     public DateTime? ToCreationDate { get; set; }
     public DateTime? FromModificationDate { get; set; }
     public DateTime? ToModificationDate { get; set; }
-
+    public Enums.TransactionType? TransactionMethodType { get; set; }
 }
