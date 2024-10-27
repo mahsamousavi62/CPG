@@ -19,5 +19,6 @@ public class PaymentRequestReportViewModel
     public DateTime UrlExpirationDateTime { get; set; }
     public DateTime CreationDate { get; set; }
     public DateTime? ModificationDate { get; set; }
-
+    public Enums.TransactionType TransactionMethodType { get; set; }
+    public string TransactionMethodTypeTitle { get; set; }
 }

@@ -54,7 +54,7 @@ public class GetPaymentRequestsQueryHandler(ReadDbContext context,
                                                                    .Where(p => p.ApplicationId == application.Id)
                                                                    .AsQueryable();
 
-            PaymentRequestReadModel.AddFilter(request.PaymentFilter,ref paymentRequests);
+            PaymentRequestReadModel.AddFilter(request.PaymentFilter, ref paymentRequests);
 
             PaymentRequestReadModel.AddSort(request.PagedFilter, paymentRequests);
 
