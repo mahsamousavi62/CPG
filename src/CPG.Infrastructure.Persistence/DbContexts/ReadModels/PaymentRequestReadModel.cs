@@ -71,6 +71,13 @@ public class PaymentRequestReadModel
             paymentRequests = paymentRequests.Where(p =>
               p.Status == paymentFilter.Status);
         }
+        
+        if (paymentFilter.TransactionMethodType.HasValue)
+        {
+            paymentRequests = paymentRequests.Where(p =>
+              p.Transaction.TransactionMethodType == paymentFilter.TransactionMethodType);
+        }
+
         if (!string.IsNullOrEmpty(paymentFilter.TrackerId))
         {
             paymentRequests = paymentRequests.Where(p =>
