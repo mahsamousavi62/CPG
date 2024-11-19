@@ -79,8 +79,7 @@ public class CreateCharismaCardTransactionCommandHandler(
                     return Result<CharismaCardResponseViewModel>.Failure(new Error("2202005", string.Empty));
                 }
             }
-            var CharismaCardstatus = clientDirectDebit.TransferStatus == NeoBankTransferStatus.Failed ?
-                CharismaCardStatus.Failed : CharismaCardStatus.Done;
+            var CharismaCardstatus = clientDirectDebit.TransferStatus == NeoBankTransferStatus.Failed ? CharismaCardStatus.Failed : CharismaCardStatus.Done;
             Transaction transaction = Transaction.Create(new CreateTransactionModel
             {
                 CharismaCardModel = new CharismaCardTransactionModel
@@ -95,7 +94,7 @@ public class CreateCharismaCardTransactionCommandHandler(
                 PaymentRequest = paymentRequest,
                 TransactionMethodType = Enums.TransactionType.CharismaCard,
                 Status = CharismaCardstatus == CharismaCardStatus.Done ?
-                Enums.TransactionStatus.TransactionSucceeded :
+                Enums.TransactionStatus.InPrgress :
                 Enums.TransactionStatus.TransactionFailed
 
             });
