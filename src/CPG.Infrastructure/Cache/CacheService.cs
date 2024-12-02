@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -23,6 +24,12 @@ public class CacheService(IDistributedCache cache,
     private const string ApplicationIdentifierKey = nameof(ApplicationIdentifier);
 
     private const string AllApplicationSettingsKey = "AllApplicationSettings";
+
+    private readonly JsonSerializerOptions jsonSerializerOptions = new()
+    {
+        ReferenceHandler = ReferenceHandler.Preserve,
+        WriteIndented = true
+    };
 
     public T? GetCache<T>(string key)
     {
@@ -38,8 +45,10 @@ public class CacheService(IDistributedCache cache,
         {
             AbsoluteExpirationRelativeToNow = slidingExpirationTime
         };
-        string jsonData = JsonSerializer.Serialize(value);
-        cache.SetString(key, jsonData, options);
+        {
+            string jsonData = JsonSerializer.Serialize(value, jsonSerializerOptions);
+            cache.SetString(key, jsonData, options);
+        }
     }
 
     public void ClearCache(string key)
