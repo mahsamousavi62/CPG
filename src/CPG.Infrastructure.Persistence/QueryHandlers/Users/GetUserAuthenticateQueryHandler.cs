@@ -9,6 +9,7 @@ using CPG.Application.UseCases.Users.Exceptions;
 using CPG.Application.UseCases.Users.Queries;
 using CPG.Application.UseCases.Users.ViewModel;
 using CPG.Domain.SharedKernel;
+using CPG.Domain.SharedKernel.Interfaces;
 using CPG.Infrastructure.Persistence.DbContexts;
 using CPG.Infrastructure.Persistence.Redis;
 using MediatR;

@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Http;
 using System.Linq;
 using CPG.Application.UseCases.Exceptions;
 using Microsoft.EntityFrameworkCore;
+using CPG.Domain.SharedKernel.Interfaces;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 

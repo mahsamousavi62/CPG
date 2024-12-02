@@ -8,7 +8,6 @@ using CPG.Domain.AggregateModels.ApplicationAggregate;
 using CPG.Domain.AggregateModels.ApplicationAggregate.Exceptions;
 using CPG.Domain.AggregateModels.ApplicationAggregate.Specifications;
 using CPG.Domain.Exceptions;
-using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Minio;
 using MediatR;
 using System;
@@ -16,6 +15,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ApplicationNotFoundException = CPG.Application.UseCases.Application.Exceptions.ApplicationNotFoundException;
+using CPG.Domain.SharedKernel.Interfaces;
 
 namespace CPG.Application.UseCases.Applications.Commands.UpdateApplication;
 

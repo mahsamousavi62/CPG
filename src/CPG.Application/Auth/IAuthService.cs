@@ -1,4 +1,4 @@
-﻿using CPG.Domain.SharedKernel.ApplicationSettings;
+﻿using CPG.Domain.SharedKernel.ApplicationSettingsAggregate;
 
 namespace CPG.Application.Auth;
 

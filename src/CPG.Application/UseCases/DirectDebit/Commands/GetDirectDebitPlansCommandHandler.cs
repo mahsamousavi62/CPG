@@ -1,7 +1,6 @@
 ﻿using CPG.Domain.AggregateModels.BankAggregate.Specifications;
 using CPG.Domain.AggregateModels.BankAggregate;
 using CPG.Domain.SharedKernel.Communication.DirectDebit;
-using CPG.Domain.SharedKernel;
 using MediatR;
 using System.Threading.Tasks;
 using System.Threading;

@@ -2,7 +2,7 @@
 using CPG.Application.Shared.Resource;
 using CPG.Application.UseCases.Ipg.Exception;
 using CPG.Domain.SharedKernel;
-using CPG.Domain.SharedKernel.ApplicationSettings;
+using CPG.Domain.SharedKernel.ApplicationSettingsAggregate;
 using CPG.Domain.SharedKernel.Communication;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentTicket;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentToken;

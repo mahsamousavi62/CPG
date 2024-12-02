@@ -1,6 +1,6 @@
 ﻿using Mapster;
 
-namespace CPG.Domain.SharedKernel
+namespace CPG.Domain.SharedKernel.Interfaces
 {
     public interface IRegister
     {

@@ -1,7 +1,7 @@
 ﻿using CPG.Domain.AggregateModels.PaymentRequestAggregate;
 using CPG.Domain.Exceptions;
 
-namespace CPG.Application.UseCases.PaymentRequests.Exceptions;
+namespace CPG.PaymentRequestAggregate.UseCases.PaymentRequests.Exceptions;
 
 public class PaymentRequestInActiveCompanyException : DomainException
 {

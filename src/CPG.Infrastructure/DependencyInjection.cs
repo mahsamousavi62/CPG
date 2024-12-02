@@ -1,6 +1,5 @@
 ﻿using Charisma.MessagingContracts.UsersManagement.User;
 using CPG.Application.Shared;
-using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Minio;
 using CPG.Infrastructure.Authorization;
 using CPG.Infrastructure.ErrorHandling;
@@ -24,7 +23,7 @@ using Polly;
 using System.Net;
 using Confluent.Kafka;
 using System.Net.Http.Headers;
-using CPG.Domain.SharedKernel.ApplicationSettings;
+using CPG.Domain.SharedKernel.ApplicationSettingsAggregate;
 using CPG.Domain.SharedKernel.Communication.Charispay;
 using CPG.Domain.SharedKernel.Communication.Idp;
 using CPG.Infrastructure.Providers.Idp;
@@ -41,6 +40,8 @@ using CPG.Domain.SharedKernel.Communication.DirectDebit;
 using CPG.Infrastructure.Providers.DirectDebit;
 using CPG.Infrastructure.Providers.NeoBank;
 using CPG.Domain.SharedKernel.Communication.NeoBank;
+using CPG.Domain.SharedKernel.Interfaces;
+using CPG.Infrastructure.Cache;
 
 namespace CPG.Infrastructure;
 
@@ -49,7 +50,8 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         => services
             .AddScoped<ICharisPayProvider, CharisPayProvider>()
-            .AddScoped<INeoBankService,NeoBankProvider>()
+            .AddScoped<INeoBankService, NeoBankProvider>()
+            .AddScoped<ICacheService, CacheService>()
             .AddScoped<IIdpProvider, IdpProvider>()
             .AddScoped<IIpgFactory, IpgFactory>()
             .AddScoped<IDirectDebitFactory, DirectDebitFactory>()
@@ -157,6 +159,7 @@ public static class DependencyInjection
             .UseRouting()
             .UseTokenAuthentication()
             .UseAuthenticationMiddleware()
+            .UseExternalServicesMiddleware()
             .UseTokenAuthorization()
             .UseMiddleware<ErrorHandlingMiddleware>()
             .UseMiddleware<LoggingMiddleware>()

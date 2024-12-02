@@ -1,11 +1,11 @@
 using System;
-using CPG.Application.UseCases.PaymentRequests.Exceptions;
 using CPG.Domain.AggregateModels.ApplicationAggregate;
 using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Domain.AggregateModels.PaymentRequestAggregate.Exceptions;
 using CPG.Domain.AggregateModels.TransactionAggregate;
 using CPG.Domain.SeedWork;
 using CPG.Domain.SharedKernel;
+using CPG.PaymentRequestAggregate.UseCases.PaymentRequests.Exceptions;
 
 public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
 {

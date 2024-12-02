@@ -1,7 +1,7 @@
 ﻿using CPG.Application.Auth;
 using CPG.Application.UseCases.Exceptions;
 using CPG.Domain.AggregateModels.UserAggregate;
-using CPG.Domain.SharedKernel;
+using CPG.Domain.SharedKernel.Interfaces;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;

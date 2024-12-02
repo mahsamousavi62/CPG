@@ -1,4 +1,4 @@
-﻿using CPG.Domain.SharedKernel.ApplicationSettings;
+﻿using CPG.Domain.SharedKernel.ApplicationSettingsAggregate;
 using CPG.Domain.SharedKernel;
 using CPG.Infrastructure.Persistence.DbContexts;
 using CPG.Infrastructure.Persistence.Redis;

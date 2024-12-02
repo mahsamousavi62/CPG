@@ -21,6 +21,7 @@ using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Token;
 using CPG.Domain.AggregateModels.BankAggregate.Specifications;
 using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Verify;
 using CPG.Domain.SharedKernel.Helper;
+using CPG.Domain.SharedKernel.Interfaces;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.DirectDebit;
 

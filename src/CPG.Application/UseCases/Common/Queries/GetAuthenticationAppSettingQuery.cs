@@ -1,5 +1,5 @@
 ﻿using CPG.Domain.SharedKernel;
-using CPG.Domain.SharedKernel.ApplicationSettings;
+using CPG.Domain.SharedKernel.ApplicationSettingsAggregate;
 using MediatR;
 
 namespace CPG.Application.UseCases.Common.Queries

@@ -1,7 +1,7 @@
 ﻿using Ardalis.GuardClauses;
 using CPG.Domain.SeedWork;
 
-namespace CPG.Domain.SharedKernel.ApplicationSettings;
+namespace CPG.Domain.SharedKernel.ApplicationSettingsAggregate;
 
 public class ApplicationSettings : AuditableEntity<long>, IAggregateRoot
 {
@@ -9,7 +9,7 @@ public class ApplicationSettings : AuditableEntity<long>, IAggregateRoot
     {
         
     }
-    public ApplicationSettings(long id, Enums.ApplicationSettingEntityType entityType, string key, string value)
+    private ApplicationSettings(long id, Enums.ApplicationSettingEntityType entityType, string key, string value)
     {
         Key = Guard.Against.NullOrWhiteSpace(key, nameof(key));
         Value = Guard.Against.NullOrWhiteSpace(value, nameof(value));

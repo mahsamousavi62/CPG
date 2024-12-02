@@ -1,5 +1,4 @@
 ﻿using CPG.Domain.SharedKernel.Minio;
-using CPG.Domain.SharedKernel;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,6 +11,7 @@ using CPG.Domain.AggregateModels.ApplicationAggregate.Exceptions;
 using System.Linq;
 using System.Collections.Generic;
 using System;
+using CPG.Domain.SharedKernel.Interfaces;
 
 namespace CPG.Application.UseCases.Applications.Commands.CreateApplication;
 

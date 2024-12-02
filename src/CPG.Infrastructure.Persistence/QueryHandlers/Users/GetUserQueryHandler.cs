@@ -1,11 +1,19 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using CPG.Application.UseCases.Users.Exceptions;
 using CPG.Application.UseCases.Users.Queries;
 using CPG.Application.UseCases.Users.ViewModel;
+using CPG.Domain.AggregateModels.CompanyAggregate;
+using CPG.Domain.AggregateModels.UserAggregate;
+using CPG.Domain.Exceptions;
+using CPG.Domain.SeedWork;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Communication.Idp;
+using CPG.Domain.SharedKernel.Interfaces;
 using CPG.Domain.SharedKernel.Minio;
 using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
@@ -24,6 +32,7 @@ public class GetUserQueryHandler(
     private readonly IAuthenticationService _authenticationService = authenticationService;
     private readonly string userKycStatus = "KycVerified";
     private readonly string demo = "Demo";
+    private readonly IMinioProvider _minioProvider = minioProvider;
     private readonly IIdpProvider _idpClient = idpClient;
 
     public async Task<Result<UserViewModel>> Handle(GetUserQuery request, CancellationToken cancellationToken)
@@ -43,17 +52,11 @@ public class GetUserQueryHandler(
 
         var user = await _context.UserReadModels.Include(u => u.UserRoles).Include(c => c.Company)
                                                         .SingleOrDefaultAsync(u => u.IsActive && u.IDPId == sub);
-
-        if (kycStatus == userKycStatus && user is null)
-        {
-            throw new UserNotFoundException(sub);
-        }
-
         if (user != null)
         {
             var applicationId = (await _context.ApplicationIdentifierReadModels.SingleOrDefaultAsync(a => a.IdpClientId == sub))?.ApplicationId;
         }
-       
+
         var userViewModel = new UserViewModel
         {
             CompanyId = user?.Company?.Id,

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Ardalis.Specification.EntityFrameworkCore;
-using CPG.Domain.SharedKernel;
+using CPG.Domain.SharedKernel.Interfaces;
 using CPG.Infrastructure.Persistence.DbContexts;
 
 namespace CPG.Infrastructure.Persistence.Repositories
