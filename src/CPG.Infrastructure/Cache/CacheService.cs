@@ -25,6 +25,12 @@ public class CacheService(IDistributedCache cache,
 
     private const string AllApplicationSettingsKey = "AllApplicationSettings";
 
+    private readonly JsonSerializerOptions jsonSerializerOptions = new()
+    {
+        ReferenceHandler = ReferenceHandler.Preserve,
+        WriteIndented = true
+    };
+
     public T? GetCache<T>(string key)
     {
         string? jsonData = cache.GetString(key);
@@ -40,12 +46,6 @@ public class CacheService(IDistributedCache cache,
             AbsoluteExpirationRelativeToNow = slidingExpirationTime
         };
         {
-            JsonSerializerOptions jsonSerializerOptions = new()
-            {
-                ReferenceHandler = ReferenceHandler.Preserve,
-                WriteIndented = true
-            };
-
             string jsonData = JsonSerializer.Serialize(value, jsonSerializerOptions);
             cache.SetString(key, jsonData, options);
         }
