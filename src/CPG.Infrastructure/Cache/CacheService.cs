@@ -1,4 +1,5 @@
 ﻿using CPG.Domain.AggregateModels.ApplicationAggregate;
+using CPG.Domain.AggregateModels.ApplicationAggregate.Specifications;
 using CPG.Domain.SharedKernel.ApplicationSettingsAggregate;
 using CPG.Domain.SharedKernel.Interfaces;
 using Mapster;
@@ -16,11 +17,10 @@ namespace CPG.Infrastructure.Cache;
 
 public class CacheService(IDistributedCache cache,
                           IAggregateRepository<ApplicationSettings> applicationSettingsRepository,
-                          IAggregateRepository<Domain.AggregateModels.ApplicationAggregate.Application> applicationReadModelRepository,
+                          IAggregateRepository<Domain.AggregateModels.ApplicationAggregate.Application> applicationRepository,
                           ILogger<CacheService> logger) : ICacheService
 {
     private const string ApplicationIdentifierKey = nameof(ApplicationIdentifier);
-
 
     private const string AllApplicationSettingsKey = "AllApplicationSettings";
 
@@ -96,7 +96,7 @@ public class CacheService(IDistributedCache cache,
             if (cacheData != null)
                 return cacheData;
 
-            var applications = await applicationReadModelRepository.ListAsync();
+            var applications = await applicationRepository.ListAsync(new ApplicationIncludeIdentifiersSpec());
 
             cacheData = applications.SelectMany(t => t.ApplicationIdentifiers).Adapt<List<ApplicationIdentifier>>();
 

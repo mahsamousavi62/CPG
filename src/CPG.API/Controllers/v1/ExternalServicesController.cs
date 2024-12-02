@@ -31,7 +31,7 @@ public class ExternalServicesController : ApiBaseController
 {
 
     [Authorize]
-    [HttpPost]
+    [HttpPost("PaymentRequest")]
     [ProducesResponseType(typeof(Result<PaymentRequestResponseViewModel>), 200)]
     public async Task<Result<PaymentRequestResponseViewModel>> PaymentRequest([FromBody] CreatePaymentRequestViewModel model)
         => await Mediator.Send(new CreatePaymentRequestCommand(model));
