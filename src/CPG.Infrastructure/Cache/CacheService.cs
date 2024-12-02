@@ -98,7 +98,7 @@ public class CacheService(IDistributedCache cache,
 
             var applications = await applicationRepository.ListAsync(new ApplicationIncludeIdentifiersSpec());
 
-            cacheData = applications.SelectMany(t => t.ApplicationIdentifiers).Adapt<List<ApplicationIdentifier>>();
+            cacheData = applications.SelectMany(t => t.ApplicationIdentifiers).ToList();
 
             SetCache(ApplicationIdentifierKey, cacheData);
 
