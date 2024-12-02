@@ -4,7 +4,8 @@ using CPG.Application.UseCases.Ipg.Queries;
 using CPG.Application.UseCases.PaymentRequests.Exceptions;
 using CPG.Domain.AggregateModels.PaymentRequestAggregate.Specifications;
 using CPG.Domain.SharedKernel;
-using CPG.Domain.SharedKernel.ApplicationSettings;
+using CPG.Domain.SharedKernel.ApplicationSettingsAggregate;
+using CPG.Domain.SharedKernel.Interfaces;
 using MediatR;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg

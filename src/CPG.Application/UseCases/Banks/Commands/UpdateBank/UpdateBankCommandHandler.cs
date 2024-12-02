@@ -1,5 +1,4 @@
-﻿using CPG.Domain.SharedKernel;
-using MediatR;
+﻿using MediatR;
 using System.Threading.Tasks;
 using System.Threading;
 using CPG.Domain.AggregateModels.BankAggregate;

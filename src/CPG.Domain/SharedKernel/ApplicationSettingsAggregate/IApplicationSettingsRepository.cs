@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace CPG.Domain.SharedKernel.ApplicationSettings;
+namespace CPG.Domain.SharedKernel.ApplicationSettingsAggregate;
 
 public interface IApplicationSettingsRepository
 {

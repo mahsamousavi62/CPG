@@ -19,6 +19,7 @@ using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Show;
 using CPG.Domain.SharedKernel.Communication.NeoBank;
 using CPG.Domain.SharedKernel.Communication.NeoBank.Models;
+using CPG.Domain.SharedKernel.Interfaces;
 using MediatR;
 using static CPG.Domain.SharedKernel.Enums;
 

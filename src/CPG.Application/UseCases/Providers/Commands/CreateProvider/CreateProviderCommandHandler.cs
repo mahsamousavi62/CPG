@@ -1,11 +1,11 @@
 ﻿using CPG.Domain.SharedKernel.Minio;
-using CPG.Domain.SharedKernel;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 using CPG.Domain.AggregateModels.ProviderAggregate;
 using CPG.Domain.AggregateModels.ProviderAggregate.Specifications;
 using CPG.Application.UseCases.Providers.Exceptions;
+using CPG.Domain.SharedKernel.Interfaces;
 
 namespace CPG.Application.UseCases.Providers.Commands.CreateProvider;
 

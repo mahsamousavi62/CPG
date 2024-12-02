@@ -1,4 +1,4 @@
-﻿namespace CPG.Domain.SharedKernel.ApplicationSettings;
+﻿namespace CPG.Domain.SharedKernel.ApplicationSettingsAggregate;
 
 public class JwtConfigViewModel
 {

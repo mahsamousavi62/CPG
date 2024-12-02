@@ -1,5 +1,4 @@
-﻿using CPG.Domain.SharedKernel;
-using MediatR;
+﻿using MediatR;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,6 +10,7 @@ using CPG.Domain.AggregateModels.BankAggregate.Specifications;
 using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Token;
 using System.Security.Claims;
 using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Store;
+using CPG.Domain.SharedKernel.Interfaces;
 
 namespace CPG.Application.UseCases.DirectDebit.Commands;
 

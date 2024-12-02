@@ -9,6 +9,7 @@ using CPG.Domain.SharedKernel.Communication.Ipg;
 using CPG.Infrastructure.Persistence.DbContexts;
 using CPG.Application.UseCases.CompanyIPGs.Exceptions;
 using Microsoft.EntityFrameworkCore;
+using CPG.Domain.SharedKernel.Interfaces;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 
