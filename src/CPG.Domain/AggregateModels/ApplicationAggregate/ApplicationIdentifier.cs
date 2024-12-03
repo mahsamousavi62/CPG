@@ -8,6 +8,10 @@ namespace CPG.Domain.AggregateModels.ApplicationAggregate;
 
 public class ApplicationIdentifier : AuditableEntity<long>
 {
+    public ApplicationIdentifier()
+    {
+    }
+
     public ApplicationIdentifier(string idpClientId, long applicationId)
     {
         IdpClientId = idpClientId;
@@ -36,7 +40,7 @@ public class ApplicationIdentifier : AuditableEntity<long>
 
     public static ApplicationIdentifier Create(string newItem)
     {
-       return new ApplicationIdentifier(newItem);
+        return new ApplicationIdentifier(newItem);
     }
 
     public string IdpClientId { get; set; }

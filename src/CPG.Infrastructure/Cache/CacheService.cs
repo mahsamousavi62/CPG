@@ -2,15 +2,15 @@
 using CPG.Domain.AggregateModels.ApplicationAggregate.Specifications;
 using CPG.Domain.SharedKernel.ApplicationSettingsAggregate;
 using CPG.Domain.SharedKernel.Interfaces;
-using Mapster;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,10 +25,9 @@ public class CacheService(IDistributedCache cache,
 
     private const string AllApplicationSettingsKey = "AllApplicationSettings";
 
-    private readonly JsonSerializerOptions jsonSerializerOptions = new()
+    private readonly JsonSerializerSettings jsonSerializerOptions = new()
     {
-        ReferenceHandler = ReferenceHandler.Preserve,
-        WriteIndented = true
+        ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
     };
 
     public T? GetCache<T>(string key)
@@ -36,7 +35,7 @@ public class CacheService(IDistributedCache cache,
         string? jsonData = cache.GetString(key);
         if (jsonData == null)
             return default;
-        return JsonSerializer.Deserialize<T>(jsonData, jsonSerializerOptions);
+        return JsonConvert.DeserializeObject<T>(jsonData, jsonSerializerOptions);
     }
 
     public void SetCache<T>(string key, T value, TimeSpan? slidingExpirationTime = null)
@@ -46,7 +45,7 @@ public class CacheService(IDistributedCache cache,
             AbsoluteExpirationRelativeToNow = slidingExpirationTime
         };
 
-        string jsonData = JsonSerializer.Serialize(value, jsonSerializerOptions);
+        string jsonData = JsonConvert.SerializeObject(value, jsonSerializerOptions);
         cache.SetString(key, jsonData, options);
     }
 
