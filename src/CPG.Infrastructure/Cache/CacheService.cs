@@ -36,7 +36,7 @@ public class CacheService(IDistributedCache cache,
         string? jsonData = cache.GetString(key);
         if (jsonData == null)
             return default;
-        return JsonSerializer.Deserialize<T>(jsonData);
+        return JsonSerializer.Deserialize<T>(jsonData, jsonSerializerOptions);
     }
 
     public void SetCache<T>(string key, T value, TimeSpan? slidingExpirationTime = null)
@@ -45,10 +45,9 @@ public class CacheService(IDistributedCache cache,
         {
             AbsoluteExpirationRelativeToNow = slidingExpirationTime
         };
-        {
-            string jsonData = JsonSerializer.Serialize(value, jsonSerializerOptions);
-            cache.SetString(key, jsonData, options);
-        }
+
+        string jsonData = JsonSerializer.Serialize(value, jsonSerializerOptions);
+        cache.SetString(key, jsonData, options);
     }
 
     public void ClearCache(string key)
