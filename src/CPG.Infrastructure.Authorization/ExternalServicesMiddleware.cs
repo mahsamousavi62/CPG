@@ -31,7 +31,7 @@ public class ExternalServicesMiddleware(RequestDelegate next, ILogger<ExternalSe
         switch (path)
         {
             case string x when path!.Contains("api/externalservices"):
-                if (!httpContext.User.Claims.Where(c => c.Type == "scope" && c.Value.ToLower() == Scope.CPG_ExternalService).Any())
+                if (!httpContext.User.Claims.Any(c => c.Type == "scope" && c.Value.Equals(Scope.CPG_ExternalService, StringComparison.CurrentCultureIgnoreCase)))
                 {
                     Unauthorized(httpContext);
                     return;
@@ -51,7 +51,7 @@ public class ExternalServicesMiddleware(RequestDelegate next, ILogger<ExternalSe
                 return;
 
             default:
-                if (!httpContext.User.Claims.Where(c => c.Type == "scope" && c.Value.ToLower() == Scope.CPG).Any())
+                if (!httpContext.User.Claims.Any(c => c.Type == "scope" && c.Value.Equals(Scope.CPG, StringComparison.CurrentCultureIgnoreCase)))
                 {
                     Unauthorized(httpContext);
                     return;
