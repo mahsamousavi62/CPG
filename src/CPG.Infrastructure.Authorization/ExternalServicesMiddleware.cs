@@ -38,15 +38,19 @@ public class ExternalServicesMiddleware(RequestDelegate next, ILogger<ExternalSe
                 }
                 break;
 
-            case string x when path!.ToLower().Contains("api/common"):
+            case string x when path!.Contains("api/common", StringComparison.CurrentCultureIgnoreCase):
                 await next(httpContext);
                 return;
 
-            case string x when path!.ToLower().Contains("graphql"):
+            case string x when path!.Contains("graphql", StringComparison.CurrentCultureIgnoreCase):
                 await next(httpContext);
                 return;
 
-            case string x when path!.ToLower().Contains("hangfire"):
+            case string x when path!.Contains("hangfire", StringComparison.CurrentCultureIgnoreCase):
+                await next(httpContext);
+                return;
+
+            case string x when path!.Contains("ipgresult", StringComparison.CurrentCultureIgnoreCase):
                 await next(httpContext);
                 return;
 
