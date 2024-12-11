@@ -50,11 +50,20 @@ public class GetUserQueryHandler(
                 throw new UserNotVerifyStatusException(string.Empty);
         }
 
-        var user = await _context.UserReadModels.Include(u => u.UserRoles).Include(c => c.Company)
-                                                        .SingleOrDefaultAsync(u => u.IsActive && u.IDPId == sub);
-        if (user != null)
+        var user = await _context.UserReadModels
+            .Include(u => u.UserRoles)
+            .Include(c => c.Company)
+            .SingleOrDefaultAsync(u => u.IsActive && u.IDPId == sub, cancellationToken: cancellationToken);
+
+        //if (user != null)
+        //{
+        //    var applicationId = (await _context.ApplicationIdentifierReadModels
+        //        .SingleOrDefaultAsync(a => a.IdpClientId == sub, cancellationToken: cancellationToken))?.ApplicationId;
+        //}
+
+        if (user is null && kycStatus == userKycStatus)
         {
-            var applicationId = (await _context.ApplicationIdentifierReadModels.SingleOrDefaultAsync(a => a.IdpClientId == sub))?.ApplicationId;
+            throw new UserNotFoundException(sub);
         }
 
         var userViewModel = new UserViewModel
