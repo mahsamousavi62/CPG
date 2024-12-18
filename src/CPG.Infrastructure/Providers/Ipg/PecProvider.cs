@@ -5,7 +5,7 @@ using CCPG.Domain.SharedKernel.Communication.Ipg;
 using ConfirmPecServiceReference;
 using CPG.Application.UseCases.Ipg.Exception;
 using CPG.Domain.SharedKernel;
-using CPG.Domain.SharedKernel.ApplicationSettings;
+using CPG.Domain.SharedKernel.ApplicationSettingsAggregate;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentTicket;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.TransactionResult;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
@@ -18,10 +18,8 @@ using Newtonsoft.Json.Linq;
 using PecServiceReference1;
 namespace CPG.Infrastructure.Providers.Ipg;
 
-public class PecProvider(ReadDbContext context,
-                         IApplicationSettingsRepository applicationSettingsRepository,
-                         ILogService logService,
-                         ILogger<PecProvider> logger) : IIpgProvider
+public class PecProvider(
+    ReadDbContext context,IApplicationSettingsRepository applicationSettingsRepository,ILogService logService,ILogger<PecProvider> logger) : IIpgProvider
 {
     private readonly IApplicationSettingsRepository _applicationSettingRepositoy = applicationSettingsRepository;
     private readonly ILogService _logService = logService;
@@ -42,11 +40,7 @@ public class PecProvider(ReadDbContext context,
                 var clientSaleRequestData = new ClientSaleRequestData()
                 {
                     AdditionalData =request.NationalCodeMatchingRequied ?
-                    CreateAdditionalData(request.NationalCode,
-                                         request.ShaparakKey,
-                                         request.ShaparakIv,
-                                         request.ThirdPartyCode,
-                                         request.PaymentIdentifier) : JsonConvert.SerializeObject(new {  Data = request.PaymentIdentifier }),
+                    CreateAdditionalData(request.NationalCode, request.ShaparakKey, request.ShaparakIv, request.ThirdPartyCode): string.Empty,
                     Amount = (long)request.PaymentRequestAmount,
                     CallBackUrl = callBack,
                     LoginAccount = GetDataFromJsonProvider(request.ProviderData),
@@ -153,7 +147,7 @@ public class PecProvider(ReadDbContext context,
         _logService.AddServiceCallLog(JsonConvert.SerializeObject(request),
             JsonConvert.SerializeObject(response),status,message);
     }
-    private string CreateAdditionalData(string nationalCode, string key, string iv, int? thirdParty,string paymentIdenetifier )
+    private string CreateAdditionalData(string nationalCode, string key, string iv, int? thirdParty)
     {
         string hexString = Guid.NewGuid().ToString("N");
         string randomString = hexString.Substring(0, 7);
@@ -161,7 +155,7 @@ public class PecProvider(ReadDbContext context,
         var dkey = AesHelper.Base64Decode(key);
         var div = AesHelper.Base64Decode(iv);
         var token = AesHelper.EncryptAes(original, dkey ?? string.Empty, div ?? string.Empty);
-        var json = JsonConvert.SerializeObject(new { NationalEncryptedId = token, ThirdPartyCode = thirdParty, Data = paymentIdenetifier });
+        var json = JsonConvert.SerializeObject(new { NationalEncryptedId = token, ThirdPartyCode = thirdParty, Data = string.Empty });
         return json;
     }
     private static string CreateCallbackUrl(short ipgRedirectionType, string siteAddress, string trackerId,

@@ -3,8 +3,8 @@ using CPG.Application.UseCases.Users.Exceptions;
 using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Domain.AggregateModels.UserAggregate.Specifications;
 using CPG.Domain.Exceptions;
-using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Communication.Idp;
+using CPG.Domain.SharedKernel.Interfaces;
 using MediatR;
 using System;
 using System.Net;
@@ -14,13 +14,13 @@ using System.Threading.Tasks;
 namespace CPG.Application.UseCases.Users.Commands;
 
 public class CreateUserCommandHandler(IIdpProvider idpClient, IAggregateRepository<User> repository, IAuthenticationService authenticationService)
-        : IRequestHandler<CreateUserCommnad, Result<long>>
+        : IRequestHandler<CreateUserCommand, Result<long>>
 {
     private readonly IAggregateRepository<User> _repository = repository;
     private readonly IAuthenticationService _authenticationService = authenticationService;
     private readonly IIdpProvider _idpClient = idpClient;
 
-    public async Task<Result<long>> Handle(CreateUserCommnad request, CancellationToken cancellationToken)
+    public async Task<Result<long>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
         try
         {

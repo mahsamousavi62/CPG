@@ -1,6 +1,6 @@
 ﻿using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Domain.AggregateModels.CompanyAggregate.Events;
-using CPG.Domain.SharedKernel;
+using CPG.Domain.SharedKernel.Interfaces;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;

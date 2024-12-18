@@ -1,6 +1,5 @@
 ﻿using CPG.Domain.AggregateModels.DirectDebitGrantAggregate.Specifications;
 using CPG.Domain.AggregateModels.DirectDebitGrantAggregate;
-using CPG.Domain.SharedKernel;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
@@ -18,6 +17,7 @@ using System.Collections.Generic;
 using CPG.Application.UseCases.DirectDebit.ViewModels;
 using CPG.Application.Shared.Interfaces;
 using CPG.Application.Shared;
+using CPG.Domain.SharedKernel.Interfaces;
 
 namespace CPG.Application.UseCases.DirectDebit.Commands;
 

@@ -11,7 +11,7 @@ using CPG.Domain.AggregateModels.CompanyAggregate.Specifications;
 using CPG.Domain.AggregateModels.CompanyDepositAggregate;
 using CPG.Domain.AggregateModels.CompanyDepositAggregate.Specifications;
 using CPG.Domain.Exceptions;
-using CPG.Domain.SharedKernel;
+using CPG.Domain.SharedKernel.Interfaces;
 using MediatR;
 
 namespace CPG.Application.UseCases.CompanyDeposits.Commands.UpdateCompanyDeposit;

@@ -26,6 +26,7 @@ using CPG.Domain.SharedKernel.Helper;
 using CPG.Application.UseCases.DirectDebit.Queries;
 using System.Text.Json;
 using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Token;
+using CPG.Domain.SharedKernel.Interfaces;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.DirectDebit;
 

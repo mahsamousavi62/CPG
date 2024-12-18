@@ -15,8 +15,7 @@ using CPG.Domain.AggregateModels.PaymentRequestAggregate;
 using CPG.Domain.AggregateModels.PaymentRequestAggregate.Specifications;
 using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Domain.Exceptions;
-using CPG.Domain.SharedKernel;
-using CPG.Domain.SharedKernel.ApplicationSettings;
+using CPG.Domain.SharedKernel.ApplicationSettingsAggregate;
 using IdentityModel;
 using Mapster;
 using MediatR;
@@ -24,6 +23,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using CPG.Domain.SharedKernel.Interfaces;
 
 namespace CPG.Application.UseCases.PaymentRequests.Commands.CreatePaymentRequest;
 

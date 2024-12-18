@@ -1,7 +1,7 @@
 ﻿
 
 using CPG.Application.UseCases.Ipg.Queries;
-using CPG.Domain.SharedKernel.ApplicationSettings;
+using CPG.Domain.SharedKernel.ApplicationSettingsAggregate;
 using CPG.Domain.SharedKernel;
 using MediatR;
 using System.Threading.Tasks;
@@ -10,6 +10,7 @@ using System.Transactions;
 using CPG.Domain.AggregateModels.TransactionAggregate.Specifications;
 using System.Diagnostics;
 using CPG.Application.UseCases.PaymentRequests.Exceptions;
+using CPG.Domain.SharedKernel.Interfaces;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 

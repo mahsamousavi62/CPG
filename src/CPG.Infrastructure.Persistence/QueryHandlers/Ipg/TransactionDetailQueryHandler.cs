@@ -7,6 +7,7 @@ using CPG.Domain.AggregateModels.TransactionAggregate;
 using CPG.Domain.AggregateModels.TransactionAggregate.Specifications;
 using CPG.Domain.Exceptions;
 using CPG.Domain.SharedKernel;
+using CPG.Domain.SharedKernel.Interfaces;
 using CPG.Domain.SharedKernel.Minio;
 using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;

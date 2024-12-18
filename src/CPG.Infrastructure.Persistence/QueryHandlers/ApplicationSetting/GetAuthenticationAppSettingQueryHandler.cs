@@ -1,7 +1,7 @@
 ﻿using CPG.Application.Auth;
 using CPG.Application.UseCases.Common.Queries;
 using CPG.Domain.SharedKernel;
-using CPG.Domain.SharedKernel.ApplicationSettings;
+using CPG.Domain.SharedKernel.ApplicationSettingsAggregate;
 using CPG.Infrastructure.Persistence.DbContexts;
 using CPG.Infrastructure.Persistence.Redis;
 using MediatR;

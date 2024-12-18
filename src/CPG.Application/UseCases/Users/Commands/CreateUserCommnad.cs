@@ -3,4 +3,4 @@ using MediatR;
 
 namespace CPG.Application.UseCases.Users.Commands;
 
-public record CreateUserCommnad : IRequest<Result<long>>;
+public record CreateUserCommand : IRequest<Result<long>>;

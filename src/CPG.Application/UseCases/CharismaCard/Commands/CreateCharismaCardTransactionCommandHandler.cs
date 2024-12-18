@@ -7,6 +7,7 @@ using CPG.Domain.AggregateModels.TransactionAggregate;
 using CPG.Domain.SharedKernel.Communication.NeoBank;
 using CPG.Domain.SharedKernel.Communication.NeoBank.Models;
 using CPG.Domain.SharedKernel.Helper;
+using CPG.Domain.SharedKernel.Interfaces;
 using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Application.UseCases.CharismaCard.Commands;
@@ -79,8 +80,7 @@ public class CreateCharismaCardTransactionCommandHandler(
                     return Result<CharismaCardResponseViewModel>.Failure(new Error("2202005", string.Empty));
                 }
             }
-            var CharismaCardstatus = clientDirectDebit.TransferStatus == NeoBankTransferStatus.Failed ?
-                CharismaCardStatus.Failed : CharismaCardStatus.Done;
+            var CharismaCardstatus = clientDirectDebit.TransferStatus == NeoBankTransferStatus.Failed ? CharismaCardStatus.Failed : CharismaCardStatus.Done;
             Transaction transaction = Transaction.Create(new CreateTransactionModel
             {
                 CharismaCardModel = new CharismaCardTransactionModel
@@ -95,7 +95,7 @@ public class CreateCharismaCardTransactionCommandHandler(
                 PaymentRequest = paymentRequest,
                 TransactionMethodType = Enums.TransactionType.CharismaCard,
                 Status = CharismaCardstatus == CharismaCardStatus.Done ?
-                Enums.TransactionStatus.TransactionSucceeded :
+                Enums.TransactionStatus.InPrgress :
                 Enums.TransactionStatus.TransactionFailed
 
             });
@@ -123,7 +123,7 @@ public class CreateCharismaCardTransactionCommandHandler(
 
             return Result<CharismaCardResponseViewModel>.SuccessResult(new CharismaCardResponseViewModel
             {
-                CallBackUrl = transaction.PaymentRequest.CallBackUrl.Contains("?") ? $"{transaction.PaymentRequest.CallBackUrl.Split("?")[0]}/paymentResult?{transaction.PaymentRequest.CallBackUrl.Split("?")[1]}&paymentCode={transaction.PaymentRequest.PaymentCode}&paymentStatus={General.GetPaymentStatusTitle(transaction.PaymentRequest.Status)}" : $"{transaction.PaymentRequest.CallBackUrl}/paymentResult?paymentCode={transaction.PaymentRequest.PaymentCode}&paymentStatus={General.GetPaymentStatusTitle(transaction.PaymentRequest.Status)}"
+                CallBackUrl = $"{transaction.PaymentRequest.CallBackUrl}/paymentResult?paymentCode={transaction.PaymentRequest.PaymentCode}&paymentStatus={General.GetPaymentStatusTitle(transaction.PaymentRequest.Status)}"
             });
         }
         else
