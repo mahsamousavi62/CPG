@@ -193,7 +193,7 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
 
             return Result<ValidateTokenResponseViewModel>.SuccessResult(new ValidateTokenResponseViewModel
             {
-                CallbackUrl = $"{paymentRequest.CallBackUrl}/paymentResult?paymentCode={paymentRequest.PaymentCode}&paymentStatus={General.GetPaymentStatusTitle(paymentRequest.Status)}"
+                CallbackUrl = Constants.CreateCallbackUrl(paymentRequest.CallBackUrl, paymentRequest.PaymentCode, paymentRequest.Status)
             });
         }
         catch (DomainException exc)

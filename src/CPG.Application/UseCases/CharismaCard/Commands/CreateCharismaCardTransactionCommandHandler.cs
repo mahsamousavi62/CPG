@@ -123,7 +123,7 @@ public class CreateCharismaCardTransactionCommandHandler(
 
             return Result<CharismaCardResponseViewModel>.SuccessResult(new CharismaCardResponseViewModel
             {
-                CallBackUrl = $"{transaction.PaymentRequest.CallBackUrl}/paymentResult?paymentCode={transaction.PaymentRequest.PaymentCode}&paymentStatus={General.GetPaymentStatusTitle(transaction.PaymentRequest.Status)}"
+                CallBackUrl = Constants.CreateCallbackUrl(transaction.PaymentRequest.CallBackUrl, transaction.PaymentRequest.PaymentCode, transaction.PaymentRequest.Status)
             });
         }
         else
