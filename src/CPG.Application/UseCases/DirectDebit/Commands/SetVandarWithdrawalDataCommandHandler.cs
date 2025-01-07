@@ -185,7 +185,7 @@ public class SetVandarWithdrawalDataCommandHandler(
                     {
                         return Result<WithdrawalDataResponseViewModel>.SuccessResult(new WithdrawalDataResponseViewModel
                         {
-                            CallbackUrl = $"{transaction.PaymentRequest.CallBackUrl}/paymentResult?paymentCode={transaction.PaymentRequest.PaymentCode}&paymentStatus={General.GetPaymentStatusTitle(transaction.PaymentRequest.Status)}"
+                            CallbackUrl = Constants.CreateCallbackUrl(transaction.PaymentRequest.CallBackUrl, transaction.PaymentRequest.PaymentCode, transaction.PaymentRequest.Status)
                         });
                     }
                     else if (failedStatusArray.Contains(withdrawData.Status))
