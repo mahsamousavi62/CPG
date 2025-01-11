@@ -58,7 +58,7 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
         }
 
         if (paymentRequest.Status != PaymentStatus.Draft &&
-           paymentRequest.Status != PaymentStatus.RedirectedToCpg)
+            paymentRequest.Status != PaymentStatus.RedirectedToCpg)
         {
             throw new PaymentRequestStatusIsInvalidException();
         }
@@ -77,17 +77,16 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
 
         if (!string.IsNullOrEmpty(nationalCode) || !string.IsNullOrEmpty(paymentRequest.NationalCode))
         {
-            if(paymentRequest.NationalCode != nationalCode)
-            throw new PaymentRequestNationalCodeConflictException();
+            if (nationalCode != null && paymentRequest.NationalCode != nationalCode)
+                throw new PaymentRequestNationalCodeConflictException();
         }
         if (!string.IsNullOrEmpty(paymentRequest.DestinationDepositIban))
         {
-            company = await _companyRepository.GetBySpecAsync(new CompanyPaymentMethodsByIbanSpec(paymentRequest.CompanyId,
-                            paymentRequest.DestinationDepositIban), cancellationToken);
+            company = await _companyRepository.GetBySpecAsync(new CompanyPaymentMethodsByIbanSpec(paymentRequest.CompanyId, paymentRequest.DestinationDepositIban), cancellationToken);
 
             if (string.IsNullOrEmpty(sub))
             {
-                availablePaymentMethodTypes = new List<PaymentMethodType> { PaymentMethodType.InternetPaymentGateway };
+                availablePaymentMethodTypes = new List<PaymentMethodType> { PaymentMethodType.InternetPaymentGateway, PaymentMethodType.PaymentReceipt };
             }
             else
             {
@@ -149,7 +148,7 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
 
             if (string.IsNullOrEmpty(sub))
             {
-                availablePaymentMethodTypes = new List<PaymentMethodType> { PaymentMethodType.InternetPaymentGateway };
+                availablePaymentMethodTypes = new List<PaymentMethodType> { PaymentMethodType.InternetPaymentGateway, PaymentMethodType.PaymentReceipt };
             }
             else
             {

@@ -31,14 +31,14 @@ public class CompanyDepositController : ApiBaseController
         return await Mediator.Send(new GetCompanyDepositQuery(id));
     }
 
-    [HttpGet("Company/{companyId:long}")]
+    [HttpGet("Company/GetDepositsById/{companyId:long}")]
     [ProducesResponseType(typeof(Result<IReadOnlyCollection<CompanyDepositViewModel>>), (int)HttpStatusCode.OK)]
     public async Task<Result<IReadOnlyCollection<CompanyDepositViewModel>>> GetByCompanyId(long companyId)
     { 
         return await Mediator.Send(new GetCompanyDepositsByCompanyIdQuery(companyId));
     }
 
-    [HttpGet("Company/{paymentCode}")]
+    [HttpGet("Company/GetDepositsByPaymentCode/{paymentCode}")]
     [ProducesResponseType(typeof(Result<IReadOnlyCollection<CompanyDepositViewModel>>), (int)HttpStatusCode.OK)]
     public async Task<Result<IReadOnlyCollection<CompanyDepositViewModel>>> GetByPaymentCode(string paymentCode)
     {
