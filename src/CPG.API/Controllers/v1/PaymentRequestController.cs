@@ -19,7 +19,6 @@ using CPG.Application.UseCases.CharismaCard.Commands;
 using CPG.Application.UseCases.CharismaCard.ViewModels;
 using CPG.Application.UseCases.PaymentReceipt.Commands;
 using CPG.Application.Shared;
-using Microsoft.AspNetCore.Http.HttpResults;
 using CPG.Application.UseCases.PaymentRequests.Queries.Report;
 
 namespace CPG.API.Controllers.v1;
@@ -29,39 +28,38 @@ namespace CPG.API.Controllers.v1;
 /// </summary>
 public class PaymentRequestController : ApiBaseController
 {
-
     [Authorize]
     [HttpPost]
     [ProducesResponseType(typeof(Result<PaymentRequestResponseViewModel>), 200)]
     public async Task<Result<PaymentRequestResponseViewModel>> PaymentRequest([FromBody] CreatePaymentRequestViewModel model)
         => await Mediator.Send(new CreatePaymentRequestCommand(model));
 
-    [Authorize]
+    [AllowAnonymous]
     [HttpPost("GetPaymentMethods")]
     [ProducesResponseType(typeof(Result<PaymentMethodsViewModel>), 200)]
     public async Task<Result<PaymentMethodsViewModel>> PaymentMethods([FromBody] GetPaymentMethodsViewModel model)
         => await Mediator.Send(new GetPaymentMethodsCommand(model));
 
-    [Authorize]
+    [AllowAnonymous]
     [HttpPost("CancelPaymentRequest")]
     [ProducesResponseType(typeof(Result<CancelPaymentRequestResponseViewModel>), 200)]
     public async Task<Result<CancelPaymentRequestResponseViewModel>> CancelPaymentRequest([FromBody] CancelPaymentRequestViewModel model)
         => await Mediator.Send(new CancelPaymentRequestCommand(model));
 
-    [Authorize]
+    [AllowAnonymous]
     [HttpPost("CreateIPGJsonStr")]
     [ProducesResponseType(typeof(ResultData<PaymentTokenResponseViewModel>), 200)]
     public async Task<Result<PaymentTokenResponseViewModel>> GetAsanPardakhatPaymentTicket([FromBody] PaymentTokenViewModel paymentTicketRequest)
         => await Mediator.Send(new GetPaymentTokenCommand(paymentTicketRequest));
 
-    [HttpPost("CreateWithdrawalRequest")]
     [Authorize]
+    [HttpPost("CreateWithdrawalRequest")]
     [ProducesResponseType(typeof(ResultData<bool>), 200)]
     public async Task<Result<bool>> CreateWithdrawalRequest([FromBody] WithdrawalRequestViewModel withdrawalRequest)
        => await Mediator.Send(new GetWithdrawalRequestQuery(withdrawalRequest));
 
+    [AllowAnonymous]
     [HttpPost("CreatePaymentReceiptRequest")]
-    [Authorize]
     [ProducesResponseType(typeof(ResultData<PaymentReceiptResponseViewModel>), 200)]
     public async Task<Result<PaymentReceiptResponseViewModel>> CreatePaymentReceiptRequest([FromForm] PaymentReceiptRequestViewModel paymentReceiptRequest)
     {
@@ -89,21 +87,18 @@ public class PaymentRequestController : ApiBaseController
     public async Task<Result<VerifyTransactionResponseViewModel>> TransactionVerify([Required] VerifyTransactionViewModel model)
         => await Mediator.Send(new VerifyTransactionQuery(model));
 
-
     [Authorize(Policy = AuthPolicies.Roles.AdminOrCompanyUser)]
     [HttpPost("PaymentReceiptTransactionVerify")]
     [ProducesResponseType(typeof(Result<string>), 200)]
     public async Task<Result<string>> PaymentReceiptTransactionVerify([Required] VerifyPaymentReceiptTransactionViewModel model)
         => await Mediator.Send(new VerifiyPaymentReceiptCommand(model));
 
-
     [Authorize]
     [HttpPost("CreateCharismaCardRequest")]
     [ProducesResponseType(typeof(Result<CharismaCardResponseViewModel>), 200)]
     public async Task<Result<CharismaCardResponseViewModel>> GetClientDirectDebit(CharismaCardRequsetViewModel model)
        => await Mediator.Send(new CreateCharismaCardTransactionCommand(model));
-
-    
+        
     [Authorize]
     [HttpGet("PaymentRequestReport")]
     [ProducesResponseType(typeof(Result<PagedList<PaymentRequestReportViewModel>>), 200)]

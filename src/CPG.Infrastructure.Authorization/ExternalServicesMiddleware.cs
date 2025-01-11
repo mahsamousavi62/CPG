@@ -19,6 +19,8 @@ namespace CPG.Infrastructure.Authorization;
 
 public class ExternalServicesMiddleware(RequestDelegate next, ILogger<ExternalServicesMiddleware> logger)
 {
+    private readonly List<string> anonymousApis = new List<string> { "api/common", "graphql", "hangfire", "ipgresult", "GetPaymentMethods", "CancelPaymentRequest", "CreateIPGJsonStr", "CreatePaymentReceiptRequest" };
+
     public async Task Invoke([NotNull] HttpContext httpContext, [NotNull] ICacheService cacheService, IConfiguration configuration)
     {
         ScopeModel Scope = configuration.GetSection("Scope").Get<ScopeModel>()!;
@@ -38,19 +40,7 @@ public class ExternalServicesMiddleware(RequestDelegate next, ILogger<ExternalSe
                 }
                 break;
 
-            case string x when path!.Contains("api/common", StringComparison.CurrentCultureIgnoreCase):
-                await next(httpContext);
-                return;
-
-            case string x when path!.Contains("graphql", StringComparison.CurrentCultureIgnoreCase):
-                await next(httpContext);
-                return;
-
-            case string x when path!.Contains("hangfire", StringComparison.CurrentCultureIgnoreCase):
-                await next(httpContext);
-                return;
-
-            case string x when path!.Contains("ipgresult", StringComparison.CurrentCultureIgnoreCase):
+            case string x when ContainsAny(path, anonymousApis):
                 await next(httpContext);
                 return;
 
@@ -116,5 +106,11 @@ public class ExternalServicesMiddleware(RequestDelegate next, ILogger<ExternalSe
             ServiceCallStatusCode = httpContext.Response.StatusCode,
         };
         logger.LogInformation("[ExternalServiceCallLog] {@ExternalServiceCallLog}", externalServiceCallLog);
+    }
+
+    private static bool ContainsAny(string mainString, List<string> substrings)
+    {
+        foreach (string substring in substrings) { if (mainString.Contains(substring, StringComparison.CurrentCultureIgnoreCase)) { return true; } }
+        return false;
     }
 }
