@@ -36,8 +36,12 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
     private readonly INeoBankService _neoBankService = neoBankService;
     private readonly IAggregateRepository<Bank> _bankRepository = bankRepository;
     private readonly IAggregateRepository<CompanyDeposit> _companyDepositRepository = companyDepositRepository;
-    private readonly string MiddleEastIbanPrefix = "078";
     private readonly IAuthenticationService _authenticationService = authenticationService;
+
+    private readonly string MiddleEastIbanPrefix = "078";
+    private readonly string demo = "Demo";
+    private readonly string userKycStatus = "KycVerified";
+
     public async Task<Result<PaymentMethodsViewModel>> Handle(GetPaymentMethodsCommand request, CancellationToken cancellationToken)
     {
         var paymentRequest = await _paymentRequestRepository.FirstOrDefaultAsync(new PaymentRequestByCode(request.ViewModel.PaymentCode));
@@ -70,16 +74,23 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
         List<PaymentMethodType> availablePaymentMethodTypes = null;
         Receipt receipt = null;
         ViewModels.CharismaCard charismaCard = null;
+
         var sub = await _authenticationService.GetDataFromClaim<string>("sub", string.Empty);
-
-
+        var kycStatus = await _authenticationService.GetDataFromClaim<string>("status", string.Empty);
         var nationalCode = await _authenticationService.GetDataFromClaim<string>("NationalCode");
 
-        if (!string.IsNullOrEmpty(nationalCode) || !string.IsNullOrEmpty(paymentRequest.NationalCode))
+        if (!string.IsNullOrEmpty(paymentRequest.NationalCode))
         {
-            if (nationalCode != null && paymentRequest.NationalCode != nationalCode)
+            if (paymentRequest.NationalCode != nationalCode && ((string.IsNullOrEmpty(nationalCode) && kycStatus == demo) || kycStatus == userKycStatus))
                 throw new PaymentRequestNationalCodeConflictException();
         }
+        else
+        {
+            if ((string.IsNullOrEmpty(nationalCode) && kycStatus == demo && paymentRequest.NationalCode != nationalCode) ||
+                (kycStatus == userKycStatus && paymentRequest.NationalCode != nationalCode) || (string.IsNullOrEmpty(nationalCode) && kycStatus != demo))
+                throw new PaymentRequestNationalCodeConflictException();
+        }
+
         if (!string.IsNullOrEmpty(paymentRequest.DestinationDepositIban))
         {
             company = await _companyRepository.GetBySpecAsync(new CompanyPaymentMethodsByIbanSpec(paymentRequest.CompanyId, paymentRequest.DestinationDepositIban), cancellationToken);
