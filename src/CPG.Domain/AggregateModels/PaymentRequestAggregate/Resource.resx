@@ -123,4 +123,19 @@
   <data name="InvalidPaymentIdLength" xml:space="preserve">
     <value>تعداد کاراکتر شناسه واریز نامعتبر است</value>
   </data>
+  <data name="PaymentRequestCodeExpired" xml:space="preserve">
+    <value>کاربر گرامی، نشانی پرداخت منقضی شده است، در صورت نیاز مجددا عملیات را تکرار کنید</value>
+  </data>
+  <data name="PaymentRequestCodeInvalidStatus" xml:space="preserve">
+    <value>کاربر گرامی، درخواست در وضعیت غیرمجاز است</value>
+  </data>
+  <data name="PaymentRequestCodeIsUsedBefore" xml:space="preserve">
+    <value>کاربر گرامی، این نشانی قبلا یکبار استفاده شده است، در صورت نیاز مجددا عملیات را تکرار کنید</value>
+  </data>
+  <data name="PaymentRequestInActiveCompany" xml:space="preserve">
+    <value> کاربر گرامی، شرکت مورد نظر غیرفعال است</value>
+  </data>
+  <data name="PaymentRequestNotFoundByCode" xml:space="preserve">
+    <value>کاربر گرامی، نشانی پرداخت نامعتبر است</value>
+  </data>
 </root>

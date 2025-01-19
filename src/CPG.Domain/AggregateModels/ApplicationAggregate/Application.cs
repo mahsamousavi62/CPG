@@ -1,13 +1,10 @@
 ﻿using CPG.Domain.AggregateModels.ApplicationAggregate.Events;
 using CPG.Domain.AggregateModels.ApplicationAggregate.Exceptions;
-using CPG.Domain.AggregateModels.CompanyAggregate;
-using CPG.Domain.AggregateModels.PaymentRequestAggregate;
 using CPG.Domain.SeedWork;
 using CPG.Domain.SharedKernel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace CPG.Domain.AggregateModels.ApplicationAggregate;
 
@@ -17,7 +14,7 @@ public class Application : AuditableEntity<long>, IAggregateRoot
     {
 
     }
-    public Application(PersianName persianName, EnglishName englishName, Logo logo, Url responseApiUrl)
+    private Application(PersianName persianName, EnglishName englishName, Logo logo, Url responseApiUrl)
     {
         PersianName = persianName.Value;
         EnglishName = englishName.Value;
@@ -77,6 +74,11 @@ public class Application : AuditableEntity<long>, IAggregateRoot
                EnglishName == application.EnglishName;
     }
 
+    public override int GetHashCode()
+    {
+        return base.GetHashCode();
+    }
+
     public static void Update(Application application, PersianName persianName, EnglishName englishName, Url responseUrl, Logo logo,
         string[] idpClientIds, Url[] urls)
     {
@@ -87,7 +89,7 @@ public class Application : AuditableEntity<long>, IAggregateRoot
 
         foreach (var newItem in idpClientIds)
         {
-            if (!application.ApplicationIdentifiers.Any(p => p.IdpClientId== newItem))
+            if (!application.ApplicationIdentifiers.Any(p => p.IdpClientId == newItem))
                 application.ApplicationIdentifiers.Add(ApplicationIdentifier.Create(newItem));
         }
 
@@ -97,7 +99,7 @@ public class Application : AuditableEntity<long>, IAggregateRoot
                 application.ApplicationIdentifiers.Remove(currnetItem);
         }
 
-        if (urls !=null)
+        if (urls != null)
         {
             foreach (var newItem in urls)
             {
@@ -111,5 +113,13 @@ public class Application : AuditableEntity<long>, IAggregateRoot
                     application.ApplicationCallbackUrls.Remove(currnetItem);
             }
         }
+    }
+
+    public static void Validate(Application application)
+    {
+        if (application == null)
+            throw new ApplicationNotFoundException();
+        if (!application.IsActive)
+            throw new ApplicationIsNotActiveException(application.Id);
     }
 }

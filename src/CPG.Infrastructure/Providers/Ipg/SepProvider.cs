@@ -2,7 +2,7 @@
 using CPG.Application.Shared.Resource;
 using CPG.Application.UseCases.Ipg.Exception;
 using CPG.Domain.SharedKernel;
-using CPG.Domain.SharedKernel.ApplicationSettings;
+using CPG.Domain.SharedKernel.ApplicationSettingsAggregate;
 using CPG.Domain.SharedKernel.Communication;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentTicket;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentToken;
@@ -64,7 +64,7 @@ public class SepProvider(IHttpProvider httpProvider, ReadDbContext context, IApp
                                                             CellNumber = request.MobileNumber,
                                                             ShaparakKycParams = request.NationalCodeMatchingRequied ? new ShaparakKycParams { CardHolderNationalId = CreateAdditionalData(request.NationalCode, request.ShaparakKey, request.ShaparakIv), ThirdPartyCode = request.ThirdPartyCode.ToString() } : null,
                                                         },
-                                                        Provider = Enums.ProviderType.Sep,
+                                                        Provider = Enums.ProviderTypeInLog.Sep,
                                                         Service = Enums.ServiceType.SepToken,
                                                     }, request, PaymentTokenErrorHandler);
 
@@ -95,7 +95,7 @@ public class SepProvider(IHttpProvider httpProvider, ReadDbContext context, IApp
                                                         },
                                                         BaseAddress = "https://sep.shaparak.ir/",
                                                         Uri = "verifyTxnRandomSessionkey/ipg/VerifyTranscation",                                                        
-                                                        Provider = Enums.ProviderType.Sep,
+                                                        Provider = Enums.ProviderTypeInLog.Sep,
                                                         Service = Enums.ServiceType.SepVerify,
                                                     }, request, VerifyErrorHandler);
 

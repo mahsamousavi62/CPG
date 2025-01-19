@@ -6,7 +6,6 @@ using CPG.Application.UseCases.Companies.Exceptions;
 using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Domain.AggregateModels.UserAggregate.Specifications;
 using CPG.Domain.AggregateModels.UserAggregate;
-using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Minio;
 using MediatR;
 using CPG.Application.Shared.Exceptions;
@@ -14,6 +13,7 @@ using CPG.Domain.AggregateModels.CompanyAggregate.Specifications;
 using CPG.Application.UseCases.Exceptions;
 using CPG.Domain.Exceptions;
 using CPG.Domain.AggregateModels.CompanyDepositAggregate;
+using CPG.Domain.SharedKernel.Interfaces;
 
 namespace CPG.Application.UseCases.Companies.Commands.UpdateCompany;
 

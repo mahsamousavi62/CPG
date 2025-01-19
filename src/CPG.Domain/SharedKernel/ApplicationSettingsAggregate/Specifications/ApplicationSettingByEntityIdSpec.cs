@@ -1,7 +1,7 @@
 ﻿using Ardalis.Specification;
 using System.Linq;
 
-namespace CPG.Domain.SharedKernel.ApplicationSettings.Specifications;
+namespace CPG.Domain.SharedKernel.ApplicationSettingsAggregate.Specifications;
 
 public sealed class ApplicationSettingByEntityTypeSpec : Specification<ApplicationSettings>
 {

@@ -5,7 +5,7 @@ using CCPG.Domain.SharedKernel.Communication.Ipg;
 using ConfirmPecServiceReference;
 using CPG.Application.UseCases.Ipg.Exception;
 using CPG.Domain.SharedKernel;
-using CPG.Domain.SharedKernel.ApplicationSettings;
+using CPG.Domain.SharedKernel.ApplicationSettingsAggregate;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentTicket;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.TransactionResult;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
@@ -19,7 +19,7 @@ using PecServiceReference1;
 namespace CPG.Infrastructure.Providers.Ipg;
 
 public class PecProvider(
-    ReadDbContext context,IApplicationSettingsRepository applicationSettingsRepository,ILogService logService,ILogger<PecProvider> logger) : IIpgProvider
+    ReadDbContext context, IApplicationSettingsRepository applicationSettingsRepository, ILogService logService, ILogger<PecProvider> logger) : IIpgProvider
 {
     private readonly IApplicationSettingsRepository _applicationSettingRepositoy = applicationSettingsRepository;
     private readonly ILogService _logService = logService;
@@ -29,7 +29,9 @@ public class PecProvider(
     public async Task<PaymentTokenResponse> GetPaymentTokenAsync(PaymentTokenRequest request)
     {
         var configViewModel = await _applicationSettingRepositoy.GetAllApplicationSettings();
+
         var trackerId = RandomGenerator.GenerateRandomDigitNumber(16);
+
         string callBack = CreateCallbackUrl((short)request.IpgRedirectionMethodType, request.SiteAddress,
             trackerId.ToString(), configViewModel);
 
@@ -39,13 +41,17 @@ public class PecProvider(
             {
                 var clientSaleRequestData = new ClientSaleRequestData()
                 {
-                    AdditionalData =request.NationalCodeMatchingRequied ?
-                    CreateAdditionalData(request.NationalCode, request.ShaparakKey, request.ShaparakIv, request.ThirdPartyCode): string.Empty,
+                    AdditionalData = request.NationalCodeMatchingRequied ?
+                   CreateAdditionalData(request.NationalCode,
+                                         request.ShaparakKey,
+                                         request.ShaparakIv,
+                                         request.ThirdPartyCode,
+                                         request.PaymentIdentifier) : JsonConvert.SerializeObject(new { Data = request.PaymentIdentifier }),
                     Amount = (long)request.PaymentRequestAmount,
                     CallBackUrl = callBack,
                     LoginAccount = GetDataFromJsonProvider(request.ProviderData),
                     OrderId = long.Parse(trackerId),
-                    Originator = request.MobileNumber
+                    Originator = string.IsNullOrEmpty(request.MobileNumber) ? null : request.MobileNumber,
                 };
                 var response = await SaleSvc.SalePaymentRequestAsync(clientSaleRequestData);
 
@@ -72,7 +78,7 @@ public class PecProvider(
             throw;
         }
     }
-   
+
     public async Task<TransactionResultResponse> GetTransactionResult(TransactionResultRequest transactionResultRequest)
     {
         throw new NotImplementedException();
@@ -90,7 +96,7 @@ public class PecProvider(
                     Token = long.Parse(transactionResultRequest.Token)
                 };
                 var confirm = await confirmSvc.ConfirmPaymentAsync(request);
-                CreateLog(request, confirm, nameof(ConfirmServiceSoapClient), confirm.Body.ConfirmPaymentResult.Status,string.Empty,Enums.ServiceType.PecVerify);
+                CreateLog(request, confirm, nameof(ConfirmServiceSoapClient), confirm.Body.ConfirmPaymentResult.Status, string.Empty, Enums.ServiceType.PecVerify);
 
                 var CardNumberMasked = confirm.Body.ConfirmPaymentResult.CardNumberMasked;
                 var RRN = confirm.Body.ConfirmPaymentResult.RRN.ToString();
@@ -138,16 +144,16 @@ public class PecProvider(
             RRN = rrn
         };
     }
-    private void CreateLog<T1, T2>(T1 request, T2 response, string serviceName,short status,string message, Enums.ServiceType serviceType)
+    private void CreateLog<T1, T2>(T1 request, T2 response, string serviceName, short status, string message, Enums.ServiceType serviceType)
     {
         _logService.ServiceName = serviceName;
         _logService.ServiceType = serviceType;
-        _logService.ProviderType = Enums.ProviderType.Pec;
+        _logService.ProviderTypeInLog = Enums.ProviderTypeInLog.Pec;
 
         _logService.AddServiceCallLog(JsonConvert.SerializeObject(request),
-            JsonConvert.SerializeObject(response),status,message);
+            JsonConvert.SerializeObject(response), status, message);
     }
-    private string CreateAdditionalData(string nationalCode, string key, string iv, int? thirdParty)
+    private string CreateAdditionalData(string nationalCode, string key, string iv, int? thirdParty, string paymentIdenetifier)
     {
         string hexString = Guid.NewGuid().ToString("N");
         string randomString = hexString.Substring(0, 7);
@@ -155,15 +161,16 @@ public class PecProvider(
         var dkey = AesHelper.Base64Decode(key);
         var div = AesHelper.Base64Decode(iv);
         var token = AesHelper.EncryptAes(original, dkey ?? string.Empty, div ?? string.Empty);
-        var json = JsonConvert.SerializeObject(new { NationalEncryptedId = token, ThirdPartyCode = thirdParty, Data = string.Empty });
+        var json = JsonConvert.SerializeObject(new { NationalEncryptedId = token, ThirdPartyCode = thirdParty, Data = paymentIdenetifier });
+
         return json;
     }
     private static string CreateCallbackUrl(short ipgRedirectionType, string siteAddress, string trackerId,
         ApplicationConfigViewModel applicationConfig) => ipgRedirectionType switch
-    {
-        1 => $"{siteAddress}/{applicationConfig.Callback_Page}?pcu={applicationConfig.CPG_BackEnd.TrimEnd()}/IPGResult/p/b/{trackerId}",
-        2 => $"{siteAddress}/p/b/{trackerId}?pcu={applicationConfig.CPG_BackEnd.TrimEnd()}/IPGResult",
-        _ => string.Empty,
-    };
+        {
+            1 => $"{siteAddress}/{applicationConfig.Callback_Page}?pcu={applicationConfig.CPG_BackEnd.TrimEnd()}/IPGResult/p/b/{trackerId}",
+            2 => $"{siteAddress}/p/b/{trackerId}?pcu={applicationConfig.CPG_BackEnd.TrimEnd()}/IPGResult",
+            _ => string.Empty,
+        };
 
 }

@@ -10,6 +10,7 @@ using CPG.Domain.AggregateModels.PaymentRequestAggregate.Specifications;
 using CPG.Domain.AggregateModels.TransactionAggregate;
 using CPG.Domain.Exceptions;
 using CPG.Domain.SharedKernel;
+using CPG.Domain.SharedKernel.Interfaces;
 using CPG.Domain.SharedKernel.Minio;
 using MediatR;
 using System;
@@ -114,7 +115,7 @@ public class AddPaymentReceiptQueryHandler(
 
         return Result<PaymentReceiptResponseViewModel>.SuccessResult(new PaymentReceiptResponseViewModel
         {
-            CallbackUrl = $"{transaction.PaymentRequest.CallBackUrl}/paymentResult?paymentCode={transaction.PaymentRequest.PaymentCode}&paymentStatus={General.GetPaymentStatusTitle(transaction.PaymentRequest.Status)}"
+            CallbackUrl = Constants.CreateCallbackUrl(transaction.PaymentRequest.CallBackUrl, transaction.PaymentRequest.PaymentCode, transaction.PaymentRequest.Status)
         });
     }
 }

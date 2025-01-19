@@ -10,6 +10,7 @@ using CPG.Domain.AggregateModels.DirectDebitGrantAggregate;
 using CPG.Domain.AggregateModels.PaymentRequestAggregate.Specifications;
 using CPG.Domain.AggregateModels.TransactionAggregate;
 using CPG.Domain.SharedKernel;
+using CPG.Domain.AggregateModels.TransactionAggregate.Specifications;
 using CPG.Domain.SharedKernel.Communication.NeoBank;
 using CPG.Domain.SharedKernel.Interfaces;
 using CPG.Domain.SharedKernel.Minio;
@@ -38,10 +39,17 @@ public class GetPaymentMethodsCommandHandler(
     private readonly IMinioProvider _minioProvider = minioProvider;
     private readonly INeoBankService _neoBankService = neoBankService;
     private readonly IAggregateRepository<Company> _companyRepository = companyRepository;
+    private readonly IAggregateRepository<Bank> _bankRepository = bankRepository;
+    private readonly IAggregateRepository<CompanyDeposit> _companyDepositRepository = companyDepositRepository;
     private readonly IAuthenticationService _authenticationService = authenticationService;
     private readonly IAggregateRepository<DirectDebitGrant> _grantRepository = grantRepository;
     private readonly IAggregateRepository<Transaction> _transactionRepository = transactionRepository;
     private readonly IAggregateRepository<PaymentRequest> _paymentRequestRepository = paymentRequestRepository;
+
+
+    private readonly string MiddleEastIbanPrefix = "078";
+    private readonly string demo = "Demo";
+    private readonly string userKycStatus = "KycVerified";
 
     public async Task<Result<PaymentMethodsViewModel>> Handle(GetPaymentMethodsCommand request, CancellationToken cancellationToken)
     {
@@ -62,23 +70,43 @@ public class GetPaymentMethodsCommandHandler(
             throw new PaymentRequestCodeIsUsedException();
         }
 
+        if (paymentRequest.Status != PaymentStatus.Draft &&
+            paymentRequest.Status != PaymentStatus.RedirectedToCpg)
+        {
+            throw new PaymentRequestStatusIsInvalidException();
+        }
+
         paymentRequest.Status = Enums.PaymentStatus.RedirectedToCpg;
         await _paymentRequestRepository.UpdateAsync(paymentRequest);
 
         Company company = null;
         List<PaymentMethodType> availablePaymentMethodTypes = null;
         var sub = await _authenticationService.GetDataFromClaim<string>("sub", string.Empty);
+        var kycStatus = await _authenticationService.GetDataFromClaim<string>("status", string.Empty);
+        var nationalCode = await _authenticationService.GetDataFromClaim<string>("NationalCode");
 
-        company = await _companyRepository.FirstOrDefaultAsync(new CompanyPaymentMethodsByIdSpec(paymentRequest.CompanyId), cancellationToken);
-
-        if (string.IsNullOrEmpty(sub))
+        if (!string.IsNullOrEmpty(paymentRequest.NationalCode))
         {
-            availablePaymentMethodTypes = new List<PaymentMethodType> { PaymentMethodType.InternetPaymentGateway };
+            if (paymentRequest.NationalCode != nationalCode && ((string.IsNullOrEmpty(nationalCode) && kycStatus == demo) || kycStatus == userKycStatus))
+                throw new PaymentRequestNationalCodeConflictException();
         }
         else
         {
-            availablePaymentMethodTypes = company?.PaymentMethods?.Select(p => p.MethodType).ToList();
+            if ((string.IsNullOrEmpty(nationalCode) && kycStatus == demo && paymentRequest.NationalCode != nationalCode) ||
+                (kycStatus == userKycStatus && paymentRequest.NationalCode != nationalCode) || (string.IsNullOrEmpty(nationalCode) && kycStatus != demo))
+                throw new PaymentRequestNationalCodeConflictException();
         }
+
+        company = await _companyRepository.FirstOrDefaultAsync(new CompanyPaymentMethodsByIdSpec(paymentRequest.CompanyId), cancellationToken);
+
+            if (string.IsNullOrEmpty(sub))
+            {
+                availablePaymentMethodTypes = new List<PaymentMethodType> { PaymentMethodType.InternetPaymentGateway, PaymentMethodType.PaymentReceipt };
+            }
+            else
+            {
+                availablePaymentMethodTypes = company?.PaymentMethods?.Select(p => p.MethodType).ToList();
+            }
 
         GetPaymentMethodsHandler  ipgHandler = new CreateIpgHandler();
         GetPaymentMethodsHandler  directDebitHandler= new CreateDirectDebitHandler();

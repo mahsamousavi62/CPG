@@ -36,6 +36,31 @@ public static class General
         };
     }
 
+    public static string GetPaymentStatusName(PaymentStatus status)
+    {
+        return status switch
+        {
+            PaymentStatus.Draft => Resource.Draft,
+            PaymentStatus.RedirectedToCpg => Resource.RedirectedToCpg,
+            PaymentStatus.CanceledByUser => Resource.CanceledByUser,
+            PaymentStatus.InProgress => Resource.InPrgress,
+            PaymentStatus.TransactionWaitingForVerification =>Resource.TransactionWaitingForVerification,
+            PaymentStatus.TransactionFailed => Resource.TransactionFailed,
+            PaymentStatus.TransactionVerifiedByApplication => Resource.TransactionVerifiedByApplication,
+            PaymentStatus.TransactionCanceledByApplication => Resource.TransactionCanceledByApplication,
+            PaymentStatus.TransactionVerificationSucceeded => Resource.VerificationSucceeded,
+            PaymentStatus.TransactionVerificationFailed => Resource.VerificationFailed,
+            PaymentStatus.TransactionCancellationSucceeded => Resource.TransactionCancellationSucceeded,
+            PaymentStatus.TransactionCancellationFailed => Resource.TransactionCancellationFailed,
+            PaymentStatus.SettlementSucceeded => Resource.SettlementSucceeded,
+            PaymentStatus.SettlementFailed => Resource.SettlementFailed,
+            _ => string.Empty
+        };
+    }
+
+
+
+
     public static string GetTransactionStatusName(Enums.TransactionStatus status)
     {
         return status switch

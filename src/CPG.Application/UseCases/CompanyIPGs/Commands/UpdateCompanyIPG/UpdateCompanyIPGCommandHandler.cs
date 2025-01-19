@@ -10,9 +10,9 @@ using CPG.Domain.AggregateModels.CompanyIPGAggregate;
 using CPG.Domain.AggregateModels.CompanyIPGAggregate.Exceptions;
 using CPG.Domain.AggregateModels.CompanyIPGAggregate.Specifications;
 using CPG.Domain.Exceptions;
-using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Minio;
 using MediatR;
+using CPG.Domain.SharedKernel.Interfaces;
 
 namespace CPG.Application.UseCases.CompanyIPGs.Commands.UpdateCompanyIPG;
 

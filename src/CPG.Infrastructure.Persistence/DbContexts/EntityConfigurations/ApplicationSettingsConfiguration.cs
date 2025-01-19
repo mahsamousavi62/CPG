@@ -1,4 +1,4 @@
-﻿using CPG.Domain.SharedKernel.ApplicationSettings;
+﻿using CPG.Domain.SharedKernel.ApplicationSettingsAggregate;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

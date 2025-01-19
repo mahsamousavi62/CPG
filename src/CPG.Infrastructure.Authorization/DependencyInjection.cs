@@ -1,7 +1,7 @@
 ﻿
 using CPG.Application.Auth;
 using CPG.Domain.SharedKernel;
-using CPG.Domain.SharedKernel.ApplicationSettings;
+using CPG.Domain.SharedKernel.ApplicationSettingsAggregate;
 using CPG.Domain.SharedKernel.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -92,5 +92,8 @@ namespace CPG.Infrastructure.Authorization
 
         public static IApplicationBuilder UseAuthenticationMiddleware(this IApplicationBuilder app)
            => app.UseMiddleware<AuthenticationMiddleware>();
+
+        public static IApplicationBuilder UseExternalServicesMiddleware(this IApplicationBuilder app)
+            => app.UseMiddleware<ExternalServicesMiddleware>();
     }
 }

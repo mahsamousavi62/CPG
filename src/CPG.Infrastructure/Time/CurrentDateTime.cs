@@ -1,5 +1,5 @@
 ﻿using System;
-using CPG.Domain.SharedKernel;
+using CPG.Domain.SharedKernel.Interfaces;
 
 namespace CPG.Infrastructure.Time;
 

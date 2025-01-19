@@ -18,6 +18,7 @@ using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Communication.DirectDebit;
 using CPG.Domain.SharedKernel.Communication.Ipg;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentTicket;
+using CPG.Domain.SharedKernel.Interfaces;
 using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -30,44 +31,41 @@ using System.Net;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
-
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 
 public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
-    IAggregateRepository<PaymentRequest> paymentRequestAggregateRepository,
-    IAggregateRepository<Transaction> transactionRepository,
-    IAggregateRepository<Domain.AggregateModels.CompanyDepositAggregate.CompanyDeposit> companyDepositRepository,
-    IAggregateRepository<Domain.AggregateModels.CompanyIPGAggregate.CompanyIPG> companyIPGRepository,
-    IAggregateRepository<Domain.AggregateModels.CompanyAggregate.Company> companyRepository,
-    IAggregateRepository<Domain.AggregateModels.BankAggregate.Bank> bankRepository,
-    IAggregateRepository<Domain.AggregateModels.ProviderAggregate.Provider> providerRepository,
-    IAggregateRepository<DirectDebitGrant> grantRepository,
-    IDirectDebitFactory directDebitFactory,
-    IAuthenticationService authenticationService,
-    ReadDbContext context,
-    IHttpContextAccessor httpContext,
-    IAggregateRepository<User> userRepository
-    ) : IRequestHandler<GetPaymentTokenCommand, Result<PaymentTokenResponseViewModel>>
+                                          IAggregateRepository<PaymentRequest> paymentRequestAggregateRepository,
+                                          IAggregateRepository<Transaction> transactionRepository,
+                                          IAggregateRepository<Domain.AggregateModels.CompanyDepositAggregate.CompanyDeposit> companyDepositRepository,
+                                          IAggregateRepository<Domain.AggregateModels.CompanyIPGAggregate.CompanyIPG> companyIPGRepository,
+                                          IAggregateRepository<Domain.AggregateModels.CompanyAggregate.Company> companyRepository,
+                                          IAggregateRepository<Domain.AggregateModels.BankAggregate.Bank> bankRepository,
+                                          IAggregateRepository<Domain.AggregateModels.ProviderAggregate.Provider> providerRepository,
+                                          IAggregateRepository<DirectDebitGrant> grantRepository,
+                                          IDirectDebitFactory directDebitFactory,
+                                          IAuthenticationService authenticationService,
+                                          IHttpContextAccessor httpContext,
+                                          IAggregateRepository<User> userRepository) : IRequestHandler<GetPaymentTokenCommand, Result<PaymentTokenResponseViewModel>>
 {
     private readonly IIpgFactory _ipgFactory = ipgFactory;
-    private readonly IAggregateRepository<PaymentRequest> _paymentRequestRepository = paymentRequestAggregateRepository;
-    private readonly IAggregateRepository<Domain.AggregateModels.CompanyIPGAggregate.CompanyIPG> _companyIPGRepository = companyIPGRepository;
-    private readonly IAggregateRepository<Domain.AggregateModels.CompanyAggregate.Company> _companyRepository = companyRepository;
-    private readonly IAggregateRepository<Domain.AggregateModels.BankAggregate.Bank> _bankRepository = bankRepository;
-    private readonly IAggregateRepository<Domain.AggregateModels.ProviderAggregate.Provider> _providerRepository = providerRepository;
-    private readonly IAggregateRepository<DirectDebitGrant> _grantRepository = grantRepository;
-    private readonly IDirectDebitFactory _directDebitFactory = directDebitFactory;
-    private readonly IAggregateRepository<Transaction> _transactionRepository = transactionRepository;
-    private readonly IAggregateRepository<Domain.AggregateModels.CompanyDepositAggregate.CompanyDeposit> _companyDepositRepository = companyDepositRepository;
-    private readonly IAuthenticationService _authenticationService = authenticationService;
     private readonly IHttpContextAccessor _httpContext = httpContext;
     private readonly IAggregateRepository<User> _userRepository = userRepository;
+    private readonly IDirectDebitFactory _directDebitFactory = directDebitFactory;
+    private readonly IAuthenticationService _authenticationService = authenticationService;
+    private readonly IAggregateRepository<DirectDebitGrant> _grantRepository = grantRepository;
+    private readonly IAggregateRepository<Transaction> _transactionRepository = transactionRepository;
+    private readonly IAggregateRepository<Domain.AggregateModels.BankAggregate.Bank> _bankRepository = bankRepository;
+    private readonly IAggregateRepository<PaymentRequest> _paymentRequestRepository = paymentRequestAggregateRepository;
+    private readonly IAggregateRepository<Domain.AggregateModels.CompanyAggregate.Company> _companyRepository = companyRepository;
+    private readonly IAggregateRepository<Domain.AggregateModels.ProviderAggregate.Provider> _providerRepository = providerRepository;
+    private readonly IAggregateRepository<Domain.AggregateModels.CompanyIPGAggregate.CompanyIPG> _companyIPGRepository = companyIPGRepository;
+    private readonly IAggregateRepository<Domain.AggregateModels.CompanyDepositAggregate.CompanyDeposit> _companyDepositRepository = companyDepositRepository;
 
     public async Task<Result<PaymentTokenResponseViewModel>> Handle(GetPaymentTokenCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            var paymentRequest = await _paymentRequestRepository.GetBySpecAsync(new PaymentRequestByCode(request.PaymentToken.PaymentRequestCode), cancellationToken);
+            var paymentRequest = await _paymentRequestRepository.FirstOrDefaultAsync(new PaymentRequestByCode(request.PaymentToken.PaymentRequestCode), cancellationToken);
             if (paymentRequest is null) throw new PaymentRequestNotFoundByCodeException();
             if (!paymentRequest.Company.IsActive) throw new PaymentTokenInactiveCompanyException();
             if (paymentRequest.UrlExpirationDateTime < DateTime.Now) throw new PaymentRequestCodeExpiredException();
@@ -80,9 +78,9 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                 throw new PaymentTokenNullKeyOrIvException();
             }
 
-            var company = await _companyRepository.GetBySpecAsync(new CompanyByIdSpec(paymentRequest.CompanyId), cancellationToken);
+            var company = await _companyRepository.FirstOrDefaultAsync(new CompanyByIdSpec(paymentRequest.CompanyId), cancellationToken);
 
-            var companyIpg = await _companyIPGRepository.GetBySpecAsync(new CompanyIPGIncludeProvider((long)request.PaymentToken.CompanyIPGId), cancellationToken);
+            var companyIpg = await _companyIPGRepository.FirstOrDefaultAsync(new CompanyIPGIncludeProvider((long)request.PaymentToken.CompanyIPGId), cancellationToken);
             if (companyIpg is null) throw new CompanyIPGNotFoundException((long)request.PaymentToken.CompanyIPGId);
             if (!companyIpg.IsActive) throw new PaymentTokenInactiveIPGException();
             if (!companyIpg.IPGType.IsActive) throw new PaymentTokenInactiveIPGTypeException();
@@ -133,8 +131,8 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
             List<Claim> claims = new();
             if (string.IsNullOrEmpty(sub))
             {
-                user = await _userRepository.GetBySpecAsync(new UserByNationalCodeSpec(nationalCode));
-                if (user is not null && !string.IsNullOrEmpty(user.PhoneNumber) && !string.IsNullOrWhiteSpace(user.PhoneNumber))
+                user = await _userRepository.FirstOrDefaultAsync(new UserByNationalCodeSpec(nationalCode));
+                if (user is not null && !string.IsNullOrEmpty(user.PhoneNumber))
                 {
                     mobileNumber = user.PhoneNumber;
                     claims.Add(new Claim(ClaimTypes.MobilePhone, user.PhoneNumber, ClaimValueTypes.String));
@@ -143,6 +141,12 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
             else
             {
                 mobileNumber = await _authenticationService.GetDataFromClaim<string>(ClaimTypes.MobilePhone);
+
+                if (string.IsNullOrEmpty(mobileNumber))
+                {
+                    user = await _userRepository.FirstOrDefaultAsync(new UserByNationalCodeSpec(nationalCode));
+                    mobileNumber = user?.PhoneNumber??string.Empty;
+                }
             }
 
             var result = await ipg.GetPaymentTokenAsync(
@@ -265,9 +269,9 @@ public class GetPaymentTicketQueryHandler(IIpgFactory ipgFactory,
                 {
                     response.JsonBody.jsonStr = new ExpandoObject();
                     response.JsonBody.jsonStr.url = result.IpgBaseUrl;
-                    response.JsonBody.jsonStr.method = "POST";
-                    response.JsonBody.jsonStr.@body = new ExpandoObject();
-                    response.JsonBody.jsonStr.@body.Token = result.Token;
+                    response.JsonBody.jsonStr.method = "GET";
+                    response.JsonBody.jsonStr.@params = new ExpandoObject();
+                    response.JsonBody.jsonStr.@params.Token = result.Token;
                     break;
                 }
             case Enums.ProviderType.BehPardakht:

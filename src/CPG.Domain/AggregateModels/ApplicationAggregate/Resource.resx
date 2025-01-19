@@ -123,6 +123,9 @@
   <data name="ApplicationIsAlreadyNotActive" xml:space="preserve">
     <value>برنامه با شناسه {0} غیرفعال می باشد</value>
   </data>
+  <data name="ApplicationNotFound" xml:space="preserve">
+    <value>برنامه موجود نمی باشد</value>
+  </data>
   <data name="Duplicate_CallbackUrl" xml:space="preserve">
     <value>نشانی بازگشتی تکراری است</value>
   </data>

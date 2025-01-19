@@ -15,6 +15,7 @@ using CPG.Application.Shared.Resource;
 using CPG.Domain.Exceptions;
 using CPG.Application.UseCases.Exceptions;
 using System.Linq;
+using CPG.Domain.SharedKernel.Interfaces;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 
@@ -192,7 +193,7 @@ public class ValidateTokenQueryHandler(IIpgFactory ipgFactory,
 
             return Result<ValidateTokenResponseViewModel>.SuccessResult(new ValidateTokenResponseViewModel
             {
-                CallbackUrl = $"{paymentRequest.CallBackUrl}/paymentResult?paymentCode={paymentRequest.PaymentCode}&paymentStatus={General.GetPaymentStatusTitle(paymentRequest.Status)}"
+                CallbackUrl = Constants.CreateCallbackUrl(paymentRequest.CallBackUrl, paymentRequest.PaymentCode, paymentRequest.Status)
             });
         }
         catch (DomainException exc)

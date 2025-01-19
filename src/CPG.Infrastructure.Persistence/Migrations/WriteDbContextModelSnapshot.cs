@@ -1334,7 +1334,7 @@ namespace CPG.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("NationalCode")
                         .IsRequired()
-                        .HasColumnType("char(11)")
+                        .HasColumnType("varchar(11)")
                         .HasColumnName("NationalCode");
 
                     b.Property<string>("PhoneNumber")
@@ -1490,8 +1490,7 @@ namespace CPG.Infrastructure.Persistence.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("NationalCode")
-                        .IsRequired()
-                        .HasMaxLength(10)
+                        .HasMaxLength(11)
                         .HasColumnType("varchar")
                         .HasColumnName("NationalCode");
 

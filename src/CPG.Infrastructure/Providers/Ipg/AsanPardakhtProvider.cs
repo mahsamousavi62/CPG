@@ -6,7 +6,7 @@ using CCPG.Domain.SharedKernel.Communication.Ipg;
 using CPG.Application.Shared.Resource;
 using CPG.Application.UseCases.Ipg.Exception;
 using CPG.Domain.SharedKernel;
-using CPG.Domain.SharedKernel.ApplicationSettings;
+using CPG.Domain.SharedKernel.ApplicationSettingsAggregate;
 using CPG.Domain.SharedKernel.Communication;
 using CPG.Domain.SharedKernel.Communication.Ipg.AsanPardakht;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentTicket;
@@ -78,7 +78,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
                                                             AmountInRials = (long)request.PaymentRequestAmount,
                                                             LocalInvoiceId = trackerId.ToString(),
                                                         },
-                                                        Provider = Enums.ProviderType.AsanPardakht,
+                                                        Provider = Enums.ProviderTypeInLog.AsanPardakht,
                                                         Service = Enums.ServiceType.AsanPardakhtToken,
                                                     }, request, PaymentTokenErrorHandler, (string stringResponse) =>
                                                     {
@@ -113,7 +113,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
                                                         BaseAddress = "https://ipgrest.asanpardakht.ir/",
                                                         Uri = "v1/TranResult",
                                                         HeaderParameters = headers,
-                                                        Provider = Enums.ProviderType.AsanPardakht,
+                                                        Provider = Enums.ProviderTypeInLog.AsanPardakht,
                                                         Service = Enums.ServiceType.AsanPardakhtTransResult,
                                                     }, request, TransactionResultErrorHandler);
 
@@ -136,7 +136,7 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
                                                         BaseAddress = "https://ipgrest.asanpardakht.ir/",
                                                         Uri = "v1/Verify",
                                                         HeaderParameters = headers,
-                                                        Provider = Enums.ProviderType.AsanPardakht,
+                                                        Provider = Enums.ProviderTypeInLog.AsanPardakht,
                                                         Service = Enums.ServiceType.AsanPardakhtVerify,
                                                     }, request, VerifyErrorHandler, (string stringResponse) =>
                                                     {

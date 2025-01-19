@@ -5,7 +5,6 @@ using CPG.Application.UseCases.Application.ViewModels;
 using CPG.Application.UseCases.Applications.Commands.UpdateApplication;
 using CPG.Application.UseCases.Applications.ViewModels;
 using CPG.Domain.SharedKernel;
-using CPG.Infrastructure.Authorization;
 using CPG.Infrastructure.File;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

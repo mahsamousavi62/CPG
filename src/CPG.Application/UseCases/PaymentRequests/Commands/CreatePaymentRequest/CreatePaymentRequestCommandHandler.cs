@@ -125,6 +125,7 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
     private async Task<ConfigData> Validate(CreatePaymentRequestViewModel model, CancellationToken cancellationToken)
     {
         var amount = new Amount(model.Amount);
+        var callBackUrl = new Url(model.CallBackUrl);
 
         try
         {

@@ -1,6 +1,5 @@
 ﻿using CPG.Domain.AggregateModels.DirectDebitGrantAggregate.Specifications;
 using CPG.Domain.AggregateModels.DirectDebitGrantAggregate;
-using CPG.Domain.SharedKernel;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
@@ -18,6 +17,7 @@ using System.Collections.Generic;
 using CPG.Application.UseCases.DirectDebit.ViewModels;
 using CPG.Application.Shared.Interfaces;
 using CPG.Application.Shared;
+using CPG.Domain.SharedKernel.Interfaces;
 
 namespace CPG.Application.UseCases.DirectDebit.Commands;
 
@@ -185,7 +185,7 @@ public class SetVandarWithdrawalDataCommandHandler(
                     {
                         return Result<WithdrawalDataResponseViewModel>.SuccessResult(new WithdrawalDataResponseViewModel
                         {
-                            CallbackUrl = $"{transaction.PaymentRequest.CallBackUrl}/paymentResult?paymentCode={transaction.PaymentRequest.PaymentCode}&paymentStatus={General.GetPaymentStatusTitle(transaction.PaymentRequest.Status)}"
+                            CallbackUrl = Constants.CreateCallbackUrl(transaction.PaymentRequest.CallBackUrl, transaction.PaymentRequest.PaymentCode, transaction.PaymentRequest.Status)
                         });
                     }
                     else if (failedStatusArray.Contains(withdrawData.Status))

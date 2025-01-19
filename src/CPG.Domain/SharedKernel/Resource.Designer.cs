@@ -61,6 +61,15 @@ namespace CPG.Domain.SharedKernel {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to توسط کاربر لغو شده.
+        /// </summary>
+        internal static string CanceledByUser {
+            get {
+                return ResourceManager.GetString("CanceledByUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to کاریزما کارت.
         /// </summary>
         internal static string CharismaCard {
@@ -84,6 +93,15 @@ namespace CPG.Domain.SharedKernel {
         internal static string Done {
             get {
                 return ResourceManager.GetString("Done", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to پیش نویس.
+        /// </summary>
+        internal static string Draft {
+            get {
+                return ResourceManager.GetString("Draft", resourceCulture);
             }
         }
         
@@ -160,6 +178,15 @@ namespace CPG.Domain.SharedKernel {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to منتقل شده به سی پی جی.
+        /// </summary>
+        internal static string RedirectedToCpg {
+            get {
+                return ResourceManager.GetString("RedirectedToCpg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ثبت درخواست تسویه ناموفق.
         /// </summary>
         internal static string SettlementFailed {
@@ -187,6 +214,33 @@ namespace CPG.Domain.SharedKernel {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to تراکنش توسط برنامه لغو شد.
+        /// </summary>
+        internal static string TransactionCanceledByApplication {
+            get {
+                return ResourceManager.GetString("TransactionCanceledByApplication", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to لغو تراکنش ناموفق شد.
+        /// </summary>
+        internal static string TransactionCancellationFailed {
+            get {
+                return ResourceManager.GetString("TransactionCancellationFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to تراکنش با موفقیت لغو شد.
+        /// </summary>
+        internal static string TransactionCancellationSucceeded {
+            get {
+                return ResourceManager.GetString("TransactionCancellationSucceeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to تراکنش ناموفق.
         /// </summary>
         internal static string TransactionFailed {
@@ -201,6 +255,24 @@ namespace CPG.Domain.SharedKernel {
         internal static string TransactionSucceeded {
             get {
                 return ResourceManager.GetString("TransactionSucceeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to تراکنش توسط برنامه تایید شد.
+        /// </summary>
+        internal static string TransactionVerifiedByApplication {
+            get {
+                return ResourceManager.GetString("TransactionVerifiedByApplication", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to تراکنش در انتظار تایید .
+        /// </summary>
+        internal static string TransactionWaitingForVerification {
+            get {
+                return ResourceManager.GetString("TransactionWaitingForVerification", resourceCulture);
             }
         }
         

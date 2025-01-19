@@ -39,10 +39,10 @@ public class TransactionDetail
     public int TerminalNumber { get; set; }
 
     [JsonPropertyName("OrginalAmount")]
-    public int OrginalAmount { get; set; }
+    public decimal OrginalAmount { get; set; }
 
     [JsonPropertyName("AffectiveAmount")]
-    public int AffectiveAmount { get; set; }
+    public decimal AffectiveAmount { get; set; }
 
     [JsonPropertyName("StraceDate")]
     public string StraceDate { get; set; }

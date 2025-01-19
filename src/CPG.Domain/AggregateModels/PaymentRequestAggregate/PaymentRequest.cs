@@ -7,6 +7,7 @@ using CPG.Domain.AggregateModels.PaymentRequestAggregate.Exceptions;
 using CPG.Domain.AggregateModels.TransactionAggregate;
 using CPG.Domain.SeedWork;
 using CPG.Domain.SharedKernel;
+using CPG.PaymentRequestAggregate.UseCases.PaymentRequests.Exceptions;
 
 public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
 {
@@ -76,5 +77,18 @@ public class PaymentRequest : AuditableEntity<long>, IAggregateRoot
     public static void UpdateStatus(PaymentRequest paymentRequest, Enums.PaymentStatus status)
     {
         paymentRequest.Status = status;
+    }
+
+    public static void Validate(PaymentRequest paymentRequest)
+    {
+        if (paymentRequest is null) throw new PaymentRequestNotFoundByCodeException();
+
+        if (!paymentRequest.Company.IsActive) throw new PaymentRequestInActiveCompanyException();
+
+        if (paymentRequest.UrlExpirationDateTime < DateTime.Now) throw new PaymentRequestCodeExpiredException();
+
+        if (paymentRequest.IsUsed) throw new PaymentRequestCodeIsUsedBeforeException();
+                                                                                     
+        if (paymentRequest.Status != Enums.PaymentStatus.RedirectedToCpg) throw new PaymentRequestCodeInvalidStatusException();
     }
 }

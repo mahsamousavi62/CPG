@@ -1,4 +1,4 @@
-﻿using CPG.Domain.SharedKernel.ApplicationSettings;
+﻿using CPG.Domain.SharedKernel.ApplicationSettingsAggregate;
 using IdentityModel;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
@@ -9,10 +9,9 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using CPG.Domain.SharedKernel;
 
 using CPG.Application.Auth;
-using IAuthenticationService = CPG.Domain.SharedKernel.IAuthenticationService;
+using IAuthenticationService = CPG.Domain.SharedKernel.Interfaces.IAuthenticationService;
 namespace CPG.Infrastructure.Authorization
 {
     public class AuthenticationService : IAuthenticationService
