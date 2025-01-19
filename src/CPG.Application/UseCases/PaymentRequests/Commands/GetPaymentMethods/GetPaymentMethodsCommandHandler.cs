@@ -21,6 +21,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using static CPG.Domain.SharedKernel.Enums;
+using CPG.Domain.AggregateModels.BankAggregate;
+using CPG.Domain.AggregateModels.CompanyDepositAggregate;
 
 namespace CPG.Application.UseCases.PaymentRequests.Commands.GetPaymentMethods;
 
@@ -32,22 +34,21 @@ public class GetPaymentMethodsCommandHandler(
     IAggregateRepository<Company> companyRepository,
     IAggregateRepository<DirectDebitGrant> grantRepository,
     IAggregateRepository<Transaction> transactionRepository,
-    IAggregateRepository<PaymentRequest> paymentRequestRepository) :
+    IAggregateRepository<PaymentRequest> paymentRequestRepository,
+    IAggregateRepository<Bank> bankRepository,
+    IAggregateRepository<CompanyDeposit> companyDepositRepository) :
     IRequestHandler<GetPaymentMethodsCommand, Result<PaymentMethodsViewModel>>
 {
     private readonly ICurrentUser _user = user;
     private readonly IMinioProvider _minioProvider = minioProvider;
     private readonly INeoBankService _neoBankService = neoBankService;
     private readonly IAggregateRepository<Company> _companyRepository = companyRepository;
-    private readonly IAggregateRepository<Bank> _bankRepository = bankRepository;
-    private readonly IAggregateRepository<CompanyDeposit> _companyDepositRepository = companyDepositRepository;
     private readonly IAuthenticationService _authenticationService = authenticationService;
     private readonly IAggregateRepository<DirectDebitGrant> _grantRepository = grantRepository;
     private readonly IAggregateRepository<Transaction> _transactionRepository = transactionRepository;
     private readonly IAggregateRepository<PaymentRequest> _paymentRequestRepository = paymentRequestRepository;
 
 
-    private readonly string MiddleEastIbanPrefix = "078";
     private readonly string demo = "Demo";
     private readonly string userKycStatus = "KycVerified";
 
@@ -99,17 +100,17 @@ public class GetPaymentMethodsCommandHandler(
 
         company = await _companyRepository.FirstOrDefaultAsync(new CompanyPaymentMethodsByIdSpec(paymentRequest.CompanyId), cancellationToken);
 
-            if (string.IsNullOrEmpty(sub))
-            {
-                availablePaymentMethodTypes = new List<PaymentMethodType> { PaymentMethodType.InternetPaymentGateway, PaymentMethodType.PaymentReceipt };
-            }
-            else
-            {
-                availablePaymentMethodTypes = company?.PaymentMethods?.Select(p => p.MethodType).ToList();
-            }
+        if (string.IsNullOrEmpty(sub))
+        {
+            availablePaymentMethodTypes = new List<PaymentMethodType> { PaymentMethodType.InternetPaymentGateway, PaymentMethodType.PaymentReceipt };
+        }
+        else
+        {
+            availablePaymentMethodTypes = company?.PaymentMethods?.Select(p => p.MethodType).ToList();
+        }
 
-        GetPaymentMethodsHandler  ipgHandler = new CreateIpgHandler();
-        GetPaymentMethodsHandler  directDebitHandler= new CreateDirectDebitHandler();
+        GetPaymentMethodsHandler ipgHandler = new CreateIpgHandler();
+        GetPaymentMethodsHandler directDebitHandler = new CreateDirectDebitHandler();
         GetPaymentMethodsHandler charismaCardHandler = new CreateCharismaCardHandler();
         GetPaymentMethodsHandler paymentReceiptHandler = new CreatePaymentReceiptHandler();
         ipgHandler.SetNextHandler(directDebitHandler);
@@ -125,7 +126,7 @@ public class GetPaymentMethodsCommandHandler(
             CurrentUser = _user,
             TransactionRepository = _transactionRepository
         };
-        
+
         var PaymentMethodsViewModel = new PaymentMethodsViewModel();
 
         foreach (var item in availablePaymentMethodTypes)

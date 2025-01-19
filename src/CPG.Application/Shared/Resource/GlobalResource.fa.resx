@@ -497,6 +497,7 @@
   </data>
   <data name="MaxWithdrawalAmountPerDay" xml:space="preserve">
     <value>MaxWithdrawalAmountPerDay</value>
+  </data>
   <data name="PaymentRequestNoCompanyFound" xml:space="preserve">
     <value>با کد ارائه شده هیچ شرکتی یافت نشد</value>
   </data>

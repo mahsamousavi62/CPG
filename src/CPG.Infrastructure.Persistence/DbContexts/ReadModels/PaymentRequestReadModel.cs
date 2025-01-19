@@ -55,12 +55,7 @@ public class PaymentRequestReadModel
             paymentRequests = paymentRequests.Where(p =>
                p.NationalCode == paymentFilter.NationalCode);
         }
-        if (!string.IsNullOrEmpty(paymentFilter.DestinationDepositIban))
-        {
-            paymentRequests = paymentRequests.Where(p =>
-               p.DestinationDepositIban == paymentFilter.DestinationDepositIban);
-        }
-
+        
         if (paymentFilter.CompanyId.HasValue)
         {
             paymentRequests = paymentRequests.Where(p =>

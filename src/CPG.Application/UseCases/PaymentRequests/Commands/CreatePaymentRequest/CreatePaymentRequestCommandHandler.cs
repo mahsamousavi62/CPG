@@ -1,5 +1,4 @@
 ﻿using CPG.Application.Auth;
-using CPG.Application.Shared.Resource;
 using CPG.Domain.AggregateModels.CompanyDepositAggregate;
 using CPG.Application.UseCases.Exceptions;
 using CPG.Application.UseCases.PaymentRequests.Exceptions;
@@ -11,24 +10,17 @@ using CPG.Domain.AggregateModels.PaymentRequestAggregate;
 using CPG.Domain.AggregateModels.PaymentRequestAggregate.Specifications;
 using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Domain.Exceptions;
-using CPG.Domain.SharedKernel;
-using CPG.Domain.SharedKernel.ApplicationSettings;
 using Mapster;
-using MediatR;
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 using static CPG.Domain.SharedKernel.Enums;
 using CPG.Domain.AggregateModels.IPGTypeAggregate;
 using CPG.Domain.AggregateModels.IPGTypeAggregate.Specifications;
 using CPG.Domain.AggregateModels.ProviderAggregate;
 using CPG.Domain.AggregateModels.ProviderAggregate.Specifications;
-using System.Text.RegularExpressions;
 using CPG.Application.UseCases.PaymentRequests.Commands.CreatePaymentRequest.ValidationHandlers;
-using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Token;
 using CPG.Application.UseCases.PaymentRequests.Commands.CreatePaymentRequest.Models;
+using CPG.Domain.SharedKernel.Interfaces;
+using CPG.Domain.SharedKernel.ApplicationSettingsAggregate;
 
 namespace CPG.Application.UseCases.PaymentRequests.Commands.CreatePaymentRequest;
 

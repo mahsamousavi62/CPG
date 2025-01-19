@@ -17,7 +17,7 @@ namespace CPG.API.Controllers.v1;
 /// </summary>
 public class ExternalServicesController : ApiBaseController
 {
-    [Authorize]
+    //[Authorize]
     [HttpPost("PaymentRequest")]
     [ProducesResponseType(typeof(Result<PaymentRequestResponseViewModel>), 200)]
     public async Task<Result<PaymentRequestResponseViewModel>> PaymentRequest([FromBody] CreatePaymentRequestViewModel model)
