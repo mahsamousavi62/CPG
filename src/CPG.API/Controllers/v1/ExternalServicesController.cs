@@ -1,25 +1,13 @@
-﻿using CPG.Application.UseCases.Ipg.Commands;
-using CPG.Application.UseCases.PaymentRequests.Commands.CreatePaymentRequest;
-using CPG.Application.UseCases.PaymentRequests.Commands.GetPaymentMethods;
+﻿using CPG.Application.UseCases.PaymentRequests.Commands.CreatePaymentRequest;
 using CPG.Application.UseCases.PaymentRequests.ViewModels;
 using CPG.Domain.SharedKernel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using CPG.Application.UseCases.Ipg.ViewModels;
 using CPG.Application.UseCases.Ipg.Queries;
-using CPG.Domain.SharedKernel.Communication.Ipg.Models.TransactionResult;
 using CPG.Application.UseCases.PaymentRequests.Commands.CancelPaymentRequet;
 using System.ComponentModel.DataAnnotations;
-using CPG.Application.UseCases.DirectDebit.Queries;
-using CPG.Application.UseCases.DirectDebit.ViewModels;
-using CPG.Application.UseCases.PaymentReceipt.ViewModels;
-using CPG.Application.UseCases.PaymentReceipt.Queries;
-using CPG.Infrastructure.File;
-using CPG.Application.UseCases.CharismaCard.Commands;
-using CPG.Application.UseCases.CharismaCard.ViewModels;
-using CPG.Application.UseCases.PaymentReceipt.Commands;
 using CPG.Application.Shared;
-using Microsoft.AspNetCore.Http.HttpResults;
 using CPG.Application.UseCases.PaymentRequests.Queries.Report;
 
 namespace CPG.API.Controllers.v1;
@@ -29,7 +17,6 @@ namespace CPG.API.Controllers.v1;
 /// </summary>
 public class ExternalServicesController : ApiBaseController
 {
-
     [Authorize]
     [HttpPost("PaymentRequest")]
     [ProducesResponseType(typeof(Result<PaymentRequestResponseViewModel>), 200)]
@@ -53,7 +40,6 @@ public class ExternalServicesController : ApiBaseController
     [ProducesResponseType(typeof(Result<VerifyTransactionResponseViewModel>), 200)]
     public async Task<Result<VerifyTransactionResponseViewModel>> TransactionVerify([Required] VerifyTransactionViewModel model)
         => await Mediator.Send(new VerifyTransactionQuery(model));
-
 
     [Authorize]
     [HttpGet("PaymentRequestReport")]
