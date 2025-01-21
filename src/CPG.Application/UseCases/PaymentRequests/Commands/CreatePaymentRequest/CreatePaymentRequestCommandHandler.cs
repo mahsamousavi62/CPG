@@ -119,13 +119,16 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
         var amount = new Amount(model.Amount);
         var callBackUrl = new Url(model.CallBackUrl);
 
-        try
+        if (!string.IsNullOrWhiteSpace(model.NationalCode))
         {
-            var nationalCode = new NationalCode(model.NationalCode);
-        }
-        catch (Exception exc)
-        {
-            throw new PaymentRequestInvalidNationalCodeException();
+            try
+            {
+                var nationalCode = new NationalCode(model.NationalCode);
+            }
+            catch (Exception exc)
+            {
+                throw new PaymentRequestInvalidNationalCodeException();
+            }
         }
 
         var sameTrackerId = await _paymentRequestRepository.FirstOrDefaultAsync(new PaymentRequestByTrackerId(model.TrackerId));
