@@ -63,10 +63,13 @@ public class ExternalServicesMiddleware(RequestDelegate next, ILogger<ExternalSe
 
         AuthenticateResult result = await httpContext.AuthenticateAsync();
         httpContext.User = ClonePrincipal(result?.Principal!, currentClient.Id.ToString());
-        await next(httpContext);
         if (path!.Contains("api/externalservices"))
         {
             await AddExternalServiceCallLog(httpContext);
+        }
+        else
+        {
+            await next(httpContext);
         }
     }
 
@@ -90,12 +93,21 @@ public class ExternalServicesMiddleware(RequestDelegate next, ILogger<ExternalSe
         _ = long.TryParse(httpContext!.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value, out long UserId);
         string? clientId = httpContext!.User.Claims.FirstOrDefault(c => c.Type.ToLower() == "client_id")?.Value;
         httpContext.Request.EnableBuffering();
+        httpContext.Request.Body.Position = 0;
         using StreamReader reqStream = new(httpContext.Request.Body);
         string requestBody = await reqStream.ReadToEndAsync();
-        httpContext.Request.Body.Position = 0;
-        using StreamReader resStream = new(httpContext.Response.Body);
+
+        var originalBodyStream = httpContext.Response.Body;
+        using MemoryStream memoryStream = new();
+        httpContext.Response.Body = memoryStream;
+        await next(httpContext);
+        memoryStream.Position = 0;
+        using StreamReader resStream = new(memoryStream);
         string responseBody = await resStream.ReadToEndAsync();
-        httpContext.Response.Body.Position = 0;
+        memoryStream.Position = 0;
+        await memoryStream.CopyToAsync(originalBodyStream);
+        httpContext.Response.Body = originalBodyStream;
+
         ExternalServiceCallLog externalServiceCallLog = new()
         {
             RequestBody = requestBody,
