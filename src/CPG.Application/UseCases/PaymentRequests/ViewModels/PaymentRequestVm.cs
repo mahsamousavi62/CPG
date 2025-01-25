@@ -20,6 +20,7 @@ namespace CPG.Application.UseCases.PaymentRequests.ViewModels
         public bool IsVerified { get; set; }
         public Enums.PaymentStatus Status { get; set; }
         public bool IsUsed { get; set; }
+        public bool IsAnonymous { get; set; }
         public DateTime? VerificationDateTime { get; set; }
         public DateTime UrlExpirationDateTime { get; set; }
         public bool IsActive { get; set; }

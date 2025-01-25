@@ -20,6 +20,7 @@ using CPG.Application.UseCases.CharismaCard.ViewModels;
 using CPG.Application.UseCases.PaymentReceipt.Commands;
 using CPG.Application.Shared;
 using CPG.Application.UseCases.PaymentRequests.Queries.Report;
+using CPG.Application.UseCases.PaymentRequests.Queries.AnonymousStatus;
 
 namespace CPG.API.Controllers.v1;
 
@@ -107,4 +108,10 @@ public class PaymentRequestController : ApiBaseController
           [FromQuery] PaymentFilter searchTerm, [FromQuery] PagedFilter pagedFilter
         )
       => await Mediator.Send(new GetPaymentRequestsQuery(searchTerm, pagedFilter));
+
+    [Authorize]
+    [HttpGet("AnonymousStatus")]
+    [ProducesResponseType(typeof(Result<AnonymousStatusResponseViewModel>), 200)]
+    public async Task<Result<AnonymousStatusResponseViewModel>> AnonymousStatus([FromBody] AnonymousStatusViewModel anonymousStatusRequest)
+        => await Mediator.Send(new AnonymousStatusQuery(anonymousStatusRequest));
 }
