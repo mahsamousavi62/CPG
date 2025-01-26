@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CPG.Domain.SharedKernel;
+namespace CPG.Domain.SharedKernel.Interfaces;
 
 public interface ICurrentDateTime
 {

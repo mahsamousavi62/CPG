@@ -1,5 +1,5 @@
-﻿using CPG.Domain.SharedKernel;
-using CPG.Domain.SharedKernel.ApplicationSettings;
+﻿using CPG.Domain.SharedKernel.ApplicationSettingsAggregate;
+using CPG.Domain.SharedKernel.Interfaces;
 using CPG.Infrastructure.Persistence.DbContexts;
 using CPG.Infrastructure.Persistence.GraphQL.ErrorHandling;
 using CPG.Infrastructure.Persistence.GraphQL.Queries;

@@ -17,6 +17,8 @@ using CPG.Domain.Exceptions;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
 using CPG.Application.UseCases.Exceptions;
+using Microsoft.EntityFrameworkCore;
+using CPG.Domain.SharedKernel.Interfaces;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Ipg;
 
@@ -39,8 +41,12 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
                 throw new VerifyRequiredCodeOrTrackIdException();
             }
 
-            var paymentRequest = await _paymentRequestRepository.GetBySpecAsync(new PaymentRequestByCodeOrTrackerId(request.VerifyTransaction.Code,
-                request.VerifyTransaction.TrackerId), cancellationToken) ?? throw new VerifyInvalidCodeOrTrackIdException();
+            var paymentRequest = await _paymentRequestRepository.GetBySpecAsync(new PaymentRequestVerifyByCode(request.VerifyTransaction.Code), cancellationToken);
+
+            if (paymentRequest is null)
+            {
+                paymentRequest = await _paymentRequestRepository.GetBySpecAsync(new PaymentRequestVerifyByTrackerId(request.VerifyTransaction.TrackerId), cancellationToken) ?? throw new VerifyInvalidCodeOrTrackIdException(); ;
+            }
 
             _ = long.TryParse(_httpContext.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out long applicationId);
 
@@ -57,9 +63,9 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
             await _paymentRequestRepository.SaveChangesAsync(cancellationToken);
 
             var transaction = await _transactionRepository.GetBySpecAsync(new TransactionByPaymentRequestId(paymentRequest.Id), cancellationToken);
-            if (transaction is null 
-                || (transaction.IPGTransaction is null 
-                && transaction.DirectDebitTransaction is null 
+            if (transaction is null
+                || (transaction.IPGTransaction is null
+                && transaction.DirectDebitTransaction is null
                 && transaction.PaymentReceiptTransaction is null
                 && transaction.CharismaCardTransaction is null))
             {
@@ -111,7 +117,7 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
                                 }
                             }
                             else if (providerType == ProviderType.Ayandeh)
-                            {            
+                            {
                                 var date = DateTime.Now.AddDays(2);
                                 transaction.PredictedSettlementDateTime = new DateTime(date.Year, date.Month, date.Day, 7, 0, 0);
                             }
@@ -204,5 +210,5 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
         return date;
     }
 
-    
+
 }

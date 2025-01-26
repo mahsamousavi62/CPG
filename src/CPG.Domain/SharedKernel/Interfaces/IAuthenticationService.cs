@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace CPG.Domain.SharedKernel;
+namespace CPG.Domain.SharedKernel.Interfaces;
 
 public interface IAuthenticationService
 {

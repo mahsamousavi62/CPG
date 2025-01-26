@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CanceledByUser" xml:space="preserve">
+    <value>توسط کاربر لغو شده</value>
+  </data>
   <data name="CharismaCard" xml:space="preserve">
     <value>کاریزما کارت</value>
   </data>
@@ -125,6 +128,9 @@
   </data>
   <data name="Done" xml:space="preserve">
     <value>موفق</value>
+  </data>
+  <data name="Draft" xml:space="preserve">
+    <value>پیش نویس</value>
   </data>
   <data name="Expired" xml:space="preserve">
     <value>منقضی شده</value>
@@ -150,6 +156,9 @@
   <data name="PaymentReceipt" xml:space="preserve">
     <value>فیش واریزی</value>
   </data>
+  <data name="RedirectedToCpg" xml:space="preserve">
+    <value>منتقل شده به سی پی جی</value>
+  </data>
   <data name="SettlementFailed" xml:space="preserve">
     <value>ثبت درخواست تسویه ناموفق</value>
   </data>
@@ -159,11 +168,26 @@
   <data name="SucceededAndWaitingForVerification" xml:space="preserve">
     <value>موفق و در انتظار تایید</value>
   </data>
+  <data name="TransactionCanceledByApplication" xml:space="preserve">
+    <value>تراکنش توسط برنامه لغو شد</value>
+  </data>
+  <data name="TransactionCancellationFailed" xml:space="preserve">
+    <value>لغو تراکنش ناموفق شد</value>
+  </data>
+  <data name="TransactionCancellationSucceeded" xml:space="preserve">
+    <value>تراکنش با موفقیت لغو شد</value>
+  </data>
   <data name="TransactionFailed" xml:space="preserve">
     <value>تراکنش ناموفق</value>
   </data>
   <data name="TransactionSucceeded" xml:space="preserve">
     <value>تراکنش موفق</value>
+  </data>
+  <data name="TransactionVerifiedByApplication" xml:space="preserve">
+    <value>تراکنش توسط برنامه تایید شد</value>
+  </data>
+  <data name="TransactionWaitingForVerification" xml:space="preserve">
+    <value>تراکنش در انتظار تایید </value>
   </data>
   <data name="VerificationFailed" xml:space="preserve">
     <value>تایید ناموفق در درگاه</value>

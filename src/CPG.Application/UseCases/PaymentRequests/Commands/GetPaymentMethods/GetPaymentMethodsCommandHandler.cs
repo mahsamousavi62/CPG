@@ -10,6 +10,7 @@ using CPG.Domain.AggregateModels.DirectDebitGrantAggregate;
 using CPG.Domain.AggregateModels.PaymentRequestAggregate.Specifications;
 using CPG.Domain.AggregateModels.TransactionAggregate;
 using CPG.Domain.SharedKernel;
+using CPG.Domain.AggregateModels.TransactionAggregate.Specifications;
 using CPG.Domain.SharedKernel.Communication.NeoBank;
 using CPG.Domain.SharedKernel.Interfaces;
 using CPG.Domain.SharedKernel.Minio;
@@ -20,6 +21,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using static CPG.Domain.SharedKernel.Enums;
+using CPG.Domain.AggregateModels.BankAggregate;
+using CPG.Domain.AggregateModels.CompanyDepositAggregate;
 
 namespace CPG.Application.UseCases.PaymentRequests.Commands.GetPaymentMethods;
 
@@ -31,7 +34,9 @@ public class GetPaymentMethodsCommandHandler(
     IAggregateRepository<Company> companyRepository,
     IAggregateRepository<DirectDebitGrant> grantRepository,
     IAggregateRepository<Transaction> transactionRepository,
-    IAggregateRepository<PaymentRequest> paymentRequestRepository) :
+    IAggregateRepository<PaymentRequest> paymentRequestRepository,
+    IAggregateRepository<Bank> bankRepository,
+    IAggregateRepository<CompanyDeposit> companyDepositRepository) :
     IRequestHandler<GetPaymentMethodsCommand, Result<PaymentMethodsViewModel>>
 {
     private readonly ICurrentUser _user = user;
@@ -42,6 +47,10 @@ public class GetPaymentMethodsCommandHandler(
     private readonly IAggregateRepository<DirectDebitGrant> _grantRepository = grantRepository;
     private readonly IAggregateRepository<Transaction> _transactionRepository = transactionRepository;
     private readonly IAggregateRepository<PaymentRequest> _paymentRequestRepository = paymentRequestRepository;
+
+
+    private readonly string demo = "Demo";
+    private readonly string userKycStatus = "KycVerified";
 
     public async Task<Result<PaymentMethodsViewModel>> Handle(GetPaymentMethodsCommand request, CancellationToken cancellationToken)
     {
@@ -62,26 +71,46 @@ public class GetPaymentMethodsCommandHandler(
             throw new PaymentRequestCodeIsUsedException();
         }
 
+        if (paymentRequest.Status != PaymentStatus.Draft &&
+            paymentRequest.Status != PaymentStatus.RedirectedToCpg)
+        {
+            throw new PaymentRequestStatusIsInvalidException();
+        }
+
         paymentRequest.Status = Enums.PaymentStatus.RedirectedToCpg;
         await _paymentRequestRepository.UpdateAsync(paymentRequest);
 
         Company company = null;
         List<PaymentMethodType> availablePaymentMethodTypes = null;
         var sub = await _authenticationService.GetDataFromClaim<string>("sub", string.Empty);
+        var kycStatus = await _authenticationService.GetDataFromClaim<string>("status", string.Empty);
+        var nationalCode = await _authenticationService.GetDataFromClaim<string>("NationalCode");
+
+        if (!string.IsNullOrEmpty(paymentRequest.NationalCode))
+        {
+            if (paymentRequest.NationalCode != nationalCode && ((string.IsNullOrEmpty(nationalCode) && kycStatus == demo) || kycStatus == userKycStatus))
+                throw new PaymentRequestNationalCodeConflictException();
+        }
+        else
+        {
+            if ((string.IsNullOrEmpty(nationalCode) && kycStatus == demo && paymentRequest.NationalCode != nationalCode) ||
+                (kycStatus == userKycStatus && paymentRequest.NationalCode != nationalCode) || (string.IsNullOrEmpty(nationalCode) && kycStatus != demo))
+                throw new PaymentRequestNationalCodeConflictException();
+        }
 
         company = await _companyRepository.FirstOrDefaultAsync(new CompanyPaymentMethodsByIdSpec(paymentRequest.CompanyId), cancellationToken);
 
         if (string.IsNullOrEmpty(sub))
         {
-            availablePaymentMethodTypes = new List<PaymentMethodType> { PaymentMethodType.InternetPaymentGateway };
+            availablePaymentMethodTypes = new List<PaymentMethodType> { PaymentMethodType.InternetPaymentGateway, PaymentMethodType.PaymentReceipt };
         }
         else
         {
             availablePaymentMethodTypes = company?.PaymentMethods?.Select(p => p.MethodType).ToList();
         }
 
-        GetPaymentMethodsHandler  ipgHandler = new CreateIpgHandler();
-        GetPaymentMethodsHandler  directDebitHandler= new CreateDirectDebitHandler();
+        GetPaymentMethodsHandler ipgHandler = new CreateIpgHandler();
+        GetPaymentMethodsHandler directDebitHandler = new CreateDirectDebitHandler();
         GetPaymentMethodsHandler charismaCardHandler = new CreateCharismaCardHandler();
         GetPaymentMethodsHandler paymentReceiptHandler = new CreatePaymentReceiptHandler();
         ipgHandler.SetNextHandler(directDebitHandler);
@@ -97,7 +126,7 @@ public class GetPaymentMethodsCommandHandler(
             CurrentUser = _user,
             TransactionRepository = _transactionRepository
         };
-        
+
         var PaymentMethodsViewModel = new PaymentMethodsViewModel();
 
         foreach (var item in availablePaymentMethodTypes)

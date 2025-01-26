@@ -6,7 +6,7 @@ namespace CPG.Application.UseCases.Users.ViewModel;
 
 public class UserViewModel
 {
-    public long Id { get; set; }
+    public long? Id { get; set; }
     public string IDPId { get; set; }
     public string NationalCode { get; set; }
     public string FirstName { get; set; }

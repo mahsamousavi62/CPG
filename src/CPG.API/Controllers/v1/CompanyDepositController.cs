@@ -6,6 +6,7 @@ using CPG.Application.UseCases.CompanyDeposits.Queries;
 using CPG.Application.UseCases.CompanyDeposits.ViewModels;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Communication.Charispay.Models.AccountNumber;
+using HotChocolate.Authorization;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -31,14 +32,15 @@ public class CompanyDepositController : ApiBaseController
         return await Mediator.Send(new GetCompanyDepositQuery(id));
     }
 
-    [HttpGet("Company/{companyId:long}")]
+    [HttpGet("Company/GetDepositsById/{companyId:long}")]
     [ProducesResponseType(typeof(Result<IReadOnlyCollection<CompanyDepositViewModel>>), (int)HttpStatusCode.OK)]
     public async Task<Result<IReadOnlyCollection<CompanyDepositViewModel>>> GetByCompanyId(long companyId)
     { 
         return await Mediator.Send(new GetCompanyDepositsByCompanyIdQuery(companyId));
     }
 
-    [HttpGet("Company/{paymentCode}")]
+    [AllowAnonymous]
+    [HttpGet("Company/GetDepositsByPaymentCode/{paymentCode}")]
     [ProducesResponseType(typeof(Result<IReadOnlyCollection<CompanyDepositViewModel>>), (int)HttpStatusCode.OK)]
     public async Task<Result<IReadOnlyCollection<CompanyDepositViewModel>>> GetByPaymentCode(string paymentCode)
     {

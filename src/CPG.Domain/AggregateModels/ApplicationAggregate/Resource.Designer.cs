@@ -79,6 +79,15 @@ namespace CPG.Domain.AggregateModels.ApplicationAggregate {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to برنامه موجود نمی باشد.
+        /// </summary>
+        internal static string ApplicationNotFound {
+            get {
+                return ResourceManager.GetString("ApplicationNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to نشانی بازگشتی تکراری است.
         /// </summary>
         internal static string Duplicate_CallbackUrl {

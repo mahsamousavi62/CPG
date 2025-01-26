@@ -17,7 +17,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.Text;
 using System;
-using CPG.Domain.SharedKernel.ApplicationSettings;
+using CPG.Domain.SharedKernel.ApplicationSettingsAggregate;
 using CPG.Domain.SharedKernel.Communication.Idp.Models.UserProfile;
 using Microsoft.Identity.Client;
 using CPG.Application.Auth;
@@ -33,18 +33,21 @@ using Serilog;
 using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Domain.SharedKernel.Logging;
 using Serilog.Context;
+using System.Collections.Generic;
+using System.Linq;
+using CPG.Domain.SharedKernel.Interfaces;
 
 namespace CPG.Infrastructure.Providers.NeoBank;
 
 public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configuration, IAuthService authService,
-    IHttpContextAccessor httpContextAccessor, ILogger<NeoBankProvider> logger) : INeoBankService
+    IHttpContextAccessor httpContextAccessor, ILogger<NeoBankProvider> logger, ICurrentUser currentUser) : INeoBankService
 {
     private readonly IHttpClientFactory factory = factory;
     private readonly IConfiguration configuration = configuration;
     private readonly IAuthService authService = authService;
     private readonly IHttpContextAccessor httpContextAccessor = httpContextAccessor;
-    private readonly ILogger<NeoBankProvider> logger  = logger;
-
+    private readonly ILogger<NeoBankProvider> logger = logger;
+    private readonly ICurrentUser currentUser = currentUser;
     public async Task<Result<ClientDirectDebitResponse>> ClientDirectDebit(ClientDirectDebitRequest model)
     {
         var neobankConfig = configuration.GetSection("Infrastructure:NeoBank").Get<NeoBankConfig>();
@@ -68,6 +71,9 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
 
             var resultContent = await result.Content.ReadAsStringAsync();
 
+            result.Headers.TryGetValues("x-correlation-id", out IEnumerable<string> res);
+            var neoBankCorroletionId = res?.FirstOrDefault();
+
             var response = JsonConvert.DeserializeObject<ResultData<ClientDirectDebitResponse>>(resultContent);
 
             var callLog = new CallLogModel
@@ -79,9 +85,10 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
                 ServiceCallStatus = result.StatusCode == System.Net.HttpStatusCode.OK,
                 ServiceType = Enums.ServiceType.ClientDirectDebit,
                 CreationDate = DateTime.Now,
-                CreationUserId = 1,
-                ProviderType = Enums.ProviderType.NeoBank,
-                AuditType = Enums.AuditType.Provider
+                CreationUserId = currentUser.UserId,
+                ProviderType = Enums.ProviderTypeInLog.NeoBank,
+                AuditType = Enums.AuditType.Provider,
+                CorrolationId = neoBankCorroletionId,
             };
 
             using (LogContext.PushProperty("CallLog", callLog, true))
@@ -112,11 +119,8 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
 
     public async Task<Result<UserDepositBalanceResponse>> GetUserDepositBalance()
     {
-
         var neobankConfig = configuration.GetSection("Infrastructure:NeoBank").Get<NeoBankConfig>();
-        ResultData<UserDepositBalanceResponse> resultData = new();
         var appConfig = authService.GetJwtConfig();
-
         var accessTokenResult = await ExchangeToken(appConfig);
         if (accessTokenResult.OperationResult == Enums.OperationResult.Failed)
             return Result<UserDepositBalanceResponse>.Failure(new Error("2201001", accessTokenResult.Error));
@@ -130,6 +134,10 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
                 return Result<UserDepositBalanceResponse>.Failure(new Error("2201001", ReasonPhrases.GetReasonPhrase((int)result.StatusCode)));
 
             var resultContent = await result.Content.ReadAsStringAsync();
+
+            result.Headers.TryGetValues("x-correlation-id", out IEnumerable<string> res);
+            var neoBankCorroletionId = res?.FirstOrDefault();
+
             try
             {
                 var response = JsonConvert.DeserializeObject<ResultData<UserDepositBalanceResponse>>(resultContent);
@@ -143,8 +151,9 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
                     ServiceCallStatus = result.StatusCode == System.Net.HttpStatusCode.OK,
                     ServiceType = Enums.ServiceType.GetUserDepositBalance,
                     CreationDate = DateTime.Now,
-                    CreationUserId = 1,
-                    ProviderType = Enums.ProviderType.NeoBank,
+                    CreationUserId = currentUser.UserId,
+                    CorrolationId = neoBankCorroletionId,
+                    ProviderType = Enums.ProviderTypeInLog.NeoBank,
                     AuditType = Enums.AuditType.Provider
                 };
 

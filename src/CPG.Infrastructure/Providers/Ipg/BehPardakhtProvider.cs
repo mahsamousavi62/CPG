@@ -1,6 +1,6 @@
 ﻿using CCPG.Domain.SharedKernel.Communication.Ipg;
 using CPG.Application.UseCases.Ipg.Exception;
-using CPG.Domain.SharedKernel.ApplicationSettings;
+using CPG.Domain.SharedKernel.ApplicationSettingsAggregate;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentTicket;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.TransactionResult;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
@@ -244,7 +244,7 @@ public class BehPardakhtProvider(
     {
         _logService.ServiceName = serviceName;
         _logService.ServiceType = serviceType;
-        _logService.ProviderType = Enums.ProviderType.Pec;
+        _logService.ProviderTypeInLog = Enums.ProviderTypeInLog.Pec;
 
         _logService.AddServiceCallLog(JsonConvert.SerializeObject(request),
             JsonConvert.SerializeObject(response), status, message);
@@ -257,8 +257,7 @@ public class BehPardakhtProvider(
         var dkey = AesHelper.Base64Decode(key);
         var div = AesHelper.Base64Decode(iv);
         var token = AesHelper.EncryptAes(original, dkey ?? string.Empty, div ?? string.Empty);
-        var json = JsonConvert.SerializeObject(new { NationalEncryptedId = token, ThirdPartyCode = thirdParty, Data = string.Empty });
-        return json;
+        return token;
     }
     private static string CreateCallbackUrl(short ipgRedirectionType, string siteAddress, string trackerId, string callbackPage) => ipgRedirectionType switch
     {

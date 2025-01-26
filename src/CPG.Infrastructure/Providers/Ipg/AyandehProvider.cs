@@ -1,7 +1,7 @@
 ﻿using CCPG.Domain.SharedKernel.Communication.Ipg;
 using CPG.Application.Shared.Resource;
 using CPG.Application.UseCases.Ipg.Exception;
-using CPG.Domain.SharedKernel.ApplicationSettings;
+using CPG.Domain.SharedKernel.ApplicationSettingsAggregate;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentTicket;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.PaymentToken;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.TransactionResult;
@@ -81,7 +81,7 @@ internal class AyandehProvider(IHttpProvider httpProvider, ReadDbContext context
                                                             Mobile = !string.IsNullOrEmpty(request.MobileNumber) ? $"{request.MobileNumber.Remove(0, 1)}" : null,
                                                             SettleDate = settleDate,
                                                         },
-                                                        Provider = Enums.ProviderType.Ayandeh,
+                                                        Provider = Enums.ProviderTypeInLog.Ayandeh,
                                                         Service = Enums.ServiceType.AyandehToken,
                                                     }, request, PaymentTokenErrorHandler);
 
@@ -115,7 +115,7 @@ internal class AyandehProvider(IHttpProvider httpProvider, ReadDbContext context
                                                         },
                                                         BaseAddress = "https://mpg.ba24.ir/",
                                                         Uri = "mpg/api/ipgPurchaseVerify",
-                                                        Provider = Enums.ProviderType.Ayandeh,
+                                                        Provider = Enums.ProviderTypeInLog.Ayandeh,
                                                         Service = Enums.ServiceType.AyandehVerify,
                                                     }, request, VerifyErrorHandler);
 

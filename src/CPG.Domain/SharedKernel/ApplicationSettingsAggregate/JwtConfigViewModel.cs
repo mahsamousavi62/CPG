@@ -1,4 +1,4 @@
-﻿namespace CPG.Domain.SharedKernel.ApplicationSettings;
+﻿namespace CPG.Domain.SharedKernel.ApplicationSettingsAggregate;
 
 public class JwtConfigViewModel
 {
@@ -25,6 +25,8 @@ public class JwtConfigViewModel
     public bool ValidateLifetime { get; set; }
 
     public string IdpGetProfileUrl { get; set; }
+
+    public string IdpGetUserStatusUrl { get; set; }
 
     public int ExpireTime { get; set; }
     

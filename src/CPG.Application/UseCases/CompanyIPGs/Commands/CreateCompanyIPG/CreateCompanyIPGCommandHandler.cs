@@ -1,5 +1,4 @@
-﻿using CPG.Domain.SharedKernel;
-using MediatR;
+﻿using MediatR;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,6 +8,7 @@ using CPG.Domain.AggregateModels.CompanyDepositAggregate.Specifications;
 using CPG.Domain.AggregateModels.CompanyIPGAggregate.Exceptions;
 using System;
 using CPG.Application.UseCases.CompanyIPGs.Exceptions;
+using CPG.Domain.SharedKernel.Interfaces;
 
 namespace CPG.Application.UseCases.CompanyIPGs.Commands.CreateCompanyIPG;
 

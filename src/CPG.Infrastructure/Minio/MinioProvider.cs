@@ -31,9 +31,6 @@ public class MinioProvider : IMinioProvider
     {
         _configuration = configuration;
         _minioClientFactory = minioClientFactory;
-        CultureInfo current = new("en-US");
-        Thread.CurrentThread.CurrentCulture = current;
-
         _minioClient = _minioClientFactory.CreateClient();
         _logger = logger;
     }

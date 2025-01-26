@@ -12,7 +12,7 @@ using CPG.Domain.AggregateModels.ApplicationAggregate.Specifications;
 using CPG.Domain.AggregateModels.ProviderAggregate;
 using CPG.Domain.AggregateModels.ProviderAggregate.Specifications;
 using CPG.Domain.Exceptions;
-using CPG.Domain.SharedKernel;
+using CPG.Domain.SharedKernel.Interfaces;
 using CPG.Domain.SharedKernel.Minio;
 using MediatR;
 

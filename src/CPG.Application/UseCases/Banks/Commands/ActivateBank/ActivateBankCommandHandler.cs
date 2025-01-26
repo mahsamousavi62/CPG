@@ -1,6 +1,5 @@
 ﻿using CPG.Application.UseCases.Banks.Exceptions;
 using CPG.Domain.AggregateModels.BankAggregate;
-using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Interfaces;
 using MediatR;
 using System.Threading;

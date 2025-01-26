@@ -9,26 +9,20 @@ using CPG.Infrastructure.Persistence.GraphQL.Types.Bank;
 using CPG.Infrastructure.Persistence.GraphQL.Types.Company;
 using Microsoft.EntityFrameworkCore;
 using CPG.Infrastructure.Persistence.GraphQL.Types.Provider;
-using CPG.Application.UseCases.IPGTypes.ViewModels;
 using System.Threading.Tasks;
-using System.Threading;
 using CPG.Infrastructure.Persistence.GraphQL.Types.CompanyDeposit;
-using static HotChocolate.ErrorCodes;
 using CPG.Domain.AggregateModels.TransactionAggregate;
 using CPG.Infrastructure.Persistence.GraphQL.Model;
 using System;
 using System.Collections.Generic;
 using CPG.Infrastructure.Persistence.GraphQL.Types.Transaction;
-using Mapster;
 using CPG.Domain.SharedKernel;
 using HotChocolate.Authorization;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using static CPG.Domain.SharedKernel.Enums;
 using CPG.Infrastructure.Persistence.Redis;
-using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Infrastructure.Persistence.GraphQL.Types.IPGTransaction;
-using System.Security.Cryptography.X509Certificates;
 using CPG.Infrastructure.Persistence.GraphQL.Types.PaymentReceiptTransaction;
 using CPG.Infrastructure.Persistence.GraphQL.Types.CharismaCard;
 using CPG.Application.UseCases.Companies.Exceptions;
@@ -521,7 +515,7 @@ public class ReadModelQueries
     {
         var query = dbContext.TransactionReadModels
             .Include(c => c.PaymentReceiptTransaction).Where(c => c.PaymentReceiptTransactionId.HasValue)
-            .Include(c => c.Company).Include(c => c.PaymentRequest).Include(c=>c.DestinationDeposit).AsQueryable();
+            .Include(c => c.Company).Include(c => c.PaymentRequest).Include(c => c.DestinationDeposit).AsQueryable();
 
         var roleClaim = httpContext.HttpContext.User.FindFirst(c => c.Type == ClaimTypes.Role &&
                c.Value == UserRoleType.SuperAdmin.GetValue());
@@ -544,7 +538,7 @@ public class ReadModelQueries
         var entity = query.FirstOrDefault(c => c.PaymentReceiptTransactionId == id);
         if (entity == null)
         {
-            throw new PaymentReceiptNotFoundException(id) ;
+            throw new PaymentReceiptNotFoundException(id);
         }
 
         var bankscacheData = cacheService.GetData<List<BankReadModel>>("AllBank_key");
@@ -559,7 +553,7 @@ public class ReadModelQueries
 
         var destIbanPrefix = entity.DestinationDeposit.Iban.Substring(4, 3);
         var destinationbank = bankscacheData.FirstOrDefault(c => c.IbanPrefix == destIbanPrefix);
-        
+
         var viewModel = new PaymentReceiptTransactionReportViewModel
         {
             Id = entity.PaymentReceiptTransaction.Id,
@@ -583,7 +577,7 @@ public class ReadModelQueries
             SourceIban = entity.PaymentReceiptTransaction.SourceIban,
             ModificationDate = entity.PaymentReceiptTransaction.ModificationDate,
             Description = entity.PaymentReceiptTransaction.Description,
-            DestinationIban=entity.DestinationDeposit?.Iban,
+            DestinationIban = entity.DestinationDeposit?.Iban,
             DestinationBankId = destinationbank?.Id ?? 0,
             DestinationBankLogo = await General.GetLogo(minioProvider, destinationbank?.Logo),
             DestinationBankName = destinationbank?.Name,
@@ -591,7 +585,7 @@ public class ReadModelQueries
         return viewModel;
     }
 
-# endregion
+    #endregion
 
     #region [ CharismaCardTransactionReport ]
 
@@ -787,4 +781,10 @@ public class ReadModelQueries
     }
 
     #endregion
+
+
+
+
+
+
 }

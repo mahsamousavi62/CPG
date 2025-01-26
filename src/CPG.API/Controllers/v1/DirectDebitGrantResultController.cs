@@ -8,7 +8,6 @@ using System.Net;
 
 namespace CPG.API.Controllers.v1
 {
-
     [Authorize]
     [Route("DDGrantResult")]
     public class DirectDebitGrantResultController : ApiBaseController
@@ -18,7 +17,5 @@ namespace CPG.API.Controllers.v1
         public async Task<Result<ValidateGrantResponseViewModel>> ValidateGrant(string trackId,
                                                                             [AllowNull][FromBody] ValidateGrantRequestViewModel model)
             => await Mediator.Send(new ValidateGrantQuery(model, trackId));
-
-
     }
 }
