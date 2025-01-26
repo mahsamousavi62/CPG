@@ -63,7 +63,6 @@ public class ExternalServicesMiddleware(RequestDelegate next, ILogger<ExternalSe
 
         AuthenticateResult result = await httpContext.AuthenticateAsync();
         httpContext.User = ClonePrincipal(result?.Principal!, currentClient.Id.ToString());
-        await next(httpContext);
         if (path!.Contains("api/externalservices"))
         {
             await AddExternalServiceCallLog(httpContext);
