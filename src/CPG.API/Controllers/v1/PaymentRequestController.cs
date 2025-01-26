@@ -109,7 +109,6 @@ public class PaymentRequestController : ApiBaseController
         )
       => await Mediator.Send(new GetPaymentRequestsQuery(searchTerm, pagedFilter));
 
-    [Authorize]
     [HttpGet("AnonymousStatus")]
     [ProducesResponseType(typeof(Result<AnonymousStatusResponseViewModel>), 200)]
     public async Task<Result<AnonymousStatusResponseViewModel>> AnonymousStatus([FromQuery] AnonymousStatusViewModel anonymousStatusRequest)
