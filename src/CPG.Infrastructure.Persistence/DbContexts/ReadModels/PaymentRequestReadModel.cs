@@ -25,6 +25,7 @@ public class PaymentRequestReadModel
     public string PaymentIdentifier { get; set; }
     public Enums.PaymentStatus Status { get; set; }
     public bool IsUsed { get; set; }
+    public bool IsAnonymous { get; set; }
     public DateTime? VerificationDateTime { get; set; }
     public DateTime UrlExpirationDateTime { get; set; }
     public bool IsActive { get; set; }
