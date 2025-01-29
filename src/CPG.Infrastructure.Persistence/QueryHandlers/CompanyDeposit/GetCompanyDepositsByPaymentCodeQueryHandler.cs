@@ -33,7 +33,7 @@ public class GetCompanyDepositsByPaymentCodeQueryHandler(ReadDbContext context, 
                 .Include(t => t.PaymentMethods)
                 .Include(t => t.Company)
                 .Include(t => t.Bank)
-                .Where(t => t.CompanyId == paymentRequestCompanyId)
+                .Where(t => t.CompanyId == paymentRequestCompanyId && t.IsActive)
                 .ToListAsync();
 
             var companyViewModels = await Task.WhenAll(
