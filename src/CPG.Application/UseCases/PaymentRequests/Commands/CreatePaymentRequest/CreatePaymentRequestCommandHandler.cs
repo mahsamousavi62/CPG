@@ -139,96 +139,100 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
         var companyValidator = new CompanyValidator<Company>();
         companyValidator.Handle(company);
 
+        var result = new ConfigData
+        {
+            Company = company,          
+        };
+
         if (model.PaymentMethodConfig is null)
         {
             var nullPaymentMethodConfigValidator = new NullPaymentMethodConfigValidator<Company>();
             nullPaymentMethodConfigValidator.Handle(company);
         }
-
-        var activeMethods = GetActiveMethods(model.PaymentMethodConfig);
-        var activeMethodValidator = new ActiveMethodValidator<ActiveMethodValidatorModel>();
-        activeMethodValidator.Handle(new ActiveMethodValidatorModel { Company = company, ActiveMethods = activeMethods });
-
-        var destinationDeposits = GetDestinationIbans(model.PaymentMethodConfig);
-        var destinationDepositValidator = new DestinationDepositValidator<DestinationDepositValidatorModel>();
-        destinationDepositValidator.Handle(new DestinationDepositValidatorModel
+        else
         {
-            ActiveMethods = activeMethods,
-            Company = company,
-            DestinationDeposits = destinationDeposits,
-            PaymentMethodConfig = model.PaymentMethodConfig,
-        });
+            var activeMethods = GetActiveMethods(model.PaymentMethodConfig);
+            var activeMethodValidator = new ActiveMethodValidator<ActiveMethodValidatorModel>();
+            activeMethodValidator.Handle(new ActiveMethodValidatorModel { Company = company, ActiveMethods = activeMethods });
 
-        List<IPGType> ipgTypes = null;
-        if (activeMethods.Contains(PaymentMethodType.InternetPaymentGateway))
-        {
-            if (model.PaymentMethodConfig.IpgConfig.IpgTypeCode?.Any(t => t != null) is true)
+            var destinationDeposits = GetDestinationIbans(model.PaymentMethodConfig);
+            var destinationDepositValidator = new DestinationDepositValidator<DestinationDepositValidatorModel>();
+            destinationDepositValidator.Handle(new DestinationDepositValidatorModel
             {
-                ipgTypes = await _ipgTypeRepository.ListAsync(new IPGTypeByCodeSpec(model.PaymentMethodConfig.IpgConfig.IpgTypeCode.ToArray()));
-                var ipgTypeValidator = new IpgTypeValidator<List<IPGType>>();
-                ipgTypeValidator.Handle(ipgTypes);
+                ActiveMethods = activeMethods,
+                Company = company,
+                DestinationDeposits = destinationDeposits,
+                PaymentMethodConfig = model.PaymentMethodConfig,
+            });
+
+            List<IPGType> ipgTypes = null;
+            if (activeMethods.Contains(PaymentMethodType.InternetPaymentGateway))
+            {
+                if (model.PaymentMethodConfig.IpgConfig.IpgTypeCode?.Any(t => t != null) is true)
+                {
+                    ipgTypes = await _ipgTypeRepository.ListAsync(new IPGTypeByCodeSpec(model.PaymentMethodConfig.IpgConfig.IpgTypeCode.ToArray()));
+                    var ipgTypeValidator = new IpgTypeValidator<List<IPGType>>();
+                    ipgTypeValidator.Handle(ipgTypes);
+                }
+
+                if (destinationDeposits?.Any() is false)
+                {
+                    var ipgTypeDestinationDepositValidator = new IpgTypeDestinationDepositValidator<Company>();
+                    ipgTypeDestinationDepositValidator.Handle(company);
+                }
             }
 
-            if (destinationDeposits?.Any() is false)
+            if (activeMethods.Contains(PaymentMethodType.DirectDebit))
             {
-                var ipgTypeDestinationDepositValidator = new IpgTypeDestinationDepositValidator<Company>();
-                ipgTypeDestinationDepositValidator.Handle(company);
+                var anyDirectDebitProvider = await _providerRepository.AnyAsync(new ProviderByPaymentMethodSpec(PaymentMethodType.DirectDebit));
+
+                var directDebitValidator = new DirectDebitValidator<DirectDebitValidatorModel>();
+                directDebitValidator.Handle(new DirectDebitValidatorModel { Company = company, AnyDirectDebitProvider = anyDirectDebitProvider });
             }
+
+            if (activeMethods.Contains(PaymentMethodType.CharismaCard))
+            {
+                var deposits = company.CompanyDeposits.Where(t => t.IsActive &&
+                                                                  t.Bank.IsActive &&
+                                                                  t.PaymentMethods.Select(t => t.MethodType)
+                                                                                  .Contains(PaymentMethodType.CharismaCard))
+                                                      .ToList();
+
+                var charismaCardtValidator = new CharismaCardValidator<List<CompanyDeposit>>();
+                charismaCardtValidator.Handle(deposits);
+            }
+
+            var methodData = GetMethodData(model.PaymentMethodConfig, company, ipgTypes);
+            var ibanValidator = new IbanValidator<List<MethodData>>();
+            ibanValidator.Handle(methodData);
+
+            var destinationDepositIbanValidator = new DestinationDepositIbanValidator<DestinationDepositIbanValidatorModel>();
+            destinationDepositIbanValidator.Handle(new DestinationDepositIbanValidatorModel { Company = company, MethodData = methodData });
+
+            if (activeMethods.Contains(PaymentMethodType.InternetPaymentGateway) && destinationDeposits?.Any() is true)
+            {
+                var depositExistInIpgValidator = new DepositExistInIpgValidator<DepositExistInIpgValidatorModel>();
+                depositExistInIpgValidator.Handle(new DepositExistInIpgValidatorModel { Company = company, MethodData = methodData });
+
+                var depositExistInActiveIpgValidator = new DepositExistInActiveIpgValidator<DepositExistInIpgValidatorModel>();
+                depositExistInActiveIpgValidator.Handle(new DepositExistInIpgValidatorModel { Company = company, MethodData = methodData });
+
+                var depositExistInActiveIpgTypeValidator = new DepositExistInActiveIpgTypeValidator<DepositExistInIpgValidatorModel>();
+                depositExistInActiveIpgTypeValidator.Handle(new DepositExistInIpgValidatorModel { Company = company, MethodData = methodData });
+
+                var depositExistInActiveProviderValidator = new DepositExistInActiveProviderValidator<DepositExistInIpgValidatorModel>();
+                depositExistInActiveProviderValidator.Handle(new DepositExistInIpgValidatorModel { Company = company, MethodData = methodData });
+
+                var depositExistInCompanyIpgValidator = new DepositExistInCompanyIpgValidator<DepositExistInIpgValidatorModel>();
+                depositExistInCompanyIpgValidator.Handle(new DepositExistInIpgValidatorModel { Company = company, MethodData = methodData });
+
+                var depositExistInActiveCompanyIpgValidator = new DepositExistInActiveCompanyIpgValidator<DepositExistInIpgValidatorModel>();
+                depositExistInActiveCompanyIpgValidator.Handle(new DepositExistInIpgValidatorModel { Company = company, MethodData = methodData });
+            }
+
+            result.MethodDataList = methodData;
         }
-
-        if (activeMethods.Contains(PaymentMethodType.DirectDebit))
-        {
-            var anyDirectDebitProvider = await _providerRepository.AnyAsync(new ProviderByPaymentMethodSpec(PaymentMethodType.DirectDebit));
-
-            var directDebitValidator = new DirectDebitValidator<DirectDebitValidatorModel>();
-            directDebitValidator.Handle(new DirectDebitValidatorModel { Company = company, AnyDirectDebitProvider = anyDirectDebitProvider });
-        }
-
-        if (activeMethods.Contains(PaymentMethodType.CharismaCard))
-        {
-            var deposits = company.CompanyDeposits.Where(t => t.IsActive &&
-                                                              t.Bank.IsActive &&
-                                                              t.PaymentMethods.Select(t => t.MethodType)
-                                                                              .Contains(PaymentMethodType.CharismaCard))
-                                                  .ToList();
-
-            var charismaCardtValidator = new CharismaCardValidator<List<CompanyDeposit>>();
-            charismaCardtValidator.Handle(deposits);           
-        }
-
-        var methodData = GetMethodData(model.PaymentMethodConfig, company, ipgTypes);
-        var ibanValidator = new IbanValidator<List<MethodData>>();
-        ibanValidator.Handle(methodData);
-
-        var destinationDepositIbanValidator = new DestinationDepositIbanValidator<DestinationDepositIbanValidatorModel>();
-        destinationDepositIbanValidator.Handle(new DestinationDepositIbanValidatorModel { Company = company, MethodData = methodData });
-
-        if (activeMethods.Contains(PaymentMethodType.InternetPaymentGateway) && destinationDeposits?.Any() is true)
-        {
-            var depositExistInIpgValidator = new DepositExistInIpgValidator<DepositExistInIpgValidatorModel>();
-            depositExistInIpgValidator.Handle(new DepositExistInIpgValidatorModel { Company = company, MethodData = methodData });
-
-            var depositExistInActiveIpgValidator = new DepositExistInActiveIpgValidator<DepositExistInIpgValidatorModel>();
-            depositExistInActiveIpgValidator.Handle(new DepositExistInIpgValidatorModel { Company = company, MethodData = methodData });
-
-            var depositExistInActiveIpgTypeValidator = new DepositExistInActiveIpgTypeValidator<DepositExistInIpgValidatorModel>();
-            depositExistInActiveIpgTypeValidator.Handle(new DepositExistInIpgValidatorModel { Company = company, MethodData = methodData });
-
-            var depositExistInActiveProviderValidator = new DepositExistInActiveProviderValidator<DepositExistInIpgValidatorModel>();
-            depositExistInActiveProviderValidator.Handle(new DepositExistInIpgValidatorModel { Company = company, MethodData = methodData });
-
-            var depositExistInCompanyIpgValidator = new DepositExistInCompanyIpgValidator<DepositExistInIpgValidatorModel>();
-            depositExistInCompanyIpgValidator.Handle(new DepositExistInIpgValidatorModel { Company = company, MethodData = methodData });
-
-            var depositExistInActiveCompanyIpgValidator = new DepositExistInActiveCompanyIpgValidator<DepositExistInIpgValidatorModel>();
-            depositExistInActiveCompanyIpgValidator.Handle(new DepositExistInIpgValidatorModel { Company = company, MethodData = methodData });
-        }
-
-        return new ConfigData
-        {
-            Company = company,
-            MethodDataList = methodData
-        };
+        return result;
     }
 
     private List<PaymentMethodType> GetActiveMethods(PaymentMethodConfig paymentMethodConfig)
