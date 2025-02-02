@@ -5,73 +5,84 @@ variables:
 - name: projectName
   value: CPG.API
 ##################################################################################################
+pool:
+  name: Base
+##################################################################################################
 steps:
-- task: DotNetCoreCLI@2
-  displayName: Clean
-  inputs:
-    command: 'custom'
-    projects: '**/CPG.API.csproj'
-    custom: 'clean'
-##################################################################################################
-- task: DotNetCoreCLI@2
-  displayName: Restore
-  inputs:
-    command: restore
-    projects: '**/CPG.API.csproj'
-    feedsToUse: config
-    nugetConfigPath: nuget.config
-##################################################################################################
-- task: DotNetCoreCLI@2
-  displayName: Build
-  inputs:
-    projects: '**/$(projectName).csproj'
-    arguments: '--configuration $(BuildConfiguration) --no-restore'
-##################################################################################################
-- task: DotNetCoreCLI@2
-  displayName: 'Unit Test'
-  inputs:
-    command: test
-    projects: '**/*.Tests.Unit.csproj'
-    arguments: '--configuration $(BuildConfiguration)'
-##################################################################################################
-- task: DotNetCoreCLI@2
-  displayName: 'Integration Test'
-  inputs:
-    command: test
-    projects: '**/**.Integration.csproj' 
-    arguments: '--configuration $(BuildConfiguration)'
-##################################################################################################
-- task: DotNetCoreCLI@2
-  displayName: Publish
-  inputs:
-    command: publish
-    publishWebProjects: false
-    projects: '**/$(projectName).csproj'
-    arguments: '--configuration $(BuildConfiguration) --output src/$(projectName)/app'
-    zipAfterPublish: false
-    modifyOutputPath: false
-##################################################################################################
-- task: Docker@2
-  displayName: buildAndPush
-  condition: eq(variables['Build.SourceBranch'], 'refs/heads/develop')
-  inputs:
-    containerRegistry: 'Charisma Docker Registry'
-    repository: cpg/dev/cpg-api-backend
-    Dockerfile: src/$(projectName)/Dockerfile
-##################################################################################################
-- task: Docker@2
-  displayName: buildAndPush
-  condition: eq(variables['Build.SourceBranch'], 'refs/heads/stage')
-  inputs:
-    containerRegistry: 'Charisma Docker Registry'
-    repository: cpg/stage/cpg-api-backend
-    Dockerfile: src/$(projectName)/Dockerfile
-##################################################################################################
-- task: Docker@2
-  displayName: buildAndPush
-  condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
-  inputs:
-    containerRegistry: 'Charisma Docker Registry'
-    repository: cpg/prod/cpg-api-backend
-    Dockerfile: src/$(projectName)/Dockerfile
-##################################################################################################
+  - task: DockerInstaller@0
+    inputs:
+      dockerVersion: '27.0.3'
+  ##################################################################################################
+  - task: UseDotNet@2
+    inputs:
+      version: 8.x
+  ##################################################################################################
+  - task: DotNetCoreCLI@2
+    displayName: Clean
+    inputs:
+      command: 'custom'
+      projects: '**/CPG.API.csproj'
+      custom: 'clean'
+  ##################################################################################################
+  - task: DotNetCoreCLI@2
+    displayName: Restore
+    inputs:
+      command: restore
+      projects: '**/CPG.API.csproj'
+      feedsToUse: config
+      nugetConfigPath: nuget.config
+  ##################################################################################################
+  - task: DotNetCoreCLI@2
+    displayName: Build
+    inputs:
+      projects: '**/$(projectName).csproj'
+      arguments: '--configuration $(BuildConfiguration) --no-restore'
+  ##################################################################################################
+  - task: DotNetCoreCLI@2
+    displayName: 'Unit Test'
+    inputs:
+      command: test
+      projects: '**/*.Tests.Unit.csproj'
+      arguments: '--configuration $(BuildConfiguration)'
+  ##################################################################################################
+  - task: DotNetCoreCLI@2
+    displayName: 'Integration Test'
+    inputs:
+      command: test
+      projects: '**/**.Integration.csproj' 
+      arguments: '--configuration $(BuildConfiguration)'
+  ##################################################################################################
+  - task: DotNetCoreCLI@2
+    displayName: Publish
+    inputs:
+      command: publish
+      publishWebProjects: false
+      projects: '**/$(projectName).csproj'
+      arguments: '--configuration $(BuildConfiguration) --output src/$(projectName)/app'
+      zipAfterPublish: false
+      modifyOutputPath: false
+  ##################################################################################################
+  - task: Docker@2
+    displayName: buildAndPush
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/develop')
+    inputs:
+      containerRegistry: 'Charisma Docker Registry'
+      repository: cpg/dev/cpg-api-backend
+      Dockerfile: src/$(projectName)/Dockerfile
+  ##################################################################################################
+  - task: Docker@2
+    displayName: buildAndPush
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/stage')
+    inputs:
+      containerRegistry: 'Charisma Docker Registry'
+      repository: cpg/stage/cpg-api-backend
+      Dockerfile: src/$(projectName)/Dockerfile
+  ##################################################################################################
+  - task: Docker@2
+    displayName: buildAndPush
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+    inputs:
+      containerRegistry: 'Charisma Docker Registry'
+      repository: cpg/prod/cpg-api-backend
+      Dockerfile: src/$(projectName)/Dockerfile
+  ##################################################################################################
