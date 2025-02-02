@@ -25,5 +25,6 @@ public class PaymentRequestConfiguration : IEntityTypeConfiguration<PaymentReque
         entity.Property(x => x.VerificationDateTime).HasColumnName("VerificationDateTime").HasColumnType("datetime2(7)");
         entity.Property(x => x.UrlExpirationDateTime).HasColumnName("UrlExpirationDateTime").HasColumnType("datetime2(7)").IsRequired();
         entity.Property(x => x.PaymentIdentifier).HasColumnType("nvarchar").HasMaxLength(255);
+        entity.Property(x => x.IsAnonymous).HasColumnName("IsAnonymous").HasColumnType("bit").IsRequired();
     }
 }

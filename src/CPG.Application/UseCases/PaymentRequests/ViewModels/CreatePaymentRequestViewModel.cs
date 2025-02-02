@@ -29,6 +29,8 @@ public class CreatePaymentRequestViewModel : IRegister
     [AllowNull]
     public PaymentMethodConfig PaymentMethodConfig { get; set; }
 
+    public bool IsAnonymous { get; set; } = false;
+
     public void Register(TypeAdapterConfig config)
     {
         config.ForType<CreatePaymentRequestViewModel, PaymentRequest>();

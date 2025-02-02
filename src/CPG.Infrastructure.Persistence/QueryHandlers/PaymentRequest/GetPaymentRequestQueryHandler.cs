@@ -34,6 +34,7 @@ public class GetPaymentRequestQueryHandler(ReadDbContext context) : IRequestHand
             Id = p.Id,
             IsActive = p.IsActive,
             IsUsed = p.IsUsed,
+            IsAnonymous = p.IsAnonymous,
             ModificationDate = p.ModificationDate,
             NationalCode = p.NationalCode,
             Status = p.Status,
