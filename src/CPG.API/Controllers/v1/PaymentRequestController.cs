@@ -8,6 +8,7 @@ using CPG.Application.UseCases.Ipg.ViewModels;
 using CPG.Application.UseCases.PaymentReceipt.Commands;
 using CPG.Application.UseCases.PaymentReceipt.Queries;
 using CPG.Application.UseCases.PaymentReceipt.ViewModels;
+using CPG.Application.UseCases.PaymentRequests.Commands.CancelPaymentRequet;
 using CPG.Application.UseCases.PaymentRequests.Commands.GetPaymentMethods;
 using CPG.Application.UseCases.PaymentRequests.Queries.AnonymousStatus;
 using CPG.Application.UseCases.PaymentRequests.ViewModels;
@@ -27,6 +28,12 @@ public class PaymentRequestController : ApiBaseController
     [ProducesResponseType(typeof(Result<PaymentMethodsViewModel>), 200)]
     public async Task<Result<PaymentMethodsViewModel>> PaymentMethods([FromBody] GetPaymentMethodsViewModel model)
         => await Mediator.Send(new GetPaymentMethodsCommand(model));
+
+    [AllowAnonymous]
+    [HttpPost("CancelPaymentRequest")]
+    [ProducesResponseType(typeof(Result<CancelPaymentRequestResponseViewModel>), 200)]
+    public async Task<Result<CancelPaymentRequestResponseViewModel>> CancelPaymentRequest([FromBody] CancelPaymentRequestViewModel model)
+        => await Mediator.Send(new CancelPaymentRequestCommand(model));
 
     [AllowAnonymous]
     [HttpPost("CreateIPGJsonStr")]
