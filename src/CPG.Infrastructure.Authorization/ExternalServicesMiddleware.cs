@@ -19,7 +19,7 @@ namespace CPG.Infrastructure.Authorization;
 
 public class ExternalServicesMiddleware(RequestDelegate next, ILogger<ExternalServicesMiddleware> logger)
 {
-    private readonly List<string> anonymousApis = new List<string> { "api/common", "graphql", "hangfire", "ipgresult", "GetPaymentMethods", "CancelPaymentRequest", "CreateIPGJsonStr", "CreatePaymentReceiptRequest", "GetDepositsByPaymentCode" };
+    private readonly List<string> anonymousApis = new List<string> { "api/common", "graphql", "hangfire", "ipgresult", "GetPaymentMethods", "CancelPaymentRequest", "CreateIPGJsonStr", "CreatePaymentReceiptRequest", "GetDepositsByPaymentCode", "AnonymousStatus" };
 
     public async Task Invoke([NotNull] HttpContext httpContext, [NotNull] ICacheService cacheService, IConfiguration configuration)
     {
