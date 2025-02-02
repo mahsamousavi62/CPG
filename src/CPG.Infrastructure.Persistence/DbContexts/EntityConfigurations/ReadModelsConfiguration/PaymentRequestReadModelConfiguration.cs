@@ -23,6 +23,7 @@ public class PaymentRequestReadModelConfiguration : IEntityTypeConfiguration<Pay
         reader.Property(x => x.PaymentIdentifier);
         reader.Property(x => x.Status).HasColumnName("Status").HasColumnType("tinyint");
         reader.Property(x => x.IsUsed);
+        reader.Property(x => x.IsAnonymous);
         reader.Property(x => x.VerificationDateTime);
         reader.Property(x => x.UrlExpirationDateTime);
         reader.Property(x => x.IsActive);
