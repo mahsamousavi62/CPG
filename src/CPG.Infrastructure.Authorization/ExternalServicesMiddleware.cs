@@ -33,6 +33,11 @@ public class ExternalServicesMiddleware(RequestDelegate next, ILogger<ExternalSe
         switch (path)
         {
             case string x when path!.Contains("api/externalservices"):
+                if (httpContext is null || httpContext.User is null || httpContext.User.Claims?.Any() is false)
+                {
+                    logger.LogError("ExternalServiceCallLog: httpContext is null");
+                    return;
+                }
                 if (!httpContext.User.Claims.Any(c => c.Type == "scope" && c.Value.Equals(Scope.CPG_ExternalService, StringComparison.CurrentCultureIgnoreCase)))
                 {
                     Unauthorized(httpContext);
