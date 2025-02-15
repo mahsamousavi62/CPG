@@ -95,13 +95,11 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
         {
             company = await _companyRepository.GetBySpecAsync(new CompanyPaymentMethodsByIbanSpec(paymentRequest.CompanyId, paymentRequest.DestinationDepositIban), cancellationToken);
 
+            availablePaymentMethodTypes = company?.PaymentMethods?.Select(p => p.MethodType).ToList();
+
             if (string.IsNullOrEmpty(sub))
             {
-                availablePaymentMethodTypes = new List<PaymentMethodType> { PaymentMethodType.InternetPaymentGateway, PaymentMethodType.PaymentReceipt };
-            }
-            else
-            {
-                availablePaymentMethodTypes = company?.PaymentMethods?.Select(p => p.MethodType).ToList();
+                availablePaymentMethodTypes = availablePaymentMethodTypes.Where(t => t == PaymentMethodType.InternetPaymentGateway || t == PaymentMethodType.PaymentReceipt).ToList();
             }
 
             if (availablePaymentMethodTypes?.Contains(PaymentMethodType.InternetPaymentGateway) is true)
@@ -157,13 +155,11 @@ public class GetPaymentMethodsCommandHandler(IAggregateRepository<PaymentRequest
         {
             company = await _companyRepository.GetBySpecAsync(new CompanyPaymentMethodsByIdSpec(paymentRequest.CompanyId), cancellationToken);
 
+            availablePaymentMethodTypes = company?.PaymentMethods?.Select(p => p.MethodType).ToList();
+
             if (string.IsNullOrEmpty(sub))
             {
-                availablePaymentMethodTypes = new List<PaymentMethodType> { PaymentMethodType.InternetPaymentGateway, PaymentMethodType.PaymentReceipt };
-            }
-            else
-            {
-                availablePaymentMethodTypes = company?.PaymentMethods?.Select(p => p.MethodType).ToList();
+                availablePaymentMethodTypes = availablePaymentMethodTypes.Where(t => t == PaymentMethodType.InternetPaymentGateway || t == PaymentMethodType.PaymentReceipt).ToList();
             }
 
             if (availablePaymentMethodTypes?.Contains(PaymentMethodType.InternetPaymentGateway) is true)
