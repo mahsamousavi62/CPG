@@ -100,13 +100,11 @@ public class GetPaymentMethodsCommandHandler(
 
         company = await _companyRepository.FirstOrDefaultAsync(new CompanyPaymentMethodsByIdSpec(paymentRequest.CompanyId), cancellationToken);
 
+        availablePaymentMethodTypes = company?.PaymentMethods?.Select(p => p.MethodType).ToList();
+
         if (string.IsNullOrEmpty(sub))
         {
-            availablePaymentMethodTypes = new List<PaymentMethodType> { PaymentMethodType.InternetPaymentGateway, PaymentMethodType.PaymentReceipt };
-        }
-        else
-        {
-            availablePaymentMethodTypes = company?.PaymentMethods?.Select(p => p.MethodType).ToList();
+            availablePaymentMethodTypes = availablePaymentMethodTypes.Where(t => t == PaymentMethodType.InternetPaymentGateway || t == PaymentMethodType.PaymentReceipt).ToList();
         }
 
         GetPaymentMethodsHandler ipgHandler = new CreateIpgHandler();
