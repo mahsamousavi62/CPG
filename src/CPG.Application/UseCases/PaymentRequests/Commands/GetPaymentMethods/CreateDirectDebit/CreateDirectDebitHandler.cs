@@ -1,14 +1,11 @@
-﻿using CPG.Application.UseCases.PaymentRequests.ViewModels;
-using CPG.Domain.AggregateModels.CompanyDepositAggregate;
-using CPG.Domain.AggregateModels.DirectDebitGrantAggregate.Specifications;
+﻿using Ardalis.Specification;
+using CPG.Application.UseCases.PaymentRequests.ViewModels;
 using CPG.Domain.AggregateModels.DirectDebitGrantAggregate;
+using CPG.Domain.AggregateModels.DirectDebitGrantAggregate.Specifications;
+using CPG.Domain.AggregateModels.PaymentRequestAggregate;
 using CPG.Domain.AggregateModels.TransactionAggregate.Specifications;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using static CPG.Domain.SharedKernel.Enums;
-using Ardalis.Specification;
 
 namespace CPG.Application.UseCases.PaymentRequests.Commands.GetPaymentMethods.CreateDirectDebit;
 
@@ -28,7 +25,7 @@ public class CreateDirectDebitHandler : GetPaymentMethodsHandler
         var paymentRequest = request.PaymentRequest;
         var paymentRequestMethod = paymentRequest.PaymentRequestMethods
                                         .FirstOrDefault(p => p.PaymentMethodType == PaymentMethodType.DirectDebit);
-        var paymentRequestMethodDeposits = paymentRequestMethod.PaymentRequestMethodDeposits;
+        var paymentRequestMethodDeposits = paymentRequestMethod?.PaymentRequestMethodDeposits ?? new List<PaymentRequestMethodDeposit>();
         var hasDeposits = paymentRequestMethodDeposits.Any();
 
         var directDebitCompanyDeposits = company.CompanyDeposits
@@ -60,7 +57,7 @@ public class CreateDirectDebitHandler : GetPaymentMethodsHandler
         if (methodType == PaymentMethodType.DirectDebit && AvailableDirectDebit(request))
         {
             var paymentRequest = request.PaymentRequest;
-            
+
             var userGrants = await _grantRepository.ListAsync(new DirectDebitGrantByUserSpec(_user.UserId, paymentRequest.Amount, company.NationalCodeMatchingRequied));
 
             foreach (var item in userGrants)
@@ -86,9 +83,9 @@ public class CreateDirectDebitHandler : GetPaymentMethodsHandler
             }
 
             var groupedGrants = userGrants.GroupBy(t => t.AccountNumber).ToList();
-            
+
             var grants = new List<DirectDebitGrant>();
-            
+
             foreach (var group in groupedGrants)
             {
                 var selectedItems = group.ToList();
@@ -126,7 +123,7 @@ public class CreateDirectDebitHandler : GetPaymentMethodsHandler
                 }
                 grants.Add(selectedItems.OrderBy(t => t.ExpirationDate).FirstOrDefault());
             }
-            
+
             var directDebits = await Task.WhenAll(grants?.GroupBy(t => t.BankId).Select(async t => new DirectDebitInfo
             {
                 BankInfo = new DirectDebit.ViewModels.AvailableBankViewModel
@@ -141,7 +138,7 @@ public class CreateDirectDebitHandler : GetPaymentMethodsHandler
                     Id = q.Id,
                 }).ToList(),
             })).ConfigureAwait(false);
-            
+
             model.DirectDebits = directDebits.ToList();
         }
         else if (handler != null)
