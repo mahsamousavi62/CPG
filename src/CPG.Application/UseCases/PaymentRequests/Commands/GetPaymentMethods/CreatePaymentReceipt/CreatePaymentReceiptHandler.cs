@@ -1,10 +1,7 @@
 ﻿using CPG.Application.UseCases.PaymentRequests.ViewModels;
-using CPG.Domain.AggregateModels.CompanyAggregate.Specifications;
 using CPG.Domain.AggregateModels.CompanyDepositAggregate;
-using System;
+using CPG.Domain.AggregateModels.PaymentRequestAggregate;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Application.UseCases.PaymentRequests.Commands.GetPaymentMethods.CreatePaymentReceipt;
@@ -26,8 +23,9 @@ public class CreatePaymentReceiptHandler : GetPaymentMethodsHandler
         var paymentRequestMethod = paymentRequest.PaymentRequestMethods
             .FirstOrDefault(p => p.PaymentMethodType == PaymentMethodType.PaymentReceipt);
 
-        var paymentRequestMethodDeposits = paymentRequestMethod.PaymentRequestMethodDeposits;
-        var hasDeposits=paymentRequestMethodDeposits.Any();
+        var paymentRequestMethodDeposits = paymentRequestMethod?.PaymentRequestMethodDeposits ?? new List<PaymentRequestMethodDeposit>();
+        var hasDeposits = paymentRequestMethodDeposits.Any();
+
         var paymentReceiptDeposits = company.CompanyDeposits
             .Where(t => t.PaymentMethods.Select(x => x.MethodType).Contains(PaymentMethodType.PaymentReceipt))
             .ToList();
@@ -46,16 +44,19 @@ public class CreatePaymentReceiptHandler : GetPaymentMethodsHandler
         if (methodType == PaymentMethodType.PaymentReceipt)
         {
             var componyDeposits = AvailablePaymentReceipt(request);
-            if (componyDeposits != null)
+            model.Receipt = new();
+            if (componyDeposits is null)
             {
-                model.Receipt = new();
-
-                model.Receipt = componyDeposits.Select(c => new Receipt
+                model.Receipt = null;
+            }
+            else if (componyDeposits != null)
+            {
+                model.Receipt.Add(new Receipt
                 {
-                    AccountNumber = c.AccountNumber,
-                    BankName = c.Bank?.Name,
-                    DestinationDepositId = c.Id
-                }).ToList();
+                    AccountNumber = string.Empty,
+                    BankName = string.Empty,
+
+                });
 
             }
         }

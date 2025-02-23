@@ -1,6 +1,5 @@
-﻿using static CPG.Domain.SharedKernel.Enums;
-using FluentValidation;
-using System.Linq;
+﻿using FluentValidation;
+using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Application.UseCases.PaymentRequests.Commands.GetPaymentMethods.CreatePaymentReceipt;
 
@@ -9,10 +8,11 @@ public class CreatePaymentReceiptValidator : AbstractValidator<RequestContext>
     public CreatePaymentReceiptValidator()
     {
         RuleFor(request => request.PaymentRequest.PaymentRequestMethods)
-            .Must(methods => methods.Any(p => p.PaymentMethodType == PaymentMethodType.PaymentReceipt));
+            .Must(methods => methods?.Any(p => p.PaymentMethodType == PaymentMethodType.PaymentReceipt) == true)
+            .When(request => request.PaymentRequest.PaymentRequestMethods.Count != 0);
 
         RuleFor(request => request.Company.PaymentMethods)
-            .Must(methods => methods.All(x => x.MethodType != PaymentMethodType.PaymentReceipt));
+            .Must(methods => methods.Any(x => x.MethodType == PaymentMethodType.PaymentReceipt));
 
         RuleFor(request => request.Company.CompanyDeposits)
             .NotEmpty();
