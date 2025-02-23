@@ -1,9 +1,7 @@
 ﻿using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Domain.AggregateModels.CompanyIPGAggregate;
 using CPG.Domain.AggregateModels.PaymentRequestAggregate;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace CPG.Application.UseCases.PaymentRequests.Commands.GetPaymentMethods.CreateIpg.AvailableIpgStrategy;
 
@@ -19,7 +17,7 @@ public class WithIpgTypeNoDepositStrategy : IAvailableIpgStrategy
         {
             return null;
         }
-        var result = companyIPGs.Where(i => companyIpg.Select(d => d).Contains(i.Id)).ToList();
+        var result = companyIPGs.Where(i => companyIpg.Select(d => d).Contains(i.IPGTypeId)).ToList();
         return result;
     }
 }
