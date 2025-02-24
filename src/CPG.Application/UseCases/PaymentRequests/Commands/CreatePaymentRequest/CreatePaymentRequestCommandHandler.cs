@@ -1,26 +1,26 @@
 ﻿using CPG.Application.Auth;
-using CPG.Domain.AggregateModels.CompanyDepositAggregate;
 using CPG.Application.UseCases.Exceptions;
+using CPG.Application.UseCases.PaymentRequests.Commands.CreatePaymentRequest.Models;
+using CPG.Application.UseCases.PaymentRequests.Commands.CreatePaymentRequest.ValidationHandlers;
 using CPG.Application.UseCases.PaymentRequests.Exceptions;
 using CPG.Application.UseCases.PaymentRequests.ViewModels;
 using CPG.Domain.AggregateModels.ApplicationAggregate.Specifications;
 using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Domain.AggregateModels.CompanyAggregate.Specifications;
+using CPG.Domain.AggregateModels.CompanyDepositAggregate;
+using CPG.Domain.AggregateModels.IPGTypeAggregate;
+using CPG.Domain.AggregateModels.IPGTypeAggregate.Specifications;
 using CPG.Domain.AggregateModels.PaymentRequestAggregate;
 using CPG.Domain.AggregateModels.PaymentRequestAggregate.Specifications;
+using CPG.Domain.AggregateModels.ProviderAggregate;
+using CPG.Domain.AggregateModels.ProviderAggregate.Specifications;
 using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Domain.Exceptions;
+using CPG.Domain.SharedKernel.ApplicationSettingsAggregate;
+using CPG.Domain.SharedKernel.Interfaces;
 using Mapster;
 using System.Collections.Generic;
 using static CPG.Domain.SharedKernel.Enums;
-using CPG.Domain.AggregateModels.IPGTypeAggregate;
-using CPG.Domain.AggregateModels.IPGTypeAggregate.Specifications;
-using CPG.Domain.AggregateModels.ProviderAggregate;
-using CPG.Domain.AggregateModels.ProviderAggregate.Specifications;
-using CPG.Application.UseCases.PaymentRequests.Commands.CreatePaymentRequest.ValidationHandlers;
-using CPG.Application.UseCases.PaymentRequests.Commands.CreatePaymentRequest.Models;
-using CPG.Domain.SharedKernel.Interfaces;
-using CPG.Domain.SharedKernel.ApplicationSettingsAggregate;
 
 namespace CPG.Application.UseCases.PaymentRequests.Commands.CreatePaymentRequest;
 
@@ -141,7 +141,7 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
 
         var result = new ConfigData
         {
-            Company = company,          
+            Company = company,
         };
 
         if (model.PaymentMethodConfig is null)
@@ -227,7 +227,7 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
                 depositExistInCompanyIpgValidator.Handle(new DepositExistInIpgValidatorModel { Company = company, MethodData = methodData });
 
                 var depositExistInActiveCompanyIpgValidator = new DepositExistInActiveCompanyIpgValidator<DepositExistInIpgValidatorModel>();
-                depositExistInActiveCompanyIpgValidator.Handle(new DepositExistInIpgValidatorModel { Company = company, MethodData = methodData });
+                depositExistInActiveCompanyIpgValidator.Handle(new DepositExistInIpgValidatorModel { Company = company, MethodData = methodData, PaymentMethodConfig = model.PaymentMethodConfig });
             }
 
             result.MethodDataList = methodData;
@@ -327,7 +327,7 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
             return false;
         return true;
     }
-    
+
     private class ConfigData
     {
         public Company Company { get; set; }
