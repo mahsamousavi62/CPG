@@ -13,7 +13,7 @@ public class NoIpgTypeWithDepositStrategy : IAvailableIpgStrategy
     {
         var SuggestCompanyDeposits = paymentRequestMethodDeposits.Select(c => c.CompanyDepositId).ToList();
         var companyIpgDeposits = companyIPGs.SelectMany(i => i.IPGDeposits);
-        var acceptDeposits = companyIpgDeposits.Where(cid => SuggestCompanyDeposits.Contains(cid.Id));
+        var acceptDeposits = companyIpgDeposits.Where(cid => SuggestCompanyDeposits.Contains(cid.CompanyDepositId));
 
         if (!acceptDeposits.Any())
         {
