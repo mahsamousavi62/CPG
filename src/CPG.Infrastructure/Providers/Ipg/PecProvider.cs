@@ -1,7 +1,4 @@
-﻿using System;
-using System.Net;
-using System.Threading.Tasks;
-using CCPG.Domain.SharedKernel.Communication.Ipg;
+﻿using CCPG.Domain.SharedKernel.Communication.Ipg;
 using ConfirmPecServiceReference;
 using CPG.Application.UseCases.Ipg.Exception;
 using CPG.Domain.SharedKernel;
@@ -16,6 +13,9 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PecServiceReference1;
+using System;
+using System.Net;
+using System.Threading.Tasks;
 namespace CPG.Infrastructure.Providers.Ipg;
 
 public class PecProvider(
@@ -51,7 +51,7 @@ public class PecProvider(
                     CallBackUrl = callBack,
                     LoginAccount = GetDataFromJsonProvider(request.ProviderData),
                     OrderId = long.Parse(trackerId),
-                    Originator = string.IsNullOrEmpty(request.MobileNumber) ? null : request.MobileNumber,
+                    Originator = string.IsNullOrWhiteSpace(request.MobileNumber) ? null : request.MobileNumber.Trim(),
                 };
                 var response = await SaleSvc.SalePaymentRequestAsync(clientSaleRequestData);
 
