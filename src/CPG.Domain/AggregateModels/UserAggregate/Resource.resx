@@ -121,6 +121,6 @@
     <value>کد ملی صحیح نمی باشد</value>
   </data>
   <data name="NationalCodeInvalidFormat" xml:space="preserve">
-    <value>فرمت کد ملی صحیح نمی باشد</value>
+    <value>کدملی درقالب صحیح ارائه نشده است</value>
   </data>
 </root>
