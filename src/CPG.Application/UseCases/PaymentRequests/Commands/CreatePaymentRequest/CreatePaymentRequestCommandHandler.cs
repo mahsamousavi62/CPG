@@ -24,6 +24,7 @@ using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Application.UseCases.PaymentRequests.Commands.CreatePaymentRequest;
 
+
 public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequest> paymentRequestRepository,
     IAggregateRepository<CompanyDeposit> companyDepositRepository,
     IAggregateRepository<Company> companyRepository,
@@ -118,6 +119,12 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
     {
         var amount = new Amount(model.Amount);
         var callBackUrl = new Url(model.CallBackUrl);
+
+        if (model.IsAnonymous && string.IsNullOrWhiteSpace(model.NationalCode))
+        {
+            throw new PaymentRequestNationalCodeRequiredException();
+        }
+
 
         if (!string.IsNullOrWhiteSpace(model.NationalCode))
         {

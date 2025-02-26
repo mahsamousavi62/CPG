@@ -61,7 +61,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, your account does not have enough balance to pay the amount. If possible, use other available methods to pay the desired amount..
+        ///   Looks up a localized string similar to کاربر گرامی، حساب شما موجودی لازم جهت پرداخت مبلغ را ندارد. در صورت امکان از سایر روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید..
         /// </summary>
         public static string AccountDoesNotHaveEnoughBalance {
             get {
@@ -70,7 +70,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to AccountNumber.
+        ///   Looks up a localized string similar to شماره حساب.
         /// </summary>
         public static string AccountNumber {
             get {
@@ -79,7 +79,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Activate.
+        ///   Looks up a localized string similar to فعالسازی.
         /// </summary>
         public static string Activate {
             get {
@@ -88,7 +88,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Active.
+        ///   Looks up a localized string similar to فعال.
         /// </summary>
         public static string Active {
             get {
@@ -97,7 +97,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Active/DeActive.
+        ///   Looks up a localized string similar to فعال/غیرفعال.
         /// </summary>
         public static string Active_DeActive {
             get {
@@ -106,7 +106,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Amount.
+        ///   Looks up a localized string similar to مبلغ.
         /// </summary>
         public static string Amount {
             get {
@@ -115,7 +115,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to AmountIsNotInRange.
+        ///   Looks up a localized string similar to مبلغ خارج از رنج است.
         /// </summary>
         public static string AmountIsNotInRange {
             get {
@@ -124,7 +124,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ApplicationLogo.
+        ///   Looks up a localized string similar to لوگوی برنامه.
         /// </summary>
         public static string ApplicationLogo {
             get {
@@ -133,7 +133,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ApplicationName.
+        ///   Looks up a localized string similar to برنامه پایه گذار درخواست.
         /// </summary>
         public static string ApplicationName {
             get {
@@ -142,7 +142,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Application with Id {0} has not been found..
+        ///   Looks up a localized string similar to برنامه با شناسه {0} یافت نشد.
         /// </summary>
         public static string ApplicationNotFound {
             get {
@@ -151,7 +151,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ApplicationSettings.
+        ///   Looks up a localized string similar to تنظیمات برنامه.
         /// </summary>
         public static string ApplicationSettings {
             get {
@@ -160,7 +160,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Apply.
+        ///   Looks up a localized string similar to اعمال.
         /// </summary>
         public static string Apply {
             get {
@@ -169,7 +169,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Apps.
+        ///   Looks up a localized string similar to برنامه‌ها.
         /// </summary>
         public static string Apps {
             get {
@@ -178,7 +178,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to AsanPardakht.
+        ///   Looks up a localized string similar to آسان پرداخت.
         /// </summary>
         public static string AsanPardakht {
             get {
@@ -187,7 +187,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to AuthenticationType.
+        ///   Looks up a localized string similar to نحوه احراز هویت.
         /// </summary>
         public static string AuthenticationType {
             get {
@@ -196,7 +196,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ayandeh.
+        ///   Looks up a localized string similar to ارتباط فردا.
         /// </summary>
         public static string Ayandeh {
             get {
@@ -205,7 +205,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to BalanceIsNotEnought.
+        ///   Looks up a localized string similar to موجودی کارت کافی نیست.
         /// </summary>
         public static string BalanceIsNotEnought {
             get {
@@ -214,7 +214,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, the amount allowed in the bank has been reached, if possible, use other banks or available methods to pay the desired amount.
+        ///   Looks up a localized string similar to کاربر گرامی، سقف مجاز مبلغ در بانک به اتمام رسیده است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید.
         /// </summary>
         public static string BankAmountLimit {
             get {
@@ -223,7 +223,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to BankIsActiveInProvider.
+        ///   Looks up a localized string similar to آیا بانک مورد نظر در حال حاضر در سرویس دهنده فعال است.
         /// </summary>
         public static string BankIsActiveInProvider {
             get {
@@ -232,7 +232,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to BankLogo.
+        ///   Looks up a localized string similar to لوگوی بانک.
         /// </summary>
         public static string BankLogo {
             get {
@@ -241,7 +241,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, this bank and license have been disrupted, if possible, use other banks or available methods to pay the desired amount.
+        ///   Looks up a localized string similar to کاربر گرامی، این بانک و مجوز دچار اختلال شده است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید..
         /// </summary>
         public static string BankMalfunction {
             get {
@@ -250,7 +250,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to BankName.
+        ///   Looks up a localized string similar to بانک.
         /// </summary>
         public static string BankName {
             get {
@@ -259,7 +259,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bank with Id {0} has not been found.
+        ///   Looks up a localized string similar to بانک با شناسه {0} یافت نشد.
         /// </summary>
         public static string BankNotFound {
             get {
@@ -268,7 +268,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Banks.
+        ///   Looks up a localized string similar to بانک‌ها.
         /// </summary>
         public static string Banks {
             get {
@@ -277,7 +277,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to BaseOnMinute.
+        ///   Looks up a localized string similar to بر حسب دقیقه.
         /// </summary>
         public static string BaseOnMinute {
             get {
@@ -286,7 +286,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Before.
+        ///   Looks up a localized string similar to قبلی.
         /// </summary>
         public static string Before {
             get {
@@ -295,7 +295,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to BehPardakht.
+        ///   Looks up a localized string similar to به پرداخت.
         /// </summary>
         public static string BehPardakht {
             get {
@@ -304,7 +304,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, the account related to this license has been blocked, if possible, use other banks or available methods to pay the desired amount.
+        ///   Looks up a localized string similar to کاربر گرامی، حساب مربوط به این مجوز مسدود شده است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید.
         /// </summary>
         public static string BlockedAccount {
             get {
@@ -313,7 +313,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to BrokerageCharisma.
+        ///   Looks up a localized string similar to کارگزاری کاریزما.
         /// </summary>
         public static string BrokerageCharisma {
             get {
@@ -331,7 +331,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CallbackUrls.
+        ///   Looks up a localized string similar to نشانی‌های بازگشتی (Callback URL).
         /// </summary>
         public static string CallbackUrls {
             get {
@@ -340,7 +340,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cancel.
+        ///   Looks up a localized string similar to لغو.
         /// </summary>
         public static string Cancel {
             get {
@@ -349,7 +349,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CardBalance.
+        ///   Looks up a localized string similar to موجودی کارت.
         /// </summary>
         public static string CardBalance {
             get {
@@ -358,7 +358,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CardInfoCOnfirmation.
+        ///   Looks up a localized string similar to تایید اطلاعات کارت.
         /// </summary>
         public static string CardInfoCOnfirmation {
             get {
@@ -367,7 +367,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CharismaCard.
+        ///   Looks up a localized string similar to کاریزما کارت.
         /// </summary>
         public static string CharismaCard {
             get {
@@ -376,7 +376,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CheckMobileAndDepositOwnershipMatching.
+        ///   Looks up a localized string similar to تطبیق مالکیت موبایل ارسال شده و حساب بانکی پرداخت‌کننده.
         /// </summary>
         public static string CheckMobileAndDepositOwnershipMatching {
             get {
@@ -385,7 +385,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ChooseMethodPayment.
+        ///   Looks up a localized string similar to یکی از روش های پرداخت را انتخاب کنید..
         /// </summary>
         public static string ChooseMethodPayment {
             get {
@@ -394,7 +394,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Companies.
+        ///   Looks up a localized string similar to شرکت‌ها.
         /// </summary>
         public static string Companies {
             get {
@@ -403,7 +403,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CompanyDeposit.
+        ///   Looks up a localized string similar to حساب مقصد.
         /// </summary>
         public static string CompanyDeposit {
             get {
@@ -412,7 +412,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CompanyDepositByCompanyIdNotFound.
+        ///   Looks up a localized string similar to حسابی برای شرکت{0} تعریف نشده است.
         /// </summary>
         public static string CompanyDepositByCompanyIdNotFound {
             get {
@@ -421,7 +421,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CompanyDepositId.
+        ///   Looks up a localized string similar to بانک و حساب مقصد.
         /// </summary>
         public static string CompanyDepositId {
             get {
@@ -430,7 +430,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CompanyDeposit not belong to company.
+        ///   Looks up a localized string similar to حساب متعلق به شرکت نمی باشد.
         /// </summary>
         public static string CompanyDepositNotBelongToCompany {
             get {
@@ -439,7 +439,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to companyDepositNotFound.
+        ///   Looks up a localized string similar to حساب شرکت یافت نشد.
         /// </summary>
         public static string CompanyDepositNotFound {
             get {
@@ -448,7 +448,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CompanyIPGDeposits.
+        ///   Looks up a localized string similar to حساب (های) متصل به درگاه.
         /// </summary>
         public static string CompanyIPGDeposits {
             get {
@@ -457,7 +457,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CompanyIPGNotFound.
+        ///   Looks up a localized string similar to درگاه شرکت با شناسه {0} یافت نشد.
         /// </summary>
         public static string CompanyIPGNotFound {
             get {
@@ -466,7 +466,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, company &quot;{0}&quot; is inactive right now and unable for payment. Call support team or try later.
+        ///   Looks up a localized string similar to کاربر گرامی، شرکت &quot;{0}&quot; در حال حاضر غیرفعال بوده و امکان پرداخت وجه به آن امکان پذیر نیست. لطفا با پشتیبانی تماس بگیرید یا در ساعات دیگری از روز مراجعه کنید.
         /// </summary>
         public static string CompanyIsInactive {
             get {
@@ -475,7 +475,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CompanyLogo.
+        ///   Looks up a localized string similar to لوگوی شرکت.
         /// </summary>
         public static string CompanyLogo {
             get {
@@ -484,7 +484,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CompanyName.
+        ///   Looks up a localized string similar to شرکت دریافت کننده وجه.
         /// </summary>
         public static string CompanyName {
             get {
@@ -493,7 +493,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CompanyNotFound.
+        ///   Looks up a localized string similar to شرکت یافت نشد.
         /// </summary>
         public static string CompanyNotFound {
             get {
@@ -502,7 +502,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CompanySettings.
+        ///   Looks up a localized string similar to تنظیمات شرکت.
         /// </summary>
         public static string CompanySettings {
             get {
@@ -520,7 +520,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CPGReferencePage.
+        ///   Looks up a localized string similar to صفحه مرجع CPG.
         /// </summary>
         public static string CPGReferencePage {
             get {
@@ -529,7 +529,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create.
+        ///   Looks up a localized string similar to ایجاد.
         /// </summary>
         public static string Create {
             get {
@@ -538,7 +538,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CreateApplication.
+        ///   Looks up a localized string similar to ایجاد برنامه.
         /// </summary>
         public static string CreateApplication {
             get {
@@ -547,7 +547,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CreateCompany.
+        ///   Looks up a localized string similar to ایجاد شرکت.
         /// </summary>
         public static string CreateCompany {
             get {
@@ -556,7 +556,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CreateDeposit.
+        ///   Looks up a localized string similar to ایجاد حساب.
         /// </summary>
         public static string CreateDeposit {
             get {
@@ -565,7 +565,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CreateDepositCompanyFor.
+        ///   Looks up a localized string similar to ایجاد حساب بانکی برای.
         /// </summary>
         public static string CreateDepositCompanyFor {
             get {
@@ -574,7 +574,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CreateIPG.
+        ///   Looks up a localized string similar to ایجاد درگاه.
         /// </summary>
         public static string CreateIPG {
             get {
@@ -583,7 +583,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CreateIPGCompanyFor.
+        ///   Looks up a localized string similar to ایجاد درگاه برای شرکت.
         /// </summary>
         public static string CreateIPGCompanyFor {
             get {
@@ -592,7 +592,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CreateProvider.
+        ///   Looks up a localized string similar to ایجاد سرویس‌دهنده.
         /// </summary>
         public static string CreateProvider {
             get {
@@ -601,16 +601,16 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to d.
+        ///   Looks up a localized string similar to تاریخ و زمان ایجاد.
         /// </summary>
-        public static string d {
+        public static string CreationDate {
             get {
-                return ResourceManager.GetString("d", resourceCulture);
+                return ResourceManager.GetString("CreationDate", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, the transaction amount is more than the daily limit of this license, if possible, use other banks or available methods to pay the desired amount.
+        ///   Looks up a localized string similar to کاربر گرامی، مبلغ تراکنش بیشتر از حد مجاز روزانه این مجوز است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید.
         /// </summary>
         public static string DailyTransactionAmount {
             get {
@@ -619,7 +619,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, the daily transaction limit of this license has been reached. If possible, use other banks or available methods to pay the desired amount..
+        ///   Looks up a localized string similar to کاربر گرامی، سقف مجاز تعداد تراکنش روزانه این مجوز به اتمام رسیده، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید..
         /// </summary>
         public static string DailyTransactionLimit {
             get {
@@ -628,7 +628,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DDBankCodeDirectDebit.
+        ///   Looks up a localized string similar to شناسه بانک برای برداشت مستقیم در سرویس دهنده مورد نظر.
         /// </summary>
         public static string DDBankCodeDirectDebit {
             get {
@@ -655,7 +655,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DeActive.
+        ///   Looks up a localized string similar to غیر فعال.
         /// </summary>
         public static string DeActive {
             get {
@@ -664,7 +664,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DefaultDeposit.
+        ///   Looks up a localized string similar to حساب پیشفرض.
         /// </summary>
         public static string DefaultDeposit {
             get {
@@ -673,7 +673,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DefaultIPGDeposit.
+        ///   Looks up a localized string similar to حساب پیشفرض درگاه.
         /// </summary>
         public static string DefaultIPGDeposit {
             get {
@@ -682,7 +682,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete.
+        ///   Looks up a localized string similar to حذف.
         /// </summary>
         public static string Delete {
             get {
@@ -691,7 +691,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DepositAmount.
+        ///   Looks up a localized string similar to واریز مبلغ.
         /// </summary>
         public static string DepositAmount {
             get {
@@ -700,7 +700,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, there is a problem with the bank deposit related to this license, if possible, use other banks or available methods to pay the desired amount..
+        ///   Looks up a localized string similar to کاربر گرامی، در سپرده بانکی مربوط به این مجوز مشکلی رخ داده است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید.
         /// </summary>
         public static string DepositProblem {
             get {
@@ -709,7 +709,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Deposits.
+        ///   Looks up a localized string similar to حساب‌ها.
         /// </summary>
         public static string Deposits {
             get {
@@ -718,7 +718,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Description.
+        ///   Looks up a localized string similar to توضیحات.
         /// </summary>
         public static string Description {
             get {
@@ -727,7 +727,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, it is not possible to transfer money to the destination account. If possible, use other available methods to pay the desired amount..
+        ///   Looks up a localized string similar to کاربر گرامی امکان انتقال وجه به حساب مقصد موجود نیست. در صورت امکان از سایر روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید..
         /// </summary>
         public static string DestinationAccountDoesNotBelong {
             get {
@@ -736,7 +736,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DestinationIban.
+        ///   Looks up a localized string similar to شبای حساب مقصد.
         /// </summary>
         public static string DestinationIban {
             get {
@@ -745,7 +745,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DestinationIbanBank.
+        ///   Looks up a localized string similar to شبا و بانک حساب مقصد.
         /// </summary>
         public static string DestinationIbanBank {
             get {
@@ -754,7 +754,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, a license has already been registered in the system with a different number, if possible, use other banks or available methods to pay the desired amount.
+        ///   Looks up a localized string similar to کاربر گرامی، با شماره ای متفاوت قبلا مجوزی در سیستم ثبت شده است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید.
         /// </summary>
         public static string DiffrentNumber {
             get {
@@ -763,7 +763,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DirectDebit.
+        ///   Looks up a localized string similar to برداشت مستقیم.
         /// </summary>
         public static string DirectDebit {
             get {
@@ -772,7 +772,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, you have not granted the required permission to pay through Karisma card to the company {0}, please click on the request permission option to grant permission if necessary.
+        ///   Looks up a localized string similar to کاربر گرامی، شما مجوز لازم جهت پرداخت وجه از طریق کاریزما کارت به شرکت {0} را اعطا نکرده اید، خواهشمند است در صورت نیاز جهت اعطای مجوز بر روی گزینه درخواست مجوز کلیک کنید..
         /// </summary>
         public static string DirectDebitGrantError {
             get {
@@ -781,7 +781,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No record found with this authorizationId.
+        ///   Looks up a localized string similar to رکوردی با این authorizationId یافت نشد.
         /// </summary>
         public static string DirectDebitGrantNotFoundException {
             get {
@@ -790,7 +790,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DirectDebitProvider.
+        ///   Looks up a localized string similar to نوع سرویس‌دهنده برداشت مستقیم.
         /// </summary>
         public static string DirectDebitProvider {
             get {
@@ -799,7 +799,16 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Code &apos;{0}&apos; has already been used for another company.
+        ///   Looks up a localized string similar to تنظیمات برداشت مستقیم.
+        /// </summary>
+        public static string DirectDebitSetting {
+            get {
+                return ResourceManager.GetString("DirectDebitSetting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to کد &apos;{0}&apos; قبلا برای شرکت دیگری ثبت شده است.
         /// </summary>
         public static string DuplicateCompanyCode {
             get {
@@ -808,7 +817,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  EnglishName &apos;{0}&apos; has already been created.
+        ///   Looks up a localized string similar to  نام لاتین &apos;{0}&apos; قبلا ثبت شده است.
         /// </summary>
         public static string DuplicateEnglishName {
             get {
@@ -817,7 +826,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DuplicateIban.
+        ///   Looks up a localized string similar to شبا {0}تکراری است.
         /// </summary>
         public static string DuplicateIban {
             get {
@@ -826,7 +835,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  PersianName &apos;{0}&apos; has already been created.
+        ///   Looks up a localized string similar to نام فارسی &apos;{0}&apos; قبلا ثبت شده است.
         /// </summary>
         public static string DuplicatePersianName {
             get {
@@ -835,7 +844,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DuplicateProviderType.
+        ///   Looks up a localized string similar to برای این نوع سرویس دهنده قبلا  سرویس دهنده ایجاد شده است.
         /// </summary>
         public static string DuplicateProviderType {
             get {
@@ -844,7 +853,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Edit.
+        ///   Looks up a localized string similar to ویرایش.
         /// </summary>
         public static string Edit {
             get {
@@ -853,7 +862,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Refresh token is empty.
+        ///   Looks up a localized string similar to مقدار RefreshToken خالی است.
         /// </summary>
         public static string EmptyRefreshToken {
             get {
@@ -862,7 +871,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to EnglishName.
+        ///   Looks up a localized string similar to نام لاتین.
         /// </summary>
         public static string EnglishName {
             get {
@@ -871,7 +880,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error.
+        ///   Looks up a localized string similar to خطا.
         /// </summary>
         public static string Error {
             get {
@@ -880,7 +889,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ErrorInConnection.
+        ///   Looks up a localized string similar to خطا در برقراری ارتباط.
         /// </summary>
         public static string ErrorInConnection {
             get {
@@ -889,7 +898,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error :{0}.
+        ///   Looks up a localized string similar to {0} :خطا.
         /// </summary>
         public static string ErrorTitle {
             get {
@@ -898,7 +907,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, the card related to this license has expired, if possible, use other banks or available methods to pay the desired amount..
+        ///   Looks up a localized string similar to کاربر گرامی، کارت مربوط به این مجوز منقضی شده است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید.
         /// </summary>
         public static string ExpiredCard {
             get {
@@ -907,7 +916,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, this license has expired, if possible, use other banks or available methods to pay the desired amount.
+        ///   Looks up a localized string similar to کاربر گرامی، این مجوز منقضی شده است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید.
         /// </summary>
         public static string ExpiredGrant {
             get {
@@ -916,16 +925,16 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to False.
+        ///   Looks up a localized string similar to خیر.
         /// </summary>
-        public static string False {
+        public static string FALSE {
             get {
-                return ResourceManager.GetString("False", resourceCulture);
+                return ResourceManager.GetString("FALSE", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File Not Found.
+        ///   Looks up a localized string similar to فایل مورد نظر یافت نشد.
         /// </summary>
         public static string FileNotFound {
             get {
@@ -934,7 +943,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Filter.
+        ///   Looks up a localized string similar to فیلتر.
         /// </summary>
         public static string Filter {
             get {
@@ -943,7 +952,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to FiveYears.
+        ///   Looks up a localized string similar to پنج سال.
         /// </summary>
         public static string FiveYears {
             get {
@@ -952,7 +961,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ForCompany.
+        ///   Looks up a localized string similar to برای شرکت.
         /// </summary>
         public static string ForCompany {
             get {
@@ -961,7 +970,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to FourYears.
+        ///   Looks up a localized string similar to چهار سال.
         /// </summary>
         public static string FourYears {
             get {
@@ -970,7 +979,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to FromDateGreatherThanToDate.
+        ///   Looks up a localized string similar to  از تاریخ بزرگتر از تا تاریخ می باشد.
         /// </summary>
         public static string FromDateGreatherThanToDate {
             get {
@@ -979,7 +988,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An unexpected error has occurred, please try again or contact support.
+        ///   Looks up a localized string similar to خطایی غیرقابل پیش بینی رخ داده است، لطفا مجددا تلاش کنید یا با پشتیبانی تماس بگیرید.
         /// </summary>
         public static string GetPaymentTicketUnexpectedError {
             get {
@@ -988,7 +997,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to HasDirectDebitFeature.
+        ///   Looks up a localized string similar to امکان برداشت مستقیم دارد.
         /// </summary>
         public static string HasDirectDebitFeature {
             get {
@@ -997,7 +1006,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Iban.
+        ///   Looks up a localized string similar to شبا.
         /// </summary>
         public static string Iban {
             get {
@@ -1006,7 +1015,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to IbanPrefix.
+        ///   Looks up a localized string similar to شناسه شبا.
         /// </summary>
         public static string IbanPrefix {
             get {
@@ -1015,7 +1024,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to IdpClientIds.
+        ///   Looks up a localized string similar to شناسه(ها).
         /// </summary>
         public static string IdpClientIds {
             get {
@@ -1024,7 +1033,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, the transaction amount is illegal, if possible, use other banks or available methods to pay the desired amount.
+        ///   Looks up a localized string similar to کاربر گرامی، مبلغ تراکنش غیرمجاز است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید.
         /// </summary>
         public static string IllegalTransactionAmount {
             get {
@@ -1033,7 +1042,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, the card related to this license has been deactivated, if possible, use other banks or available methods to pay the desired amount..
+        ///   Looks up a localized string similar to کاربر گرامی، کارت مربوط به این مجوز غیرفعال شده است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید.
         /// </summary>
         public static string InactiveCard {
             get {
@@ -1042,7 +1051,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, this permission has been disabled in the bank, if possible, use other banks or available methods to pay the desired amount.
+        ///   Looks up a localized string similar to کاربر گرامی، این مجوز در بانک غیرفعال شده است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید.
         /// </summary>
         public static string InactiveGrant {
             get {
@@ -1051,7 +1060,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to IncreaseBalance.
+        ///   Looks up a localized string similar to افزایش موجودی.
         /// </summary>
         public static string IncreaseBalance {
             get {
@@ -1060,7 +1069,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to InternetPaymentGateway.
+        ///   Looks up a localized string similar to درگاه پرداخت اینترنتی.
         /// </summary>
         public static string InternetPaymentGateway {
             get {
@@ -1069,7 +1078,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, the card information related to this license is invalid, if possible, use other banks or available methods to pay the desired amount..
+        ///   Looks up a localized string similar to کاربر گرامی، اطلاعات کارت مربوط به این مجوز نامعتبر است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید.
         /// </summary>
         public static string InvalidCardData {
             get {
@@ -1078,7 +1087,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, the card or deposit related to this license is invalid, if possible, use other banks or available methods to pay the desired amount.
+        ///   Looks up a localized string similar to کاربر گرامی، کارت یا سپرده مربوط به این مجوز نامعتبر میباشد، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید.
         /// </summary>
         public static string InvalidCardOrDeposit {
             get {
@@ -1087,7 +1096,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No PaymentRequest found having this Code or TrackId.
+        ///   Looks up a localized string similar to کد درخواست یا شناسه رهگیری اشتباه است.
         /// </summary>
         public static string InvalidCodeOrTrackIdException {
             get {
@@ -1096,7 +1105,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, the deposit related to this license does not belong to you or it is not possible to withdraw from it, if possible, use other banks or available methods to pay the desired amount.
+        ///   Looks up a localized string similar to کاربر گرامی، سپرده مربوط به این مجوز متعلق به شما نیست یا امکان برداشت از آن موجود نمی باشد، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید.
         /// </summary>
         public static string InvalidDeposit {
             get {
@@ -1105,7 +1114,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, the deposit number related to this license is invalid, if possible, use other banks or available methods to pay the desired amount.
+        ///   Looks up a localized string similar to کاربر گرامی، شماره سپرده مربوط به این مجوز نامعتبر است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنیدs.
         /// </summary>
         public static string InvalidDepositNumber {
             get {
@@ -1114,7 +1123,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, this license is invalid, if possible, use other banks or available methods to pay the desired amount.
+        ///   Looks up a localized string similar to کاربر گرامی، این مجوز نامعتبر است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید.
         /// </summary>
         public static string InvalidGrant {
             get {
@@ -1123,7 +1132,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to InvalidIbanFormat.
+        ///   Looks up a localized string similar to فرمت شماره شبا معتبر نمی باشد.
         /// </summary>
         public static string InvalidIbanFormat {
             get {
@@ -1132,7 +1141,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to InvalidNationalCode.
+        ///   Looks up a localized string similar to کد ملی صحیح نمی باشد.
         /// </summary>
         public static string InvalidNationalCode {
             get {
@@ -1141,7 +1150,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to RefreshToken is invalid.
+        ///   Looks up a localized string similar to مقدار RefreshToken نامعتبر است.
         /// </summary>
         public static string InvalidRefreshToken {
             get {
@@ -1150,7 +1159,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, the transaction time for this license is invalid, if possible, use other banks or available methods to pay the desired amount.
+        ///   Looks up a localized string similar to کاربر گرامی، زمان انجام تراکنش برای این مجوز نامعتبر است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید.
         /// </summary>
         public static string InvalidTransactionTime {
             get {
@@ -1159,7 +1168,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to IpgBaseUrl.
+        ///   Looks up a localized string similar to IPG_Base_URL.
         /// </summary>
         public static string IpgBaseUrl {
             get {
@@ -1168,7 +1177,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to IpgRedirectionMethodType.
+        ///   Looks up a localized string similar to نحوه انتقال کاربر به درگاه پرداخت.
         /// </summary>
         public static string IpgRedirectionMethodType {
             get {
@@ -1177,7 +1186,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to IpgRedirectionMethodTypeNotFound.
+        ///   Looks up a localized string similar to نحوه انتقال کاربر به درگاه پرداخت نامعتبر می باشد.
         /// </summary>
         public static string IpgRedirectionMethodTypeNotFound {
             get {
@@ -1186,7 +1195,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to IPGs.
+        ///   Looks up a localized string similar to درگاه‌های پرداخت.
         /// </summary>
         public static string IPGs {
             get {
@@ -1195,7 +1204,16 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to IpgToken.
+        ///   Looks up a localized string similar to تنظیمات درگاه پرداخت.
+        /// </summary>
+        public static string IPGSetting {
+            get {
+                return ResourceManager.GetString("IPGSetting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to توکن درگاه پرداخت.
         /// </summary>
         public static string IpgToken {
             get {
@@ -1204,7 +1222,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to IPGTypeId.
+        ///   Looks up a localized string similar to نوع درگاه پرداخت.
         /// </summary>
         public static string IPGTypeId {
             get {
@@ -1213,7 +1231,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to IPGType with Id {0} has not been found.
+        ///   Looks up a localized string similar to نوع درگاه با شناسه {0} یافت نشد .
         /// </summary>
         public static string IPGTypeNotFound {
             get {
@@ -1222,7 +1240,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to IpgVerificationTimeLimit.
+        ///   Looks up a localized string similar to محدودیت زمانی تایید درگاه.
         /// </summary>
         public static string IpgVerificationTimeLimit {
             get {
@@ -1231,7 +1249,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to IsActive.
+        ///   Looks up a localized string similar to وضعیت.
         /// </summary>
         public static string IsActive {
             get {
@@ -1240,7 +1258,16 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MaxMandateValidityDurationPerMonth.
+        ///   Looks up a localized string similar to مقداردهی پارامتر کدملی برای درخواست های پرداخت ناشناس الزامی است.
+        /// </summary>
+        public static string IsAnonymousNationalCodeRequired {
+            get {
+                return ResourceManager.GetString("IsAnonymousNationalCodeRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to حداکثر مدت اعتبار مجوز پرداخت از حساب.
         /// </summary>
         public static string MaxMandateValidityDurationPerMonth {
             get {
@@ -1249,7 +1276,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MaxWithdrawalAmountPerDay.
+        ///   Looks up a localized string similar to سقف مجاز برداشت روزانه.
         /// </summary>
         public static string MaxWithdrawalAmountPerDay {
             get {
@@ -1258,7 +1285,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MethodType not allowed.
+        ///   Looks up a localized string similar to  با توجه به روشهای پرداخت مجاز شرکت، امکان انتخاب این روش پرداخت وجود ندارد.
         /// </summary>
         public static string MethodTypeNotAllowed {
             get {
@@ -1267,7 +1294,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MethodTypes.
+        ///   Looks up a localized string similar to روش‌(های) برداشت.
         /// </summary>
         public static string MethodTypes {
             get {
@@ -1276,7 +1303,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MinioException.
+        ///   Looks up a localized string similar to خطای فایل سرور.
         /// </summary>
         public static string MinioException {
             get {
@@ -1285,7 +1312,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Minute.
+        ///   Looks up a localized string similar to دقیقه.
         /// </summary>
         public static string Minute {
             get {
@@ -1294,7 +1321,16 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, the limit of the number of monthly transactions of this license has been reached. If possible, use other banks or available methods to pay the desired amount.
+        ///   Looks up a localized string similar to تاریخ و زمان بروز رسانی.
+        /// </summary>
+        public static string ModificationDate {
+            get {
+                return ResourceManager.GetString("ModificationDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to کاربر گرامی، سقف مجاز تعداد تراکنش ماهانه این مجوز به اتمام رسیده، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید.
         /// </summary>
         public static string MonthlyTransactionNumber {
             get {
@@ -1303,7 +1339,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MorethanOneDefaultDepositFoundException.
+        ///   Looks up a localized string similar to بیشتر از یک حساب پیش فرض وجود دارد.
         /// </summary>
         public static string MorethanOneDefaultDepositFoundException {
             get {
@@ -1312,7 +1348,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Name.
+        ///   Looks up a localized string similar to نام.
         /// </summary>
         public static string Name {
             get {
@@ -1321,7 +1357,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to NationalCodeMatchingRequied.
+        ///   Looks up a localized string similar to تطبیق کدملی.
         /// </summary>
         public static string NationalCodeMatchingRequired {
             get {
@@ -1330,7 +1366,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to NationalCodeMatchingRequiedWithCardNumber.
+        ///   Looks up a localized string similar to تطبیق کدملی پرداخت کننده با شماره کارت.
         /// </summary>
         public static string NationalCodeMatchingRequiredWithCardNumber {
             get {
@@ -1339,7 +1375,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to NineMonths.
+        ///   Looks up a localized string similar to نه ماه.
         /// </summary>
         public static string NineMonths {
             get {
@@ -1348,7 +1384,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, the account related to this license does not have Shahab code, if possible, use other banks or available methods to pay the desired amount.
+        ///   Looks up a localized string similar to کاربر گرامی، حساب مربوط به این مجوز فاقد کد شهاب میباشد، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید.
         /// </summary>
         public static string NoShahabCode {
             get {
@@ -1357,7 +1393,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to NotAuthorizeToVerify.
+        ///   Looks up a localized string similar to شما مجاز به تایید این تراکنش نیستند..
         /// </summary>
         public static string NotAuthorizeToVerify {
             get {
@@ -1366,7 +1402,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, the selected account does not have the necessary balance for payment. If possible, use other banks or available methods to pay the desired amount.
+        ///   Looks up a localized string similar to کاربر گرامی، حساب انتخاب شده دارای موجودی لازم جهت پرداخت نمی باشد. در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید..
         /// </summary>
         public static string NotEnoughBalance {
             get {
@@ -1375,7 +1411,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to TrackId not found.
+        ///   Looks up a localized string similar to کاربر گرامی، شناسه پرداخت نامعتبر است.
         /// </summary>
         public static string NotFoundTrackIdException {
             get {
@@ -1384,7 +1420,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Response is null.
+        ///   Looks up a localized string similar to سرویس پاسخی ندارد.
         /// </summary>
         public static string NotHasResponse {
             get {
@@ -1393,7 +1429,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to OneMonth.
+        ///   Looks up a localized string similar to یک ماه.
         /// </summary>
         public static string OneMonth {
             get {
@@ -1402,7 +1438,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to OneYear.
+        ///   Looks up a localized string similar to یک سال.
         /// </summary>
         public static string OneYear {
             get {
@@ -1411,7 +1447,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ParseCompanyIpgProviderData.
+        ///   Looks up a localized string similar to خطا در دسترسی به ProviderDate.
         /// </summary>
         public static string ParseCompanyIpgProviderData {
             get {
@@ -1420,7 +1456,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PayBy.
+        ///   Looks up a localized string similar to پرداخت توسط.
         /// </summary>
         public static string PayBy {
             get {
@@ -1429,7 +1465,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PaymentCode.
+        ///   Looks up a localized string similar to شناسه رهگیری.
         /// </summary>
         public static string PaymentCode {
             get {
@@ -1438,7 +1474,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pay : &quot;{0} rial&quot; | {1} tooman for company : {2}.
+        ///   Looks up a localized string similar to واریز مبلغ : &quot;{0} ریال&quot; | &quot;{1}&quot; تومان برای شرکت : &quot;{2}&quot;.
         /// </summary>
         public static string PaymentMessage {
             get {
@@ -1447,7 +1483,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An unexpected error has occurred, please try again or contact support.
+        ///   Looks up a localized string similar to خطایی غیرقابل پیش بینی رخ داده است، لطفا مجددا تلاش کنید یا با پشتیبانی تماس بگیرید.
         /// </summary>
         public static string PaymentMethodsUnexpectedError {
             get {
@@ -1456,7 +1492,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PaymentReceipt.
+        ///   Looks up a localized string similar to فیش واریزی.
         /// </summary>
         public static string PaymentReceipt {
             get {
@@ -1465,7 +1501,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to paymentReceiptNotFound.
+        ///   Looks up a localized string similar to شناسه قبض یافت نشد.
         /// </summary>
         public static string paymentReceiptNotFound {
             get {
@@ -1474,7 +1510,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PaymentReceiptPropertiesById.
+        ///   Looks up a localized string similar to مشخصات فیش واریزی به شناسه .
         /// </summary>
         public static string PaymentReceiptPropertiesById {
             get {
@@ -1510,7 +1546,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Application {0}-{1} is inactive.
+        ///   Looks up a localized string similar to برنامه کاربردی {0}-{1} غیرفعال است.
         /// </summary>
         public static string PaymentRequestApplicationIsInactive {
             get {
@@ -1519,7 +1555,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This application is not defined.
+        ///   Looks up a localized string similar to این برنامه تعریف نشده است.
         /// </summary>
         public static string PaymentRequestApplicationNotFound {
             get {
@@ -1528,7 +1564,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bank is inactive.
+        ///   Looks up a localized string similar to بانک حساب مورد نظر غیرفعال است.
         /// </summary>
         public static string PaymentRequestBankInactive {
             get {
@@ -1537,7 +1573,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, the payment code has expired, repeat the operation if necessary.
+        ///   Looks up a localized string similar to کاربر گرامی، نشانی پرداخت منقضی شده است، در صورت نیاز مجددا عملیات را تکرار کنید.
         /// </summary>
         public static string PaymentRequestCodeExpired {
             get {
@@ -1546,7 +1582,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, the request status is invalid.
+        ///   Looks up a localized string similar to کاربر گرامی، درخواست در وضعیت غیرمجاز است.
         /// </summary>
         public static string PaymentRequestCodeInvalidStatus {
             get {
@@ -1555,7 +1591,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, the payment address has expired, repeat the operation if necessary.
+        ///   Looks up a localized string similar to کاربر گرامی، نشانی پرداخت منقضی شده است، در صورت نیاز مجددا عملیات را تکرار کنید.
         /// </summary>
         public static string PaymentRequestCodeIsExpired {
             get {
@@ -1564,7 +1600,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, this request has already been finalized.
+        ///   Looks up a localized string similar to کاربر گرامی، این درخواست قبلا یکبار نهایی شده است.
         /// </summary>
         public static string PaymentRequestCodeIsFinalized {
             get {
@@ -1573,7 +1609,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, this address has already been used, repeat the operation if necessary.
+        ///   Looks up a localized string similar to کاربر گرامی، این نشانی قبلا یکبار استفاده شده است، در صورت نیاز مجددا عملیات را تکرار کنید.
         /// </summary>
         public static string PaymentRequestCodeIsUsed {
             get {
@@ -1582,7 +1618,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, this address has already been used, repeat the operation if necessary.
+        ///   Looks up a localized string similar to کاربر گرامی، این نشانی قبلا یکبار استفاده شده است، در صورت نیاز مجددا عملیات را تکرار کنید.
         /// </summary>
         public static string PaymentRequestCodeIsUsedBefore {
             get {
@@ -1591,7 +1627,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, the payment address is invalid.
+        ///   Looks up a localized string similar to کاربر گرامی، نشانی پرداخت نامعتبر است.
         /// </summary>
         public static string PaymentRequestCodeNotFound {
             get {
@@ -1600,7 +1636,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Company is inactive.
+        ///   Looks up a localized string similar to شرکت مورد نظر غیرفعال است.
         /// </summary>
         public static string PaymentRequestCompanyInactive {
             get {
@@ -1618,7 +1654,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to All company payment methods are inactive.
+        ///   Looks up a localized string similar to تمامی روش های پرداخت شرکت مورد نظر غیرفعال هستند.
         /// </summary>
         public static string PaymentRequestCompanyPaymentMethodAreInactive {
             get {
@@ -1627,7 +1663,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to TrackerId {0} is used before.
+        ///   Looks up a localized string similar to شناسه رهگیری {0} تکراری است.
         /// </summary>
         public static string PaymentRequestDuplicateTrackerId {
             get {
@@ -1636,7 +1672,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to IbanCompanyInActive.
+        ///   Looks up a localized string similar to شرکت مربوط به شبای ارائه شده غیرفعال است.
         /// </summary>
         public static string PaymentRequestIbanCompanyInActive {
             get {
@@ -1672,7 +1708,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Callback url {0} is invalid.
+        ///   Looks up a localized string similar to نشانی بازگشتی ارائه شده {0} مجاز نیست.
         /// </summary>
         public static string PaymentRequestInvalidCallbackUrl {
             get {
@@ -1690,7 +1726,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The national code is not entered in the correct format.
+        ///   Looks up a localized string similar to کدملی درقالب صحیح ارائه نشده است.
         /// </summary>
         public static string PaymentRequestInvalidNationalCode {
             get {
@@ -1704,6 +1740,15 @@ namespace CPG.Application.Shared.Resource {
         public static string PaymentRequestInvalidUrlPattern {
             get {
                 return ResourceManager.GetString("PaymentRequestInvalidUrlPattern", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to کاربر گرامی، شما مجاز به پرداخت این درخواست پرداخت نیستید.
+        /// </summary>
+        public static string PaymentRequestNationalCodeConflict {
+            get {
+                return ResourceManager.GetString("PaymentRequestNationalCodeConflict", resourceCulture);
             }
         }
         
@@ -1798,16 +1843,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, you are not authorized to pay this payment request.
-        /// </summary>
-        public static string PaymentRequestNationalCodeConflict {
-            get {
-                return ResourceManager.GetString("PaymentRequestNationalCodeConflict", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No company found.
+        ///   Looks up a localized string similar to با کد ارائه شده هیچ شرکتی یافت نشد.
         /// </summary>
         public static string PaymentRequestNoCompanyFound {
             get {
@@ -1825,7 +1861,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No company payment method found.
+        ///   Looks up a localized string similar to شرکت مورد نظر هیچ روش پرداختی ندارد.
         /// </summary>
         public static string PaymentRequestNoCompanyPaymentMethodFound {
             get {
@@ -1897,7 +1933,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to NotDefinedCompanyDeposit.
+        ///   Looks up a localized string similar to به ازای شبای ارائه شده هیچ حسابی تعریف نشده است.
         /// </summary>
         public static string PaymentRequestNotDefinedCompanyDeposit {
             get {
@@ -1924,7 +1960,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PaymentRequestNotFound.
+        ///   Looks up a localized string similar to درخواست پرداخت  با شناسه {0} یافت نشد .
         /// </summary>
         public static string PaymentRequestNotFound {
             get {
@@ -1933,7 +1969,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, the payment address is invalid.
+        ///   Looks up a localized string similar to کاربر گرامی، نشانی پرداخت نامعتبر است.
         /// </summary>
         public static string PaymentRequestNotFoundByCode {
             get {
@@ -1942,11 +1978,20 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to NotMatchIbanAndCompany.
+        ///   Looks up a localized string similar to حساب ارائه شده با شرکت مورد نظر ارتباطی نداشته و برای این شرکت تعریف نشده است..
         /// </summary>
         public static string PaymentRequestNotMatchIbanAndCompany {
             get {
                 return ResourceManager.GetString("PaymentRequestNotMatchIbanAndCompany", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to هیچ یک از زیرمجموعه های روش های پرداختی {0} قابل استفاده نیست، لطفا درخواست فعال سازی یا راه اندازی یکی از روش ها را به مدیر سیستم ارسال کنید.
+        /// </summary>
+        public static string PaymentRequestNoUsableMethod {
+            get {
+                return ResourceManager.GetString("PaymentRequestNoUsableMethod", resourceCulture);
             }
         }
         
@@ -1960,7 +2005,16 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PaymentRequestRequiredIbanOrCompany.
+        ///   Looks up a localized string similar to شرکت یا شبای مقصد را وارد کنید.
+        /// </summary>
+        public static string PaymentRequestRequiredData {
+            get {
+                return ResourceManager.GetString("PaymentRequestRequiredData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to هر 2 پارامتر شناسه شرکت و شبای مقصد نمیتواند به صورت همزمان خالی باشد.
         /// </summary>
         public static string PaymentRequestRequiredIbanOrCompany {
             get {
@@ -1969,7 +2023,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, the request status is invalid.
+        ///   Looks up a localized string similar to کاربر گرامی، درخواست در وضعیت غیرمجاز است.
         /// </summary>
         public static string PaymentRequestStatusIsInvalid {
             get {
@@ -1978,7 +2032,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An unexpected error has occurred, please try again or contact support.
+        ///   Looks up a localized string similar to خطایی غیرقابل پیش بینی رخ داده است، لطفا مجددا تلاش کنید یا با پشتیبانی تماس بگیرید.
         /// </summary>
         public static string PaymentRequestUnexpectedError {
             get {
@@ -1987,7 +2041,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An unexpected error has occurred, please try again or contact support.
+        ///   Looks up a localized string similar to خطایی غیرقابل پیش بینی رخ داده است، لطفا مجددا تلاش کنید یا با پشتیبانی تماس بگیرید.
         /// </summary>
         public static string PaymentTokenUnexpectedError {
             get {
@@ -1996,7 +2050,16 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PersianName.
+        ///   Looks up a localized string similar to تجارت الکترونیک پارسیان.
+        /// </summary>
+        public static string Pec {
+            get {
+                return ResourceManager.GetString("Pec", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to نام فارسی.
         /// </summary>
         public static string PersianName {
             get {
@@ -2005,7 +2068,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Plan with Id {0} has not been found.
+        ///   Looks up a localized string similar to طرح با شناسه {0} یافت نشد.
         /// </summary>
         public static string PlanNotFound {
             get {
@@ -2014,7 +2077,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PredictedSettlementDateTime.
+        ///   Looks up a localized string similar to تاریخ و زمان تسویه (احتمالی).
         /// </summary>
         public static string PredictedSettlementDateTime {
             get {
@@ -2023,7 +2086,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ProviderId.
+        ///   Looks up a localized string similar to سرویس‌دهنده.
         /// </summary>
         public static string ProviderId {
             get {
@@ -2032,7 +2095,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ProviderLogo.
+        ///   Looks up a localized string similar to لوگوی سرویس‌دهنده.
         /// </summary>
         public static string ProviderLogo {
             get {
@@ -2041,7 +2104,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Provider with Id {0} has not been found..
+        ///   Looks up a localized string similar to سرویس دهنده با شناسه {0} یافت نشد.
         /// </summary>
         public static string ProviderNotFound {
             get {
@@ -2050,7 +2113,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Providers.
+        ///   Looks up a localized string similar to سرویس‌دهنده‌ها.
         /// </summary>
         public static string Providers {
             get {
@@ -2059,7 +2122,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ProviderTrackerId.
+        ///   Looks up a localized string similar to کد رهگیری درگاه.
         /// </summary>
         public static string ProviderTrackerId {
             get {
@@ -2068,7 +2131,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ProviderType.
+        ///   Looks up a localized string similar to نوع سرویس‌دهنده.
         /// </summary>
         public static string ProviderType {
             get {
@@ -2077,7 +2140,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An unexpected error has occurred, please try again or contact support.
+        ///   Looks up a localized string similar to خطایی غیرقابل پیش بینی رخ داده است، لطفا مجددا تلاش کنید یا با پشتیبانی تماس بگیرید.
         /// </summary>
         public static string ProviderUnexpectedError {
             get {
@@ -2086,7 +2149,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to RayanReferencePage.
+        ///   Looks up a localized string similar to صفحه مرجع رایان هم افزا.
         /// </summary>
         public static string RayanReferencePage {
             get {
@@ -2095,7 +2158,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Receipt.
+        ///   Looks up a localized string similar to فیش واریزی.
         /// </summary>
         public static string Receipt {
             get {
@@ -2104,7 +2167,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ReceiptDateTime.
+        ///   Looks up a localized string similar to تاریخ و زمان پرداخت.
         /// </summary>
         public static string ReceiptDateTime {
             get {
@@ -2113,7 +2176,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ReceiptIdentifier.
+        ///   Looks up a localized string similar to شماره/شناسه فیش واریزی.
         /// </summary>
         public static string ReceiptIdentifier {
             get {
@@ -2122,7 +2185,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ReceiptProperties.
+        ///   Looks up a localized string similar to مشخصات فیش.
         /// </summary>
         public static string ReceiptProperties {
             get {
@@ -2131,7 +2194,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ReferenceNumber.
+        ///   Looks up a localized string similar to شناسه پرداخت.
         /// </summary>
         public static string ReferenceNumber {
             get {
@@ -2149,7 +2212,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Code or TrackId is required.
+        ///   Looks up a localized string similar to هر 2 پارامتر کد درخواست پرداخت و شناسه رهگیری نمیتواند به صورت همزمان خالی باشد.
         /// </summary>
         public static string RequiredCodeOrTrackIdException {
             get {
@@ -2158,7 +2221,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Shaparak settings are required.
+        ///   Looks up a localized string similar to وارد نمودن تنظیمات شاپرک الزامیست.
         /// </summary>
         public static string RequiredShaparakSettings {
             get {
@@ -2167,7 +2230,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ResponseApiUrl.
+        ///   Looks up a localized string similar to نشانی API بازگردانی نتیجه.
         /// </summary>
         public static string ResponseApiUrl {
             get {
@@ -2176,7 +2239,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rial.
+        ///   Looks up a localized string similar to ریال.
         /// </summary>
         public static string Rial {
             get {
@@ -2185,7 +2248,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Search.
+        ///   Looks up a localized string similar to جستجو.
         /// </summary>
         public static string Search {
             get {
@@ -2194,7 +2257,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SendOtpCode.
+        ///   Looks up a localized string similar to ارسال رمز یکبار مصرف به شماره موبایلی که در بانک تعریف شده.
         /// </summary>
         public static string SendOtpCode {
             get {
@@ -2203,7 +2266,16 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, the service provider/bank has a problem and we are trying to fix it. If possible, use other banks or available methods to pay the desired amount.
+        ///   Looks up a localized string similar to پرداخت الکترونیک سامان.
+        /// </summary>
+        public static string Sep {
+            get {
+                return ResourceManager.GetString("Sep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to کاربر گرامی سرویس دهنده/بانک دچار اختلال شده و ما در حال رفع مشکل هستیم. در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید.
         /// </summary>
         public static string ServerMalfunction {
             get {
@@ -2212,7 +2284,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, the service has been disrupted and we are fixing the problem. If possible, use other available methods to pay the desired amount..
+        ///   Looks up a localized string similar to کاربر گرامی سرویس دهنده دچار اختلال شده و ما در حال رفع مشکل هستیم. در صورت امکان از سایر روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید..
         /// </summary>
         public static string ServiceDisrupted {
             get {
@@ -2221,7 +2293,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SetActive.
+        ///   Looks up a localized string similar to فعال کردن.
         /// </summary>
         public static string SetActive {
             get {
@@ -2230,7 +2302,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SetDeActive.
+        ///   Looks up a localized string similar to غیرفعال کردن.
         /// </summary>
         public static string SetDeActive {
             get {
@@ -2239,7 +2311,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SettlementDateTime.
+        ///   Looks up a localized string similar to تاریخ واریز.
         /// </summary>
         public static string SettlementDateTime {
             get {
@@ -2248,7 +2320,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ShaparakIv.
+        ///   Looks up a localized string similar to بردار اولیه شاپرک (Shaparak_IV).
         /// </summary>
         public static string ShaparakIv {
             get {
@@ -2257,7 +2329,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ShaparakKey.
+        ///   Looks up a localized string similar to کلید شاپرک (Shaparak_Key).
         /// </summary>
         public static string ShaparakKey {
             get {
@@ -2266,7 +2338,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ShaparakThirdPartyCode.
+        ///   Looks up a localized string similar to کد شخص ثالث شاپرک (Shaparak_Thirdparty_Code).
         /// </summary>
         public static string ShaparakThirdPartyCode {
             get {
@@ -2275,7 +2347,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SiteAddressCompany.
+        ///   Looks up a localized string similar to نشانی سایت مربوط به شرکت.
         /// </summary>
         public static string SiteAddressCompany {
             get {
@@ -2284,7 +2356,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SixMonths.
+        ///   Looks up a localized string similar to شش ماه.
         /// </summary>
         public static string SixMonths {
             get {
@@ -2293,7 +2365,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SourceBank.
+        ///   Looks up a localized string similar to بانک مبدا.
         /// </summary>
         public static string SourceBank {
             get {
@@ -2302,7 +2374,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SourceIban.
+        ///   Looks up a localized string similar to شبای حساب مبدا.
         /// </summary>
         public static string SourceIban {
             get {
@@ -2311,7 +2383,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SourceIbanBank.
+        ///   Looks up a localized string similar to شبا و بانک حساب مبدا.
         /// </summary>
         public static string SourceIbanBank {
             get {
@@ -2320,7 +2392,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Special.
+        ///   Looks up a localized string similar to ویژه.
         /// </summary>
         public static string Special {
             get {
@@ -2329,7 +2401,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Status.
+        ///   Looks up a localized string similar to وضعیت.
         /// </summary>
         public static string Status {
             get {
@@ -2338,7 +2410,16 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Submit.
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string String1 {
+            get {
+                return ResourceManager.GetString("String1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to تایید.
         /// </summary>
         public static string Submit {
             get {
@@ -2347,7 +2428,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SubmitAndPay.
+        ///   Looks up a localized string similar to تایید و پرداخت.
         /// </summary>
         public static string SubmitAndPay {
             get {
@@ -2356,7 +2437,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to test.
+        ///   Looks up a localized string similar to تست.
         /// </summary>
         public static string Test {
             get {
@@ -2365,7 +2446,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ThreeMonths.
+        ///   Looks up a localized string similar to سه ماه.
         /// </summary>
         public static string ThreeMonths {
             get {
@@ -2374,7 +2455,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ThreeYears.
+        ///   Looks up a localized string similar to سه سال.
         /// </summary>
         public static string ThreeYears {
             get {
@@ -2383,7 +2464,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to TitleMainMenu.
+        ///   Looks up a localized string similar to تنظیمات پایه.
         /// </summary>
         public static string TitleMainMenu {
             get {
@@ -2392,7 +2473,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tooman.
+        ///   Looks up a localized string similar to تومان.
         /// </summary>
         public static string Tooman {
             get {
@@ -2401,7 +2482,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to TrackerId.
+        ///   Looks up a localized string similar to شناسه برنامه.
         /// </summary>
         public static string TrackerId {
             get {
@@ -2410,7 +2491,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to TrackId status is invalid.
+        ///   Looks up a localized string similar to کاربر گرامی، شناسه پرداخت در وضعیت غیرمجاز است.
         /// </summary>
         public static string TrackIdInvalidStatusException {
             get {
@@ -2419,7 +2500,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to the application {0} is unable to fetch this transaction detail.
+        ///   Looks up a localized string similar to امکان مشاهده جزئیات تراکنش برای این Application {0} مجاز نیست.
         /// </summary>
         public static string TransactionDetailInvalidApplication {
             get {
@@ -2428,7 +2509,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An unexpected error has occurred, please try again or contact support.
+        ///   Looks up a localized string similar to خطایی غیرقابل پیش بینی رخ داده است، لطفا مجددا تلاش کنید یا با پشتیبانی تماس بگیرید.
         /// </summary>
         public static string TransactionDetailUnexpectedError {
             get {
@@ -2437,7 +2518,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to TransactionNotFound.
+        ///   Looks up a localized string similar to تراکنش با این شناسه {0}یافت نشد.
         /// </summary>
         public static string TransactionNotFound {
             get {
@@ -2446,7 +2527,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transactions.
+        ///   Looks up a localized string similar to تراکنش‌ها.
         /// </summary>
         public static string Transactions {
             get {
@@ -2455,16 +2536,16 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to True.
+        ///   Looks up a localized string similar to بله.
         /// </summary>
-        public static string True {
+        public static string TRUE {
             get {
-                return ResourceManager.GetString("True", resourceCulture);
+                return ResourceManager.GetString("TRUE", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to TwoYears.
+        ///   Looks up a localized string similar to دو سال.
         /// </summary>
         public static string TwoYears {
             get {
@@ -2473,7 +2554,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Type.
+        ///   Looks up a localized string similar to نوع.
         /// </summary>
         public static string Type {
             get {
@@ -2482,7 +2563,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to UnAuthorizeRequest.
+        ///   Looks up a localized string similar to اعتبارسنجی درخواست انجام نشده است .
         /// </summary>
         public static string UnAuthorizeRequest {
             get {
@@ -2491,7 +2572,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An unexpected error has occurred, please try again or contact support.
+        ///   Looks up a localized string similar to خطایی غیرقابل پیش بینی رخ داده است، لطفا مجددا تلاش کنید یا با پشتیبانی تماس بگیرید.
         /// </summary>
         public static string UnexpectedError {
             get {
@@ -2500,7 +2581,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear user, in order to carry out direct withdrawal operations, if possible, pay the desired amount from other banks.
+        ///   Looks up a localized string similar to کاربر گرامی به منظور انجام عملیات برداشت مستقیم، در صورت امکان از سایر بانک ها جهت پرداخت مبلغ مورد نظر اقدام کنید.
         /// </summary>
         public static string UseOtherBanks {
             get {
@@ -2509,7 +2590,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User.
+        ///   Looks up a localized string similar to کاربر.
         /// </summary>
         public static string User {
             get {
@@ -2518,7 +2599,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to UserHasnotCharismaCart.
+        ///   Looks up a localized string similar to کاریزما کارت ندارد.
         /// </summary>
         public static string UserHasnotCharismaCart {
             get {
@@ -2527,7 +2608,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to UserNotFound.
+        ///   Looks up a localized string similar to کاربر وجود ندارد.
         /// </summary>
         public static string UserNotFound {
             get {
@@ -2536,7 +2617,16 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to UserNotVerifyStatus.
+        ///   Looks up a localized string similar to وضعیت کاربر {0}می باشد .
+        /// </summary>
+        public static string UserNotVerify {
+            get {
+                return ResourceManager.GetString("UserNotVerify", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
         /// </summary>
         public static string UserNotVerifyStatus {
             get {
@@ -2545,7 +2635,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Users.
+        ///   Looks up a localized string similar to کاربران.
         /// </summary>
         public static string Users {
             get {
@@ -2554,7 +2644,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to UsersNotFound.
+        ///   Looks up a localized string similar to لیست کاربران نامعتبر می باشد.
         /// </summary>
         public static string UsersNotFound {
             get {
@@ -2563,7 +2653,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to IBan Validation.
+        ///   Looks up a localized string similar to شبا نامعتبر است.
         /// </summary>
         public static string Validation_IBan {
             get {
@@ -2572,7 +2662,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} cant be more than {1} charachter.
+        ///   Looks up a localized string similar to {0} نمی‌تواند بیشتر از {1} کاراکتر باشد.
         /// </summary>
         public static string Validation_MaxLength {
             get {
@@ -2581,7 +2671,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} cant be less than {1} charachter.
+        ///   Looks up a localized string similar to {0} نمی‌تواند کمتر از {1} کاراکتر باشد.
         /// </summary>
         public static string Validation_MinLength {
             get {
@@ -2590,7 +2680,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} is required.
+        ///   Looks up a localized string similar to {0} الزامی می باشد.
         /// </summary>
         public static string Validation_Required {
             get {
@@ -2599,7 +2689,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Vandar.
+        ///   Looks up a localized string similar to وندار.
         /// </summary>
         public static string Vandar {
             get {
@@ -2608,7 +2698,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to VerificationDateTime.
+        ///   Looks up a localized string similar to تاریخ و زمان تایید.
         /// </summary>
         public static string VerificationDateTime {
             get {
@@ -2617,7 +2707,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to VerificationTimeLimit.
+        ///   Looks up a localized string similar to محدودیت زمانی تایید.
         /// </summary>
         public static string VerificationTimeLimit {
             get {
@@ -2626,7 +2716,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to VerificationTimeLimitIPG.
+        ///   Looks up a localized string similar to IPG_Verification_Time_Limit.
         /// </summary>
         public static string VerificationTimeLimitIPG {
             get {
@@ -2635,7 +2725,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to VerifiedOperationIsSucccesseed.
+        ///   Looks up a localized string similar to عملیات تایید موفقیت آمیز انجام شد.
         /// </summary>
         public static string VerifiedMessage {
             get {
@@ -2644,7 +2734,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to the application is unable to verify this transaction.
+        ///   Looks up a localized string similar to امکان تایید تراکنش برای این Application مجاز نیست.
         /// </summary>
         public static string VerifyInvalidApplication {
             get {
@@ -2653,7 +2743,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The payment request status is invalid.
+        ///   Looks up a localized string similar to درخواست پرداخت مورد نظر در وضعیت مجاز برای تایید قرار ندارد.
         /// </summary>
         public static string VerifyInvalidStatus {
             get {
