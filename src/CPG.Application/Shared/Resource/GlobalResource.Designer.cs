@@ -1924,7 +1924,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Choosing one of the payment methods is mandatory.
+        ///   Looks up a localized string similar to انتخاب یکی از روش های پرداخت الزامی است.
         /// </summary>
         public static string PaymentRequestNoMethod {
             get {
