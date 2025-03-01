@@ -736,7 +736,7 @@
     <value>None of the corresponding accounts are set on any payment gateways of company {0}</value>
   </data>
   <data name="PaymentRequestNoMethod" xml:space="preserve">
-    <value>Choosing one of the payment methods is mandatory</value>
+    <value>انتخاب یکی از روش های پرداخت الزامی است</value>
   </data>
   <data name="PaymentRequestNotDefinedCompanyDeposit" xml:space="preserve">
     <value>به ازای شبای ارائه شده هیچ حسابی تعریف نشده است</value>
