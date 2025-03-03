@@ -268,7 +268,7 @@
     <value>تنظیمات شرکت</value>
   </data>
   <data name="CountinueCreateDeposit" xml:space="preserve">
-    <value>ادامه افتتاح حساب</value>
+    <value>CountinueCreateDeposit</value>
   </data>
   <data name="CPGReferencePage" xml:space="preserve">
     <value>صفحه مرجع CPG</value>
@@ -601,13 +601,13 @@
     <value>مشخصات فیش واریزی به شناسه </value>
   </data>
   <data name="PaymentRequestAllDepositBanksAreInactive" xml:space="preserve">
-    <value>بانک تمامی حساب های متناظر شبا(های) ارائه شده در روش(های) {0} غیرفعال هستند</value>
+    <value>The bank of all the corresponding accounts of the Shaba(s) provided in method {0} is inactive</value>
   </data>
   <data name="PaymentRequestAllDepositsAreInactive" xml:space="preserve">
-    <value>تمامی حساب های متناظر شبا(های) ارائه شده در روش(های) {0} غیرفعال هستند</value>
+    <value>All the corresponding accounts of the provided sheba(s) in method(s) {0} are inactive</value>
   </data>
   <data name="PaymentRequestAllDepositsNotSupportMethod" xml:space="preserve">
-    <value>هیچ یک از حساب های ارائه شده در روش(های) {0} از روش پرداختی مورد نظر پشتیبانی نمی کنند، لطفا آنها را تصحیح کنید یا درخواست تنظیم روش پرداختی برای حساب(های) مورد نظر را برای مدیر سیستم ارسال کنید</value>
+    <value>None of the accounts provided in the method(s) {0} support the desired payment method, please correct them or request to set the payment method for the desired account(s) for Send system administrator</value>
   </data>
   <data name="PaymentRequestApplicationIsInactive" xml:space="preserve">
     <value>برنامه کاربردی {0}-{1} غیرفعال است</value>
@@ -643,7 +643,7 @@
     <value>شرکت مورد نظر غیرفعال است</value>
   </data>
   <data name="PaymentRequestCompanyMethods" xml:space="preserve">
-    <value>روش(های) پرداخت {0} بر روی شرکت {1} تعیین نشده است</value>
+    <value>The payment method(s) {0} has not been determined on the company {1}</value>
   </data>
   <data name="PaymentRequestCompanyPaymentMethodAreInactive" xml:space="preserve">
     <value>تمامی روش های پرداخت شرکت مورد نظر غیرفعال هستند</value>
@@ -655,85 +655,85 @@
     <value>شرکت مربوط به شبای ارائه شده غیرفعال است</value>
   </data>
   <data name="PaymentRequestInactiveDepositBanks" xml:space="preserve">
-    <value>بانک حساب های با قابلیت پرداخت {0} حساب های شرکت {1} غیرفعال است</value>
+    <value>Bank of accounts with the ability to pay company {0} accounts {1} is inactive</value>
   </data>
   <data name="PaymentRequestInactiveDeposits" xml:space="preserve">
-    <value>در شرکت {0} هیچ حسابی تعریف نشده یا تمامی حساب ها غیرفعال هستند</value>
+    <value>No account has been defined in the company {0} or all accounts are inactive</value>
   </data>
   <data name="PaymentRequestInactiveIpgTypes" xml:space="preserve">
-    <value>نوع درگاه(های) متناظر با کد(های) ارائه شده غیرفعال هستند</value>
+    <value>The IpgType(s) corresponding to the provided code(s) are disabled</value>
   </data>
   <data name="PaymentRequestInvalidCallbackUrl" xml:space="preserve">
     <value>نشانی بازگشتی ارائه شده {0} مجاز نیست</value>
   </data>
   <data name="PaymentRequestInvalidIban" xml:space="preserve">
-    <value>شبا(های) ارائه شده در روش(های) {0} در قالب صحیح مقداردهی نشده اند، لطفا آنها را تصحیح کنید</value>
+    <value>The sheba(s) provided in {0} method(s) are not initialized in the correct format, please correct them</value>
   </data>
   <data name="PaymentRequestInvalidNationalCode" xml:space="preserve">
-    <value>کدملی در قالب صحیح ارائه نشده است</value>
+    <value>کدملی درقالب صحیح ارائه نشده است</value>
   </data>
   <data name="PaymentRequestInvalidUrlPattern" xml:space="preserve">
-    <value>نشانی بازگشتی (callback url) در قالب صحیح ارائه نشده است</value>
+    <value>The callback url is not provided in the correct format</value>
   </data>
   <data name="PaymentRequestNationalCodeConflict" xml:space="preserve">
     <value>کاربر گرامی، شما مجاز به پرداخت این درخواست پرداخت نیستید</value>
   </data>
   <data name="PaymentRequestNoActiveCompanyDepositFound" xml:space="preserve">
-    <value>در شرکت {0} هیچ حسابی تعریف نشده یا تمامی حساب ها غیرفعال هستند</value>
+    <value>No account has been defined in the {0} or all accounts are inactive</value>
   </data>
   <data name="PaymentRequestNoActiveCompanyIpgDepositForIpgCode" xml:space="preserve">
-    <value>هیچ یک از حساب های متناظر بر روی هیچ درگاه فعالی از نوع تعیین شده، در شرکت {0} تنظیم نشده است</value>
+    <value>None of the corresponding accounts have been set up on any active port of the specified type in the company {0}</value>
   </data>
   <data name="PaymentRequestNoActiveDepositBank" xml:space="preserve">
-    <value>بانک تمامی حساب های شرکت {0} غیرفعال است</value>
+    <value>The bank of all accounts of the company {0} is inactive</value>
   </data>
   <data name="PaymentRequestNoActiveDirectDebitProvider" xml:space="preserve">
-    <value>به منظور استفاده از روش برداشت مستقیم بایستی حداقل یک سرویس دهنده فعال با قابلیت برداشت مستقیم تعریف شده باشد</value>
+    <value>In order to use the direct withdrawal method, at least one active server with direct withdrawal capability must be defined</value>
   </data>
   <data name="PaymentRequestNoActiveIpg" xml:space="preserve">
-    <value>به منظور استفاده از روش درگاه پرداخت بایستی حداقل یک درگاه فعال برای حساب های موجود شرکت {0} تعریف شده باشد</value>
+    <value>In order to use the payment gateway method, at least one active gateway must be defined for the existing accounts of the company {0}</value>
   </data>
   <data name="PaymentRequestNoActiveIpgDepositForIbans" xml:space="preserve">
-    <value>هیچ یک از حساب های متناظر بر روی هیچ یک از درگاه فعالی در شرکت {0} تنظیم نشده اند</value>
+    <value>None of the corresponding accounts are set on any active payment gateways of company {0}</value>
   </data>
   <data name="PaymentRequestNoActiveIpgType" xml:space="preserve">
-    <value>به منظور استفاده از روش درگاه پرداخت بایستی حداقل یک درگاه با نوع فعال در شرکت {0} تعریف شده یا موجود باشد</value>
+    <value>In order to use the payment gateway method, at least one gateway with active type must be defined or available in company {0}</value>
   </data>
   <data name="PaymentRequestNoActiveIpgTypeDepositForIbans" xml:space="preserve">
-    <value>هیچ یک از نوع درگاه(های) متناظر با شبا(های) ارائه شده فعال نیست</value>
+    <value>None of the port type(s) corresponding to the provided sheba(s) is active</value>
   </data>
   <data name="PaymentRequestNoActiveProvider" xml:space="preserve">
-    <value>به منظور استفاده از روش درگاه پرداخت بایستی حداقل یک درگاه با سرویس دهنده فعال و قابلیت درگاه پرداخت در شرکت {0} تعریف شده باشد</value>
+    <value>In order to use the payment gateway method, at least one gateway with an active server and payment gateway capability must be defined in the company {0}</value>
   </data>
   <data name="PaymentRequestNoActiveProviderDepositForIbans" xml:space="preserve">
-    <value>به منظور استفاده از روش درگاه پرداخت روی حساب های متناظر بایستی حداقل یک درگاه با سرویس دهنده فعال و قابلیت درگاه پرداخت در شرکت {0} تعریف شده باشد</value>
+    <value>In order to use the payment gateway method on the corresponding accounts, at least one gateway with an active server and payment gateway capability must be defined in company {0}</value>
   </data>
   <data name="PaymentRequestNoCompanyFound" xml:space="preserve">
     <value>با کد ارائه شده هیچ شرکتی یافت نشد</value>
   </data>
   <data name="PaymentRequestNoCompanyIpgDepositForIpgCode" xml:space="preserve">
-    <value>هیچ یک از حساب های متناظر بر روی هیچ درگاهی از نوع تعیین شده، در شرکت {0} تعریف نشده است</value>
+    <value>None of the corresponding accounts have been defined on any port of the specified type in the company {0}</value>
   </data>
   <data name="PaymentRequestNoCompanyPaymentMethodFound" xml:space="preserve">
     <value>شرکت مورد نظر هیچ روش پرداختی ندارد</value>
   </data>
   <data name="PaymentRequestNoDefaultCharismaCardDeposit" xml:space="preserve">
-    <value>به منظور استفاده از روش کاریزما کارت بایستی حداقل یک حساب فعال، از بانک خاورمیانه و با قابلیت کاریزما کارت به عنوان حساب پیشفرض برای این نوع از تراکنش های شرکت {0} تعیین شده باشد</value>
+    <value>In order to use the Charisma Card method, at least one active account from the Middle East Bank with the Charisma Card feature must be set as the default account for this type of transaction of the company {0}</value>
   </data>
   <data name="PaymentRequestNoDefaultDeposit" xml:space="preserve">
-    <value>هیچ یک از حساب های پیشفرض درگاه های پرداخت شرکت {0} فعال نیستند</value>
+    <value>None of the default payment gateway accounts of company {0} are active</value>
   </data>
   <data name="PaymentRequestNoDefaultDirectDebitDeposit" xml:space="preserve">
-    <value>به منظور استفاده از روش برداشت مستقیم بایستی حداقل یک حساب فعال و با قابلیت برداشت مستقیم به عنوان حساب پیشفرض برای این نوع از تراکنش های شرکت {0} تعیین شده باشد</value>
+    <value>In order to use the direct withdrawal method, at least one active account with direct withdrawal capability must be designated as the default account for this type of transaction of the company {0}</value>
   </data>
   <data name="PaymentRequestNoDepositFoundForIban" xml:space="preserve">
-    <value>ما به ازای شبا(های) ارائه شده در روش(های) {0} هیچ حسابی در شرکت {1} تعریف نشده است</value>
+    <value>We have no account defined in the company {1} for the sample(s) provided in method(s) {0}</value>
   </data>
   <data name="PaymentRequestNoDepositPaymentMethod" xml:space="preserve">
-    <value>بر روی هیچ یک از حساب های فعال شرکت {0} روش پرداختی تعیین نشده است</value>
+    <value>The payment method has not been determined on any of the active accounts of the company {0}</value>
   </data>
   <data name="PaymentRequestNoIpgDepositForIbans" xml:space="preserve">
-    <value>هیچ یک از حساب های متناظر بر روی هیچ یک از درگاه های پرداخت شرکت {0} تنظیم نشده اند</value>
+    <value>None of the corresponding accounts are set on any payment gateways of company {0}</value>
   </data>
   <data name="PaymentRequestNoMethod" xml:space="preserve">
     <value>انتخاب یکی از روش های پرداخت الزامی است</value>
@@ -742,10 +742,10 @@
     <value>به ازای شبای ارائه شده هیچ حسابی تعریف نشده است</value>
   </data>
   <data name="PaymentRequestNotExistDeposits" xml:space="preserve">
-    <value>روش(های) پرداخت {0} بر روی هیچ یک از حساب های فعال شرکت {1} تعیین نشده است</value>
+    <value>The payment method(s) {0} has not been set on any of the active accounts of the company {1}</value>
   </data>
   <data name="PaymentRequestNotExistIpgTypes" xml:space="preserve">
-    <value>تمامی نوع درگاه های ارائه شده نامعتبر هستند</value>
+    <value>All port types provided are invalid</value>
   </data>
   <data name="PaymentRequestNotFound" xml:space="preserve">
     <value>درخواست پرداخت  با شناسه {0} یافت نشد </value>
@@ -1004,6 +1004,16 @@
   </data>
   <data name="VerifyInvalidStatus" xml:space="preserve">
     <value>درخواست پرداخت مورد نظر در وضعیت مجاز برای تایید قرار ندارد</value>
+  </data>
+
+  <data name="PaymentRequestNoUsableMethods" xml:space="preserve">
+    <value>هیچ یک از زیرمجموعه های روش های پرداختی {عنوان فارسی شرکت مورد نظر} قابل استفاده نیست، لطفا درخواست فعال سازی یا راه اندازی یکی از روش ها را به مدیر سیستم ارسال کنید</value>
+  </data>
+  <data name="UserNotVerifyStatus" xml:space="preserve">
+    <value />
+  </data>
+  <data name="IsAnonymousNationalCodeRequired" xml:space="preserve">
+    <value>مقداردهی پارامتر کدملی برای درخواست های پرداخت ناشناس الزامی است</value>
   </data>
   <data name="YourCardIsDeActive" xml:space="preserve">
     <value>کاربر گرامی کارت شما غیرفعال شده است، در صورت نیاز می توانید با مدیریت سیستم تماس بگیرید</value>
