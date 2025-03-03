@@ -601,13 +601,13 @@
     <value>مشخصات فیش واریزی به شناسه </value>
   </data>
   <data name="PaymentRequestAllDepositBanksAreInactive" xml:space="preserve">
-    <value>بانک تمامی حساب های متناظر شبا(های) ارائه شده در روش(های) {0} غیرفعال هستند</value>
+    <value>بانک تمامی حساب های متناظر شبا(های) ارائه شده در روش {0} غیرفعال است</value>
   </data>
   <data name="PaymentRequestAllDepositsAreInactive" xml:space="preserve">
-    <value>تمامی حساب های متناظر شبا(های) ارائه شده در روش(های) {0} غیرفعال هستند</value>
+    <value>تمامی حساب های متناظر شبا(های) ارائه شده در روش {0} غیرفعال هستند</value>
   </data>
   <data name="PaymentRequestAllDepositsNotSupportMethod" xml:space="preserve">
-    <value>هیچ یک از حساب های ارائه شده در روش(های) {0} از روش پرداختی مورد نظر پشتیبانی نمی کنند، لطفا آنها را تصحیح کنید یا درخواست تنظیم روش پرداختی برای حساب(های) مورد نظر را برای مدیر سیستم ارسال کنید</value>
+    <value>هیچ یک از حساب(های) ارائه شده در روش(های) {0} از روش پرداختی مورد نظر پشتیبانی نمی کنند، لطفا آنها را تصحیح کنید یا درخواست تنظیم روش پرداختی برای حساب(های) مورد نظر را برای مدیر سیستم ارسال کنید</value>    
   </data>
   <data name="PaymentRequestApplicationIsInactive" xml:space="preserve">
     <value>برنامه کاربردی {0}-{1} غیرفعال است</value>
@@ -670,7 +670,7 @@
     <value>شبا(های) ارائه شده در روش(های) {0} در قالب صحیح مقداردهی نشده اند، لطفا آنها را تصحیح کنید</value>
   </data>
   <data name="PaymentRequestInvalidNationalCode" xml:space="preserve">
-    <value>کدملی در قالب صحیح ارائه نشده است</value>
+    <value>کدملی درقالب صحیح ارائه نشده است</value>
   </data>
   <data name="PaymentRequestInvalidUrlPattern" xml:space="preserve">
     <value>نشانی بازگشتی (callback url) در قالب صحیح ارائه نشده است</value>
@@ -894,9 +894,6 @@
   <data name="Status" xml:space="preserve">
     <value>وضعیت</value>
   </data>
-  <data name="String1" xml:space="preserve">
-    <value />
-  </data>
   <data name="Submit" xml:space="preserve">
     <value>تایید</value>
   </data>
@@ -1004,6 +1001,15 @@
   </data>
   <data name="VerifyInvalidStatus" xml:space="preserve">
     <value>درخواست پرداخت مورد نظر در وضعیت مجاز برای تایید قرار ندارد</value>
+  </data>
+  <data name="PaymentRequestNoUsableMethods" xml:space="preserve">
+    <value>هیچ یک از زیرمجموعه های روش های پرداختی {عنوان فارسی شرکت مورد نظر} قابل استفاده نیست، لطفا درخواست فعال سازی یا راه اندازی یکی از روش ها را به مدیر سیستم ارسال کنید</value>
+  </data>
+  <data name="UserNotVerifyStatus" xml:space="preserve">
+    <value>UserNotVerifyStatus</value>
+  </data>
+  <data name="IsAnonymousNationalCodeRequired" xml:space="preserve">
+    <value>مقداردهی پارامتر کدملی برای درخواست های پرداخت ناشناس الزامی است</value>
   </data>
   <data name="YourCardIsDeActive" xml:space="preserve">
     <value>کاربر گرامی کارت شما غیرفعال شده است، در صورت نیاز می توانید با مدیریت سیستم تماس بگیرید</value>

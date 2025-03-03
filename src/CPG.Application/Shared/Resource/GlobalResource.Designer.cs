@@ -1258,6 +1258,15 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to مقداردهی پارامتر کدملی برای درخواست های پرداخت ناشناس الزامی است.
+        /// </summary>
+        public static string IsAnonymousNationalCodeRequired {
+            get {
+                return ResourceManager.GetString("IsAnonymousNationalCodeRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to حداکثر مدت اعتبار مجوز پرداخت از حساب.
         /// </summary>
         public static string MaxMandateValidityDurationPerMonth {
@@ -1510,7 +1519,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to بانک تمامی حساب های متناظر شبا(های) ارائه شده در روش(های) {0} غیرفعال هستند.
+        ///   Looks up a localized string similar to بانک تمامی حساب های متناظر شبا(های) ارائه شده در روش {0} غیرفعال است.
         /// </summary>
         public static string PaymentRequestAllDepositBanksAreInactive {
             get {
@@ -1519,7 +1528,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to تمامی حساب های متناظر شبا(های) ارائه شده در روش(های) {0} غیرفعال هستند.
+        ///   Looks up a localized string similar to تمامی حساب های متناظر شبا(های) ارائه شده در روش {0} غیرفعال هستند.
         /// </summary>
         public static string PaymentRequestAllDepositsAreInactive {
             get {
@@ -1528,7 +1537,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to هیچ یک از حساب های ارائه شده در روش(های) {0} از روش پرداختی مورد نظر پشتیبانی نمی کنند، لطفا آنها را تصحیح کنید یا درخواست تنظیم روش پرداختی برای حساب(های) مورد نظر را برای مدیر سیستم ارسال کنید.
+        ///   Looks up a localized string similar to هیچ یک از حساب(های) ارائه شده در روش(های) {0} از روش پرداختی مورد نظر پشتیبانی نمی کنند، لطفا آنها را تصحیح کنید یا درخواست تنظیم روش پرداختی برای حساب(های) مورد نظر را برای مدیر سیستم ارسال کنید.
         /// </summary>
         public static string PaymentRequestAllDepositsNotSupportMethod {
             get {
@@ -1717,7 +1726,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to کدملی در قالب صحیح ارائه نشده است.
+        ///   Looks up a localized string similar to کدملی درقالب صحیح ارائه نشده است.
         /// </summary>
         public static string PaymentRequestInvalidNationalCode {
             get {
@@ -1983,6 +1992,15 @@ namespace CPG.Application.Shared.Resource {
         public static string PaymentRequestNoUsableMethod {
             get {
                 return ResourceManager.GetString("PaymentRequestNoUsableMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to هیچ یک از زیرمجموعه های روش های پرداختی {عنوان فارسی شرکت مورد نظر} قابل استفاده نیست، لطفا درخواست فعال سازی یا راه اندازی یکی از روش ها را به مدیر سیستم ارسال کنید.
+        /// </summary>
+        public static string PaymentRequestNoUsableMethods {
+            get {
+                return ResourceManager.GetString("PaymentRequestNoUsableMethods", resourceCulture);
             }
         }
         
@@ -2392,15 +2410,6 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string String1 {
-            get {
-                return ResourceManager.GetString("String1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to تایید.
         /// </summary>
         public static string Submit {
@@ -2604,6 +2613,15 @@ namespace CPG.Application.Shared.Resource {
         public static string UserNotVerify {
             get {
                 return ResourceManager.GetString("UserNotVerify", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UserNotVerifyStatus.
+        /// </summary>
+        public static string UserNotVerifyStatus {
+            get {
+                return ResourceManager.GetString("UserNotVerifyStatus", resourceCulture);
             }
         }
         

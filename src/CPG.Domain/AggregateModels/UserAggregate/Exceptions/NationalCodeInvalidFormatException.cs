@@ -5,7 +5,7 @@ namespace CPG.Domain.AggregateModels.BookAggregate.Exceptions
 {
     public class NationalCodeInvalidFormatException(string nationalCode) : DomainException(Resource.NationalCodeInvalidFormat)
     {
-        public override string Code => "invalid_nationalCode_format";
+        public override string Code => "1001033";
         public string NationalCode { get; }
     }
 }
