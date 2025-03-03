@@ -1519,7 +1519,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The bank of all the corresponding accounts of the Shaba(s) provided in method {0} is inactive.
+        ///   Looks up a localized string similar to بانک تمامی حساب های متناظر شبا(های) ارائه شده در روش {0} غیرفعال است.
         /// </summary>
         public static string PaymentRequestAllDepositBanksAreInactive {
             get {
@@ -1528,7 +1528,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to All the corresponding accounts of the provided sheba(s) in method(s) {0} are inactive.
+        ///   Looks up a localized string similar to تمامی حساب های متناظر شبا(های) ارائه شده در روش {0} غیرفعال هستند.
         /// </summary>
         public static string PaymentRequestAllDepositsAreInactive {
             get {
@@ -1537,7 +1537,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to None of the accounts provided in the method(s) {0} support the desired payment method, please correct them or request to set the payment method for the desired account(s) for Send system administrator.
+        ///   Looks up a localized string similar to هیچ یک از حساب(های) ارائه شده در روش(های) {0} از روش پرداختی مورد نظر پشتیبانی نمی کنند، لطفا آنها را تصحیح کنید یا درخواست تنظیم روش پرداختی برای حساب(های) مورد نظر را برای مدیر سیستم ارسال کنید.
         /// </summary>
         public static string PaymentRequestAllDepositsNotSupportMethod {
             get {
@@ -1753,7 +1753,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No account has been defined in the {0} or all accounts are inactive.
+        ///   Looks up a localized string similar to در شرکت {0} هیچ حسابی تعریف نشده یا تمامی حساب ها غیرفعال هستند.
         /// </summary>
         public static string PaymentRequestNoActiveCompanyDepositFound {
             get {
@@ -1762,7 +1762,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to None of the corresponding accounts have been set up on any active port of the specified type in the company {0}.
+        ///   Looks up a localized string similar to هیچ یک از حساب های متناظر بر روی هیچ درگاه فعالی از نوع تعیین شده، در شرکت {0} تنظیم نشده است.
         /// </summary>
         public static string PaymentRequestNoActiveCompanyIpgDepositForIpgCode {
             get {
@@ -1771,7 +1771,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The bank of all accounts of the company {0} is inactive.
+        ///   Looks up a localized string similar to بانک تمامی حساب های شرکت {0} غیرفعال است.
         /// </summary>
         public static string PaymentRequestNoActiveDepositBank {
             get {
@@ -1780,7 +1780,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to In order to use the direct withdrawal method, at least one active server with direct withdrawal capability must be defined.
+        ///   Looks up a localized string similar to به منظور استفاده از روش برداشت مستقیم بایستی حداقل یک سرویس دهنده فعال با قابلیت برداشت مستقیم تعریف شده باشد.
         /// </summary>
         public static string PaymentRequestNoActiveDirectDebitProvider {
             get {
@@ -1789,7 +1789,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to In order to use the payment gateway method, at least one active gateway must be defined for the existing accounts of the company {0}.
+        ///   Looks up a localized string similar to به منظور استفاده از روش درگاه پرداخت بایستی حداقل یک درگاه فعال برای حساب های موجود شرکت {0} تعریف شده باشد.
         /// </summary>
         public static string PaymentRequestNoActiveIpg {
             get {
@@ -1798,7 +1798,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to None of the corresponding accounts are set on any active payment gateways of company {0}.
+        ///   Looks up a localized string similar to هیچ یک از حساب های متناظر بر روی هیچ یک از درگاه فعالی در شرکت {0} تنظیم نشده اند.
         /// </summary>
         public static string PaymentRequestNoActiveIpgDepositForIbans {
             get {
@@ -1807,7 +1807,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to In order to use the payment gateway method, at least one gateway with active type must be defined or available in company {0}.
+        ///   Looks up a localized string similar to به منظور استفاده از روش درگاه پرداخت بایستی حداقل یک درگاه با نوع فعال در شرکت {0} تعریف شده یا موجود باشد.
         /// </summary>
         public static string PaymentRequestNoActiveIpgType {
             get {
@@ -1816,7 +1816,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to None of the port type(s) corresponding to the provided sheba(s) is active.
+        ///   Looks up a localized string similar to هیچ یک از نوع درگاه(های) متناظر با شبا(های) ارائه شده فعال نیست.
         /// </summary>
         public static string PaymentRequestNoActiveIpgTypeDepositForIbans {
             get {
@@ -1825,7 +1825,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to In order to use the payment gateway method, at least one gateway with an active server and payment gateway capability must be defined in the company {0}.
+        ///   Looks up a localized string similar to به منظور استفاده از روش درگاه پرداخت بایستی حداقل یک درگاه با سرویس دهنده فعال و قابلیت درگاه پرداخت در شرکت {0} تعریف شده باشد.
         /// </summary>
         public static string PaymentRequestNoActiveProvider {
             get {
@@ -1834,7 +1834,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to In order to use the payment gateway method on the corresponding accounts, at least one gateway with an active server and payment gateway capability must be defined in company {0}.
+        ///   Looks up a localized string similar to به منظور استفاده از روش درگاه پرداخت روی حساب های متناظر بایستی حداقل یک درگاه با سرویس دهنده فعال و قابلیت درگاه پرداخت در شرکت {0} تعریف شده باشد.
         /// </summary>
         public static string PaymentRequestNoActiveProviderDepositForIbans {
             get {
@@ -1996,7 +1996,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to None of the subcategories of payment methods {0} can be used, please send a request to activate or set up one of the methods to the system administrator..
+        ///   Looks up a localized string similar to هیچ یک از زیرمجموعه های روش های پرداختی {عنوان فارسی شرکت مورد نظر} قابل استفاده نیست، لطفا درخواست فعال سازی یا راه اندازی یکی از روش ها را به مدیر سیستم ارسال کنید.
         /// </summary>
         public static string PaymentRequestNoUsableMethods {
             get {
@@ -2410,15 +2410,6 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string String1 {
-            get {
-                return ResourceManager.GetString("String1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to تایید.
         /// </summary>
         public static string Submit {
@@ -2626,7 +2617,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to UserNotVerifyStatus.
         /// </summary>
         public static string UserNotVerifyStatus {
             get {
@@ -2752,7 +2743,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to YourCardIsDeActive.
+        ///   Looks up a localized string similar to کاربر گرامی کارت شما غیرفعال شده است، در صورت نیاز می توانید با مدیریت سیستم تماس بگیرید.
         /// </summary>
         public static string YourCardIsDeActive {
             get {
