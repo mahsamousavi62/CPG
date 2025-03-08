@@ -25,7 +25,6 @@ public class GetUserQueryHandler(
     private readonly IAuthenticationService _authenticationService = authenticationService;
     private readonly string userKycStatus = "KycVerified";
     private readonly string demo = "Demo";
-    private readonly IMinioProvider _minioProvider = minioProvider;
     private readonly IIdpProvider _idpClient = idpClient;
 
     public async Task<Result<UserViewModel>> Handle(GetUserQuery request, CancellationToken cancellationToken)
