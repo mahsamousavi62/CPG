@@ -1,16 +1,6 @@
-﻿using System;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Threading;
-using System.Threading.Tasks;
-using CPG.Application.UseCases.Users.Exceptions;
+﻿using CPG.Application.UseCases.Users.Exceptions;
 using CPG.Application.UseCases.Users.Queries;
 using CPG.Application.UseCases.Users.ViewModel;
-using CPG.Domain.AggregateModels.CompanyAggregate;
-using CPG.Domain.AggregateModels.UserAggregate;
-using CPG.Domain.Exceptions;
-using CPG.Domain.SeedWork;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Communication.Idp;
 using CPG.Domain.SharedKernel.Interfaces;
@@ -18,6 +8,9 @@ using CPG.Domain.SharedKernel.Minio;
 using CPG.Infrastructure.Persistence.DbContexts;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.Users;
 
@@ -41,7 +34,7 @@ public class GetUserQueryHandler(
 
         var kycStatus = await _authenticationService.GetDataFromClaim<string>("status", string.Empty);
 
-        if (kycStatus != userKycStatus && kycStatus != demo)
+        if (kycStatus != userKycStatus)
         {
             var idpUserProfileResponse = await _idpClient.GetUserStatus(sub);
 
@@ -71,8 +64,8 @@ public class GetUserQueryHandler(
             CompanyId = user?.Company?.Id,
             CompanyPersianName = user?.Company?.PersianName,
             CompanyLogo = !string.IsNullOrEmpty(user?.Company?.Logo) ? await General.GetLogo(minioProvider, user?.Company?.Logo) : null,
-            FirstName = user?.FirstName??"کاربر",
-            LastName = user?.LastName??"مهمان",
+            FirstName = user?.FirstName ?? "کاربر",
+            LastName = user?.LastName ?? "مهمان",
             Id = user?.Id,
             NationalCode = user?.NationalCode,
             IDPId = user?.IDPId,
