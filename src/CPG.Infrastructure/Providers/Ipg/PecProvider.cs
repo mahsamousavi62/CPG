@@ -51,7 +51,7 @@ public class PecProvider(
                     CallBackUrl = callBack,
                     LoginAccount = GetDataFromJsonProvider(request.ProviderData),
                     OrderId = long.Parse(trackerId),
-                    Originator = string.IsNullOrWhiteSpace(request.MobileNumber) ? null : request.MobileNumber,
+                    Originator = string.IsNullOrWhiteSpace(request.MobileNumber) ? null : request.MobileNumber.Trim(),
                 };
                 var response = await SaleSvc.SalePaymentRequestAsync(clientSaleRequestData);
 
