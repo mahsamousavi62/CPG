@@ -117,6 +117,12 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
 
     private async Task<ConfigData> Validate(CreatePaymentRequestViewModel model, CancellationToken cancellationToken)
     {
+
+        if (model.CompanyCode == 0 && model.CompanyId == 0)
+        {
+            throw new PaymentRequestCompanyCodeRequiredException();
+        }
+
         var amount = new Amount(model.Amount);
         var callBackUrl = new Url(model.CallBackUrl);
 
@@ -138,6 +144,10 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
             }
         }
 
+        if (model.CompanyCode == 0)
+        {
+            model.CompanyCode = (short)model.CompanyId;
+        }
         var sameTrackerId = await _paymentRequestRepository.FirstOrDefaultAsync(new PaymentRequestByTrackerId(model.TrackerId));
         var trackIdValidator = new TrackIdValidator<PaymentRequest>();
         trackIdValidator.Handle(sameTrackerId);

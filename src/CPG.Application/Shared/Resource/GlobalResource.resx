@@ -607,7 +607,7 @@
     <value>تمامی حساب های متناظر شبا(های) ارائه شده در روش {0} غیرفعال هستند</value>
   </data>
   <data name="PaymentRequestAllDepositsNotSupportMethod" xml:space="preserve">
-    <value>هیچ یک از حساب(های) ارائه شده در روش(های) {0} از روش پرداختی مورد نظر پشتیبانی نمی کنند، لطفا آنها را تصحیح کنید یا درخواست تنظیم روش پرداختی برای حساب(های) مورد نظر را برای مدیر سیستم ارسال کنید</value>    
+    <value>هیچ یک از حساب(های) ارائه شده در روش(های) {0} از روش پرداختی مورد نظر پشتیبانی نمی کنند، لطفا آنها را تصحیح کنید یا درخواست تنظیم روش پرداختی برای حساب(های) مورد نظر را برای مدیر سیستم ارسال کنید</value>
   </data>
   <data name="PaymentRequestApplicationIsInactive" xml:space="preserve">
     <value>برنامه کاربردی {0}-{1} غیرفعال است</value>
@@ -1013,5 +1013,8 @@
   </data>
   <data name="YourCardIsDeActive" xml:space="preserve">
     <value>کاربر گرامی کارت شما غیرفعال شده است، در صورت نیاز می توانید با مدیریت سیستم تماس بگیرید</value>
+  </data>
+  <data name="PaymentCompanyCodeIsRequired" xml:space="preserve">
+    <value>کد یا شناسه شرکت اجباری است</value>
   </data>
 </root>
