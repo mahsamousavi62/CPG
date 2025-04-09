@@ -7,7 +7,9 @@ namespace CPG.Application.UseCases.PaymentRequests.ViewModels;
 
 public class CreatePaymentRequestViewModel : IRegister
 {
-    [Required]
+
+    public long CompanyId { get; set; }
+
     public short CompanyCode { get; set; }
 
     [Required]
