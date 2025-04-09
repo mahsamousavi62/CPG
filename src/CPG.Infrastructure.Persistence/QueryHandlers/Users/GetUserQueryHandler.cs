@@ -62,14 +62,6 @@ public class GetUserQueryHandler(
             throw new UserNotFoundException(sub);
         }
 
-
-        //if (user != null)
-        //{
-        //    var applicationId = (await _context.ApplicationIdentifierReadModels
-        //        .SingleOrDefaultAsync(a => a.IdpClientId == sub, cancellationToken: cancellationToken))?.ApplicationId;
-        //}
-
-
         var userViewModel = new UserViewModel
         {
             CompanyId = user?.Company?.Id,
