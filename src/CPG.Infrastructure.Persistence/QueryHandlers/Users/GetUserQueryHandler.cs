@@ -34,9 +34,9 @@ public class GetUserQueryHandler(
         var kycStatus = await _authenticationService.GetDataFromClaim<string>("status", string.Empty);
 
         var user = await _context.UserReadModels
-    .Include(u => u.UserRoles)
-    .Include(c => c.Company)
-    .SingleOrDefaultAsync(u => u.IsActive && u.IDPId == sub, cancellationToken: cancellationToken);
+                    .Include(u => u.UserRoles)
+                    .Include(c => c.Company)
+                    .SingleOrDefaultAsync(u => u.IsActive && u.IDPId == sub, cancellationToken: cancellationToken);
 
         if (kycStatus != userKycStatus && kycStatus != demo)
         {
