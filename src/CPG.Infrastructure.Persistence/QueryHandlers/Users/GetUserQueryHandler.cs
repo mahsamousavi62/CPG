@@ -33,6 +33,11 @@ public class GetUserQueryHandler(
 
         var kycStatus = await _authenticationService.GetDataFromClaim<string>("status", string.Empty);
 
+        var user = await _context.UserReadModels
+                    .Include(u => u.UserRoles)
+                    .Include(c => c.Company)
+                    .SingleOrDefaultAsync(u => u.IsActive && u.IDPId == sub, cancellationToken: cancellationToken);
+
         if (kycStatus != userKycStatus && kycStatus != demo)
         {
             var idpUserProfileResponse = await _idpClient.GetUserStatus(sub);
@@ -47,21 +52,10 @@ public class GetUserQueryHandler(
             var idpUserProfileResponse = await _idpClient.GetUserStatus(sub);
             if (idpUserProfileResponse.OperationResult is Enums.OperationResult.Succeeded)
             {
-                if (idpUserProfileResponse.Data?.Result?.Status == userKycStatus)
+                if (idpUserProfileResponse.Data?.Result?.Status == userKycStatus && user is null)
                     throw new UserNotFoundException(sub);
             }
         }
-
-        var user = await _context.UserReadModels
-            .Include(u => u.UserRoles)
-            .Include(c => c.Company)
-            .SingleOrDefaultAsync(u => u.IsActive && u.IDPId == sub, cancellationToken: cancellationToken);
-
-        //if (user != null)
-        //{
-        //    var applicationId = (await _context.ApplicationIdentifierReadModels
-        //        .SingleOrDefaultAsync(a => a.IdpClientId == sub, cancellationToken: cancellationToken))?.ApplicationId;
-        //}
 
         if (user is null && kycStatus == userKycStatus)
         {
