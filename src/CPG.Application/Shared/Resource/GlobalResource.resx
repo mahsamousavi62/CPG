@@ -297,9 +297,6 @@
   <data name="CreateProvider" xml:space="preserve">
     <value>ایجاد سرویس‌دهنده</value>
   </data>
-  <data name="CreationDate" xml:space="preserve">
-    <value>تاریخ و زمان ایجاد</value>
-  </data>
   <data name="DailyTransactionAmount" xml:space="preserve">
     <value>کاربر گرامی، مبلغ تراکنش بیشتر از حد مجاز روزانه این مجوز است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید</value>
   </data>
@@ -362,9 +359,6 @@
   </data>
   <data name="DirectDebitProvider" xml:space="preserve">
     <value>نوع سرویس‌دهنده برداشت مستقیم</value>
-  </data>
-  <data name="DirectDebitSetting" xml:space="preserve">
-    <value>تنظیمات برداشت مستقیم</value>
   </data>
   <data name="DuplicateCompanyCode" xml:space="preserve">
     <value>کد '{0}' قبلا برای شرکت دیگری ثبت شده است</value>
@@ -498,9 +492,6 @@
   <data name="IPGs" xml:space="preserve">
     <value>درگاه‌های پرداخت</value>
   </data>
-  <data name="IPGSetting" xml:space="preserve">
-    <value>تنظیمات درگاه پرداخت</value>
-  </data>
   <data name="IpgToken" xml:space="preserve">
     <value>توکن درگاه پرداخت</value>
   </data>
@@ -533,9 +524,6 @@
   </data>
   <data name="Minute" xml:space="preserve">
     <value>دقیقه</value>
-  </data>
-  <data name="ModificationDate" xml:space="preserve">
-    <value>تاریخ و زمان بروز رسانی</value>
   </data>
   <data name="MonthlyTransactionNumber" xml:space="preserve">
     <value>کاربر گرامی، سقف مجاز تعداد تراکنش ماهانه این مجوز به اتمام رسیده، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید</value>
@@ -759,9 +747,6 @@
   <data name="PaymentRequestNoUsableMethod" xml:space="preserve">
     <value>هیچ یک از زیرمجموعه های روش های پرداختی {0} قابل استفاده نیست، لطفا درخواست فعال سازی یا راه اندازی یکی از روش ها را به مدیر سیستم ارسال کنید</value>
   </data>
-  <data name="PaymentRequestRequiredData" xml:space="preserve">
-    <value>شرکت یا شبای مقصد را وارد کنید</value>
-  </data>
   <data name="PaymentRequestRequiredIbanOrCompany" xml:space="preserve">
     <value>هر 2 پارامتر شناسه شرکت و شبای مقصد نمیتواند به صورت همزمان خالی باشد</value>
   </data>
@@ -773,9 +758,6 @@
   </data>
   <data name="PaymentTokenUnexpectedError" xml:space="preserve">
     <value>خطایی غیرقابل پیش بینی رخ داده است، لطفا مجددا تلاش کنید یا با پشتیبانی تماس بگیرید</value>
-  </data>
-  <data name="Pec" xml:space="preserve">
-    <value>تجارت الکترونیک پارسیان</value>
   </data>
   <data name="PersianName" xml:space="preserve">
     <value>نام فارسی</value>
@@ -845,9 +827,6 @@
   </data>
   <data name="SendOtpCode" xml:space="preserve">
     <value>ارسال رمز یکبار مصرف به شماره موبایلی که در بانک تعریف شده</value>
-  </data>
-  <data name="Sep" xml:space="preserve">
-    <value>پرداخت الکترونیک سامان</value>
   </data>
   <data name="ServerMalfunction" xml:space="preserve">
     <value>کاربر گرامی سرویس دهنده/بانک دچار اختلال شده و ما در حال رفع مشکل هستیم. در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید</value>
@@ -960,9 +939,6 @@
   <data name="UserNotFound" xml:space="preserve">
     <value>کاربر وجود ندارد</value>
   </data>
-  <data name="UserNotVerify" xml:space="preserve">
-    <value>وضعیت کاربر {0}می باشد </value>
-  </data>
   <data name="Users" xml:space="preserve">
     <value>کاربران</value>
   </data>
@@ -1002,17 +978,41 @@
   <data name="VerifyInvalidStatus" xml:space="preserve">
     <value>درخواست پرداخت مورد نظر در وضعیت مجاز برای تایید قرار ندارد</value>
   </data>
-  <data name="PaymentRequestNoUsableMethods" xml:space="preserve">
-    <value>هیچ یک از زیرمجموعه های روش های پرداختی {عنوان فارسی شرکت مورد نظر} قابل استفاده نیست، لطفا درخواست فعال سازی یا راه اندازی یکی از روش ها را به مدیر سیستم ارسال کنید</value>
+  <data name="YourCardIsDeActive" xml:space="preserve">
+    <value>کاربر گرامی کارت شما غیرفعال شده است، در صورت نیاز می توانید با مدیریت سیستم تماس بگیرید</value>
   </data>
   <data name="UserNotVerifyStatus" xml:space="preserve">
     <value>UserNotVerifyStatus</value>
   </data>
+  <data name="CreationDate" xml:space="preserve">
+    <value>تاریخ و زمان ایجاد</value>
+  </data>
+  <data name="DirectDebitSetting" xml:space="preserve">
+    <value>تنظیمات برداشت مستقیم</value>
+  </data>
+  <data name="IPGSetting" xml:space="preserve">
+    <value>تنظیمات درگاه پرداخت</value>
+  </data>
+  <data name="ModificationDate" xml:space="preserve">
+    <value>تاریخ و زمان بروز رسانی</value>
+  </data>
+  <data name="PaymentRequestRequiredData" xml:space="preserve">
+    <value>شرکت یا شبای مقصد را وارد کنید</value>
+  </data>
+  <data name="Pec" xml:space="preserve">
+    <value>تجارت الکترونیک پارسیان</value>
+  </data>
+  <data name="Sep" xml:space="preserve">
+    <value>پرداخت الکترونیک سامان</value>
+  </data>
+  <data name="UserNotVerify" xml:space="preserve">
+    <value>وضعیت کاربر {0}می باشد </value>
+  </data>
+  <data name="PaymentRequestNoUsableMethods" xml:space="preserve">
+    <value>هیچ یک از زیرمجموعه های روش های پرداختی {0} قابل استفاده نیست، لطفا درخواست فعال سازی یا راه اندازی یکی از روش ها را به مدیر سیستم ارسال کنید</value>
+  </data>
   <data name="IsAnonymousNationalCodeRequired" xml:space="preserve">
     <value>مقداردهی پارامتر کدملی برای درخواست های پرداخت ناشناس الزامی است</value>
-  </data>
-  <data name="YourCardIsDeActive" xml:space="preserve">
-    <value>کاربر گرامی کارت شما غیرفعال شده است، در صورت نیاز می توانید با مدیریت سیستم تماس بگیرید</value>
   </data>
   <data name="PaymentCompanyCodeIsRequired" xml:space="preserve">
     <value>کد یا شناسه شرکت اجباری است</value>
