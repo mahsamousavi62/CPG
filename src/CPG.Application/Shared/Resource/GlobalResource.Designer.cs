@@ -59,7 +59,7 @@ namespace CPG.Application.Shared.Resource {
                 resourceCulture = value;
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to کاربر گرامی، حساب شما موجودی لازم جهت پرداخت مبلغ را ندارد. در صورت امکان از سایر روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید..
         /// </summary>
@@ -239,7 +239,7 @@ namespace CPG.Application.Shared.Resource {
                 return ResourceManager.GetString("BankLogo", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to کاربر گرامی، این بانک و مجوز دچار اختلال شده است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید..
         /// </summary>
@@ -412,7 +412,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to حسابی برای شرکت{0} تعریف نشده است.
+        ///   Looks up a localized string similar to حسابی برای شرکت {0} تعریف نشده است.
         /// </summary>
         public static string CompanyDepositByCompanyIdNotFound {
             get {
@@ -617,7 +617,7 @@ namespace CPG.Application.Shared.Resource {
                 return ResourceManager.GetString("DailyTransactionAmount", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to کاربر گرامی، سقف مجاز تعداد تراکنش روزانه این مجوز به اتمام رسیده، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید..
         /// </summary>
@@ -725,7 +725,7 @@ namespace CPG.Application.Shared.Resource {
                 return ResourceManager.GetString("Description", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to کاربر گرامی امکان انتقال وجه به حساب مقصد موجود نیست. در صورت امکان از سایر روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید..
         /// </summary>
@@ -770,7 +770,7 @@ namespace CPG.Application.Shared.Resource {
                 return ResourceManager.GetString("DirectDebit", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to کاربر گرامی، شما مجوز لازم جهت پرداخت وجه از طریق کاریزما کارت به شرکت {0} را اعطا نکرده اید، خواهشمند است در صورت نیاز جهت اعطای مجوز بر روی گزینه درخواست مجوز کلیک کنید..
         /// </summary>
@@ -826,7 +826,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to شبا {0}تکراری است.
+        ///   Looks up a localized string similar to شبا {0} تکراری است.
         /// </summary>
         public static string DuplicateIban {
             get {
@@ -1114,7 +1114,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to کاربر گرامی، شماره سپرده مربوط به این مجوز نامعتبر است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنیدs.
+        ///   Looks up a localized string similar to کاربر گرامی، شماره سپرده مربوط به این مجوز نامعتبر است، در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید.
         /// </summary>
         public static string InvalidDepositNumber {
             get {
@@ -1391,7 +1391,7 @@ namespace CPG.Application.Shared.Resource {
                 return ResourceManager.GetString("NoShahabCode", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to شما مجاز به تایید این تراکنش نیستند..
         /// </summary>
@@ -1400,7 +1400,7 @@ namespace CPG.Application.Shared.Resource {
                 return ResourceManager.GetString("NotAuthorizeToVerify", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to کاربر گرامی، حساب انتخاب شده دارای موجودی لازم جهت پرداخت نمی باشد. در صورت امکان از سایر بانک ها یا روش های در دسترس جهت پرداخت مبلغ مورد نظر اقدام کنید..
         /// </summary>
@@ -1517,7 +1517,7 @@ namespace CPG.Application.Shared.Resource {
                 return ResourceManager.GetString("paymentReceiptNotFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to مشخصات فیش واریزی به شناسه .
         /// </summary>
@@ -2005,7 +2005,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to هیچ یک از زیرمجموعه های روش های پرداختی {عنوان فارسی شرکت مورد نظر} قابل استفاده نیست، لطفا درخواست فعال سازی یا راه اندازی یکی از روش ها را به مدیر سیستم ارسال کنید.
+        ///   Looks up a localized string similar to هیچ یک از زیرمجموعه های روش های پرداختی {0} قابل استفاده نیست، لطفا درخواست فعال سازی یا راه اندازی یکی از روش ها را به مدیر سیستم ارسال کنید.
         /// </summary>
         public static string PaymentRequestNoUsableMethods {
             get {
@@ -2246,7 +2246,7 @@ namespace CPG.Application.Shared.Resource {
                 return ResourceManager.GetString("ResponseApiUrl", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to ریال.
         /// </summary>
@@ -2255,7 +2255,7 @@ namespace CPG.Application.Shared.Resource {
                 return ResourceManager.GetString("Rial", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to جستجو.
         /// </summary>
@@ -2617,7 +2617,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to وضعیت کاربر {0}می باشد .
+        ///   Looks up a localized string similar to وضعیت کاربر {0} می باشد .
         /// </summary>
         public static string UserNotVerify {
             get {
