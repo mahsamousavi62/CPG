@@ -2,10 +2,8 @@
 using CPG.Application.UseCases.PaymentRequests.Commands.GetPaymentMethods.CreateIpg.AvailableIpgStrategy;
 using CPG.Application.UseCases.PaymentRequests.ViewModels;
 using CPG.Domain.AggregateModels.CompanyIPGAggregate;
-using System;
+using CPG.Domain.AggregateModels.PaymentRequestAggregate;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Application.UseCases.PaymentRequests.Commands.GetPaymentMethods.CreateIpg;
@@ -43,8 +41,8 @@ public class CreateIpgHandler : GetPaymentMethodsHandler
         }
 
         IAvailableIpgStrategy strategy;
-        var paymentRequestMethodIpgTypes = paymentRequestMethod.PaymentRequestMethodIpgTypes;
-        var paymentRequestMethodDeposits = paymentRequestMethod.PaymentRequestMethodDeposits;
+        var paymentRequestMethodIpgTypes = paymentRequestMethod?.PaymentRequestMethodIpgTypes ?? new List<PaymentRequestMethodIpgType>();
+        var paymentRequestMethodDeposits = paymentRequestMethod?.PaymentRequestMethodDeposits ?? new List<PaymentRequestMethodDeposit>();
         var hasIpgTypes = paymentRequestMethodIpgTypes.Any();
         var hasDeposits = paymentRequestMethodDeposits.Any();
         if (!hasIpgTypes && !hasDeposits)

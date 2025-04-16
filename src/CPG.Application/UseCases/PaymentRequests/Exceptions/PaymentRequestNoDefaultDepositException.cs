@@ -3,7 +3,7 @@ using CPG.Application.UseCases.Exceptions;
 
 namespace CPG.Application.UseCases.PaymentRequests.Exceptions;
 
-public class PaymentRequestNoDefaultDepositException(string companyName) : AppException(string.Format(GlobalResource.PaymentRequestInactiveIpgTypes, companyName))
+public class PaymentRequestNoDefaultDepositException(string companyName) : AppException(string.Format(GlobalResource.PaymentRequestNoDefaultDeposit, companyName))
 {
-    public override string Code => "1001010";
+    public override string Code => "1001014";
 }

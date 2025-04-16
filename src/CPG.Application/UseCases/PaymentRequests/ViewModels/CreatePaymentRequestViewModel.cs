@@ -7,7 +7,9 @@ namespace CPG.Application.UseCases.PaymentRequests.ViewModels;
 
 public class CreatePaymentRequestViewModel : IRegister
 {
-    [Required]
+
+    public long CompanyId { get; set; }
+
     public short CompanyCode { get; set; }
 
     [Required]
@@ -16,7 +18,7 @@ public class CreatePaymentRequestViewModel : IRegister
     [Required]
     public string CallBackUrl { get; set; }
 
-    [Required]
+
     public string NationalCode { get; set; }
 
     [Required]
@@ -48,7 +50,7 @@ public class PaymentMethodConfig
 public class MethodConfigBase
 {
     [Required]
-    public bool IsActive { get; set; }    
+    public bool IsActive { get; set; }
 }
 
 public class CharismaCardConfig : MethodConfigBase;

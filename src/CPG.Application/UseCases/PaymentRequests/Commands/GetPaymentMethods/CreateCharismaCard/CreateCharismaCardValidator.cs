@@ -1,6 +1,5 @@
-﻿using static CPG.Domain.SharedKernel.Enums;
-using FluentValidation;
-using System.Linq;
+﻿using FluentValidation;
+using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Application.UseCases.PaymentRequests.Commands.GetPaymentMethods.CreateCharismaCard;
 
@@ -8,9 +7,11 @@ public class CreateCharismaCardValidator : AbstractValidator<RequestContext>
 {
     public CreateCharismaCardValidator()
     {
-        RuleFor(request => request.PaymentRequest.PaymentRequestMethods)
-            .Must(methods => methods.Any(p => p.PaymentMethodType == PaymentMethodType.CharismaCard));
 
+
+        RuleFor(request => request.PaymentRequest.PaymentRequestMethods)
+.Must(methods => methods?.Any(p => p.PaymentMethodType == PaymentMethodType.CharismaCard) == true)
+.When(request => request.PaymentRequest.PaymentRequestMethods.Count != 0);
         RuleFor(request => request.Company.PaymentMethods)
             .Must(methods => methods.Any(x => x.MethodType == PaymentMethodType.CharismaCard));
 
