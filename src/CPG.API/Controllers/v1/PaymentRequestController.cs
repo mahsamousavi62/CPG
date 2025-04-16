@@ -22,12 +22,12 @@ using System.ComponentModel.DataAnnotations;
 namespace CPG.API.Controllers.v1;
 
 public class PaymentRequestController : ApiBaseController
-{   
+{
     [AllowAnonymous]
     [HttpPost("GetPaymentMethods")]
     [ProducesResponseType(typeof(Result<PaymentMethodsViewModel>), 200)]
     public async Task<Result<PaymentMethodsViewModel>> PaymentMethods([FromBody] GetPaymentMethodsViewModel model)
-        => await Mediator.Send(new GetPaymentMethodsCommand(model));
+     => await Mediator.Send(new GetPaymentMethodsCommand(model));
 
     [AllowAnonymous]
     [HttpPost("CancelPaymentRequest")]
@@ -63,6 +63,7 @@ public class PaymentRequestController : ApiBaseController
     [ProducesResponseType(typeof(Result<TransactionResultResponse>), 200)]
     public async Task<Result<TransactionResultResponse>> GetPaymentTransactionInfo([FromBody] PaymentTransactionViewModel paymentTransactionRequest)
         => await Mediator.Send(new GetPaymentTransactionInfoQuery(paymentTransactionRequest));
+
 
     [Authorize(Policy = AuthPolicies.Roles.AdminOrCompanyUser)]
     [HttpPost("PaymentReceiptTransactionVerify")]

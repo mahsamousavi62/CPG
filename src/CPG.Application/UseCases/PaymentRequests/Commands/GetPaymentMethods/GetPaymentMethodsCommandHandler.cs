@@ -84,17 +84,24 @@ public class GetPaymentMethodsCommandHandler(
         List<PaymentMethodType> availablePaymentMethodTypes = null;
         var sub = await _authenticationService.GetDataFromClaim<string>("sub", string.Empty);
         var kycStatus = await _authenticationService.GetDataFromClaim<string>("status", string.Empty);
+
         var nationalCode = await _authenticationService.GetDataFromClaim<string>("NationalCode");
+        nationalCode = string.IsNullOrEmpty(nationalCode) ? null : nationalCode;
+
+        var paymentRequestNationalCode = paymentRequest.NationalCode;
+        paymentRequestNationalCode = string.IsNullOrEmpty(paymentRequestNationalCode) ? null : paymentRequestNationalCode;
 
         if (!string.IsNullOrEmpty(paymentRequest.NationalCode))
         {
-            if (paymentRequest.NationalCode != nationalCode && ((string.IsNullOrEmpty(nationalCode) && kycStatus == demo) || kycStatus == userKycStatus))
+            if (paymentRequestNationalCode != nationalCode && ((string.IsNullOrEmpty(nationalCode) && kycStatus == demo) || kycStatus == userKycStatus))
                 throw new PaymentRequestNationalCodeConflictException();
         }
         else
         {
-            if ((string.IsNullOrEmpty(nationalCode) && kycStatus == demo && paymentRequest.NationalCode != nationalCode) ||
-                (kycStatus == userKycStatus && paymentRequest.NationalCode != nationalCode) || (string.IsNullOrEmpty(nationalCode) && kycStatus != demo))
+            if ((string.IsNullOrEmpty(nationalCode) && kycStatus == demo && paymentRequestNationalCode != nationalCode) ||
+                (kycStatus == userKycStatus && paymentRequestNationalCode != nationalCode)
+                || (string.IsNullOrEmpty(nationalCode) && kycStatus != demo)
+                )
                 throw new PaymentRequestNationalCodeConflictException();
         }
 
