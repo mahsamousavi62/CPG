@@ -70,7 +70,7 @@ namespace CPG.Domain.AggregateModels.UserAggregate {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to فرمت کد ملی صحیح نمی باشد.
+        ///   Looks up a localized string similar to کدملی درقالب صحیح ارائه نشده است.
         /// </summary>
         internal static string NationalCodeInvalidFormat {
             get {

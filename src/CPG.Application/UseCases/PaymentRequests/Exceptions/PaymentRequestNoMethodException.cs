@@ -3,7 +3,7 @@ using CPG.Application.UseCases.Exceptions;
 
 namespace CPG.Application.UseCases.PaymentRequests.Exceptions;
 
-public class PaymentRequestBankInactiveException() : AppException(string.Format(GlobalResource.PaymentRequestBankInactive))
+public class PaymentRequestNoMethodException() : AppException(GlobalResource.PaymentRequestNoMethod)
 {
     public override string Code => "1001007";
 }

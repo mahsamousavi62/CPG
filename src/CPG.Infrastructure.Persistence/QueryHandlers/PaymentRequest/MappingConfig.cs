@@ -4,7 +4,6 @@ using Mapster;
 using System.Collections.Generic;
 using System.Linq;
 using CPG.Application.UseCases.PaymentRequests.Queries.Report;
-using Microsoft.EntityFrameworkCore.Update.Internal;
 
 namespace CPG.Infrastructure.Persistence.QueryHandlers.PaymentRequests;
 
@@ -21,8 +20,6 @@ public static class MappingConfig
                 .Map(dest => dest.ModificationDate, src => src.ModificationDate)
                 .Map(dest => dest.PaymentCode, src => src.PaymentCode)
                 .Map(dest => dest.PaymentIdentifier, src => src.PaymentIdentifier)
-                .Map(dest => dest.DestinationDepositIban, src => src.DestinationDepositIban)
-                .Map(dest => dest.AccountNumber, src => GetDestinationAccountNumber(src.DestinationDepositIban, src.Company.CompanyDeposits))
                 .Map(dest => dest.CreationDate, src => src.CreationDate)
                 .Map(dest => dest.StatusEnglishName, src => src.Status.ToString())
                 .Map(dest => dest.TrackerId, src => src.TrackerId)
@@ -33,12 +30,6 @@ public static class MappingConfig
                 .Map(dest => dest.TransactionMethodType, src => src.Transaction == null ? 0 : src.Transaction.TransactionMethodType)
                 .Map(dest=>dest.TransactionMethodTypeTitle,src=> src.Transaction == null ? string.Empty : General.GetTransactionMethodTypeName(src.Transaction.TransactionMethodType))
                 ;
-    }
-
-    private static string GetDestinationAccountNumber(string destinationAccountNumber, ICollection<CompanyDepositReadModel> companyDeposits)
-    {
-        var acc = companyDeposits.FirstOrDefault(c => c.Iban == destinationAccountNumber);
-        return acc?.AccountNumber;
     }
 
     private static string GetFullName(long creationUserId, Dictionary<long, string> usersCacheData)

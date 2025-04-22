@@ -37,10 +37,10 @@ public class ReadDbContext(DbContextOptions<ReadDbContext> options) : DbContext(
 
     public IQueryable<ApplicationCallbackUrlReadModel> ApplicationCallbackUrlReadModels => Set<ApplicationCallbackUrlReadModel>().AsNoTracking();
 
-    public IQueryable<PaymentRequestReadModel> PaymentRequestReadModels=> Set<PaymentRequestReadModel>().AsNoTracking();
+    public IQueryable<PaymentRequestReadModel> PaymentRequestReadModels => Set<PaymentRequestReadModel>().AsNoTracking();
 
     public IQueryable<IPGTransactionReadModel> IPGTransactionReadModels => Set<IPGTransactionReadModel>().AsNoTracking();
-    
+
     public IQueryable<TransactionReadModel> TransactionReadModels => Set<TransactionReadModel>().AsNoTracking();
 
     public IQueryable<CompanyShaparakSettingReadModel> ShaparakSettingReadModels => Set<CompanyShaparakSettingReadModel>().AsNoTracking();
@@ -88,6 +88,8 @@ public class ReadDbContext(DbContextOptions<ReadDbContext> options) : DbContext(
             .ApplyConfiguration(new PaymentReceiptTransactionReadModelConfiguration())
             .ApplyConfiguration(new CharismaCardTransactionReadModelConfiguration())
             .ApplyConfiguration(new CompanyDepositPaymentMethodReadModelConfiguration())
+             .ApplyConfiguration(new PaymentRequestMethodReadModelConfiguration())
+             .ApplyConfiguration(new PaymentRequestMethodDepositReadModelConfiguration())
             ;
     }
 

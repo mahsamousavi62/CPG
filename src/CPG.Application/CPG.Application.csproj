@@ -4,16 +4,22 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="UseCases\Application\**" />
+    <Compile Remove="UseCases\PaymentRequests\test\**" />
     <Compile Remove="UseCases\PaymentRequest\**" />
     <EmbeddedResource Remove="UseCases\Application\**" />
+    <EmbeddedResource Remove="UseCases\PaymentRequests\test\**" />
     <EmbeddedResource Remove="UseCases\PaymentRequest\**" />
     <None Remove="UseCases\Application\**" />
+    <None Remove="UseCases\PaymentRequests\test\**" />
     <None Remove="UseCases\PaymentRequest\**" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="UseCases\CompanyIPG\**" />
     <EmbeddedResource Remove="UseCases\CompanyIPG\**" />
     <None Remove="UseCases\CompanyIPG\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="UseCases\PaymentRequests\Commands\GetPaymentMethods\GetPaymentMethods2CommandHandler.cs" />
   </ItemGroup>
 
   <ItemGroup>

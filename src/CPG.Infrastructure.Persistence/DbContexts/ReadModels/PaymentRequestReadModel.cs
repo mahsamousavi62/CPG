@@ -5,6 +5,7 @@ using CPG.Domain.AggregateModels.TransactionAggregate;
 using CPG.Domain.SharedKernel;
 using MediatR;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -15,7 +16,6 @@ public class PaymentRequestReadModel
     public long Id { get; set; }
     public long CompanyId { get; set; }
     public long ApplicationId { get; set; }
-    public string DestinationDepositIban { get; set; }
     public string NationalCode { get; set; }
     public string Description { get; set; }
     public decimal Amount { get; set; }
@@ -35,6 +35,7 @@ public class PaymentRequestReadModel
     public ApplicationReadModel Application { get; set; }
     public CompanyReadModel Company { get; set; }
     public TransactionReadModel Transaction { get; set; }
+    public List<PaymentRequestMethodReadModel> PaymentRequestMethods { get; set; }
 
     public static void AddFilter(PaymentFilter paymentFilter,
                                 ref  IQueryable<PaymentRequestReadModel> paymentRequests)
@@ -55,12 +56,7 @@ public class PaymentRequestReadModel
             paymentRequests = paymentRequests.Where(p =>
                p.NationalCode == paymentFilter.NationalCode);
         }
-        if (!string.IsNullOrEmpty(paymentFilter.DestinationDepositIban))
-        {
-            paymentRequests = paymentRequests.Where(p =>
-               p.DestinationDepositIban == paymentFilter.DestinationDepositIban);
-        }
-
+        
         if (paymentFilter.CompanyId.HasValue)
         {
             paymentRequests = paymentRequests.Where(p =>

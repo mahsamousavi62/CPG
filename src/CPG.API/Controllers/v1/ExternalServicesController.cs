@@ -7,21 +7,23 @@ using CPG.Application.UseCases.PaymentRequests.ViewModels;
 using CPG.Domain.SharedKernel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using CPG.Application.UseCases.Ipg.ViewModels;
+using CPG.Application.UseCases.Ipg.Queries;
 using System.ComponentModel.DataAnnotations;
 
 namespace CPG.API.Controllers.v1;
 
-/// <summary>
-/// 
-/// </summary>
 public class ExternalServicesController : ApiBaseController
 {
-    [Authorize]
     [HttpPost("PaymentRequest")]
     [ProducesResponseType(typeof(Result<PaymentRequestResponseViewModel>), 200)]
     public async Task<Result<PaymentRequestResponseViewModel>> PaymentRequest([FromBody] CreatePaymentRequestViewModel model)
         => await Mediator.Send(new CreatePaymentRequestCommand(model));
-
+       
+    [Authorize]
+    [ProducesResponseType(typeof(Result<CancelPaymentRequestResponseViewModel>), 200)]
+    public async Task<Result<CancelPaymentRequestResponseViewModel>> CancelPaymentRequest([FromBody] CancelPaymentRequestViewModel model)
+        => await Mediator.Send(new CancelPaymentRequestCommand(model));
 
     [Authorize]
     [HttpPost("TransactionDetail")]

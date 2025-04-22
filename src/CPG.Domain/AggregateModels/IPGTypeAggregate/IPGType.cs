@@ -1,5 +1,7 @@
-﻿using CPG.Domain.SeedWork;
+﻿using CPG.Domain.AggregateModels.PaymentRequestAggregate;
+using CPG.Domain.SeedWork;
 using CPG.Domain.SharedKernel;
+using System.Collections.Generic;
 
 namespace CPG.Domain.AggregateModels.IPGTypeAggregate;
 
@@ -25,6 +27,8 @@ public class IPGType : AuditableEntity<long>, IAggregateRoot
     public string Logo { get; }
 
     public short Code { get; set; }
+
+    public List<PaymentRequestMethodIpgType> PaymentRequestMethodIpgTypes { get; set; }
 
     public static IPGType Create(PersianName persianName, EnglishName englishName, Logo logo, short code)
     {

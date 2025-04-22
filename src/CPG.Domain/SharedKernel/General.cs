@@ -6,6 +6,7 @@ using static CPG.Domain.SharedKernel.Enums;
 using CPG.Domain.AggregateModels.TransactionAggregate;
 using System.Globalization;
 using System.Threading;
+using System.Linq;
 
 namespace CPG.Domain.SharedKernel;
 
@@ -186,5 +187,10 @@ public static class General
             default:
                 return string.Empty;
         }
+    }
+
+    public static bool IsIn(this short value, short[] codes)
+    {
+        return codes.Contains(value);
     }
 }

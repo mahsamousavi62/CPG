@@ -6,5 +6,5 @@ namespace CPG.Application.UseCases.PaymentRequests.Exceptions;
 
 public class PaymentRequestApplicationNotFoundException() : AppException(string.Format(GlobalResource.PaymentRequestApplicationNotFound))
 {
-    public override string Code => "1001013";    
+    public override string Code => "1001032";    
 }
