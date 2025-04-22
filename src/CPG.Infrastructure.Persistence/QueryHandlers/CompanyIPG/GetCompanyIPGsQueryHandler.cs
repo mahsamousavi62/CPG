@@ -49,7 +49,7 @@ public class GetCompanyIPGsQueryHandler(ReadDbContext context, IMinioProvider mi
 
             return Result<IReadOnlyCollection<CompanyIPGDataViewModel>>.SuccessResult(viewModels);
         }
-        catch (System.Exception ex)
+        catch (System.Exception)
         {
             return Result<IReadOnlyCollection<CompanyIPGDataViewModel>>.Failure(new Error("1000000", GlobalResource.UnexpectedError));
         }

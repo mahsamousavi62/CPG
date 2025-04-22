@@ -109,7 +109,7 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
         {
             return Result<PaymentRequestResponseViewModel>.Failure(new Error(exc.Code, exc.Message));
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return Result<PaymentRequestResponseViewModel>.Failure(new Error("1001000", GlobalResource.GetPaymentTicketUnexpectedError));
         }
@@ -138,7 +138,7 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
             {
                 var nationalCode = new NationalCode(model.NationalCode);
             }
-            catch (Exception exc)
+            catch (Exception)
             {
                 throw new PaymentRequestInvalidNationalCodeException();
             }
