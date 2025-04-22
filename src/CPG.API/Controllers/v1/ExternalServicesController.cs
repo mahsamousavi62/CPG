@@ -20,6 +20,7 @@ public class ExternalServicesController : ApiBaseController
         => await Mediator.Send(new CreatePaymentRequestCommand(model));
 
     [Authorize]
+    [HttpPost("CancelPaymentRequest")]
     [ProducesResponseType(typeof(Result<CancelPaymentRequestResponseViewModel>), 200)]
     public async Task<Result<CancelPaymentRequestResponseViewModel>> CancelPaymentRequest([FromBody] CancelPaymentRequestViewModel model)
         => await Mediator.Send(new CancelPaymentRequestCommand(model));
