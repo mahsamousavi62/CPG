@@ -29,11 +29,11 @@ public class GetUserQueryHandler(
 
     public async Task<Result<UserViewModel>> Handle(GetUserQuery request, CancellationToken cancellationToken)
     {
-        var sub = await _authenticationService.GetDataFromClaim<string>("sub", string.Empty);
+        string sub = await _authenticationService.GetDataFromClaim<string>("sub", string.Empty);
 
-        var kycStatus = await _authenticationService.GetDataFromClaim<string>("status", string.Empty);
+        string kycStatus = await _authenticationService.GetDataFromClaim<string>("status", string.Empty);
 
-        var user = await _context.UserReadModels
+        DbContexts.ReadModels.UserReadModel user = await _context.UserReadModels
                     .Include(u => u.UserRoles)
                     .Include(c => c.Company)
                     .SingleOrDefaultAsync(u => u.IsActive && u.IDPId == sub, cancellationToken: cancellationToken);
@@ -56,10 +56,6 @@ public class GetUserQueryHandler(
                     throw new UserNotFoundException(sub);
             }
         }
-        var user = await _context.UserReadModels
-            .Include(u => u.UserRoles)
-            .Include(c => c.Company)
-            .SingleOrDefaultAsync(u => u.IsActive && u.IDPId == sub, cancellationToken: cancellationToken);
 
         if (user is null && kycStatus == userKycStatus)
         {
