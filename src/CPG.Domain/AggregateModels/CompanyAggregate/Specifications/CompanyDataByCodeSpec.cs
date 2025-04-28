@@ -7,7 +7,8 @@ public class CompanyDataByCodeSpec : Specification<Company>, ISingleResultSpecif
 {
     public CompanyDataByCodeSpec(short companyCode)
     {
-        Query.Include(c => c.CompanyDeposits)
+        Query.Include(c => c.PaymentMethods).
+             Include(c => c.CompanyDeposits)
             .ThenInclude(c => c.PaymentMethods)
             .Include(c => c.CompanyDeposits)
             .ThenInclude(c => c.Bank)
@@ -23,6 +24,7 @@ public class CompanyDataByCodeSpec : Specification<Company>, ISingleResultSpecif
             .ThenInclude(c => c.IPGType)
             .Include(c => c.CompanyIPGs)
             .ThenInclude(c => c.Provider)
+            .ThenInclude(c => c.PaymentMethods)
             .Where(company => company.Code == companyCode);
     }
 }
