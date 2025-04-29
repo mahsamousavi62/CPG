@@ -273,10 +273,19 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
     private List<string> GetDestinationIbans(PaymentMethodConfig paymentMethodConfig)
     {
         var ibans = new List<string>();
-        ibans.AddRange(paymentMethodConfig.IpgConfig.DestinationDepositIban.Where(t => !string.IsNullOrEmpty(t)));
-        ibans.AddRange(paymentMethodConfig.PaymentReceiptConfig.DestinationDepositIban.Where(t => !string.IsNullOrEmpty(t)));
-        if (!string.IsNullOrEmpty(paymentMethodConfig.DirectDebitConfig.DestinationDepositIban))
+        if (paymentMethodConfig.IpgConfig != null)
+        {
+            ibans.AddRange(paymentMethodConfig.IpgConfig.DestinationDepositIban.Where(t => !string.IsNullOrEmpty(t)));
+        }
+        if (paymentMethodConfig.PaymentReceiptConfig != null)
+        {
+            ibans.AddRange(paymentMethodConfig.PaymentReceiptConfig.DestinationDepositIban.Where(t => !string.IsNullOrEmpty(t)));
+        }
+        if (paymentMethodConfig.DirectDebitConfig != null &&
+            !string.IsNullOrEmpty(paymentMethodConfig.DirectDebitConfig.DestinationDepositIban))
+        {
             ibans.Add(paymentMethodConfig.DirectDebitConfig.DestinationDepositIban);
+        }
         return ibans;
     }
 
