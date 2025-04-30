@@ -37,10 +37,10 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
             {
                 throw new RequiredCodeOrTrackIdException();
             }
-            var paymentRequest = await _context.PaymentRequestReadModels.FirstOrDefaultAsync(t => t.PaymentCode == request.RequestViewModel.Code, cancellationToken: cancellationToken);
+            var paymentRequest = await _context.PaymentRequestReadModels.Include(c => c.Company).FirstOrDefaultAsync(t => t.PaymentCode == request.RequestViewModel.Code, cancellationToken: cancellationToken);
             if (paymentRequest is null)
             {
-                paymentRequest = await _context.PaymentRequestReadModels.FirstOrDefaultAsync(t => t.TrackerId == request.RequestViewModel.TrackerId, cancellationToken: cancellationToken) ?? throw new InvalidCodeOrTrackIdException();
+                paymentRequest = await _context.PaymentRequestReadModels.Include(c => c.Company).FirstOrDefaultAsync(t => t.TrackerId == request.RequestViewModel.TrackerId, cancellationToken: cancellationToken) ?? throw new InvalidCodeOrTrackIdException();
             }
 
             _ = long.TryParse(_httpContext.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out long applicationId);

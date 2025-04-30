@@ -7,6 +7,6 @@ public class PaymentRequestVerifyByCode : Specification<PaymentRequest>, ISingle
 {
     public PaymentRequestVerifyByCode(string code)
     {
-        Query.Where(t => t.PaymentCode == code);
+        Query.Include(p => p.Company).Where(t => t.PaymentCode == code);
     }
 }
