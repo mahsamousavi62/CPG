@@ -17,6 +17,7 @@ public class TransactionByPaymentRequestId : Specification<Transaction>, ISingle
             .ThenInclude(t => t.Provider)
             .Include(t => t.DirectDebitTransaction)
             .Include(t => t.PaymentReceiptTransaction)
-            .Include(t=>t.CharismaCardTransaction);
+            .Include(t => t.CharismaCardTransaction)
+            .Include(t => t.PaymentRequest);
     }
 }

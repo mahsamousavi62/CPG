@@ -7,6 +7,6 @@ public class PaymentRequestVerifyByTrackerId : Specification<PaymentRequest>, IS
 {
     public PaymentRequestVerifyByTrackerId(string trackerId)
     {
-        Query.Where(t => t.TrackerId == trackerId);
+        Query.Include(c => c.Company).Where(t => t.TrackerId == trackerId);
     }
 }
