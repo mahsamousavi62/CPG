@@ -57,16 +57,16 @@ public class CharismaCardConfig : MethodConfigBase;
 
 public class DirectDebitConfig : MethodConfigBase
 {
-    public string DestinationDepositIban { get; set; }
+    public string DestinationDepositIban { get; set; } = string.Empty;
 }
 
 public class IpgConfig : MethodConfigBase
 {
-    public List<string> DestinationDepositIban { get; set; }
+    public List<string> DestinationDepositIban { get; set; } = [];
     public List<short> IpgTypeCode { get; set; }
 }
 
 public class PaymentReceiptConfig : MethodConfigBase
 {
-    public List<string> DestinationDepositIban { get; set; }
+    public List<string> DestinationDepositIban { get; set; } = [];
 }

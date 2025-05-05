@@ -270,7 +270,7 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
         return activeMethods;
     }
 
-    private List<string> GetDestinationIbans(PaymentMethodConfig paymentMethodConfig)
+    private static List<string> GetDestinationIbans(PaymentMethodConfig paymentMethodConfig)
     {
         var ibans = new List<string>();
         if (paymentMethodConfig.IpgConfig != null)
@@ -310,12 +310,11 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
             }
             response.Add(new MethodData { MethodType = PaymentMethodType.InternetPaymentGateway, IbanInfoList = ibanList, IPGTypeList = iPGTypes });
         }
-        if (directDebitConfig != null && directDebitConfig.IsActive)
+        if (directDebitConfig != null && directDebitConfig.IsActive && !string.IsNullOrEmpty(directDebitConfig.DestinationDepositIban))
         {
             var ibanList = new List<IbanInfo>
             {
-                new IbanInfo
-                {
+                new() {
                     Deposit = company.CompanyDeposits.FirstOrDefault(t => t.Iban == directDebitConfig.DestinationDepositIban),
                     Iban = directDebitConfig.DestinationDepositIban,
                     IsValid = true
@@ -323,6 +322,7 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
             };
             response.Add(new MethodData { MethodType = PaymentMethodType.DirectDebit, IbanInfoList = !string.IsNullOrEmpty(directDebitConfig.DestinationDepositIban) ? ibanList : new List<IbanInfo>() });
         }
+
         if (recieptConfig != null && recieptConfig.IsActive)
         {
             var ibanList = new List<IbanInfo>();
