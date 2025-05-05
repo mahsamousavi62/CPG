@@ -1,7 +1,5 @@
 ﻿using CPG.Application.UseCases.PaymentRequests.Exceptions;
 using CPG.Domain.AggregateModels.CompanyAggregate;
-using System;
-using System.Linq;
 using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Application.UseCases.PaymentRequests.Commands.CreatePaymentRequest.ValidationHandlers;
@@ -13,11 +11,11 @@ internal class IpgTypeDestinationDepositValidator<T> : ValidatorHandler<T>
     {
         var ipgDeposits = model.CompanyDeposits.Where(t => t.IsActive && t.Bank.IsActive && t.PaymentMethods.Select(t => t.MethodType).Contains(PaymentMethodType.InternetPaymentGateway));
         var companyDefaultIpgDeposits = model.CompanyIPGs.SelectMany(t => t.IPGDeposits.Where(t => t.IsDefault is true));
-        var defaultIpgDeposits = ipgDeposits?.Where(x => companyDefaultIpgDeposits.Select(t => t.Id).Contains(x.Id));
+        var defaultIpgDeposits = ipgDeposits?.Where(x => companyDefaultIpgDeposits.Select(t => t.CompanyDepositId).Contains(x.Id));
         if (defaultIpgDeposits?.Any() is false)
             throw new PaymentRequestNoDefaultDepositException(model.PersianName);
 
-        var companyActiveIpgDeposits = companyDefaultIpgDeposits.Select(x => new { x.Id, x.CompanyIPG }).Where(t => defaultIpgDeposits.Select(x => x.Id).Contains(t.Id));
+        var companyActiveIpgDeposits = companyDefaultIpgDeposits.Select(x => new { x.CompanyDepositId, x.CompanyIPG }).Where(t => defaultIpgDeposits.Select(x => x.Id).Contains(t.CompanyDepositId));
         if (companyActiveIpgDeposits?.Any(t => t.CompanyIPG.IsActive is true) is false)
             throw new PaymentRequestNoActiveIpgException(model.PersianName);
 
