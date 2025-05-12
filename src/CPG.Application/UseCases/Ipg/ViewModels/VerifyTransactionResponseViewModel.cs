@@ -39,4 +39,7 @@ public class VerifyTransactionResponseViewModel
 
     [JsonPropertyName("cpgVerificationDateTime")]
     public string CPGVerificationDateTime { get; set; }
+
+    [JsonPropertyName("companyCode")]
+    public short? CompanyCode { get; set; }
 }

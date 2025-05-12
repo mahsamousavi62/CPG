@@ -21,9 +21,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CPG.API.Controllers.v1;
 
-/// <summary>
-/// 
-/// </summary>
 public class PaymentRequestController : ApiBaseController
 {
     [AllowAnonymous]
@@ -79,7 +76,7 @@ public class PaymentRequestController : ApiBaseController
     [ProducesResponseType(typeof(Result<CharismaCardResponseViewModel>), 200)]
     public async Task<Result<CharismaCardResponseViewModel>> GetClientDirectDebit(CharismaCardRequsetViewModel model)
        => await Mediator.Send(new CreateCharismaCardTransactionCommand(model));
-
+       
     [HttpGet("AnonymousStatus")]
     [ProducesResponseType(typeof(Result<AnonymousStatusResponseViewModel>), 200)]
     public async Task<Result<AnonymousStatusResponseViewModel>> AnonymousStatus([FromQuery] AnonymousStatusViewModel anonymousStatusRequest)

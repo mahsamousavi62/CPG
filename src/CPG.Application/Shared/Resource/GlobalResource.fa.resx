@@ -831,9 +831,6 @@
   <data name="UserNotFound" xml:space="preserve">
     <value>UserNotFound</value>
   </data>
-  <data name="UserNotVerifyStatus" xml:space="preserve">
-    <value>UserNotVerifyStatus</value>
-  </data>
   <data name="Users" xml:space="preserve">
     <value>Users</value>
   </data>
@@ -872,5 +869,11 @@
   </data>
   <data name="VerifyInvalidStatus" xml:space="preserve">
     <value>The payment request status is invalid</value>
+  </data>
+  <data name="UserNotVerifyStatus" xml:space="preserve">
+    <value>UserNotVerifyStatus</value>
+  </data>
+  <data name="PaymentCompanyCodeIsRequired" xml:space="preserve">
+    <value>PaymentCompanyCodeIsRequired</value>
   </data>
 </root>

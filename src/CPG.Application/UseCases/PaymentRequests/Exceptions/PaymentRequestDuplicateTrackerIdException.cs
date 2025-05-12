@@ -1,11 +1,9 @@
 ﻿using CPG.Application.Shared.Resource;
 using CPG.Application.UseCases.Exceptions;
 
-namespace CPG.Application.UseCases.PaymentRequests.Exceptions
+namespace CPG.Application.UseCases.PaymentRequests.Exceptions;
+
+public class PaymentRequestDuplicateTrackerIdException(string trackerId): AppException(string.Format(GlobalResource.PaymentRequestDuplicateTrackerId, trackerId))
 {
-    public class PaymentRequestDuplicateTrackerIdException(string trackerId): AppException
-        (string.Format(GlobalResource.PaymentRequestDuplicateTrackerId, trackerId))
-    {
-        public override string Code => "paymentRequest_duplicate_TrackerId";
-}
+    public override string Code => "1001036";
 }
