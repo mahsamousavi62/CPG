@@ -59,7 +59,6 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
                     StatusTitle = General.GetPaymentStatusTitle(paymentRequest.Status),
                     PaymentMethodType = (short?)transaction?.TransactionMethodType,
                     PaymentMethodTypeTitle = transaction is null ? string.Empty : GetPaymentMethodTypeTitle(transaction.TransactionMethodType),
-                    PaymentPatternTitle = transaction is null ? string.Empty : transaction.IPGTransaction?.CompanyIPG?.IPGType?.EnglishName,
                     ReferenceNumber = transaction is null ? string.Empty : GetTransactionRefrenceNumber(transaction),
                     DestinationDepositIban = transaction is null ? string.Empty : transaction.DestinationDeposit?.Iban,
                     DestinationDepositAccountNumber = transaction is null ? string.Empty : transaction.DestinationDeposit?.AccountNumber,
@@ -68,7 +67,7 @@ public class TransactionDetailQueryHandler(IAggregateRepository<Transaction> tra
                     PredictedSettlementDateTime = transaction is null ? string.Empty : transaction.PredictedSettlementDateTime?.ToString("yyyy-MM-dd HH:mm:ss zzz"),
                     PaymentIdentifier = paymentRequest.PaymentIdentifier,
                     CompanyCode = paymentRequest.Company.Code,
-                    PaymentPattern = transaction is null ? null : transaction.IPGTransaction?.CompanyIPG?.IPGType?.Code.ToString(),
+                    PaymentPattern = transaction is null ? null : transaction.IPGTransaction?.CompanyIPG?.IPGType?.EnglishName,
                 });
         }
         catch (DomainException exc)
