@@ -44,7 +44,7 @@ public class MinioProvider : IMinioProvider
     public async Task<string> PutObject(string uploadFromEntityType, IFile file)
     {
         var bucketName = _configuration["Infrastructure:Minio:bucketName"];
-        var objectName = $"{uploadFromEntityType}/{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid()}_{file.FileName}";
+        var objectName = $"{uploadFromEntityType}/{DateTime.Now:yyyyMMdd}_{Guid.NewGuid()}_{file.FileName}";
 
         await file.ReadFile();
 
