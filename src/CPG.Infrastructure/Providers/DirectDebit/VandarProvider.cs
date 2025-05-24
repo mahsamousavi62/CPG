@@ -94,7 +94,7 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
     public async Task<StoreResponse> StoreAsync(StoreRequest request)
     {
         GetDataFromJsonProvider(request.ProviderData);
-        var headers = GetHeaders(request.AccessToken);
+        var headers = await GetHeaders(request.AccessToken);
         var trackerId = RandomGenerator.GenerateRandomDigitNumber(16);
         var applicationSettings = await _applicationSettingRepositoy.GetAllApplicationSettings();
 
@@ -132,7 +132,7 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
     public async Task<ShowResponse> ShowAsync(ShowRequest request)
     {
         GetDataFromJsonProvider(request.ProviderData);
-        var headers = GetHeaders(request.AccessToken);
+        var headers = await GetHeaders(request.AccessToken);
 
         var data = await _httpProvider.GetAsync<ShowRequest, VandarShowResponse, VandarResponseBase, dynamic>
             (new HttpProviderRequest<dynamic>
@@ -163,7 +163,7 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
     public async Task<UserGrantsResponse> GetUserGrants(UserGrantsRequest request)
     {
         GetDataFromJsonProvider(request.ProviderData);
-        var headers = GetHeaders(request.AccessToken);
+        var headers = await GetHeaders(request.AccessToken);
 
         var data = await _httpProvider.GetAsync<UserGrantsRequest, VandarShowMobileResponse, VandarResponseBase, dynamic>
             (new HttpProviderRequest<dynamic>
@@ -200,7 +200,7 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
     public async Task<VerifyResponse> VerifyAsync(VerifyRequest request)
     {
         GetDataFromJsonProvider(request.ProviderData);
-        var headers = GetHeaders(request.AccessToken);
+        var headers = await GetHeaders(request.AccessToken);
 
         var data = await _httpProvider.PatchAsync<VerifyRequest, VandarVerifyResponse, VandarResponseBase, dynamic>
             (new HttpProviderRequest<dynamic>
@@ -224,7 +224,7 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
     public async Task<WithdrawalResponse> WithdrawAsync(WithdrawalRequest request)
     {
         GetDataFromJsonProvider(request.ProviderData);
-        var headers = GetHeaders(request.AccessToken);
+        var headers = await GetHeaders(request.AccessToken);
         var applicationSettings = await _applicationSettingRepositoy.GetAllApplicationSettings();
         var trackerId = RandomGenerator.GenerateRandomDigitNumber(16);
 
@@ -277,9 +277,9 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
         return $"{url}?track_id={trackerId}";
     }
 
-    private static List<(string Key, string? Value)> GetHeaders(string accessToken)
+    private async Task<List<(string Key, string? Value)>> GetHeaders(string accessToken)
     {
-        return [("Authorization", string.Concat("Bearer ", accessToken))];
+        return new List<(string Key, string? Value)> { ("Authorization", string.Concat("Bearer ", accessToken)) };
     }
 
     private async Task<TResponse> PaymentTokenErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest baseRequest, TResponse response, TError error, short statusCode)
