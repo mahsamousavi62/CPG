@@ -45,8 +45,11 @@ public class MinioProvider : IMinioProvider
 
     public async Task<string> PutObject(string uploadFromEntityType, IFile file)
     {
+        Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+
         var bucketName = _configuration["Infrastructure:Minio:bucketName"];
-        var objectName = $"{uploadFromEntityType}/{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid()}_{file.FileName}";
+        var sanitizedFileName = Path.GetFileName(file.FileName);
+        var objectName = $"{uploadFromEntityType}/{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid()}_{sanitizedFileName}";
 
         await file.ReadFile();
 
@@ -54,19 +57,12 @@ public class MinioProvider : IMinioProvider
 
         try
         {
-
-            var metadata = new Dictionary<string, string>
-            {
-                { "uploaded-datetime", DateTime.UtcNow.ToString("o") }
-            };
-
             PutObjectArgs putObjectArgs = new PutObjectArgs()
                 .WithBucket(bucketName)
                 .WithObject(objectName)
                 .WithContentType(file.ContentType)
                 .WithObjectSize(file.Length)
-                .WithStreamData(file.Content)
-                .WithHeaders(metadata);
+                .WithStreamData(file.Content);
 
             var response = await _minioClient.PutObjectAsync(putObjectArgs).ConfigureAwait(false);
 
