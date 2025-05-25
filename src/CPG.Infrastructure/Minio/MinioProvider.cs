@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Minio;
 using Minio.DataModel.Args;
 using Minio.Exceptions;
+using Newtonsoft.Json;
 using Serilog;
 using Serilog.Core;
 using System;
@@ -16,6 +17,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -62,11 +64,13 @@ public class MinioProvider : IMinioProvider
                 {
                     { "Content-Type", file.ContentType },
                     { "x-amz-meta-uploaded-datetime", DateTime.UtcNow.ToString("yyyyMMdd") }
-                }); ;
+                });
 
             var response = await _minioClient.PutObjectAsync(putObjectArgs).ConfigureAwait(false);
 
-            _logger.LogWarning($"Response Minio : {response}");
+            var resString = JsonConvert.SerializeObject(response);
+
+            _logger.LogWarning($"Response Minio : {resString}");
 
             return response.ObjectName;
         }
