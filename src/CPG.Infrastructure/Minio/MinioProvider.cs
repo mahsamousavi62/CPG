@@ -70,7 +70,7 @@ public class MinioProvider : IMinioProvider
 
             var response = await _minioClient.PutObjectAsync(putObjectArgs).ConfigureAwait(false);
 
-            var resString = JsonConvert.SerializeObject(putObjectArgs);
+            var resString = JsonConvert.SerializeObject(response);
 
             _logger.LogWarning($"Response Minio : {resString}");
 
