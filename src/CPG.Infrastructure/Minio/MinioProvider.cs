@@ -57,7 +57,11 @@ public class MinioProvider : IMinioProvider
                 .WithObject(objectName)
                 .WithContentType(file.ContentType)
                 .WithObjectSize(file.Length)
-                .WithStreamData(file.Content);
+                .WithStreamData(file.Content)
+                .WithHeaders(new Dictionary<string, string>
+                {
+                    { "x-amz-meta-uploaded-datetime", DateTime.UtcNow.ToString("o") }
+                });;
 
             var response = await _minioClient.PutObjectAsync(putObjectArgs).ConfigureAwait(false);
 
