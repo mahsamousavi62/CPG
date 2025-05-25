@@ -60,10 +60,13 @@ public class MinioProvider : IMinioProvider
                 .WithStreamData(file.Content)
                 .WithHeaders(new Dictionary<string, string>
                 {
-                    { "x-amz-meta-uploaded-datetime", DateTime.UtcNow.ToString("o") }
-                });;
+                    { "Content-Type", file.ContentType },
+                    { "x-amz-meta-uploaded-datetime", DateTime.UtcNow.ToString("yyyyMMdd") }
+                }); ;
 
             var response = await _minioClient.PutObjectAsync(putObjectArgs).ConfigureAwait(false);
+
+            _logger.LogWarning($"Response Minio : {response}");
 
             return response.ObjectName;
         }
