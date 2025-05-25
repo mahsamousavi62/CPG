@@ -54,21 +54,17 @@ public class MinioProvider : IMinioProvider
 
         try
         {
-            var putObjectArgs = new PutObjectArgs()
+            PutObjectArgs putObjectArgs = new PutObjectArgs()
                 .WithBucket(bucketName)
                 .WithObject(objectName)
                 .WithContentType(file.ContentType)
                 .WithObjectSize(file.Length)
                 .WithStreamData(file.Content)
-                .WithHeaders(new Dictionary<string, string>
-                {
-                    { "Content-Type", file.ContentType },
-                    { "x-amz-meta-uploaded-datetime", DateTime.UtcNow.ToString("yyyyMMdd") }
-                });
+                .WithModifiedSince(DateTime.UtcNow);
 
             var response = await _minioClient.PutObjectAsync(putObjectArgs).ConfigureAwait(false);
 
-            var resString = JsonConvert.SerializeObject(putObjectArgs);
+            var resString = JsonConvert.SerializeObject(response);
 
             _logger.LogWarning($"Response Minio : {resString}");
 
