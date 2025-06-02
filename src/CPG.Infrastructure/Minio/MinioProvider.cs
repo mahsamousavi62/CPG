@@ -39,6 +39,8 @@ public class MinioProvider : IMinioProvider
 
     public async Task<List<string>> GetBucketNamesAsync(CancellationToken cancellationToken = default)
     {
+        Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+
         var result = await _minioClient.ListBucketsAsync(cancellationToken);
         return result.Buckets.Select(t => t.Name).ToList();
     }
@@ -81,6 +83,8 @@ public class MinioProvider : IMinioProvider
 
     public async Task<FileViewModel> GetObjectByName(string name)
     {
+        Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+
         var bucketName = _configuration["Infrastructure:Minio:bucketName"];
 
         try
@@ -125,6 +129,8 @@ public class MinioProvider : IMinioProvider
 
     public async Task<string> PresignedGetObject(string objectName)
     {
+        Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+
         var bucketName = _configuration["Infrastructure:Minio:bucketName"];
         var serviceUrl = _configuration["ApiServerUrl"];
 
