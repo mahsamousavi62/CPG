@@ -20,7 +20,7 @@ public class Logo
     {
         _provider = provider;
 
-        int maxFileSize = 2 * 1024 * 1024;
+        int maxFileSize = 5 * 1024 * 1024;
 
         Guard.Against.Null(file, nameof(file));
 
@@ -41,7 +41,7 @@ public class Logo
 
     public Logo(IFile file)
     {
-        int maxFileSize = 2 * 1024 * 1024;
+        int maxFileSize = 5 * 1024 * 1024;
 
         Guard.Against.Null(file, nameof(file));
 
