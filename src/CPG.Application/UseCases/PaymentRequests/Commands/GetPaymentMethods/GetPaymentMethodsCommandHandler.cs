@@ -57,10 +57,10 @@ public class GetPaymentMethodsCommandHandler(
             throw new PaymentRequestCodeNotFoundException();
         }
 
-        //if (paymentRequest.UrlExpirationDateTime < DateTime.Now)
-        //{
-        //    throw new PaymentRequestCodeIsExpiredException();
-        //}
+        if (paymentRequest.UrlExpirationDateTime < DateTime.Now)
+        {
+            throw new PaymentRequestCodeIsExpiredException();
+        }
 
         if (paymentRequest.IsUsed)
         {

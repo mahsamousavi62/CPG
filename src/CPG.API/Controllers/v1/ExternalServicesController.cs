@@ -6,17 +6,15 @@ using CPG.Application.UseCases.PaymentRequests.Commands.CreatePaymentRequest;
 using CPG.Application.UseCases.PaymentRequests.Queries.Report;
 using CPG.Application.UseCases.PaymentRequests.ViewModels;
 using CPG.Domain.SharedKernel;
-using CPG.Domain.SharedKernel.Communication.CharismaCard;
-using CPG.Domain.SharedKernel.Communication.CharismaCard.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
 namespace CPG.API.Controllers.v1;
 
-public class ExternalServicesController(ICharismaCardService charismaCardService) : ApiBaseController
+public class ExternalServicesController : ApiBaseController
 {
-    private readonly ICharismaCardService _charismaCardService = charismaCardService;
+
     [HttpPost("PaymentRequest")]
     [ProducesResponseType(typeof(Result<PaymentRequestResponseViewModel>), 200)]
     public async Task<Result<PaymentRequestResponseViewModel>> PaymentRequest([FromBody] CreatePaymentRequestViewModel model)
@@ -47,8 +45,5 @@ public class ExternalServicesController(ICharismaCardService charismaCardService
         ([FromQuery] PaymentFilter searchTerm, [FromQuery] PagedFilter pagedFilter)
       => await Mediator.Send(new GetPaymentRequestsQuery(searchTerm, pagedFilter));
 
-    [HttpPost("directdebitRequest")]
-    [ProducesResponseType(typeof(Result<DirectDebitResponse>), 200)]
-    public async Task<Result<DirectDebitResponse>> DirectDebitRequest([FromBody] DirectDebitRequest request)
-        => await _charismaCardService.DirectDebitRequest(request);
+
 }
