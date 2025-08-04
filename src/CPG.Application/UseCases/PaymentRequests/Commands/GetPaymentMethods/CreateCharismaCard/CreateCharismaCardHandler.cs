@@ -1,7 +1,4 @@
 ﻿using CPG.Application.UseCases.PaymentRequests.ViewModels;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Application.UseCases.PaymentRequests.Commands.GetPaymentMethods.CreateCharismaCard;
@@ -37,24 +34,44 @@ public class CreateCharismaCardHandler : GetPaymentMethodsHandler
     {
         if (methodType == PaymentMethodType.CharismaCard && AvailableCharismaCard(request))
         {
-            var userDepositBalance = await request.NeoBankService.GetUserDepositBalance();
+            //var test = await request.charismaCardService.GetUserDepositBalance("0440061423");
+            //var userDepositBalance = await request.NeoBankService.GetUserDepositBalance();
 
-            if (userDepositBalance?.Data is not null)
+            //if (userDepositBalance?.Data is not null)
+            //{
+            //    model.CharismaCard = new ViewModels.CharismaCard
+            //    {
+            //        BalanceAmount = userDepositBalance.Data.Balance,
+            //        CardNumber = userDepositBalance.Data.CardNumber,
+            //        CustomerSurname = $"{userDepositBalance.Data.CustomerFirstName} {userDepositBalance.Data.CustomerLastName}",
+            //        DepositStatus = userDepositBalance.Data.DepositStatus,
+            //        ExpirationDate = userDepositBalance.Data.ExpirationDate
+            //    };
+            //}
+
+            var result = await request.charismaCardService.GetUserDepositBalance(request.NationalCode);
+
+            if (result.IsSuccess && result?.Data is not null)
             {
-                model.CharismaCard = new ViewModels.CharismaCard
+                model.CharismaCard = result.Data.Data?.Select(account => new CPG.Application.UseCases.PaymentRequests.ViewModels.CharismaCard
                 {
-                    BalanceAmount = userDepositBalance.Data.Balance,
-                    CardNumber = userDepositBalance.Data.CardNumber,
-                    CustomerSurname = $"{userDepositBalance.Data.CustomerFirstName} {userDepositBalance.Data.CustomerLastName}",
-                    DepositStatus = userDepositBalance.Data.DepositStatus,
-                    ExpirationDate = userDepositBalance.Data.ExpirationDate
-                };
-            }
-        }
-        else if (handler != null)
-        {
-            await handler.HandleRequset(methodType, request, model);
-        }
+                    Balance = account.Balance,
+                    CustomerFirstName = account.CustomerFirstName,
+                    CustomerLastName = account.CustomerLastName,
+                    Iban = account.Iban,
+                    CardNumber = account.CardNumber,
+                    DepositNumber = account.DepositNumber,
+                    UrlAliasName = account.UrlAliasName
+                }).ToList() ?? [];
 
+
+
+            }
+            else if (handler != null)
+            {
+                await handler.HandleRequset(methodType, request, model);
+            }
+
+        }
     }
 }

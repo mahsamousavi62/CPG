@@ -42,6 +42,8 @@ using CPG.Infrastructure.Providers.NeoBank;
 using CPG.Domain.SharedKernel.Communication.NeoBank;
 using CPG.Domain.SharedKernel.Interfaces;
 using CPG.Infrastructure.Cache;
+using CPG.Domain.SharedKernel.Communication.CharismaCard;
+using CPG.Infrastructure.Providers.CharismaCard;
 
 namespace CPG.Infrastructure;
 
@@ -51,6 +53,7 @@ public static class DependencyInjection
         => services
             .AddScoped<ICharisPayProvider, CharisPayProvider>()
             .AddScoped<INeoBankService, NeoBankProvider>()
+            .AddScoped<ICharismaCardService, CharismaCardProvider>()
             .AddScoped<ICacheService, CacheService>()
             .AddScoped<IIdpProvider, IdpProvider>()
             .AddScoped<IIpgFactory, IpgFactory>()
@@ -145,6 +148,14 @@ public static class DependencyInjection
         {
             c.BaseAddress = new Uri("https://ipgrest.asanpardakht.ir/");
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/plain"));
+        });
+
+        var charismaCardConfig = configuration.GetSection("Infrastructure:CharismaCard").Get<CharismaCardConfig>();
+        services.AddHttpClient("charismaCardClient", c =>
+        {
+            c.BaseAddress = new Uri(charismaCardConfig.BaseUrl);
+            c.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
+            c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         });
 
         return services;

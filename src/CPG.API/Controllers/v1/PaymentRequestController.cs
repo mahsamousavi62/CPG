@@ -14,6 +14,7 @@ using CPG.Application.UseCases.PaymentRequests.Queries.AnonymousStatus;
 using CPG.Application.UseCases.PaymentRequests.ViewModels;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Communication.Ipg.Models.TransactionResult;
+using CPG.Infrastructure.Authorization;
 using CPG.Infrastructure.File;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +24,7 @@ namespace CPG.API.Controllers.v1;
 
 public class PaymentRequestController : ApiBaseController
 {
-    [AllowAnonymous]
+    [OptionalAuthorize]
     [HttpPost("GetPaymentMethods")]
     [ProducesResponseType(typeof(Result<PaymentMethodsViewModel>), 200)]
     public async Task<Result<PaymentMethodsViewModel>> PaymentMethods([FromBody] GetPaymentMethodsViewModel model)

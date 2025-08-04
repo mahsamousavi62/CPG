@@ -1,6 +1,4 @@
 ﻿using CPG.Application.UseCases.DirectDebit.ViewModels;
-using CPG.Domain.SharedKernel;
-using System;
 using System.Collections.Generic;
 
 namespace CPG.Application.UseCases.PaymentRequests.ViewModels;
@@ -12,14 +10,14 @@ public class PaymentMethodsViewModel
     public List<IPGInfo> IPGs { get; set; }
     public List<DirectDebitInfo> DirectDebits { get; set; }
     public List<Receipt> Receipt { get; set; }
-    public CharismaCard CharismaCard { get; set; }
+    public List<CharismaCard> CharismaCard { get; set; }
     public string CompanyName { get; set; }
 }
 
 public class IPGInfo
 {
     public long Id { get; set; }
-    
+
     public string PersianName { get; set; }
 
     public string Logo { get; set; }
@@ -47,9 +45,11 @@ public class Receipt
 
 public class CharismaCard
 {
-    public decimal? BalanceAmount { get; set; }
-    public string CustomerSurname { get; set; }
+    public decimal Balance { get; set; }
+    public string CustomerFirstName { get; set; }
+    public string CustomerLastName { get; set; }
+    public string Iban { get; set; }
     public string CardNumber { get; set; }
-    public DateTime? ExpirationDate { get; set; }
-    public Enums.NeoBankDepositStatus DepositStatus { get; set; }
+    public string DepositNumber { get; set; }
+    public string UrlAliasName { get; set; }
 }
