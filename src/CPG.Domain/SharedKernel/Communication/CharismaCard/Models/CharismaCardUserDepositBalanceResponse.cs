@@ -3,20 +3,22 @@ using System.Text.Json.Serialization;
 
 namespace CPG.Domain.SharedKernel.Communication.CharismaCard.Models;
 
-public class CharismaCardUserDepositBalanceResponse
-{
-    [JsonPropertyName("isSuccess")]
-    public bool IsSuccess { get; set; }
+//public class CharismaCardUserDepositBalanceResponse
+//{
+//    [JsonPropertyName("isSuccess")]
+//    public bool IsSuccess { get; set; }
 
-    [JsonPropertyName("isFailure")]
-    public bool IsFailure { get; set; }
+//    [JsonPropertyName("isFailure")]
+//    public bool IsFailure { get; set; }
 
-    [JsonPropertyName("data")]
-    public List<CharismaCardData> Data { get; set; }
+//    [JsonPropertyName("data")]
+//    public List<CharismaCardData> Data { get; set; }
 
-    [JsonPropertyName("error")]
-    public CharismaCardError Error { get; set; }
-}
+//    [JsonPropertyName("error")]
+//    public CharismaCardError Error { get; set; }
+//}
+
+public class CharismaCardUserDepositBalanceResponse : CharismaCardBaseResponse<List<CharismaCardData>> { }
 
 public class CharismaCardData
 {
@@ -42,11 +44,3 @@ public class CharismaCardData
     public string UrlAliasName { get; set; }
 }
 
-public class CharismaCardError
-{
-    [JsonPropertyName("code")]
-    public string Code { get; set; }
-
-    [JsonPropertyName("description")]
-    public string Description { get; set; }
-}

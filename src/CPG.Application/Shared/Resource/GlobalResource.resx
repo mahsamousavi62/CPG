@@ -1017,4 +1017,22 @@
   <data name="PaymentCompanyCodeIsRequired" xml:space="preserve">
     <value>کد یا شناسه شرکت اجباری است</value>
   </data>
+  <data name="DirectDeditException" xml:space="preserve">
+    <value>ثبت درخواست برداشت کاریزما کارت فعلا از دسترس خارج شده است، لطفا از روش های دیگر با پشتیبانی تماس بگیرید</value>
+  </data>
+  <data name="SourceIbanEmpty" xml:space="preserve">
+    <value>شبای مبدا را وارد کنید</value>
+  </data>
+  <data name="TrackerIdEmpty" xml:space="preserve">
+    <value>کد رهگیری را وارد کنید</value>
+  </data>
+  <data name="TrackerIdIsInvalid" xml:space="preserve">
+    <value>شناسه تراکنش نامعتبر است</value>
+  </data>
+  <data name="CharismaCardTrackerIdIsInvalid" xml:space="preserve">
+    <value>شناسه تراکنش توسط کاریزما کارت یافت نشد</value>
+  </data>
+  <data name="DirectDebitResponseException" xml:space="preserve">
+    <value>ستعلام تراکنش کاریزما کارت فعلا از دسترس خارج شده است، لطفا مجدد تلاش کنید یا با پشتیبانی تماس بگیرید</value>
+  </data>
 </root>

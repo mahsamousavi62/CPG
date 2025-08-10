@@ -2,193 +2,344 @@
 using CPG.Application.Shared.Resource;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.ApplicationSettingsAggregate;
+using CPG.Domain.SharedKernel.Communication;
 using CPG.Domain.SharedKernel.Communication.CharismaCard;
 using CPG.Domain.SharedKernel.Communication.CharismaCard.Models;
 using CPG.Domain.SharedKernel.Interfaces;
-using CPG.Domain.SharedKernel.Logging;
 using IdentityModel;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Serilog.Context;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace CPG.Infrastructure.Providers.CharismaCard;
 
-public class CharismaCardProvider(
-       IHttpClientFactory factory, IConfiguration configuration, IAuthService authService,
-    IHttpContextAccessor httpContextAccessor, ILogger<CharismaCardProvider> logger, ICurrentUser currentUser) : ICharismaCardService
+public class CharismaCardProvider(IHttpProvider httpProvider,
+	   IHttpClientFactory factory, IConfiguration configuration, IAuthService authService,
+	IHttpContextAccessor httpContextAccessor, ILogger<CharismaCardProvider> logger, ICurrentUser currentUser) : ICharismaCardService
 {
 
-    private readonly IHttpClientFactory factory = factory;
-    private readonly IConfiguration configuration = configuration;
-    private readonly IAuthService authService = authService;
-    private readonly IHttpContextAccessor httpContextAccessor = httpContextAccessor;
-    private readonly ILogger<CharismaCardProvider> logger = logger;
-    private readonly ICurrentUser currentUser = currentUser;
+	private readonly IHttpClientFactory factory = factory;
+	private readonly IConfiguration configuration = configuration;
+	private readonly IAuthService authService = authService;
+	private readonly IHttpContextAccessor httpContextAccessor = httpContextAccessor;
+	private readonly ILogger<CharismaCardProvider> logger = logger;
+	private readonly ICurrentUser currentUser = currentUser;
 
-    public async Task<Result<CharismaCardUserDepositBalanceResponse>> GetUserDepositBalance(string nationalCode)
-    {
-        var charismaCardConfig = configuration.GetSection("Infrastructure:CharismaCard").Get<CharismaCardConfig>();
-
-
-        var appConfig = authService.GetJwtConfig();
-
-        var accessTokenResult = await ExchangeToken(appConfig);
-        if (accessTokenResult.OperationResult == Enums.OperationResult.Failed)
-            return Result<CharismaCardUserDepositBalanceResponse>.Failure(new Error("2201001", accessTokenResult.Error));
-        try
-        {
-            var client = factory.CreateClient("charismaCardClient");
-
-            string query = $"?NationalCode={nationalCode}";
-
-            client.SetBearerToken(accessTokenResult.Data.AccessToken);
-
-            var response = await client.GetAsync(charismaCardConfig.GetUserDepositBalanceUrl + query);
-
-            var responseContent = await response.Content.ReadAsStringAsync();
-
-
-            var callLog = new CallLogModel
-            {
-
-                ResponseBody = responseContent,
-                ServiceCallDate = DateTime.Now,
-                ServiceCallUrl = charismaCardConfig.GetUserDepositBalanceUrl + query,
-                ServiceCallStatus = response.StatusCode == System.Net.HttpStatusCode.OK,
-                ServiceType = Enums.ServiceType.GetUserDepositBalance,
-                CreationDate = DateTime.Now,
-                CreationUserId = currentUser.UserId,
-                ProviderType = Enums.ProviderTypeInLog.CharismaCard,
-                AuditType = Enums.AuditType.Provider
-            };
-
-            using (LogContext.PushProperty("CallLog", callLog, true))
-            {
-                logger.LogInformation("[CallLog] {@CallLog}", callLog);
-            }
-
-            if (response.IsSuccessStatusCode)
-            {
-                JsonSerializerOptions options = new()
-                {
-                    PropertyNameCaseInsensitive = true
-                };
-
-                var result = JsonSerializer.Deserialize<CharismaCardUserDepositBalanceResponse>(responseContent, options);
-
-                logger.LogInformation("CharismaCard GetUserDepositBalance successful for user {UserId}. Response: {Response}",
-                    currentUser.UserId, responseContent);
-
-                return Result<CharismaCardUserDepositBalanceResponse>.SuccessResult(result);
-            }
-            else
-            {
-                logger.LogError("CharismaCard GetUserDepositBalance failed with status {StatusCode}: {Content}",
-                    response.StatusCode, responseContent);
-
-                return Result<CharismaCardUserDepositBalanceResponse>.Failure(new Error("2451001", GlobalResource.UnexpectedError));
-            }
-        }
-        catch (System.Exception ex)
-        {
-            logger.LogError(ex, "Exception occurred while calling CharismaCard GetUserDepositBalance");
-            return Result<CharismaCardUserDepositBalanceResponse>.Failure(new Error("2451000", GlobalResource.UnexpectedError));
-        }
-    }
+	public async Task<Result<CharismaCardUserDepositBalanceResponse>> GetUserDepositBalance(string nationalCode)
+	{
+		var charismaCardConfig = configuration.GetSection("Infrastructure:CharismaCard").Get<CharismaCardConfig>();
+		var appConfig = authService.GetJwtConfig();
+		var accessTokenResult = await ExchangeToken(appConfig);
+		if (accessTokenResult.OperationResult == Enums.OperationResult.Failed)
+			return Result<CharismaCardUserDepositBalanceResponse>.Failure(new Error("2201001", accessTokenResult.Error));
+		try
+		{
+			var headers = new List<(string Key, string Value)>
+			{
+				("Authorization", $"Bearer {accessTokenResult.Data.AccessToken}")
+			};
+			var httpRequest = new HttpProviderRequest<dynamic>
+			{
+				BaseAddress = charismaCardConfig.BaseUrl,
+				Uri = charismaCardConfig.GetUserDepositBalanceUrl,
+				Body = new { NationalCode = nationalCode },
+				HeaderParameters = headers,
+				Provider = Enums.ProviderTypeInLog.CharismaCard,
+				Service = Enums.ServiceType.GetUserDepositBalance
+			};
+			var response = await httpProvider.GetAsync<RequestBase, CharismaCardUserDepositBalanceResponse, CharismaCardBaseResponse<List<CharismaCardData>>>(httpRequest, null, BalanceErrorHandler, BalanceDecoder);
+			return Result<CharismaCardUserDepositBalanceResponse>.SuccessResult(response);
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, "Exception occurred while calling CharismaCard GetUserDepositBalance");
+			return Result<CharismaCardUserDepositBalanceResponse>.Failure(new Error("2451000", GlobalResource.UnexpectedError));
+		}
+	}
 
 
-    private async Task<ResultData<TokenResponse>> ExchangeToken(JwtConfigViewModel appConfig)
+	private async Task<ResultData<TokenResponse>> ExchangeToken(JwtConfigViewModel appConfig)
 
-    {
-        var token = await httpContextAccessor.HttpContext.GetTokenAsync("access_token");
-        var client = factory.CreateClient();
-        var httpClient = factory.CreateClient("idpClient");
-        var disco = await httpClient.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
-        {
-            Address = appConfig.Authority,
-            Policy = { RequireHttps = false }
-        });
-        if (disco.IsError)
-            return new ResultData<TokenResponse> { Error = disco.Error, OperationResult = Enums.OperationResult.Failed };
+	{
+		var token = await httpContextAccessor.HttpContext.GetTokenAsync("access_token");
+		var client = factory.CreateClient();
+		var httpClient = factory.CreateClient("idpClient");
+		var disco = await httpClient.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
+		{
+			Address = appConfig.Authority,
+			Policy = { RequireHttps = false }
+		});
+		if (disco.IsError)
+			return new ResultData<TokenResponse> { Error = disco.Error, OperationResult = Enums.OperationResult.Failed };
 
-        var request = new TokenExchangeTokenRequest
-        {
-            Address = disco.TokenEndpoint,
-            ClientId = appConfig.ServerApiKey,
-            ClientSecret = appConfig.ServerApiSecret,
-            Scope = appConfig.CharismaCardScope,
-            SubjectToken = token,
-            SubjectTokenType = OidcConstants.TokenTypeIdentifiers.AccessToken,
+		var request = new TokenExchangeTokenRequest
+		{
+			Address = disco.TokenEndpoint,
+			ClientId = appConfig.ServerApiKey,
+			ClientSecret = appConfig.ServerApiSecret,
+			Scope = appConfig.CharismaCardScope,
+			SubjectToken = token,
+			SubjectTokenType = OidcConstants.TokenTypeIdentifiers.AccessToken,
 
-            Parameters =
-        {
-            { "exchange_style", "impersonation" }
-        }
-        };
-        var response = await client.RequestTokenExchangeTokenAsync(request);
+			Parameters =
+		{
+			{ "exchange_style", "impersonation" }
+		}
+		};
+		var response = await client.RequestTokenExchangeTokenAsync(request);
 
-        if (response.IsError)
-            throw new Exception(response.Raw);
+		if (response.IsError)
+			throw new Exception(response.Raw);
 
-        return new ResultData<TokenResponse> { Data = response, OperationResult = Enums.OperationResult.Succeeded };
-    }
+		return new ResultData<TokenResponse> { Data = response, OperationResult = Enums.OperationResult.Succeeded };
+	}
 
-    public async Task<Result<DirectDebitResponse>> DirectDebitRequest(DirectDebitRequest request)
-    {
-        var charismaCardConfig = configuration.GetSection("Infrastructure:CharismaCard").Get<CharismaCardConfig>();
-        var appConfig = authService.GetJwtConfig();
+	public async Task<Result<DirectDebitResponse>> DirectDebitRequest(DirectDebitRequest request)
+	{
+		var charismaCardConfig = configuration.GetSection("Infrastructure:CharismaCard").Get<CharismaCardConfig>();
+		var appConfig = authService.GetJwtConfig();
+		var accessTokenResult = await ExchangeToken(appConfig);
+		if (accessTokenResult.OperationResult == Enums.OperationResult.Failed)
+			return Result<DirectDebitResponse>.Failure(new Error("2201001", accessTokenResult.Error));
+		try
+		{
+			var headers = new List<(string Key, string Value)>
+			{
+				("Authorization", $"Bearer {accessTokenResult.Data.AccessToken}")
+			};
+			var httpRequest = new HttpProviderRequest<DirectDebitRequest>
+			{
+				BaseAddress = charismaCardConfig.BaseUrl,
+				Uri = charismaCardConfig.DirectDebitRequestUrl,
+				HeaderParameters = headers,
+				Body = request,
+				Provider = Enums.ProviderTypeInLog.CharismaCard,
+				Service = Enums.ServiceType.ClientDirectDebit
+			};
+			var directDebitResponse = await httpProvider.PostAsync<DirectDebitRequest, DirectDebitResponse, CharismaCardBaseResponse<DirectDebitData>, DirectDebitRequest>(
+				httpRequest,
+				request,
+				DirectDebitErrorHandler,
+				DirectDebitDecoder);
+			logger.LogInformation("CharismaCard DirectDebitRequest successful for user {UserId}. Response: {Response}", currentUser.UserId, directDebitResponse);
 
-        var accessTokenResult = await ExchangeToken(appConfig);
-        if (accessTokenResult.OperationResult == Enums.OperationResult.Failed)
-            return Result<DirectDebitResponse>.Failure(new Error("2201001", accessTokenResult.Error));
+			if (directDebitResponse.IsSuccess)
+			{
+				return Result<DirectDebitResponse>.SuccessResult(directDebitResponse);
+			}
+			else
+			{
+				return Result<DirectDebitResponse>.Failure(new Error("2452001", GlobalResource.DirectDeditException));
 
-        try
-        {
-            var client = factory.CreateClient("charismaCardClient");
+			}
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, "Exception occurred while calling CharismaCard DirectDebitRequest");
+			return Result<DirectDebitResponse>.Failure(new Error("2452000", GlobalResource.UnexpectedError));
+		}
+	}
 
-            // Use the hardcoded token for now (same as in GetUserDepositBalance)
-            client.SetBearerToken("eyJhbGciOiJSUzI1NiIsImtpZCI6IjYzNzQxNUUwNzgzOTA3NEE5MDU2QjE4QUYxRTdFQ0MzIiwidHlwIjoiYXQrand0In0.eyJpc3MiOiJodHRwczovL2F1dGgtc3RhZ2UuY2hhcmlzbWEuZGlnaXRhbCIsIm5iZiI6MTc1NDI4NTMwMCwiaWF0IjoxNzU0Mjg1MzAwLCJleHAiOjE3NTQyODcxMDAsImF1ZCI6WyJwYXlfX2RhcnlhZnR5YXJfYXBpIiwiaHR0cHM6Ly9hdXRoLXN0YWdlLmNoYXJpc21hLmRpZ2l0YWwvcmVzb3VyY2VzIl0sInNjb3BlIjpbInBheV9fZ2F0ZXdheV9leHRlcm5hbCJdLCJjbGllbnRfaWQiOiJwYXlfX2RhcnlhZnR5YXJfYXBpX2NsaWVudCIsInN1YiI6IjI3In0.NQcXVb2BeJDF-7kFtH1EMVnaboL5Csdn-AJWkIDtwK906dH0iK3ZOO-5x9YH1SYCGzeQIxX35UEqX5vU3ePz-MHHdnznr8VllP81ZQXEzLOjVh59Qv6Zdkz7A9RRk3-JEJuLIeE1k09951SjlcJlSo7M9c3HQXWygyRWAMhXwoXqraO6aaF5k1DdnomEaQJ6tqIgi8OjZRqrUvHVINrSxxyaAjARY-fGEwqDLjc3tkLBIsKpvueXSwRVPkb_UyNf33OycwZG_N7hxyg0jpWwlDN-HupG3prRgd9s2cItdadJ26m4aTFXLp_yRQL5oL8CCrI1hQhXRtFBJrBgXzLOTQ");
+	// Inquiry direct debit result
+	public async Task<Result<DirectDebitResultResponse>> GetDirectDebitResult(DirectDebitResultRequest request)
+	{
+		var charismaCardConfig = configuration.GetSection("Infrastructure:CharismaCard").Get<CharismaCardConfig>();
+		var appConfig = authService.GetJwtConfig();
+		var accessTokenResult = await ExchangeToken(appConfig);
+		if (accessTokenResult.OperationResult == Enums.OperationResult.Failed)
+			return Result<DirectDebitResultResponse>.Failure(new Error("2201001", accessTokenResult.Error));
+		try
+		{
+			var headers = new List<(string Key, string Value)>
+			{
+				("Authorization", $"Bearer {accessTokenResult.Data.AccessToken}")
+			};
+			var httpRequest = new HttpProviderRequest<dynamic>
+			{
+				BaseAddress = charismaCardConfig.BaseUrl,
+				Uri = charismaCardConfig.DirectDebitResultUrl,
+				Body = request,
+				HeaderParameters = headers,
+				Provider = Enums.ProviderTypeInLog.CharismaCard,
+				Service = Enums.ServiceType.ClientDirectDebit
+			};
+			var response = await httpProvider.GetAsync<DirectDebitResultRequest, DirectDebitResultResponse,
+													CharismaCardBaseResponse<DirectDebitResultData>>(httpRequest, null, DirectDebitResultErrorHandler, DirectDebitResultDecoder);
+			if (response.IsSuccess)
+			{
+				return Result<DirectDebitResultResponse>.SuccessResult(response);
+			}
+			else
+			{
+				return Result<DirectDebitResultResponse>.Failure(new Error("2453001", GlobalResource.DirectDebitResponseException));
 
-            // Serialize the request body
-            var jsonRequest = JsonSerializer.Serialize(request);
-            var content = new StringContent(jsonRequest, System.Text.Encoding.UTF8, "application/json");
+			}
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, "Exception occurred while calling CharismaCard GetDirectDebitResult");
+			return Result<DirectDebitResultResponse>.Failure(new Error("2453000", GlobalResource.UnexpectedError));
+		}
+	}
 
-            var response = await client.PostAsync(charismaCardConfig.DirectDebitRequestUrl, content);
-            var responseContent = await response.Content.ReadAsStringAsync();
+	// Error handler for result inquiry
+	private Task<DirectDebitResultResponse> DirectDebitResultErrorHandler(dynamic baseRequest, DirectDebitResultResponse response, CharismaCardBaseResponse<DirectDebitResultData> error, short statusCode)
+	{
+		var result = response ?? new DirectDebitResultResponse();
+		result.StatusCode = statusCode;
+		if (error != null)
+		{
+			result.IsSuccess = error.IsSuccess;
+			result.IsFailure = error.IsFailure;
+			result.Data = error.Data;
+			result.Error = error.Error;
+		}
+		return Task.FromResult<DirectDebitResultResponse>(result);
+	}
 
-            if (response.IsSuccessStatusCode)
-            {
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
+	// Decoder for result inquiry
+	private DirectDebitResultResponse DirectDebitResultDecoder(string responseString)
+	{
+		if (string.IsNullOrEmpty(responseString))
+		{
+			return new DirectDebitResultResponse
+			{
+				StatusCode = (short)System.Net.HttpStatusCode.NotFound,
+				IsSuccess = false,
+				IsFailure = true,
+				Error = new CharismaCardError
+				{
+					Code = ((int)System.Net.HttpStatusCode.NoContent).ToString(),
+					Description = System.Net.HttpStatusCode.NoContent.ToString()
+				}
+			};
+		}
+		if (!string.IsNullOrEmpty(responseString) && responseString.Contains("Unauthorized"))
+		{
+			return new DirectDebitResultResponse
+			{
+				StatusCode = (short)System.Net.HttpStatusCode.Unauthorized,
+				IsSuccess = false,
+				IsFailure = true,
+				Error = new CharismaCardError
+				{
+					Code = ((int)System.Net.HttpStatusCode.Unauthorized).ToString(),
+					Description = responseString
+				}
+			};
+		}
+		var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+		return JsonSerializer.Deserialize<DirectDebitResultResponse>(responseString, options)!;
+	}
 
-                var result = JsonSerializer.Deserialize<DirectDebitResponse>(responseContent, options);
+	private Task<DirectDebitResponse> DirectDebitErrorHandler(DirectDebitRequest baseRequest, DirectDebitResponse response, CharismaCardBaseResponse<DirectDebitData>? error, short statusCode)
+	{
+		var result = response ?? new DirectDebitResponse();
+		result.StatusCode = statusCode;
+		if (error != null)
+		{
+			result.IsSuccess = error.IsSuccess;
+			result.IsFailure = error.IsFailure;
+			result.Data = error.Data;
+			result.Error = error.Error;
+		}
+		return Task.FromResult<DirectDebitResponse>(result);
+	}
 
-                logger.LogInformation("CharismaCard DirectDebitRequest successful for user {UserId}. Response: {Response}",
-                    currentUser.UserId, responseContent);
+	private DirectDebitResponse DirectDebitDecoder(string responseString)
+	{
+		if (string.IsNullOrEmpty(responseString))
+		{
+			return new DirectDebitResponse
+			{
+				StatusCode = (short)System.Net.HttpStatusCode.NotFound,
+				IsSuccess = false,
+				IsFailure = true,
+				Error = new CharismaCardError
+				{
+					Code = ((int)System.Net.HttpStatusCode.NoContent).ToString(),
+					Description = System.Net.HttpStatusCode.NoContent.ToString()
+				}
+			};
+		}
+		// Handle plain Unauthorized response
+		else if (!string.IsNullOrEmpty(responseString) && responseString.Contains("Unauthorized"))
+		{
+			return new DirectDebitResponse
+			{
+				StatusCode = (short)System.Net.HttpStatusCode.Unauthorized,
+				IsSuccess = false,
+				IsFailure = true,
+				Error = new CharismaCardError
+				{
+					Code = ((int)System.Net.HttpStatusCode.Unauthorized).ToString(),
+					Description = responseString
+				}
+			};
+		}
+		// Deserialize normal JSON response
+		var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+		return JsonSerializer.Deserialize<DirectDebitResponse>(responseString, options)!;
+	}
 
-                return Result<DirectDebitResponse>.SuccessResult(result);
-            }
-            else
-            {
-                logger.LogError("CharismaCard DirectDebitRequest failed with status {StatusCode}: {Content}",
-                    response.StatusCode, responseContent);
+	// Error handler for GetUserDepositBalance
+	private Task<CharismaCardUserDepositBalanceResponse> BalanceErrorHandler(RequestBase baseRequest, CharismaCardUserDepositBalanceResponse response, CharismaCardBaseResponse<List<CharismaCardData>> error, short statusCode)
+	{
+		var result = response ?? new CharismaCardUserDepositBalanceResponse();
+		result.StatusCode = statusCode;
+		if (error != null)
+		{
+			result.IsSuccess = error.IsSuccess;
+			result.IsFailure = error.IsFailure;
+			result.Data = error.Data;
+			result.Error = error.Error;
+		}
+		return Task.FromResult(result);
+	}
 
-                return Result<DirectDebitResponse>.Failure(new Error("2201002", "DirectDebit request failed"));
-            }
-        }
-        catch (System.Exception ex)
-        {
-            logger.LogError(ex, "Exception occurred while calling CharismaCard DirectDebitRequest");
-            return Result<DirectDebitResponse>.Failure(new Error("2201002", "DirectDebit request failed"));
-        }
-    }
+	// Decoder for GetUserDepositBalance
+	private CharismaCardUserDepositBalanceResponse BalanceDecoder(string responseString)
+	{
+		if (string.IsNullOrEmpty(responseString))
+		{
+			return new CharismaCardUserDepositBalanceResponse
+			{
+				StatusCode = (short)System.Net.HttpStatusCode.NoContent,
+				IsSuccess = false,
+				IsFailure = true,
+				Error = new CharismaCardError
+				{
+					Code = ((int)System.Net.HttpStatusCode.NoContent).ToString(),
+					Description = System.Net.HttpStatusCode.NoContent.ToString()
+				}
+			};
+		}
+		// Han
+		if (!string.IsNullOrEmpty(responseString) && responseString.Contains("Unauthorized"))
+		{
+			return new CharismaCardUserDepositBalanceResponse
+			{
+				StatusCode = (short)System.Net.HttpStatusCode.Unauthorized,
+				IsSuccess = false,
+				IsFailure = true,
+				Error = new CharismaCardError
+				{
+					Code = ((int)System.Net.HttpStatusCode.Unauthorized).ToString(),
+					Description = responseString
+				}
+			};
+		}
+		var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+		return JsonSerializer.Deserialize<CharismaCardUserDepositBalanceResponse>(responseString, options)!;
+	}
+
+
+
 }

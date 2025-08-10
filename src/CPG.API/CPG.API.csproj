@@ -42,6 +42,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CPG.Application\CPG.Application.csproj" />
+    <ProjectReference Include="..\CPG.Domain\CPG.Domain.csproj" />
     <ProjectReference Include="..\CPG.Infrastructure.Authorization\CPG.Infrastructure.Authorization.csproj" />
     <ProjectReference Include="..\CPG.Infrastructure.Persistence\CPG.Infrastructure.Persistence.csproj" />
     <ProjectReference Include="..\CPG.Infrastructure\CPG.Infrastructure.csproj" />

@@ -7,4 +7,5 @@ public interface ICharismaCardService
 {
     Task<Result<CharismaCardUserDepositBalanceResponse>> GetUserDepositBalance(string nationalCode);
     Task<Result<DirectDebitResponse>> DirectDebitRequest(DirectDebitRequest request);
+    Task<Result<DirectDebitResultResponse>> GetDirectDebitResult(DirectDebitResultRequest request);
 }

@@ -233,8 +233,9 @@ public class Enums
 
     public enum CharismaCardStatus : byte
     {
-        Failed = 0,
-        Done = 1
+        InProgress = 0,
+        Done = 1,
+        Failed = 2,
     }
 }
 public static class EnumExtensions
