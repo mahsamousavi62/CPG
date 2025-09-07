@@ -8,7 +8,6 @@ public class CreateCharismaCardValidator : AbstractValidator<RequestContext>
     public CreateCharismaCardValidator()
     {
 
-
         RuleFor(request => request.PaymentRequest.PaymentRequestMethods)
 .Must(methods => methods?.Any(p => p.PaymentMethodType == PaymentMethodType.CharismaCard) == true)
 .When(request => request.PaymentRequest.PaymentRequestMethods.Count != 0);
@@ -24,7 +23,7 @@ public class CreateCharismaCardValidator : AbstractValidator<RequestContext>
             .Must(deposits =>
             {
                 var defaultDeposit = deposits.FirstOrDefault(d => d.IsDefaultForCharismaCard == true && d.IsActive);
-                return defaultDeposit != null && defaultDeposit.Bank.IsActive && defaultDeposit.Bank.IbanPrefix == "078";
+                return defaultDeposit != null && defaultDeposit.Bank.IsActive;
             });
     }
 }
