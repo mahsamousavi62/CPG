@@ -26,7 +26,7 @@ public class CharismaCardResultCommandHandler(ICharismaCardService charismaCard,
 			return Result<Unit>.Failure(new Error("2453002", GlobalResource.TrackerIdIsInvalid));
 		}
 
-		Result<DirectDebitResultResponse> directDebitResultResponse = await charismaCard.GetDirectDebitResult(new DirectDebitResultRequest { TrackerId = request.trackerId });
+		Result<DirectDebitResultResponse> directDebitResultResponse = await charismaCard.DirectDebitInquiry(new DirectDebitResultRequest { TrackerId = request.trackerId });
 
 		if (directDebitResultResponse?.IsSuccess == true && directDebitResultResponse.Data.Data is not null)
 		{

@@ -54,7 +54,7 @@ public class CharismaCardProvider(IHttpProvider httpProvider,
 				Provider = Enums.ProviderTypeInLog.CharismaCard,
 				Service = Enums.ServiceType.GetUserDepositBalance
 			};
-			var response = await httpProvider.GetAsync<RequestBase, CharismaCardUserDepositBalanceResponse, CharismaCardBaseResponse<List<CharismaCardData>>>(httpRequest, null, BalanceErrorHandler, BalanceDecoder);
+			var response = await httpProvider.GetAsync<RequestBase, CharismaCardUserDepositBalanceResponse, CharismaCardBaseResponse<List<CharismaCardData>>>(httpRequest, null, UserDepositBalanceErrorHandler, BalanceDecoder);
 			return Result<CharismaCardUserDepositBalanceResponse>.SuccessResult(response);
 		}
 		catch (Exception ex)
@@ -147,8 +147,7 @@ public class CharismaCardProvider(IHttpProvider httpProvider,
 		}
 	}
 
-	// Inquiry direct debit result
-	public async Task<Result<DirectDebitResultResponse>> GetDirectDebitResult(DirectDebitResultRequest request)
+	public async Task<Result<DirectDebitResultResponse>> DirectDebitInquiry(DirectDebitResultRequest request)
 	{
 		var charismaCardConfig = configuration.GetSection("Infrastructure:CharismaCard").Get<CharismaCardConfig>();
 		var appConfig = authService.GetJwtConfig();
@@ -171,7 +170,7 @@ public class CharismaCardProvider(IHttpProvider httpProvider,
 				Service = Enums.ServiceType.ClientDirectDebit
 			};
 			var response = await httpProvider.GetAsync<DirectDebitResultRequest, DirectDebitResultResponse,
-													CharismaCardBaseResponse<DirectDebitResultData>>(httpRequest, null, DirectDebitResultErrorHandler, DirectDebitResultDecoder);
+													CharismaCardBaseResponse<DirectDebitResultData>>(httpRequest, null, DirectDebitInquiryErrrorHandler, DirectDebitInquiryDecoder);
 			if (response.IsSuccess)
 			{
 				return Result<DirectDebitResultResponse>.SuccessResult(response);
@@ -179,7 +178,6 @@ public class CharismaCardProvider(IHttpProvider httpProvider,
 			else
 			{
 				return Result<DirectDebitResultResponse>.Failure(new Error("2453001", GlobalResource.DirectDebitResponseException));
-
 			}
 		}
 		catch (Exception ex)
@@ -189,8 +187,7 @@ public class CharismaCardProvider(IHttpProvider httpProvider,
 		}
 	}
 
-	// Error handler for result inquiry
-	private Task<DirectDebitResultResponse> DirectDebitResultErrorHandler(dynamic baseRequest, DirectDebitResultResponse response, CharismaCardBaseResponse<DirectDebitResultData> error, short statusCode)
+	private Task<DirectDebitResultResponse> DirectDebitInquiryErrrorHandler(dynamic baseRequest, DirectDebitResultResponse response, CharismaCardBaseResponse<DirectDebitResultData> error, short statusCode)
 	{
 		var result = response ?? new DirectDebitResultResponse();
 		result.StatusCode = statusCode;
@@ -204,8 +201,7 @@ public class CharismaCardProvider(IHttpProvider httpProvider,
 		return Task.FromResult<DirectDebitResultResponse>(result);
 	}
 
-	// Decoder for result inquiry
-	private DirectDebitResultResponse DirectDebitResultDecoder(string responseString)
+	private DirectDebitResultResponse DirectDebitInquiryDecoder(string responseString)
 	{
 		if (string.IsNullOrEmpty(responseString))
 		{
@@ -289,8 +285,7 @@ public class CharismaCardProvider(IHttpProvider httpProvider,
 		return JsonSerializer.Deserialize<DirectDebitResponse>(responseString, options)!;
 	}
 
-	// Error handler for GetUserDepositBalance
-	private Task<CharismaCardUserDepositBalanceResponse> BalanceErrorHandler(RequestBase baseRequest, CharismaCardUserDepositBalanceResponse response, CharismaCardBaseResponse<List<CharismaCardData>> error, short statusCode)
+	private Task<CharismaCardUserDepositBalanceResponse> UserDepositBalanceErrorHandler(RequestBase baseRequest, CharismaCardUserDepositBalanceResponse response, CharismaCardBaseResponse<List<CharismaCardData>> error, short statusCode)
 	{
 		var result = response ?? new CharismaCardUserDepositBalanceResponse();
 		result.StatusCode = statusCode;
@@ -304,7 +299,6 @@ public class CharismaCardProvider(IHttpProvider httpProvider,
 		return Task.FromResult(result);
 	}
 
-	// Decoder for GetUserDepositBalance
 	private CharismaCardUserDepositBalanceResponse BalanceDecoder(string responseString)
 	{
 		if (string.IsNullOrEmpty(responseString))
@@ -339,7 +333,4 @@ public class CharismaCardProvider(IHttpProvider httpProvider,
 		var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 		return JsonSerializer.Deserialize<CharismaCardUserDepositBalanceResponse>(responseString, options)!;
 	}
-
-
-
 }

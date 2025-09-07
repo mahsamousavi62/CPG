@@ -104,7 +104,6 @@ public class CreateCharismaCardTransactionCommandHandler(
 				PaymentRequest = paymentRequest,
 				TransactionMethodType = Enums.TransactionType.CharismaCard,
 				Status = Enums.TransactionStatus.InPrgress
-
 			});
 
 			paymentRequest.Status = Enums.PaymentStatus.InProgress;
@@ -120,8 +119,6 @@ public class CreateCharismaCardTransactionCommandHandler(
 
 			return Result<CharismaCardResponseViewModel>.SuccessResult(new CharismaCardResponseViewModel
 			{
-
-
 				CallBackUrl = clientDirectDebitResponse.Data.Data.Url
 			});
 		}

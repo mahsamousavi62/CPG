@@ -44,7 +44,4 @@ public class ExternalServicesController : ApiBaseController
 	public async Task<Result<PagedList<PaymentRequestReportViewModel>>> GetPaymentRequestsReport
 		([FromQuery] PaymentFilter searchTerm, [FromQuery] PagedFilter pagedFilter)
 	  => await Mediator.Send(new GetPaymentRequestsQuery(searchTerm, pagedFilter));
-
-
-
 }
