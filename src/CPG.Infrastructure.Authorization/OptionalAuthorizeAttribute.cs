@@ -15,7 +15,6 @@ public class OptionalAuthorizeAttribute : Attribute, IAsyncAuthorizationFilter
 {
     public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
     {
-        
         var authHeader = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault();
         
         if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer "))
