@@ -12,14 +12,3 @@ public class PaymentRequestInActiveCompanyException : DomainException
 
 	}
 }
-
-
-public class SourceIbanEmptyException : DomainException
-{
-	public override string Code => "";
-
-	public SourceIbanEmptyException() : base(Resource.PaymentRequestInActiveCompany)
-	{
-
-	}
-}

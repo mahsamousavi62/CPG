@@ -54,7 +54,7 @@ public class CharismaCardProvider(IHttpProvider httpProvider,
 				Provider = Enums.ProviderTypeInLog.CharismaCard,
 				Service = Enums.ServiceType.GetUserDepositBalance
 			};
-			var response = await httpProvider.GetAsync<RequestBase, CharismaCardUserDepositBalanceResponse, CharismaCardBaseResponse<List<CharismaCardData>>>(httpRequest, null, UserDepositBalanceErrorHandler, BalanceDecoder);
+			var response = await httpProvider.GetAsync<RequestBase, CharismaCardUserDepositBalanceResponse, CharismaCardBaseResponse<List<CharismaCardData>>>(httpRequest, null, UserDepositBalanceErrorHandler, UserDepositBalanceDecoder);
 			return Result<CharismaCardUserDepositBalanceResponse>.SuccessResult(response);
 		}
 		catch (Exception ex)
@@ -299,7 +299,7 @@ public class CharismaCardProvider(IHttpProvider httpProvider,
 		return Task.FromResult(result);
 	}
 
-	private CharismaCardUserDepositBalanceResponse BalanceDecoder(string responseString)
+	private CharismaCardUserDepositBalanceResponse UserDepositBalanceDecoder(string responseString)
 	{
 		if (string.IsNullOrEmpty(responseString))
 		{
@@ -315,7 +315,6 @@ public class CharismaCardProvider(IHttpProvider httpProvider,
 				}
 			};
 		}
-		// Han
 		if (!string.IsNullOrEmpty(responseString) && responseString.Contains("Unauthorized"))
 		{
 			return new CharismaCardUserDepositBalanceResponse

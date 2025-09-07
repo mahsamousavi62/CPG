@@ -32,7 +32,7 @@ public class CharismaCardResultCommandHandler(ICharismaCardService charismaCard,
 		{
 			DirectDebitResultResponse clientDirectDebit = directDebitResultResponse.Data;
 
-			var charismaCardstatus = clientDirectDebit.Data.Status == 1 ? CharismaCardStatus.Done : CharismaCardStatus.Failed;
+			CharismaCardStatus charismaCardstatus = clientDirectDebit.Data.Status == 1 ? CharismaCardStatus.Done : CharismaCardStatus.Failed;
 			transaction.CharismaCardTransaction.ModificationDate = DateTime.Now;
 			transaction.CharismaCardTransaction.ReferenceNumber = request.trackerId;
 			transaction.CharismaCardTransaction.Status = charismaCardstatus;
@@ -41,7 +41,7 @@ public class CharismaCardResultCommandHandler(ICharismaCardService charismaCard,
 			transaction.Status = charismaCardstatus == CharismaCardStatus.Done ? Enums.TransactionStatus.InPrgress : Enums.TransactionStatus.TransactionFailed;
 			transaction.ModificationDate = DateTime.Now;
 
-			var paymentRequest = await paymentRequestRepository.GetByIdAsync(transaction.PaymentRquestId, cancellationToken);
+			PaymentRequest paymentRequest = await paymentRequestRepository.GetByIdAsync(transaction.PaymentRquestId, cancellationToken);
 
 			switch (charismaCardstatus)
 			{
