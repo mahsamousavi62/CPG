@@ -13,7 +13,6 @@ public class CharismaCardResultCommandHandler(ICharismaCardService charismaCard,
 {
 	public async Task<Result<Unit>> Handle(CharismaCardResultCommand request, CancellationToken cancellationToken)
 	{
-
 		if (string.IsNullOrWhiteSpace(request.TrackerId))
 		{
 			return Result<Unit>.Failure(new Error("", GlobalResource.TrackerIdEmpty));
@@ -37,7 +36,6 @@ public class CharismaCardResultCommandHandler(ICharismaCardService charismaCard,
 			transaction.CharismaCardTransaction.ReferenceNumber = request.trackerId;
 			transaction.CharismaCardTransaction.Status = charismaCardstatus;
 
-
 			transaction.Status = charismaCardstatus == CharismaCardStatus.Done ? Enums.TransactionStatus.InPrgress : Enums.TransactionStatus.TransactionFailed;
 			transaction.ModificationDate = DateTime.Now;
 
@@ -46,14 +44,18 @@ public class CharismaCardResultCommandHandler(ICharismaCardService charismaCard,
 			switch (charismaCardstatus)
 			{
 				case CharismaCardStatus.Done:
-				paymentRequest.Status = Enums.PaymentStatus.TransactionWaitingForVerification;
-				transaction.Status = TransactionStatus.InPrgress;
-				transaction.PredictedSettlementDateTime = transaction.CharismaCardTransaction.CreationDate;
-				break;
+				{
+					paymentRequest.Status = Enums.PaymentStatus.TransactionWaitingForVerification;
+					transaction.Status = TransactionStatus.InPrgress;
+					transaction.PredictedSettlementDateTime = transaction.CharismaCardTransaction.CreationDate;
+					break;
+				}
 				case CharismaCardStatus.Failed:
-				paymentRequest.Status = Enums.PaymentStatus.TransactionFailed;
-				transaction.Status = TransactionStatus.TransactionFailed;
-				break;
+				{
+					paymentRequest.Status = Enums.PaymentStatus.TransactionFailed;
+					transaction.Status = TransactionStatus.TransactionFailed;
+					break;
+				}
 				default:
 				break;
 			}
