@@ -1,9 +1,7 @@
 ﻿using CPG.Domain.AggregateModels.CompanyDepositAggregate;
 using CPG.Domain.SeedWork;
 using CPG.Domain.SharedKernel;
-using MediatR;
 using System;
-using System.Net.NetworkInformation;
 
 namespace CPG.Domain.AggregateModels.TransactionAggregate;
 
@@ -92,7 +90,7 @@ public class Transaction : AuditableEntity<long>, IAggregateRoot
             case Enums.TransactionType.CharismaCard:
                 {
                     var charismaCard = CharismaCardTransaction.Create(model.CharismaCardModel.TrackId, model.CharismaCardModel.ProviderTrackId,
-                        model.CharismaCardModel.ReferenceNumber, model.CharismaCardModel.Status);
+                        model.CharismaCardModel.ReferenceNumber, model.CharismaCardModel.Status, model.CharismaCardModel.SourceIban);
                     transaction.CharismaCardTransaction = charismaCard;
                     break;
                 }

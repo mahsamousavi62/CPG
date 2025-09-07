@@ -29,7 +29,8 @@ public class JwtConfigViewModel
     public string IdpGetUserStatusUrl { get; set; }
 
     public int ExpireTime { get; set; }
-    
+
     public string NeoBankScope { get; set; }
+    public string CharismaCardScope { get; set; }
 
 }

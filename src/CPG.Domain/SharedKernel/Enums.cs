@@ -1,6 +1,4 @@
 ﻿using System;
-using CPG.Domain.AggregateModels.TransactionAggregate;
-using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Domain.SharedKernel;
 
@@ -80,7 +78,7 @@ public class Enums
         Pec = 4,
         BehPardakht = 5,
         Ayandeh = 6,
-        IranKish=7,
+        IranKish = 7,
     }
 
     public enum ServiceType : byte
@@ -106,8 +104,8 @@ public class Enums
         AyandehToken = 19,
         AyandehTransResult = 20,
         AyandehVerify = 21,
-        GetAccountNumber=22,
-        GetIdpUserStatus=23,
+        GetAccountNumber = 22,
+        GetIdpUserStatus = 23,
     }
 
     public enum TransactionType : byte
@@ -187,10 +185,11 @@ public class Enums
         Pec = 4,
         BehPardakht = 5,
         Ayandeh = 6,
-        IranKish= 7,
+        IranKish = 7,
         Idp = 101,
         NeoBank = 102,
-        CharisPay=103
+        CharisPay = 103,
+        CharismaCard = 104
 
     }
 
@@ -234,8 +233,9 @@ public class Enums
 
     public enum CharismaCardStatus : byte
     {
-        Failed = 0,
-        Done = 1
+        InProgress = 0,
+        Done = 1,
+        Failed = 2,
     }
 }
 public static class EnumExtensions

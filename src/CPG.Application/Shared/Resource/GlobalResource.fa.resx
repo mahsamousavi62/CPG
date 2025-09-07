@@ -876,4 +876,22 @@
   <data name="PaymentCompanyCodeIsRequired" xml:space="preserve">
     <value>PaymentCompanyCodeIsRequired</value>
   </data>
+  <data name="DirectDeditException" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SourceIbanEmpty" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TrackerIdEmpty" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TrackerIdIsInvalid" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CharismaCardTrackerIdIsInvalid" xml:space="preserve">
+    <value />
+  </data>
+  <data name="DirectDebitResponseException" xml:space="preserve">
+    <value />
+  </data>
 </root>

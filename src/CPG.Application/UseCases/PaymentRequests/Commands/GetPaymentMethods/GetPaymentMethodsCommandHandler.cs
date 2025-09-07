@@ -4,25 +4,19 @@ using CPG.Application.UseCases.PaymentRequests.Commands.GetPaymentMethods.Create
 using CPG.Application.UseCases.PaymentRequests.Commands.GetPaymentMethods.CreatePaymentReceipt;
 using CPG.Application.UseCases.PaymentRequests.Exceptions;
 using CPG.Application.UseCases.PaymentRequests.ViewModels;
+using CPG.Domain.AggregateModels.BankAggregate;
 using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Domain.AggregateModels.CompanyAggregate.Specifications;
+using CPG.Domain.AggregateModels.CompanyDepositAggregate;
 using CPG.Domain.AggregateModels.DirectDebitGrantAggregate;
 using CPG.Domain.AggregateModels.PaymentRequestAggregate.Specifications;
 using CPG.Domain.AggregateModels.TransactionAggregate;
-using CPG.Domain.SharedKernel;
-using CPG.Domain.AggregateModels.TransactionAggregate.Specifications;
+using CPG.Domain.SharedKernel.Communication.CharismaCard;
 using CPG.Domain.SharedKernel.Communication.NeoBank;
 using CPG.Domain.SharedKernel.Interfaces;
 using CPG.Domain.SharedKernel.Minio;
-using MediatR;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using static CPG.Domain.SharedKernel.Enums;
-using CPG.Domain.AggregateModels.BankAggregate;
-using CPG.Domain.AggregateModels.CompanyDepositAggregate;
 
 namespace CPG.Application.UseCases.PaymentRequests.Commands.GetPaymentMethods;
 
@@ -30,6 +24,7 @@ public class GetPaymentMethodsCommandHandler(
     ICurrentUser user,
     IMinioProvider minioProvider,
     INeoBankService neoBankService,
+    ICharismaCardService charismaCardService,
     IAuthenticationService authenticationService,
     IAggregateRepository<Company> companyRepository,
     IAggregateRepository<DirectDebitGrant> grantRepository,
@@ -42,6 +37,7 @@ public class GetPaymentMethodsCommandHandler(
     private readonly ICurrentUser _user = user;
     private readonly IMinioProvider _minioProvider = minioProvider;
     private readonly INeoBankService _neoBankService = neoBankService;
+    private readonly ICharismaCardService _charismaCardService = charismaCardService;
     private readonly IAggregateRepository<Company> _companyRepository = companyRepository;
     private readonly IAuthenticationService _authenticationService = authenticationService;
     private readonly IAggregateRepository<DirectDebitGrant> _grantRepository = grantRepository;
@@ -127,9 +123,11 @@ public class GetPaymentMethodsCommandHandler(
             PaymentRequest = paymentRequest,
             MinioProvider = _minioProvider,
             NeoBankService = _neoBankService,
+            charismaCardService = _charismaCardService,
             GrantRepository = _grantRepository,
             CurrentUser = _user,
-            TransactionRepository = _transactionRepository
+            TransactionRepository = _transactionRepository,
+            NationalCode = nationalCode,
         };
 
         var PaymentMethodsViewModel = new PaymentMethodsViewModel();
