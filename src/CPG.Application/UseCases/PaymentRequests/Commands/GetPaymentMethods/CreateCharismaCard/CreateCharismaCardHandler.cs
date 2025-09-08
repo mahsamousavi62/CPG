@@ -1,4 +1,5 @@
 ﻿using CPG.Application.UseCases.PaymentRequests.ViewModels;
+using System.Collections.Generic;
 using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Application.UseCases.PaymentRequests.Commands.GetPaymentMethods.CreateCharismaCard;
@@ -7,23 +8,22 @@ public class CreateCharismaCardHandler : GetPaymentMethodsHandler
 {
 	private bool AvailableCharismaCard(RequestContext request)
 	{
-		string MiddleEastIbanPrefix = "078";
-		var validator = new CreateCharismaCardValidator();
-		var validationResult = validator.Validate(request);
+		CreateCharismaCardValidator validator = new CreateCharismaCardValidator();
+		FluentValidation.Results.ValidationResult validationResult = validator.Validate(request);
 
 		if (!validationResult.IsValid)
 		{
 			return false;
 		}
 
-		var company = request.Company;
-		var charismaCardCompanyDeposit = company.CompanyDeposits
+		Domain.AggregateModels.CompanyAggregate.Company company = request.Company;
+		List<Domain.AggregateModels.CompanyDepositAggregate.CompanyDeposit> charismaCardCompanyDeposit = company.CompanyDeposits
 			.Where(t => t.PaymentMethods.Select(x => x.MethodType).Contains(PaymentMethodType.CharismaCard))
 			.ToList();
 
-		var isDefault = charismaCardCompanyDeposit.FirstOrDefault(c => c.IsDefaultForCharismaCard == true && c.IsActive);
+		Domain.AggregateModels.CompanyDepositAggregate.CompanyDeposit isDefault = charismaCardCompanyDeposit.FirstOrDefault(c => c.IsDefaultForCharismaCard == true && c.IsActive);
 
-		if (isDefault.Bank.IsActive && isDefault.Bank.IbanPrefix != MiddleEastIbanPrefix)
+		if (!isDefault.Bank.IsActive)
 		{
 			return false;
 		}
