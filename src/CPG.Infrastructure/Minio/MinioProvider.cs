@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Minio;
 using Minio.DataModel.Args;
 using Minio.Exceptions;
+using Newtonsoft.Json;
 using Serilog;
 using Serilog.Core;
 using System;
@@ -16,6 +17,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -37,14 +39,19 @@ public class MinioProvider : IMinioProvider
 
     public async Task<List<string>> GetBucketNamesAsync(CancellationToken cancellationToken = default)
     {
+        Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+
         var result = await _minioClient.ListBucketsAsync(cancellationToken);
         return result.Buckets.Select(t => t.Name).ToList();
     }
 
     public async Task<string> PutObject(string uploadFromEntityType, IFile file)
     {
+        Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+
         var bucketName = _configuration["Infrastructure:Minio:bucketName"];
-        var objectName = $"{uploadFromEntityType}/{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid()}_{file.FileName}";
+        var sanitizedFileName = Path.GetFileName(file.FileName);
+        var objectName = $"{uploadFromEntityType}/{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid()}_{sanitizedFileName}";
 
         await file.ReadFile();
 
@@ -52,7 +59,7 @@ public class MinioProvider : IMinioProvider
 
         try
         {
-            var putObjectArgs = new PutObjectArgs()
+            PutObjectArgs putObjectArgs = new PutObjectArgs()
                 .WithBucket(bucketName)
                 .WithObject(objectName)
                 .WithContentType(file.ContentType)
@@ -60,6 +67,10 @@ public class MinioProvider : IMinioProvider
                 .WithStreamData(file.Content);
 
             var response = await _minioClient.PutObjectAsync(putObjectArgs).ConfigureAwait(false);
+
+            var resString = JsonConvert.SerializeObject(response);
+
+            _logger.LogWarning($"Response Minio : {resString}");
 
             return response.ObjectName;
         }
@@ -72,6 +83,8 @@ public class MinioProvider : IMinioProvider
 
     public async Task<FileViewModel> GetObjectByName(string name)
     {
+        Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+
         var bucketName = _configuration["Infrastructure:Minio:bucketName"];
 
         try
@@ -116,6 +129,8 @@ public class MinioProvider : IMinioProvider
 
     public async Task<string> PresignedGetObject(string objectName)
     {
+        Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+
         var bucketName = _configuration["Infrastructure:Minio:bucketName"];
         var serviceUrl = _configuration["ApiServerUrl"];
 
