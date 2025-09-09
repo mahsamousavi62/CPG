@@ -894,4 +894,7 @@
   <data name="DirectDebitResponseException" xml:space="preserve">
     <value />
   </data>
+  <data name="CharismaCardHasNotTrackerId" xml:space="preserve">
+    <value />
+  </data>
 </root>

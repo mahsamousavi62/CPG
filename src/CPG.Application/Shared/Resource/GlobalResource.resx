@@ -1035,4 +1035,7 @@
   <data name="DirectDebitResponseException" xml:space="preserve">
     <value>ستعلام تراکنش کاریزما کارت فعلا از دسترس خارج شده است، لطفا مجدد تلاش کنید یا با پشتیبانی تماس بگیرید</value>
   </data>
+  <data name="CharismaCardHasNotTrackerId" xml:space="preserve">
+    <value>شناسه تراکنش توسط کاریزما کارت یافت نشد</value>
+  </data>
 </root>
