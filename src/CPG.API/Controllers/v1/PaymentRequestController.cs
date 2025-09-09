@@ -85,11 +85,9 @@ public class PaymentRequestController : ApiBaseController
 
 	[Authorize]
 	[Route("charisma-card-result")]
-	[HttpGet]
-	public async Task<IActionResult> CharismaCardResult([FromQuery] string trackerId)
+	[HttpPost]
+	public async Task<Result<CharismaCardResponseViewModel>> CharismaCardResult([FromQuery] string trackerId)
 	{
-		Result<CharismaCardResponseViewModel> response = await Mediator.Send(new CharismaCardResultCommand(trackerId));
-
-		return Ok(response);
+		return await Mediator.Send(new CharismaCardResultCommand(trackerId));
 	}
 }

@@ -20,14 +20,14 @@ public class CharismaCardResultCommandHandler(ICharismaCardService charismaCard,
 			return Result<CharismaCardResponseViewModel>.Failure(new Error("", GlobalResource.TrackerIdEmpty));
 		}
 
-		Transaction transaction = await transactionRepository.FirstOrDefaultAsync(new TransactionByCharismaCardTrackId(request.trackerId), cancellationToken);
+		Transaction transaction = await transactionRepository.FirstOrDefaultAsync(new TransactionByCharismaCardTrackId(request.TrackerId), cancellationToken);
 
 		if (transaction == null)
 		{
 			return Result<CharismaCardResponseViewModel>.Failure(new Error("2453002", GlobalResource.TrackerIdIsInvalid));
 		}
 
-		Result<DirectDebitResultResponse> directDebitResultResponse = await charismaCard.DirectDebitInquiry(new DirectDebitResultRequest { TrackerId = request.trackerId });
+		Result<DirectDebitResultResponse> directDebitResultResponse = await charismaCard.DirectDebitInquiry(new DirectDebitResultRequest { TrackerId = request.TrackerId });
 
 		if (directDebitResultResponse?.IsSuccess == true && directDebitResultResponse.Data.Data is not null)
 		{
@@ -35,7 +35,7 @@ public class CharismaCardResultCommandHandler(ICharismaCardService charismaCard,
 
 			CharismaCardStatus charismaCardstatus = clientDirectDebit.Data.Status == 1 ? CharismaCardStatus.Done : CharismaCardStatus.Failed;
 			transaction.CharismaCardTransaction.ModificationDate = DateTime.Now;
-			transaction.CharismaCardTransaction.ReferenceNumber = request.trackerId;
+			transaction.CharismaCardTransaction.ReferenceNumber = request.TrackerId;
 			transaction.CharismaCardTransaction.Status = charismaCardstatus;
 
 			transaction.Status = charismaCardstatus == CharismaCardStatus.Done ? Enums.TransactionStatus.InPrgress : Enums.TransactionStatus.TransactionFailed;

@@ -2,7 +2,7 @@
 
 namespace CPG.Application.UseCases.CharismaCard.Commands;
 
-public record CharismaCardResultCommand(string trackerId) : IRequest<Result<CharismaCardResponseViewModel>>
+public record CharismaCardResultCommand(string TrackerId) : IRequest<Result<CharismaCardResponseViewModel>>
 {
-	public string TrackerId { get; set; } = trackerId;
+	public string TrackerId { get; set; } = TrackerId;
 }
