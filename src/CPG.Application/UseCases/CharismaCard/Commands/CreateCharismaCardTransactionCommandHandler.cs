@@ -71,8 +71,8 @@ public class CreateCharismaCardTransactionCommandHandler(
 		{ throw new PaymentRequestCompanyHasNoCharismaCardMethodException(); }
 
 		destinationDepositId = companyDeposit.Id;
-		var trackId = RandomGenerator.GenerateRandomDigitNumber(16);
-		string redirectUrl = $"{appConfig.Charisma_Card_Callback_URL}?trackId={trackId}";
+		var trackerId = RandomGenerator.GenerateRandomDigitNumber(16);
+		string redirectUrl = $"{appConfig.Charisma_Card_Callback_URL}?trackId={trackerId}";
 
 		var clientDirectDebitResponse = await charismaCardService.DirectDebitRequest(new Domain.SharedKernel.Communication.CharismaCard.Models.DirectDebitRequest
 		{
@@ -81,7 +81,7 @@ public class CreateCharismaCardTransactionCommandHandler(
 			DestinationIban = companyDeposit.Iban,
 			NationalCode = paymentRequest.NationalCode,
 			RedirectUrl = redirectUrl,
-			TrackerId = trackId,
+			TrackerId = trackerId,
 		});
 
 
@@ -94,7 +94,7 @@ public class CreateCharismaCardTransactionCommandHandler(
 			{
 				CharismaCardModel = new CharismaCardTransactionModel
 				{
-					TrackId = trackId,
+					TrackId = trackerId,
 					SourceIban = request.Model.SourceIban,
 					ProviderTrackId = Regex.Match(clientDirectDebitResponse.Data.Data.Url, @"(\d+)$").Value,
 					Status = CharismaCardstatus

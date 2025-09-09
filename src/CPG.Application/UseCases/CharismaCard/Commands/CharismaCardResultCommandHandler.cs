@@ -1,4 +1,6 @@
-﻿using CPG.Domain.AggregateModels.TransactionAggregate;
+﻿using CPG.Application.UseCases.CharismaCard.ViewModels;
+using CPG.Domain.AggregateModels.PaymentRequestAggregate;
+using CPG.Domain.AggregateModels.TransactionAggregate;
 using CPG.Domain.AggregateModels.TransactionAggregate.Specifications;
 using CPG.Domain.SharedKernel.Communication.CharismaCard;
 using CPG.Domain.SharedKernel.Communication.CharismaCard.Models;
@@ -9,20 +11,20 @@ namespace CPG.Application.UseCases.CharismaCard.Commands;
 
 public class CharismaCardResultCommandHandler(ICharismaCardService charismaCard,
 											 IAggregateRepository<Transaction> transactionRepository,
-											 IAggregateRepository<PaymentRequest> paymentRequestRepository) : IRequestHandler<CharismaCardResultCommand, Result<Unit>>
+											 IAggregateRepository<PaymentRequest> paymentRequestRepository) : IRequestHandler<CharismaCardResultCommand, Result<CharismaCardResponseViewModel>>
 {
-	public async Task<Result<Unit>> Handle(CharismaCardResultCommand request, CancellationToken cancellationToken)
+	public async Task<Result<CharismaCardResponseViewModel>> Handle(CharismaCardResultCommand request, CancellationToken cancellationToken)
 	{
 		if (string.IsNullOrWhiteSpace(request.TrackerId))
 		{
-			return Result<Unit>.Failure(new Error("", GlobalResource.TrackerIdEmpty));
+			return Result<CharismaCardResponseViewModel>.Failure(new Error("", GlobalResource.TrackerIdEmpty));
 		}
 
 		Transaction transaction = await transactionRepository.FirstOrDefaultAsync(new TransactionByCharismaCardTrackId(request.trackerId), cancellationToken);
 
 		if (transaction == null)
 		{
-			return Result<Unit>.Failure(new Error("2453002", GlobalResource.TrackerIdIsInvalid));
+			return Result<CharismaCardResponseViewModel>.Failure(new Error("2453002", GlobalResource.TrackerIdIsInvalid));
 		}
 
 		Result<DirectDebitResultResponse> directDebitResultResponse = await charismaCard.DirectDebitInquiry(new DirectDebitResultRequest { TrackerId = request.trackerId });
@@ -61,17 +63,23 @@ public class CharismaCardResultCommandHandler(ICharismaCardService charismaCard,
 			}
 			paymentRequest.ModificationDate = DateTime.Now;
 			PaymentRequest.Update(paymentRequest);
-			await paymentRequestRepository.UpdateAsync(paymentRequest);
-			await paymentRequestRepository.SaveChangesAsync();
-			await transactionRepository.UpdateAsync(transaction);
-			await transactionRepository.SaveChangesAsync();
+			await paymentRequestRepository.UpdateAsync(paymentRequest, cancellationToken);
+			await paymentRequestRepository.SaveChangesAsync(cancellationToken);
+			await transactionRepository.UpdateAsync(transaction, cancellationToken);
+			await transactionRepository.SaveChangesAsync(cancellationToken);
 
-			return Result<Unit>.SuccessResult(Unit.Value);
+			return Result<CharismaCardResponseViewModel>.SuccessResult(new CharismaCardResponseViewModel
+			{
+				CallBackUrl = Constants.CreateCallbackUrl(transaction.PaymentRequest.CallBackUrl, transaction.PaymentRequest.PaymentCode, transaction.PaymentRequest.Status)
+			});
+		}
+		else if (directDebitResultResponse?.IsSuccess == true && directDebitResultResponse.Data.Data is  null)
+		{
+			return Result<CharismaCardResponseViewModel>.Failure(new Error("2453003", GlobalResource.CharismaCardHasNotTrackerId));
 		}
 		else
 		{
-			return Result<Unit>.Failure(new Error(directDebitResultResponse.Error.Code, directDebitResultResponse.Error.Description));
+			return Result<CharismaCardResponseViewModel>.Failure(new Error(directDebitResultResponse.Error.Code, directDebitResultResponse.Error.Description));
 		}
-
 	}
 }

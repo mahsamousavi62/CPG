@@ -378,6 +378,15 @@ namespace CPG.Application.Shared.Resource {
         /// <summary>
         ///   Looks up a localized string similar to شناسه تراکنش توسط کاریزما کارت یافت نشد.
         /// </summary>
+        public static string CharismaCardHasNotTrackerId {
+            get {
+                return ResourceManager.GetString("CharismaCardHasNotTrackerId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to شناسه تراکنش توسط کاریزما کارت یافت نشد.
+        /// </summary>
         public static string CharismaCardTrackerIdIsInvalid {
             get {
                 return ResourceManager.GetString("CharismaCardTrackerIdIsInvalid", resourceCulture);
