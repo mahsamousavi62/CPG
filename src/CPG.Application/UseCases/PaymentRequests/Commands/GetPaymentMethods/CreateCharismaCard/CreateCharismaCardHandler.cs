@@ -49,11 +49,10 @@ public class CreateCharismaCardHandler : GetPaymentMethodsHandler
 					UrlAliasName = account.UrlAliasName
 				}).ToList() ?? [];
 			}
-			else if (handler != null)
-			{
-				await handler.HandleRequset(methodType, request, model);
-			}
-
+		}
+		else if (handler != null)
+		{
+			await handler.HandleRequset(methodType, request, model);
 		}
 	}
 }
