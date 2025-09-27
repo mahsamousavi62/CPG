@@ -58,9 +58,9 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
             var appConfig = await _applicationSettingsRepository.GetAllApplicationSettings();
             var clientId = await _authenticationService.GetClientId(config.Authority);
 
-            var application = await _applicationRepository.GetBySpecAsync(new ApplicationByIdpClientId(clientId), cancellationToken);
-            if (application == null)
-                throw new PaymentRequestApplicationNotFoundException();
+            var application = await _applicationRepository.FirstOrDefaultAsync(new ApplicationByIdpClientId(clientId), cancellationToken)
+                ?? throw new PaymentRequestApplicationNotFoundException();
+
             if (!application.IsActive)
                 throw new PaymentRequestApplicationIsInactiveException(application.PersianName, application.EnglishName);
 
@@ -148,11 +148,11 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
         {
             model.CompanyCode = (short)model.CompanyId;
         }
-        var sameTrackerId = await _paymentRequestRepository.FirstOrDefaultAsync(new PaymentRequestByTrackerId(model.TrackerId));
+        var sameTrackerId = await _paymentRequestRepository.FirstOrDefaultAsync(new PaymentRequestByTrackerId(model.TrackerId), cancellationToken);
         var trackIdValidator = new TrackIdValidator<PaymentRequest>();
         trackIdValidator.Handle(sameTrackerId);
 
-        var company = await _companyRepository.GetBySpecAsync(new CompanyDataByCodeSpec(model.CompanyCode), cancellationToken);
+        var company = await _companyRepository.FirstOrDefaultAsync(new CompanyDataByCodeSpec(model.CompanyCode), cancellationToken);
         var companyValidator = new CompanyValidator<Company>();
         companyValidator.Handle(company);
 
@@ -187,7 +187,7 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
             {
                 if (model.PaymentMethodConfig.IpgConfig.IpgTypeCode?.Any(t => t != null) is true)
                 {
-                    ipgTypes = await _ipgTypeRepository.ListAsync(new IPGTypeByCodeSpec(model.PaymentMethodConfig.IpgConfig.IpgTypeCode.ToArray()));
+                    ipgTypes = await _ipgTypeRepository.ListAsync(new IPGTypeByCodeSpec(model.PaymentMethodConfig.IpgConfig.IpgTypeCode.ToArray()), cancellationToken);
                     var ipgTypeValidator = new IpgTypeValidator<List<IPGType>>();
                     ipgTypeValidator.Handle(ipgTypes);
                 }
@@ -252,7 +252,7 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
         return result;
     }
 
-    private List<PaymentMethodType> GetActiveMethods(PaymentMethodConfig paymentMethodConfig)
+    private static List<PaymentMethodType> GetActiveMethods(PaymentMethodConfig paymentMethodConfig)
     {
         var activeMethods = new List<PaymentMethodType>();
         var ipgConfig = paymentMethodConfig.IpgConfig;
@@ -289,7 +289,7 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
         return ibans;
     }
 
-    private List<MethodData> GetMethodData(PaymentMethodConfig paymentMethodConfig, Company company, List<IPGType> iPGTypes = null)
+    private static List<MethodData> GetMethodData(PaymentMethodConfig paymentMethodConfig, Company company, List<IPGType> iPGTypes = null)
     {
         var ipgConfig = paymentMethodConfig.IpgConfig;
         var directDebitConfig = paymentMethodConfig.DirectDebitConfig;
@@ -344,7 +344,7 @@ public class CreatePaymentRequestCommandHandler(IAggregateRepository<PaymentRequ
         return response;
     }
 
-    private bool ValidateUrl(string url)
+    private static bool ValidateUrl(string url)
     {
         if (url.Length < 10 || url.Length > 2048)
             return false;
