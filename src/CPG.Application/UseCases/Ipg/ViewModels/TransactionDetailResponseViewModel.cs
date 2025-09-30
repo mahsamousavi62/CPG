@@ -15,7 +15,7 @@ public class TransactionDetailResponseViewModel
 
     [JsonPropertyName("destinationDepositAccountNumber")]
     public string DestinationDepositAccountNumber { get; set; }
-    
+
     [JsonPropertyName("amount")]
     public decimal? Amount { get; set; }
 
@@ -51,7 +51,4 @@ public class TransactionDetailResponseViewModel
 
     [JsonPropertyName("companyCode")]
     public short? CompanyCode { get; set; }
-
-    [JsonPropertyName("paymentPatternTitle")]
-    public string PaymentPatternTitle { get; set; }
 }
