@@ -94,7 +94,7 @@ public class AddPaymentReceiptQueryHandler(
             PredictedSettlementDateTime = request.viewModel.SettlementDateTime,
             PaymentReceiptModel = new PaymentReceiptTransactionModel
             {
-                Description = paymentRequest.Description,
+                Description = request.viewModel.Description,
                 Status = Enums.PaymentReceiptStatus.SucceededAndWaitingForVerification,
                 ReceiptDateTime = request.viewModel.SettlementDateTime,
                 ReceiptImage = image,
