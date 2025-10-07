@@ -12,4 +12,9 @@ public interface ILogService
     void AddServiceCallLog(string request, string response, short status, string message);
     Task AddServiceCallLogAsync<TBody, TRequest>(HttpProviderRequest<TBody, TRequest> request, HttpResponseMessage response);
     void AddServiceCallLog<TBody>(HttpProviderRequest<TBody> request, HttpResponseMessage response,string resString);
+
+    /// <summary>
+    /// Log timeout with request body for troubleshooting
+    /// </summary>
+    void AddTimeoutLog<TBody>(HttpProviderRequest<TBody> request, System.Exception exception, long durationMs);
 }

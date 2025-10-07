@@ -44,6 +44,7 @@ using CPG.Domain.SharedKernel.Interfaces;
 using CPG.Infrastructure.Cache;
 using CPG.Domain.SharedKernel.Communication.CharismaCard;
 using CPG.Infrastructure.Providers.CharismaCard;
+using CPG.Infrastructure.Policies;
 
 namespace CPG.Infrastructure;
 
@@ -69,8 +70,24 @@ public static class DependencyInjection
             //.AddMasstransitInfrastructure(configuration)
             .AddScoped<IMinioProvider, MinioProvider>()
             .AddMinio(configuration)
-            .AddHttpClient()
+            .AddPollyPolicies(configuration)
+            .AddConfigureDefaultHttpClient(configuration)
             .AddConfigureHttpClientService(configuration);
+
+    public static IServiceCollection AddPollyPolicies(this IServiceCollection services, IConfiguration configuration)
+    {
+        // Register Polly policy configuration
+        services.Configure<PolicyConfig>(configuration.GetSection(PolicyConfig.SectionName));
+
+        // Register Polly policy service
+        services.AddSingleton<IPollyPolicyService, PollyPolicyService>();
+
+        // Register logging handlers for capturing request/response on timeout
+        services.AddTransient<PollyLoggingHandler>();
+        services.AddScoped<ISoapLoggingWrapper, SoapLoggingWrapper>();
+
+        return services;
+    }
 
     public static IServiceCollection AddMinio(this IServiceCollection services, IConfiguration configuration)
     {
@@ -116,6 +133,23 @@ public static class DependencyInjection
         return services;
     }
 
+    public static IServiceCollection AddConfigureDefaultHttpClient(this IServiceCollection services, IConfiguration configuration)
+    {
+        // Configure default HttpClient (used by HttpProvider via CreateClient() without name)
+        var serviceProvider = services.BuildServiceProvider();
+        var policyService = serviceProvider.GetRequiredService<IPollyPolicyService>();
+
+        services.AddHttpClient(string.Empty, client =>
+        {
+            // Default configuration for unnamed HttpClient
+            client.Timeout = TimeSpan.FromSeconds(120); // Default timeout
+        })
+        .AddHttpMessageHandler<PollyLoggingHandler>()
+        .AddPolicyHandler(policyService.GetHttpPolicy("default"));
+
+        return services;
+    }
+
     public static IServiceCollection AddConfigureHttpClientService(this IServiceCollection services, IConfiguration configuration)
     {
         var serviceProvider = services.BuildServiceProvider();
@@ -123,32 +157,42 @@ public static class DependencyInjection
         var jwtConfig = authService.GetJwtConfig();
         var charisPayConfig = configuration.GetSection("Infrastructure:CharisPay").Get<CharisPayConfig>();
         var neoBankConfig = configuration.GetSection("Infrastructure:NeoBank").Get<NeoBankConfig>();
+        var policyService = serviceProvider.GetRequiredService<IPollyPolicyService>();
+
         services.AddHttpClient("charisPayClient", c =>
         {
             c.BaseAddress = new Uri(charisPayConfig.BaseUrl);
             c.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        });
+        })
+        .AddHttpMessageHandler<PollyLoggingHandler>()
+        .AddPolicyHandler(policyService.GetHttpPolicy("charisPayClient"));
 
         services.AddHttpClient("idpClient", c =>
         {
             c.BaseAddress = new Uri(jwtConfig.Authority);
             c.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        });
+        })
+        .AddHttpMessageHandler<PollyLoggingHandler>()
+        .AddPolicyHandler(policyService.GetHttpPolicy("idpClient"));
 
         services.AddHttpClient("neoBankClient", c =>
         {
             c.BaseAddress = new Uri(neoBankConfig.BaseUrl);
             c.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        });
+        })
+        .AddHttpMessageHandler<PollyLoggingHandler>()
+        .AddPolicyHandler(policyService.GetHttpPolicy("neoBankClient"));
 
         services.AddHttpClient("asanpardakhtClient", c =>
         {
             c.BaseAddress = new Uri("https://ipgrest.asanpardakht.ir/");
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/plain"));
-        });
+        })
+        .AddHttpMessageHandler<PollyLoggingHandler>()
+        .AddPolicyHandler(policyService.GetHttpPolicy("asanpardakhtClient"));
 
         var charismaCardConfig = configuration.GetSection("Infrastructure:CharismaCard").Get<CharismaCardConfig>();
         services.AddHttpClient("charismaCardClient", c =>
@@ -156,7 +200,9 @@ public static class DependencyInjection
             c.BaseAddress = new Uri(charismaCardConfig.BaseUrl);
             c.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        });
+        })
+        .AddHttpMessageHandler<PollyLoggingHandler>()
+        .AddPolicyHandler(policyService.GetHttpPolicy("charismaCardClient"));
 
         return services;
     }

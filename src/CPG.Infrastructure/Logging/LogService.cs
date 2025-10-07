@@ -122,6 +122,37 @@ public partial class LogService(ILogger<LogService> logger, IHttpContextAccessor
         }
     }
 
+    public void AddTimeoutLog<TBody>(HttpProviderRequest<TBody> request, Exception exception, long durationMs)
+    {
+        string reqString = System.Text.Json.JsonSerializer.Serialize(request);
+        if (!string.IsNullOrEmpty(reqString))
+        {
+            reqString = MyRegex().Replace(reqString, Constants.Replaceformat);
+        }
+        _ = long.TryParse(_httpContextAccessor.HttpContext?.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value, out long UserId);
+
+        var callLog = new CallLogModel
+        {
+            RequestBody = reqString,
+            ResponseBody = $"TIMEOUT after {durationMs}ms - {exception.Message}",
+            ServiceCallDate = DateTime.Now,
+            ServiceCallUrl = request.Uri,
+            ServiceCallStatus = false,
+            ServiceType = request.Service,
+            CreationDate = DateTime.Now,
+            CreationUserId = UserId == 0 ? 1 : UserId,
+            ErrorCode = "RequestTimeout",
+            ErrorType = "Timeout",
+            ProviderType = request.Provider,
+            AuditType = Enums.AuditType.Provider
+        };
+
+        using (LogContext.PushProperty("CallLog", callLog, true))
+        {
+            _logger.LogError(exception, "[CallLog] TIMEOUT {@CallLog}", callLog);
+        }
+    }
+
     [GeneratedRegex(Constants.Pattern)]
     private static partial Regex MyRegex();
 }

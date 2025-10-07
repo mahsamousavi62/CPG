@@ -9,6 +9,7 @@ using CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
 using CPG.Domain.SharedKernel.Helper;
 using CPG.Domain.SharedKernel.Logging;
 using CPG.Infrastructure.Persistence.DbContexts;
+using CPG.Infrastructure.Policies;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -19,12 +20,13 @@ using System.Threading.Tasks;
 namespace CPG.Infrastructure.Providers.Ipg;
 
 public class PecProvider(
-    ReadDbContext context, IApplicationSettingsRepository applicationSettingsRepository, ILogService logService, ILogger<PecProvider> logger) : IIpgProvider
+    ReadDbContext context, IApplicationSettingsRepository applicationSettingsRepository, ILogService logService, ILogger<PecProvider> logger, IPollyPolicyService pollyPolicyService) : IIpgProvider
 {
     private readonly IApplicationSettingsRepository _applicationSettingRepositoy = applicationSettingsRepository;
     private readonly ILogService _logService = logService;
     private readonly ILogger<PecProvider> _logger = logger;
     private readonly ReadDbContext context = context;
+    private readonly IPollyPolicyService _pollyPolicyService = pollyPolicyService;
 
     public async Task<PaymentTokenResponse> GetPaymentTokenAsync(PaymentTokenRequest request)
     {
@@ -35,7 +37,7 @@ public class PecProvider(
         string callBack = CreateCallbackUrl((short)request.IpgRedirectionMethodType, request.SiteAddress,
             trackerId.ToString(), configViewModel);
 
-        try
+        return await _pollyPolicyService.ExecuteWithPolicyAsync(async () =>
         {
             using (var SaleSvc = new SaleServiceSoapClient(SaleServiceSoapClient.EndpointConfiguration.SaleServiceSoap))
             {
@@ -71,12 +73,7 @@ public class PecProvider(
                           response.Body.SalePaymentRequestResult.Message, Enums.ServiceType.PecToken);
                 return paymentResponse;
             }
-        }
-        catch (Exception exc)
-        {
-            _logger.LogError(exc, nameof(SaleServiceSoapClient));
-            throw;
-        }
+        }, "PecProvider.GetPaymentToken");
     }
 
     public async Task<TransactionResultResponse> GetTransactionResult(TransactionResultRequest transactionResultRequest)
@@ -86,7 +83,7 @@ public class PecProvider(
 
     public async Task<VerifyTransactionResponse> Verify(VerifyTransactionRequest transactionResultRequest)
     {
-        try
+        return await _pollyPolicyService.ExecuteWithPolicyAsync(async () =>
         {
             using (var confirmSvc = new ConfirmServiceSoapClient(ConfirmServiceSoapClient.EndpointConfiguration.ConfirmServiceSoap))
             {
@@ -104,12 +101,7 @@ public class PecProvider(
                 var Status = confirm.Body.ConfirmPaymentResult.Status;
                 return ResponseModel(Status, RRN);
             }
-        }
-        catch (Exception exc)
-        {
-            _logger.LogError(exc, nameof(ConfirmServiceSoapClient));
-            throw;
-        }
+        }, "PecProvider.Verify");
     }
 
     public Task<SettleTransactionResponse> Settle(SettleTransactionRequest transactionResultRequest)

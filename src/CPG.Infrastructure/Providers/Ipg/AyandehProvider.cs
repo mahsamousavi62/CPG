@@ -25,10 +25,6 @@ internal class AyandehProvider(IHttpProvider httpProvider, ReadDbContext context
     public IApplicationSettingsRepository _applicationSettingRepositoy = applicationSettingsRepository;
     private readonly IHttpProvider httpProvider = httpProvider;
     private readonly ReadDbContext context = context;
-    private readonly byte serviceCallMaxTryCounter = 5;
-    private byte tokenFailCounter = 0;
-    private byte verifyFailCounter = 0;
-    private byte transactionResultFailCounter = 0;
     private string serviceId;
     private string userName;
     private string password;
@@ -160,11 +156,6 @@ internal class AyandehProvider(IHttpProvider httpProvider, ReadDbContext context
       where TError : AyandehResponseBase
       where TBaseRequest : PaymentTokenRequest
     {
-        if (tokenFailCounter < serviceCallMaxTryCounter)
-        {
-            tokenFailCounter++;
-            return await GetPaymentTokenAsync(baseRequest) as TResponse;
-        }
         return await Task.FromResult(BaseErrorHandler<TResponse, TError, TBaseRequest>(error));
     }
 
@@ -173,17 +164,11 @@ internal class AyandehProvider(IHttpProvider httpProvider, ReadDbContext context
       where TError : AyandehResponseBase
       where TBaseRequest : VerifyTransactionRequest
     {
-        return statusCode switch
+        return await Task.FromResult(statusCode switch
         {
             504 => new VerifyTransactionResponse { Status = Enums.IPGTransactionStatus.Verifying } as TResponse,
-            _ => verifyFailCounter < serviceCallMaxTryCounter ? await Retry() : new VerifyTransactionResponse {  Status = Enums.IPGTransactionStatus.VerificationFailed } as TResponse,
-        };
-
-        async Task<TResponse> Retry()
-        {
-            verifyFailCounter++;
-            return await Verify(baseRequest) as TResponse;
-        }
+            _ => new VerifyTransactionResponse { Status = Enums.IPGTransactionStatus.VerificationFailed } as TResponse,
+        });
     }
 
     private TResponse BaseErrorHandler<TResponse, TError, TBaseRequest>(AyandehResponseBase? error)

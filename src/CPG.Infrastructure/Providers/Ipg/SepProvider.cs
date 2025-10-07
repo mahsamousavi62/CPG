@@ -22,10 +22,6 @@ public class SepProvider(IHttpProvider httpProvider, ReadDbContext context, IApp
     public IApplicationSettingsRepository _applicationSettingRepositoy = applicationSettingsRepository;
     private readonly IHttpProvider httpProvider = httpProvider;
     private readonly ReadDbContext context = context;
-    private readonly byte serviceCallMaxTryCounter = 5;
-    private byte tokenFailCounter = 0;
-    private byte verifyFailCounter = 0;
-    private byte transactionResultFailCounter = 0;
     private int terminalId;
 
     private void GetDataFromJsonProvider(string providerData)
@@ -140,11 +136,6 @@ public class SepProvider(IHttpProvider httpProvider, ReadDbContext context, IApp
       where TError : SepResponseBase
       where TBaseRequest : PaymentTokenRequest
     {
-        if (tokenFailCounter < serviceCallMaxTryCounter)
-        {
-            tokenFailCounter++;
-            return await GetPaymentTokenAsync(baseRequest) as TResponse;
-        }
         return await Task.FromResult(BaseErrorHandler<TResponse, TError, TBaseRequest>(error));
     }
 
@@ -155,15 +146,9 @@ public class SepProvider(IHttpProvider httpProvider, ReadDbContext context, IApp
     {
         return statusCode switch
         {
-            504 => new VerifyTransactionResponse { Status = Enums.IPGTransactionStatus.Verifying } as TResponse,           
-            _ => verifyFailCounter < serviceCallMaxTryCounter ? await Retry() : await Task.FromResult(BaseErrorHandler<TResponse, TError, TBaseRequest>(error)),
+            504 => new VerifyTransactionResponse { Status = Enums.IPGTransactionStatus.Verifying } as TResponse,
+            _ => await Task.FromResult(BaseErrorHandler<TResponse, TError, TBaseRequest>(error)),
         };
-
-        async Task<TResponse> Retry()
-        {
-            verifyFailCounter++;
-            return await Verify(baseRequest) as TResponse;
-        }
     }
 
     private TResponse BaseErrorHandler<TResponse, TError, TBaseRequest>(SepResponseBase? error)

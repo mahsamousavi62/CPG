@@ -15,20 +15,18 @@ using System.Threading.Tasks;
 using CPG.Domain.SharedKernel.Logging;
 using Microsoft.Extensions.Logging;
 using BehPardakhtServiceReference;
+using CPG.Infrastructure.Policies;
 
 namespace CPG.Infrastructure.Providers.Ipg;
 
 public class BehPardakhtProvider(
-    ReadDbContext context, IApplicationSettingsRepository applicationSettingsRepository, ILogService logService, ILogger<BehPardakhtProvider> logger) : IIpgProvider
+    ReadDbContext context, IApplicationSettingsRepository applicationSettingsRepository, ILogService logService, ILogger<BehPardakhtProvider> logger, IPollyPolicyService pollyPolicyService) : IIpgProvider
 {
     private readonly IApplicationSettingsRepository _applicationSettingRepositoy = applicationSettingsRepository;
     private readonly ILogService _logService = logService;
     private readonly ILogger<BehPardakhtProvider> _logger = logger;
+    private readonly IPollyPolicyService _pollyPolicyService = pollyPolicyService;
     private readonly ReadDbContext context = context;
-    private readonly byte serviceCallMaxTryCounter = 5;
-    private byte tokenFailCounter = 0;
-    private byte verifyFailCounter = 0;
-    private byte settleFailCounter = 0;
     private string userName;
     private string password;
     private int terminalId;
@@ -56,73 +54,65 @@ public class BehPardakhtProvider(
         var trackerId = RandomGenerator.GenerateRandomDigitNumber(16);
         string callBackUrl = CreateCallbackUrl((short)request.IpgRedirectionMethodType, request.SiteAddress, trackerId.ToString(), configViewModel.CPG_BackEnd);
 
-        try
+        return await _pollyPolicyService.ExecuteWithPolicyAsync(async () =>
         {
-            using (var client = new PaymentGatewayClient(PaymentGatewayClient.EndpointConfiguration.PaymentGatewayImplPort))
+            try
             {
-                var payRequest = new bpPayRequest
+                using (var client = new PaymentGatewayClient(PaymentGatewayClient.EndpointConfiguration.PaymentGatewayImplPort))
                 {
-                    Body = new bpPayRequestBody
+                    var payRequest = new bpPayRequest
                     {
-                        terminalId = terminalId,
-                        userName = userName,
-                        userPassword = password,
-                        orderId = long.Parse(trackerId),
-                        amount = (long)request.PaymentRequestAmount,
-                        localDate = DateTime.Now.ToString("yyyyMMdd"),
-                        localTime = DateTime.Now.ToString("HHmmss"),
-                        callBackUrl = callBackUrl,
-                        payerId = "0",
-                        mobileNo = !string.IsNullOrEmpty(request.MobileNumber) ? $"98{request.MobileNumber.Remove(0, 1)}" : null,
-                        encPan = null,
-                        panHiddenMode = null,
-                        enc = request.NationalCodeMatchingRequied ? CreateAdditionalData(request.NationalCode, request.ShaparakKey, request.ShaparakIv, request.ThirdPartyCode) : string.Empty,
-                        cartItem = null,
-                        additionalData = null,
+                        Body = new bpPayRequestBody
+                        {
+                            terminalId = terminalId,
+                            userName = userName,
+                            userPassword = password,
+                            orderId = long.Parse(trackerId),
+                            amount = (long)request.PaymentRequestAmount,
+                            localDate = DateTime.Now.ToString("yyyyMMdd"),
+                            localTime = DateTime.Now.ToString("HHmmss"),
+                            callBackUrl = callBackUrl,
+                            payerId = "0",
+                            mobileNo = !string.IsNullOrEmpty(request.MobileNumber) ? $"98{request.MobileNumber.Remove(0, 1)}" : null,
+                            encPan = null,
+                            panHiddenMode = null,
+                            enc = request.NationalCodeMatchingRequied ? CreateAdditionalData(request.NationalCode, request.ShaparakKey, request.ShaparakIv, request.ThirdPartyCode) : string.Empty,
+                            cartItem = null,
+                            additionalData = null,
+                        }
+                    };
+                    var response = await client.bpPayRequestAsync(payRequest.Body.terminalId, payRequest.Body.userName, payRequest.Body.userPassword,
+                        payRequest.Body.orderId, payRequest.Body.amount, payRequest.Body.localDate, payRequest.Body.localTime, payRequest.Body.additionalData,
+                        payRequest.Body.callBackUrl, payRequest.Body.payerId, payRequest.Body.mobileNo, payRequest.Body.encPan, payRequest.Body.panHiddenMode,
+                        payRequest.Body.cartItem, payRequest.Body.enc);
+
+
+                    var responseData = response.Body.@return.Split(',');
+
+                    short status = short.TryParse(responseData[0], out short value) ? value : (short)1;
+                    string token = string.Empty;
+                    if (responseData.Length > 1)
+                    {
+                        token = responseData[1];
                     }
-                };
-                var response = await client.bpPayRequestAsync(payRequest.Body.terminalId, payRequest.Body.userName, payRequest.Body.userPassword,
-                    payRequest.Body.orderId, payRequest.Body.amount, payRequest.Body.localDate, payRequest.Body.localTime, payRequest.Body.additionalData,
-                    payRequest.Body.callBackUrl, payRequest.Body.payerId, payRequest.Body.mobileNo, payRequest.Body.encPan, payRequest.Body.panHiddenMode,
-                    payRequest.Body.cartItem, payRequest.Body.enc);
+                    var paymentResponse = new PaymentTokenResponse
+                    {
+                        Token = token,
+                        StatusCode = status == 0 ? (short)HttpStatusCode.OK : status,
+                        IpgBaseUrl = request.IpgBaseUrl,
+                        TrackerId = trackerId.ToString(),
+                    };
 
-
-                var responseData = response.Body.@return.Split(',');
-
-                short status = short.TryParse(responseData[0], out short value) ? value : (short)1;
-                string token = string.Empty;
-                if (responseData.Length > 1)
-                {
-                    token = responseData[1];
+                    CreateLog(payRequest, response, nameof(PaymentGatewayClient.bpPayRequestAsync), status, response.Body.@return, Enums.ServiceType.BehPardakhtToken);
+                    return paymentResponse;
                 }
-                var paymentResponse = new PaymentTokenResponse
-                {
-                    Token = token,
-                    StatusCode = status == 0 ? (short)HttpStatusCode.OK : status,
-                    IpgBaseUrl = request.IpgBaseUrl,
-                    TrackerId = trackerId.ToString(),
-                };
-
-                CreateLog(payRequest, response, nameof(PaymentGatewayClient.bpPayRequestAsync), status, response.Body.@return, Enums.ServiceType.BehPardakhtToken);
-                return paymentResponse;
             }
-        }
-        catch (Exception exc)
-        {
-            _logger.LogError(exc, nameof(PaymentGatewayClient.bpPayRequestAsync));
-
-            if (tokenFailCounter < serviceCallMaxTryCounter)
+            catch (Exception exc)
             {
-                await Retry();
+                _logger.LogError(exc, nameof(PaymentGatewayClient.bpPayRequestAsync));
+                throw;
             }
-            throw new Exception(exc.Message, exc);
-
-            async Task<PaymentTokenResponse> Retry()
-            {
-                tokenFailCounter++;
-                return await GetPaymentTokenAsync(request);
-            }
-        }
+        }, "BehPardakhtProvider");
     }
 
     public async Task<TransactionResultResponse> GetTransactionResult(TransactionResultRequest transactionResultRequest)
@@ -132,112 +122,98 @@ public class BehPardakhtProvider(
 
     public async Task<VerifyTransactionResponse> Verify(VerifyTransactionRequest request)
     {
-        try
+        GetDataFromJsonProvider(request.ProviderData);
+
+        return await _pollyPolicyService.ExecuteWithPolicyAsync(async () =>
         {
-            GetDataFromJsonProvider(request.ProviderData);
-            using (var client = new PaymentGatewayClient(PaymentGatewayClient.EndpointConfiguration.PaymentGatewayImplPort))
+            try
             {
-                var verifyRequest = new bpVerifyRequest
+                using (var client = new PaymentGatewayClient(PaymentGatewayClient.EndpointConfiguration.PaymentGatewayImplPort))
                 {
-                    Body = new bpVerifyRequestBody
+                    var verifyRequest = new bpVerifyRequest
                     {
-                        terminalId = terminalId,
-                        userName = userName,
-                        userPassword = password,
-                        orderId = long.Parse(request.TrackId),
-                        saleOrderId = long.Parse(request.TrackId),
-                        saleReferenceId = long.Parse(request.ReferenceNumber),
-                    }
-                };
-                var response = await client.bpVerifyRequestAsync(verifyRequest.Body.terminalId, verifyRequest.Body.userName, verifyRequest.Body.userPassword,
-                    verifyRequest.Body.orderId, verifyRequest.Body.saleOrderId, verifyRequest.Body.saleReferenceId);
+                        Body = new bpVerifyRequestBody
+                        {
+                            terminalId = terminalId,
+                            userName = userName,
+                            userPassword = password,
+                            orderId = long.Parse(request.TrackId),
+                            saleOrderId = long.Parse(request.TrackId),
+                            saleReferenceId = long.Parse(request.ReferenceNumber),
+                        }
+                    };
+                    var response = await client.bpVerifyRequestAsync(verifyRequest.Body.terminalId, verifyRequest.Body.userName, verifyRequest.Body.userPassword,
+                        verifyRequest.Body.orderId, verifyRequest.Body.saleOrderId, verifyRequest.Body.saleReferenceId);
 
-                short status = short.TryParse(response.Body.@return, out short value) ? value : (short)1;
+                    short status = short.TryParse(response.Body.@return, out short value) ? value : (short)1;
 
-                CreateLog(request, response, nameof(PaymentGatewayClient.bpVerifyRequestAsync), status, string.Empty, Enums.ServiceType.BehPardakhtVerify);
+                    CreateLog(request, response, nameof(PaymentGatewayClient.bpVerifyRequestAsync), status, string.Empty, Enums.ServiceType.BehPardakhtVerify);
 
-                return new VerifyTransactionResponse
-                {
-                    Status = status switch
+                    return new VerifyTransactionResponse
                     {
-                        23 or 34 => Enums.IPGTransactionStatus.Verifying,
-                        0 or 43 => Enums.IPGTransactionStatus.VerificationSucceeded,
-                        _ => Enums.IPGTransactionStatus.VerificationFailed,
-                    }
-                };
+                        Status = status switch
+                        {
+                            23 or 34 => Enums.IPGTransactionStatus.Verifying,
+                            0 or 43 => Enums.IPGTransactionStatus.VerificationSucceeded,
+                            _ => Enums.IPGTransactionStatus.VerificationFailed,
+                        }
+                    };
+                }
             }
-        }
-        catch (Exception exc)
-        {
-            _logger.LogError(exc, nameof(PaymentGatewayClient.bpVerifyRequestAsync));
-
-            if (verifyFailCounter < serviceCallMaxTryCounter)
+            catch (Exception exc)
             {
-                await Retry();
+                _logger.LogError(exc, nameof(PaymentGatewayClient.bpVerifyRequestAsync));
+                throw;
             }
-            throw new Exception(exc.Message, exc);
-
-            async Task<VerifyTransactionResponse> Retry()
-            {
-                verifyFailCounter++;
-                return await Verify(request);
-            }
-        }
+        }, "BehPardakhtProvider");
     }
 
     public async Task<SettleTransactionResponse> Settle(SettleTransactionRequest request)
     {
-        try
+        GetDataFromJsonProvider(request.ProviderData);
+
+        return await _pollyPolicyService.ExecuteWithPolicyAsync(async () =>
         {
-            GetDataFromJsonProvider(request.ProviderData);
-            using (var client = new PaymentGatewayClient(PaymentGatewayClient.EndpointConfiguration.PaymentGatewayImplPort))
+            try
             {
-                var settleRequest = new bpSettleRequest
+                using (var client = new PaymentGatewayClient(PaymentGatewayClient.EndpointConfiguration.PaymentGatewayImplPort))
                 {
-                    Body = new bpSettleRequestBody
+                    var settleRequest = new bpSettleRequest
                     {
-                        terminalId = terminalId,
-                        userName = userName,
-                        userPassword = password,
-                        orderId = long.Parse(request.TrackId),
-                        saleOrderId = long.Parse(request.TrackId),
-                        saleReferenceId = long.Parse(request.ReferenceNumber),
-                    }
-                };
-                var response = await client.bpSettleRequestAsync(settleRequest.Body.terminalId, settleRequest.Body.userName, settleRequest.Body.userPassword,
-                    settleRequest.Body.orderId, settleRequest.Body.saleOrderId, settleRequest.Body.saleReferenceId);
+                        Body = new bpSettleRequestBody
+                        {
+                            terminalId = terminalId,
+                            userName = userName,
+                            userPassword = password,
+                            orderId = long.Parse(request.TrackId),
+                            saleOrderId = long.Parse(request.TrackId),
+                            saleReferenceId = long.Parse(request.ReferenceNumber),
+                        }
+                    };
+                    var response = await client.bpSettleRequestAsync(settleRequest.Body.terminalId, settleRequest.Body.userName, settleRequest.Body.userPassword,
+                        settleRequest.Body.orderId, settleRequest.Body.saleOrderId, settleRequest.Body.saleReferenceId);
 
-                short status = short.TryParse(response.Body.@return, out short value) ? value : (short)1;
+                    short status = short.TryParse(response.Body.@return, out short value) ? value : (short)1;
 
-                CreateLog(request, response, nameof(PaymentGatewayClient.bpSettleRequestAsync), status, string.Empty, Enums.ServiceType.BehPardakhtVerify);
+                    CreateLog(request, response, nameof(PaymentGatewayClient.bpSettleRequestAsync), status, string.Empty, Enums.ServiceType.BehPardakhtVerify);
 
-                return new SettleTransactionResponse
-                {
-                    Status = status switch
+                    return new SettleTransactionResponse
                     {
-                        23 or 34 => Enums.IPGTransactionStatus.WaitingForSettlementRequest,
-                        0 or 45 => Enums.IPGTransactionStatus.SettlementSucceeded,
-                        _ => Enums.IPGTransactionStatus.SettlementFailed,
-                    }
-                };
+                        Status = status switch
+                        {
+                            23 or 34 => Enums.IPGTransactionStatus.WaitingForSettlementRequest,
+                            0 or 45 => Enums.IPGTransactionStatus.SettlementSucceeded,
+                            _ => Enums.IPGTransactionStatus.SettlementFailed,
+                        }
+                    };
+                }
             }
-        }
-        catch (Exception exc)
-        {
-            _logger.LogError(exc, nameof(PaymentGatewayClient.bpSettleRequestAsync));
-
-            if (settleFailCounter < serviceCallMaxTryCounter)
+            catch (Exception exc)
             {
-                await Retry();
+                _logger.LogError(exc, nameof(PaymentGatewayClient.bpSettleRequestAsync));
+                throw;
             }
-            throw new Exception(exc.Message, exc);
-
-            async Task<SettleTransactionResponse> Retry()
-            {
-                settleFailCounter++;
-                return await Settle(request);
-            }
-        }
+        }, "BehPardakhtProvider");
     }
 
     private void CreateLog<T1, T2>(T1 request, T2 response, string serviceName, short status, string message, Enums.ServiceType serviceType)
