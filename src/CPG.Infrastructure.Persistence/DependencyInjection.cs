@@ -15,8 +15,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using StackExchange.Redis;
+using StackExchange.Redis.Extensions.Core.Configuration;
+using StackExchange.Redis.Extensions.System.Text.Json;
 using System;
 using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace CPG.Infrastructure.Persistence
 {
@@ -57,12 +62,9 @@ namespace CPG.Infrastructure.Persistence
 
             if (enableRedis)
             {
-                var redisConfig = configuration.GetSection("Redis").Get<RedisConfig>();
-                services.AddStackExchangeRedisCache(options => options.ConfigurationOptions = new StackExchange.Redis.ConfigurationOptions
-                {
-                    EndPoints = { $"{redisConfig.Server}:{redisConfig.Port}" },
-                    Password = redisConfig.Password,
-                });
+                var redisConfig = configuration.GetSection("Redis").Get<RedisConfiguration>();
+                services.AddSingleton<IConnectionMultiplexer>(_ => ConnectionMultiplexer.Connect(redisConfig.ConfigurationOptions));
+                services.AddStackExchangeRedisExtensions<SystemTextJsonSerializer>(redisConfig);
             }
             services.AddDistributedMemoryCache();
             return services;
