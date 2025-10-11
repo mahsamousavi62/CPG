@@ -74,11 +74,25 @@ public class CreateIpgHandler : GetPaymentMethodsHandler
             {
                 model.IPGs = new();
 
-                var ipgs = await Task.WhenAll(companyIpgs?.Select(t => new { t.IPGType, t.Id }).Select(async t => new IPGInfo
+                var ipgs = await Task.WhenAll(companyIpgs?.Select(t => new { t.IPGType, t.Id }).Select(async t =>
                 {
-                    Id = t.Id,
-                    Logo = await request.MinioProvider.PresignedGetObject(t.IPGType.Logo),
-                    PersianName = t.IPGType.PersianName,
+                    string logoUrl = null;
+                    try
+                    {
+                        logoUrl = await request.MinioProvider.PresignedGetObject(t.IPGType.Logo);
+                    }
+                    catch
+                    {
+                        // If MinIO fetch fails, continue without logo
+                        logoUrl = null;
+                    }
+
+                    return new IPGInfo
+                    {
+                        Id = t.Id,
+                        Logo = logoUrl,
+                        PersianName = t.IPGType.PersianName,
+                    };
                 })).ConfigureAwait(false);
                 model.IPGs = ipgs.ToList();
             }

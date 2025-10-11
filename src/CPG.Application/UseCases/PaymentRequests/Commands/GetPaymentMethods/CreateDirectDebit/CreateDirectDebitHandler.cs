@@ -124,19 +124,33 @@ public class CreateDirectDebitHandler : GetPaymentMethodsHandler
                 grants.Add(selectedItems.OrderBy(t => t.ExpirationDate).FirstOrDefault());
             }
 
-            var directDebits = await Task.WhenAll(grants?.GroupBy(t => t.BankId).Select(async t => new DirectDebitInfo
+            var directDebits = await Task.WhenAll(grants?.GroupBy(t => t.BankId).Select(async t =>
             {
-                BankInfo = new DirectDebit.ViewModels.AvailableBankViewModel
+                string logoUrl = null;
+                try
                 {
-                    Id = t.Key,
-                    Name = t.FirstOrDefault().Bank.Name,
-                    Logo = await _minioProvider.PresignedGetObject(t.FirstOrDefault().Bank.Logo)
-                },
-                GrantInfo = t.Select(q => new DirectDebitGrantInfo
+                    logoUrl = await _minioProvider.PresignedGetObject(t.FirstOrDefault().Bank.Logo);
+                }
+                catch
                 {
-                    AccountNumber = q.AccountNumber,
-                    Id = q.Id,
-                }).ToList(),
+                    // If MinIO fetch fails, continue without logo
+                    logoUrl = null;
+                }
+
+                return new DirectDebitInfo
+                {
+                    BankInfo = new DirectDebit.ViewModels.AvailableBankViewModel
+                    {
+                        Id = t.Key,
+                        Name = t.FirstOrDefault().Bank.Name,
+                        Logo = logoUrl
+                    },
+                    GrantInfo = t.Select(q => new DirectDebitGrantInfo
+                    {
+                        AccountNumber = q.AccountNumber,
+                        Id = q.Id,
+                    }).ToList(),
+                };
             })).ConfigureAwait(false);
 
             model.DirectDebits = directDebits.ToList();
