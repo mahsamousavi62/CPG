@@ -157,6 +157,7 @@ public class LogServiceTests
 
         var request = new HttpProviderRequest<object, object>
         {
+            Request = null,
             Uri = "https://api.vandar.com/verify",
             Body = new { transactionId = "TXN123" },
             Service = Enums.ServiceType.VandarVerify,
@@ -191,6 +192,7 @@ public class LogServiceTests
 
         var request = new HttpProviderRequest<object, object>
         {
+            Request = null,
             Uri = "https://api.sep.com/token",
             Body = new { amount = 5000 },
             Service = Enums.ServiceType.SepToken,

@@ -1,29 +1,33 @@
+using CPG.Domain.SharedKernel.Logging;
 using CPG.Infrastructure.Policies;
 using FluentAssertions;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http;
 using Moq;
 using System;
 using System.Threading.Tasks;
 using Xunit;
+using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Domain.Tests.Unit.Infrastructure.Policies;
 
 public class SoapLoggingWrapperTests
 {
-    private readonly Mock<ILogger<SoapLoggingWrapper>> _loggerMock;
+    private readonly Mock<IAuditLogService> _auditLogServiceMock;
+    private readonly Mock<IHttpContextAccessor> _httpContextAccessorMock;
     private readonly SoapLoggingWrapper _sut;
 
     public SoapLoggingWrapperTests()
     {
-        _loggerMock = new Mock<ILogger<SoapLoggingWrapper>>();
-        _sut = new SoapLoggingWrapper(_loggerMock.Object);
+        _auditLogServiceMock = new Mock<IAuditLogService>();
+        _httpContextAccessorMock = new Mock<IHttpContextAccessor>();
+        _sut = new SoapLoggingWrapper(_auditLogServiceMock.Object, _httpContextAccessorMock.Object);
     }
 
     [Fact]
-    public void SoapLoggingWrapper_Should_Require_Logger()
+    public void SoapLoggingWrapper_Should_Require_AuditLogService()
     {
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => new SoapLoggingWrapper(null));
+        Assert.Throws<ArgumentNullException>(() => new SoapLoggingWrapper(null, _httpContextAccessorMock.Object));
     }
 
     [Fact]
@@ -47,24 +51,11 @@ public class SoapLoggingWrapperTests
         // Assert
         response.Should().Be(expectedResponse);
 
-        // Verify request log
-        _loggerMock.Verify(
-            x => x.Log(
-                LogLevel.Information,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("SOAP Request") && v.ToString().Contains(serviceName)),
-                It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
-            Times.Once);
-
-        // Verify response log
-        _loggerMock.Verify(
-            x => x.Log(
-                LogLevel.Information,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("SOAP Response") && v.ToString().Contains(serviceName)),
-                It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+        // Verify LogProviderCall was called for successful response
+        _auditLogServiceMock.Verify(
+            x => x.LogProviderCall(It.Is<ProviderCallLog>(log =>
+                log.ProviderName == serviceName &&
+                log.IsSuccess == true)),
             Times.Once);
     }
 
@@ -83,13 +74,10 @@ public class SoapLoggingWrapperTests
             await _sut.ExecuteWithLoggingAsync(serviceName, operationName, request, soapCall));
 
         // Verify timeout log
-        _loggerMock.Verify(
-            x => x.Log(
-                LogLevel.Error,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("SOAP TIMEOUT") && v.ToString().Contains(serviceName)),
-                It.IsAny<TaskCanceledException>(),
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+        _auditLogServiceMock.Verify(
+            x => x.LogProviderCall(It.Is<ProviderCallLog>(log =>
+                log.ProviderName == serviceName &&
+                log.IsTimeout == true)),
             Times.Once);
     }
 
@@ -108,13 +96,10 @@ public class SoapLoggingWrapperTests
             await _sut.ExecuteWithLoggingAsync(serviceName, operationName, request, soapCall));
 
         // Verify timeout log
-        _loggerMock.Verify(
-            x => x.Log(
-                LogLevel.Error,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("SOAP TIMEOUT") && v.ToString().Contains(serviceName)),
-                It.IsAny<TimeoutException>(),
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+        _auditLogServiceMock.Verify(
+            x => x.LogProviderCall(It.Is<ProviderCallLog>(log =>
+                log.ProviderName == serviceName &&
+                log.IsTimeout == true)),
             Times.Once);
     }
 
@@ -134,13 +119,11 @@ public class SoapLoggingWrapperTests
             await _sut.ExecuteWithLoggingAsync(serviceName, operationName, request, soapCall));
 
         // Verify error log
-        _loggerMock.Verify(
-            x => x.Log(
-                LogLevel.Error,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("SOAP FAILED") && v.ToString().Contains(serviceName)),
-                It.IsAny<InvalidOperationException>(),
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+        _auditLogServiceMock.Verify(
+            x => x.LogProviderCall(It.Is<ProviderCallLog>(log =>
+                log.ProviderName == serviceName &&
+                log.IsSuccess == false &&
+                log.ErrorCode == "InvalidOperationException")),
             Times.Once);
 
         actualException.Should().Be(expectedException);
@@ -166,15 +149,10 @@ public class SoapLoggingWrapperTests
             await _sut.ExecuteWithLoggingAsync(serviceName, operationName, request, soapCall));
 
         // Verify that request body is included in log
-        _loggerMock.Verify(
-            x => x.Log(
-                LogLevel.Error,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) =>
-                    v.ToString().Contains("SOAP TIMEOUT") &&
-                    v.ToString().Contains("Request:")),
-                It.IsAny<TimeoutException>(),
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+        _auditLogServiceMock.Verify(
+            x => x.LogProviderCall(It.Is<ProviderCallLog>(log =>
+                log.RequestBody != null &&
+                log.RequestBody.Contains("MERCHANT-999"))),
             Times.Once);
     }
 
@@ -196,40 +174,10 @@ public class SoapLoggingWrapperTests
         await _sut.ExecuteWithLoggingAsync(serviceName, operationName, request, soapCall);
 
         // Verify response log includes duration
-        _loggerMock.Verify(
-            x => x.Log(
-                LogLevel.Information,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Duration:")),
-                It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+        _auditLogServiceMock.Verify(
+            x => x.LogProviderCall(It.Is<ProviderCallLog>(log =>
+                log.DurationMs >= 100)),
             Times.Once);
-    }
-
-    [Fact]
-    public async Task ExecuteWithLoggingAsync_Should_Generate_Unique_Request_Id()
-    {
-        // Arrange
-        var serviceName = "UniqueIdService";
-        var operationName = "TestOp";
-        var request = new { };
-        var expectedResponse = new { };
-
-        Func<Task<object>> soapCall = () => Task.FromResult((object)expectedResponse);
-
-        // Act - Call twice
-        await _sut.ExecuteWithLoggingAsync(serviceName, operationName, request, soapCall);
-        await _sut.ExecuteWithLoggingAsync(serviceName, operationName, request, soapCall);
-
-        // Assert - Should have 4 log calls (2 requests + 2 responses)
-        _loggerMock.Verify(
-            x => x.Log(
-                LogLevel.Information,
-                It.IsAny<EventId>(),
-                It.IsAny<It.IsAnyType>(),
-                It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
-            Times.Exactly(4));
     }
 
     [Fact]
@@ -250,14 +198,10 @@ public class SoapLoggingWrapperTests
         response.Should().Be(expectedResponse);
 
         // Should still log (with [null] for request)
-        _loggerMock.Verify(
-            x => x.Log(
-                LogLevel.Information,
-                It.IsAny<EventId>(),
-                It.IsAny<It.IsAnyType>(),
-                It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
-            Times.AtLeastOnce);
+        _auditLogServiceMock.Verify(
+            x => x.LogProviderCall(It.Is<ProviderCallLog>(log =>
+                log.RequestBody == "[null]")),
+            Times.Once);
     }
 
     [Fact]
@@ -278,14 +222,10 @@ public class SoapLoggingWrapperTests
         response.Should().BeNull();
 
         // Should still log both request and response
-        _loggerMock.Verify(
-            x => x.Log(
-                LogLevel.Information,
-                It.IsAny<EventId>(),
-                It.IsAny<It.IsAnyType>(),
-                It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
-            Times.Exactly(2)); // Request + Response
+        _auditLogServiceMock.Verify(
+            x => x.LogProviderCall(It.Is<ProviderCallLog>(log =>
+                log.ResponseBody == "[null]")),
+            Times.Once);
     }
 
     [Fact]
@@ -307,13 +247,9 @@ public class SoapLoggingWrapperTests
         actualException.Should().Be(expectedException);
 
         // Should have logged the error
-        _loggerMock.Verify(
-            x => x.Log(
-                LogLevel.Error,
-                It.IsAny<EventId>(),
-                It.IsAny<It.IsAnyType>(),
-                It.Is<Exception>(ex => ex == expectedException),
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+        _auditLogServiceMock.Verify(
+            x => x.LogProviderCall(It.Is<ProviderCallLog>(log =>
+                log.ErrorCode == "ApplicationException")),
             Times.Once);
     }
 
@@ -332,13 +268,9 @@ public class SoapLoggingWrapperTests
             await _sut.ExecuteWithLoggingAsync(serviceName, operationName, request, soapCall));
 
         // Verify exception type is logged
-        _loggerMock.Verify(
-            x => x.Log(
-                LogLevel.Error,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("ArgumentNullException")),
-                It.IsAny<ArgumentNullException>(),
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+        _auditLogServiceMock.Verify(
+            x => x.LogProviderCall(It.Is<ProviderCallLog>(log =>
+                log.ErrorCode == "ArgumentNullException")),
             Times.Once);
     }
 
@@ -361,13 +293,80 @@ public class SoapLoggingWrapperTests
         result.Should().Be(response);
 
         // Should log successfully
-        _loggerMock.Verify(
-            x => x.Log(
-                LogLevel.Information,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains(serviceName)),
-                It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
-            Times.AtLeastOnce);
+        _auditLogServiceMock.Verify(
+            x => x.LogProviderCall(It.Is<ProviderCallLog>(log =>
+                log.ProviderName == serviceName)),
+            Times.Once);
+    }
+
+    [Fact]
+    public async Task ExecuteWithLoggingAsync_Should_Set_ServiceUrl_With_ServiceName_And_Operation()
+    {
+        // Arrange
+        var serviceName = "TestService";
+        var operationName = "TestOp";
+        var request = new { };
+        var response = new { };
+
+        Func<Task<object>> soapCall = () => Task.FromResult((object)response);
+
+        // Act
+        await _sut.ExecuteWithLoggingAsync(serviceName, operationName, request, soapCall);
+
+        // Assert
+        _auditLogServiceMock.Verify(
+            x => x.LogProviderCall(It.Is<ProviderCallLog>(log =>
+                log.ServiceUrl == $"{serviceName}.{operationName}")),
+            Times.Once);
+    }
+
+    [Fact]
+    public async Task ExecuteWithLoggingAsync_Should_Use_Default_ProviderType_And_ServiceType()
+    {
+        // Arrange
+        var serviceName = "DefaultService";
+        var operationName = "DefaultOp";
+        var request = new { };
+        var response = new { };
+
+        Func<Task<object>> soapCall = () => Task.FromResult((object)response);
+
+        // Act
+        await _sut.ExecuteWithLoggingAsync(serviceName, operationName, request, soapCall);
+
+        // Assert - Should use Unknown provider and Soap service type by default
+        _auditLogServiceMock.Verify(
+            x => x.LogProviderCall(It.Is<ProviderCallLog>(log =>
+                log.ProviderType == ProviderTypeInLog.Unknown &&
+                log.ServiceType == ServiceType.Soap)),
+            Times.Once);
+    }
+
+    [Fact]
+    public async Task ExecuteWithLoggingAsync_Should_Accept_Custom_ProviderType_And_ServiceType()
+    {
+        // Arrange
+        var serviceName = "CustomService";
+        var operationName = "CustomOp";
+        var request = new { };
+        var response = new { };
+
+        Func<Task<object>> soapCall = () => Task.FromResult((object)response);
+
+        // Act
+        await _sut.ExecuteWithLoggingAsync(
+            serviceName,
+            operationName,
+            request,
+            soapCall,
+            ProviderTypeInLog.Pec,
+            ServiceType.PecToken);
+
+        // Assert
+        _auditLogServiceMock.Verify(
+            x => x.LogProviderCall(It.Is<ProviderCallLog>(log =>
+                log.ProviderType == ProviderTypeInLog.Pec &&
+                log.ServiceType == ServiceType.PecToken)),
+            Times.Once);
     }
 }

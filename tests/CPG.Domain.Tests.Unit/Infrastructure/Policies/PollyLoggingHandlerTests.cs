@@ -265,7 +265,7 @@ public class PollyLoggingHandlerTests
 
         // Should still log provider call for timeout
         _auditLogServiceMock.Verify(
-            x => x.LogProviderCallAsync(It.Is<ProviderCallLog>(log => log.IsTimeout == true)),
+            x => x.LogProviderCall(It.Is<ProviderCallLog>(log => log.IsTimeout == true)),
             Times.Once);
     }
 
