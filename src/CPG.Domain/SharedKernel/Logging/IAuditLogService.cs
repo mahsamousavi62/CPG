@@ -23,6 +23,16 @@ public interface IAuditLogService
     /// Log user actions (authenticated user operations)
     /// </summary>
     void LogUserAction(UserActionLog log);
+
+    /// <summary>
+    /// Log MinIO operations (file storage operations)
+    /// </summary>
+    void LogMinioOperation(MinioOperationLog log);
+
+    /// <summary>
+    /// Log database operations (EF Core query and command operations)
+    /// </summary>
+    void LogDatabaseOperation(DatabaseOperationLog log);
 }
 
 /// <summary>

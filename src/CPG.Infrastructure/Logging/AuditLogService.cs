@@ -178,4 +178,87 @@ public partial class AuditLogService : IAuditLogService
 
     [GeneratedRegex(Constants.Pattern)]
     private static partial Regex SensitiveDataRegex();
+
+    public void LogMinioOperation(MinioOperationLog log)
+    {
+        // Enrich with context from HttpContext if not provided
+        if (_httpContextAccessor.HttpContext != null)
+        {
+            log.CorrelationId ??= _httpContextAccessor.HttpContext.TraceIdentifier;
+        }
+
+        // Use structured logging with Serilog
+        using (LogContext.PushProperty("AuditType", "MinIO", false))
+        using (LogContext.PushProperty("MinioOperationLog", log, true))
+        {
+            if (log.IsSuccess)
+            {
+                _logger.LogInformation(
+                    "[MinIO] {OperationType} - Bucket: {BucketName}, Object: {ObjectName}, Size: {FileSizeBytes} bytes, Duration: {DurationMs}ms",
+                    log.OperationType,
+                    log.BucketName,
+                    log.ObjectName,
+                    log.FileSizeBytes ?? 0,
+                    log.DurationMs);
+            }
+            else
+            {
+                _logger.LogError(
+                    "[MinIO] FAILED - {OperationType} - Bucket: {BucketName}, Object: {ObjectName}, Duration: {DurationMs}ms, Error: {ErrorCode} - {ErrorMessage}",
+                    log.OperationType,
+                    log.BucketName,
+                    log.ObjectName,
+                    log.DurationMs,
+                    log.ErrorCode,
+                    log.ErrorMessage);
+            }
+        }
+    }
+
+    public void LogDatabaseOperation(DatabaseOperationLog log)
+    {
+        // Enrich with context from HttpContext if not provided
+        if (_httpContextAccessor.HttpContext != null)
+        {
+            log.CorrelationId ??= _httpContextAccessor.HttpContext.TraceIdentifier;
+        }
+
+        // Use structured logging with Serilog
+        using (LogContext.PushProperty("AuditType", "Database", false))
+        using (LogContext.PushProperty("DatabaseOperationLog", log, true))
+        {
+            if (log.IsSlow)
+            {
+                _logger.LogWarning(
+                    "[Database] SLOW QUERY - {OperationType} on {ContextType}.{EntityType}, Duration: {DurationMs}ms (>{ThresholdMs}ms), Rows: {RowsAffected}",
+                    log.OperationType,
+                    log.ContextType,
+                    log.EntityType ?? "Unknown",
+                    log.DurationMs,
+                    1000,
+                    log.RowsAffected ?? 0);
+            }
+            else if (log.IsSuccess)
+            {
+                _logger.LogInformation(
+                    "[Database] {OperationType} on {ContextType}.{EntityType}, Duration: {DurationMs}ms, Rows: {RowsAffected}",
+                    log.OperationType,
+                    log.ContextType,
+                    log.EntityType ?? "Unknown",
+                    log.DurationMs,
+                    log.RowsAffected ?? 0);
+            }
+            else
+            {
+                _logger.LogError(
+                    "[Database] FAILED - {OperationType} on {ContextType}.{EntityType}, Duration: {DurationMs}ms, Error: {ErrorCode} - {ErrorMessage}",
+                    log.OperationType,
+                    log.ContextType,
+                    log.EntityType ?? "Unknown",
+                    log.DurationMs,
+                    log.ErrorCode,
+                    log.ErrorMessage);
+            }
+        }
+    }
 }

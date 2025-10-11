@@ -1,6 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CPG.Domain.SharedKernel.Logging;
+using MediatR;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using Moq;
 using System.IO;
 
 namespace CPG.Infrastructure.Persistence.DbContexts.Factories;
@@ -21,6 +27,17 @@ public class WriteDbContextFactory : IDesignTimeDbContextFactory<WriteDbContext>
         var optionsBuilder = new DbContextOptionsBuilder<WriteDbContext>();
         optionsBuilder.UseSqlServer(connectionString);
 
-        return new WriteDbContext(optionsBuilder.Options, null);
+        // Create mock/null implementations for design-time only
+        var mediatorMock = new Mock<IMediator>();
+        var loggerMock = new NullLogger<WriteDbContext>();
+        var auditLogServiceMock = new Mock<IAuditLogService>();
+        var httpContextAccessorMock = new Mock<IHttpContextAccessor>();
+
+        return new WriteDbContext(
+            optionsBuilder.Options,
+            mediatorMock.Object,
+            loggerMock,
+            auditLogServiceMock.Object,
+            httpContextAccessorMock.Object);
     }
 }
