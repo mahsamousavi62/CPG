@@ -1,4 +1,7 @@
-﻿using System.Threading;
+﻿using System;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using CPG.Domain.AggregateModels.CompanyDepositAggregate;
 using CPG.Domain.AggregateModels.BankAggregate;
@@ -6,10 +9,13 @@ using CPG.Domain.AggregateModels.CompanyAggregate;
 using CPG.Domain.AggregateModels.IPGTypeAggregate;
 using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Domain.SharedKernel.ApplicationSettingsAggregate;
+using CPG.Domain.SharedKernel.Logging;
 using CPG.Infrastructure.Persistence.DbContexts.EntityConfigurations;
 using CPG.Infrastructure.Persistence.Extensions;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using CPG.Domain.AggregateModels.ApplicationAggregate;
 using CPG.Domain.AggregateModels.ProviderAggregate;
 using CPG.Domain.AggregateModels.CompanyIPGAggregate;
@@ -18,9 +24,25 @@ using CPG.Domain.AggregateModels.TransactionAggregate;
 
 namespace CPG.Infrastructure.Persistence.DbContexts;
 
-public class WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator mediator) : DbContext(options)
+public class WriteDbContext : DbContext
 {
-    private readonly IMediator _mediator = mediator;
+    private readonly IMediator _mediator;
+    private readonly ILogger<WriteDbContext> _logger;
+    private readonly IAuditLogService _auditLogService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+
+    public WriteDbContext(
+        DbContextOptions<WriteDbContext> options,
+        IMediator mediator,
+        ILogger<WriteDbContext> logger,
+        IAuditLogService auditLogService,
+        IHttpContextAccessor httpContextAccessor) : base(options)
+    {
+        _mediator = mediator;
+        _logger = logger;
+        _auditLogService = auditLogService;
+        _httpContextAccessor = httpContextAccessor;
+    }
 
     public DbSet<User> Users { get; set; }
     public DbSet<UserRole> UserRoles { get; set; }
@@ -74,10 +96,95 @@ public class WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator 
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
     {
-        var result = await base.SaveChangesAsync(cancellationToken);
+        var stopwatch = Stopwatch.StartNew();
+        var startTime = DateTime.UtcNow;
 
-        await _mediator.DispatchDomainEventsAsync(this);
+        // Track entity changes before SaveChanges
+        var addedCount = ChangeTracker.Entries().Count(e => e.State == EntityState.Added);
+        var modifiedCount = ChangeTracker.Entries().Count(e => e.State == EntityState.Modified);
+        var deletedCount = ChangeTracker.Entries().Count(e => e.State == EntityState.Deleted);
 
-        return result;
+        // Extract user context
+        var httpContext = _httpContextAccessor.HttpContext;
+        var correlationId = httpContext?.Items["CorrelationId"]?.ToString();
+        var requestId = httpContext?.Items["RequestId"]?.ToString();
+
+        long? userId = null;
+        long? companyId = null;
+        long? applicationId = null;
+
+        if (httpContext?.User?.Claims != null)
+        {
+            var userIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+            if (!string.IsNullOrEmpty(userIdClaim) && long.TryParse(userIdClaim, out var uid))
+                userId = uid;
+
+            var companyIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == "CompanyId")?.Value;
+            if (!string.IsNullOrEmpty(companyIdClaim) && long.TryParse(companyIdClaim, out var cid))
+                companyId = cid;
+
+            var appIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value;
+            if (!string.IsNullOrEmpty(appIdClaim) && long.TryParse(appIdClaim, out var aid))
+                applicationId = aid;
+        }
+
+        try
+        {
+            var result = await base.SaveChangesAsync(cancellationToken);
+            stopwatch.Stop();
+
+            // Log successful SaveChanges operation
+            if (addedCount > 0 || modifiedCount > 0 || deletedCount > 0)
+            {
+                _auditLogService.LogDatabaseOperation(new DatabaseOperationLog
+                {
+                    OperationType = "SaveChanges",
+                    ContextType = "WriteDbContext",
+                    EntityCount = addedCount + modifiedCount + deletedCount,
+                    RowsAffected = result,
+                    IsSuccess = true,
+                    IsSlow = stopwatch.ElapsedMilliseconds >= 1000,
+                    StartDateTime = startTime,
+                    EndDateTime = startTime.AddMilliseconds(stopwatch.ElapsedMilliseconds),
+                    DurationMs = stopwatch.ElapsedMilliseconds,
+                    UserId = userId,
+                    CompanyId = companyId,
+                    ApplicationId = applicationId,
+                    CorrelationId = correlationId,
+                    RequestId = requestId
+                });
+            }
+
+            await _mediator.DispatchDomainEventsAsync(this);
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            stopwatch.Stop();
+
+            // Log failed SaveChanges operation
+            _auditLogService.LogDatabaseOperation(new DatabaseOperationLog
+            {
+                OperationType = "SaveChanges",
+                ContextType = "WriteDbContext",
+                EntityCount = addedCount + modifiedCount + deletedCount,
+                IsSuccess = false,
+                IsSlow = false,
+                ErrorCode = ex.GetType().Name,
+                ErrorMessage = ex.Message,
+                StartDateTime = startTime,
+                EndDateTime = startTime.AddMilliseconds(stopwatch.ElapsedMilliseconds),
+                DurationMs = stopwatch.ElapsedMilliseconds,
+                UserId = userId,
+                CompanyId = companyId,
+                ApplicationId = applicationId,
+                CorrelationId = correlationId,
+                RequestId = requestId
+            });
+
+            _logger.LogError(ex, "WriteDbContext SaveChanges failed with {AddedCount} added, {ModifiedCount} modified, {DeletedCount} deleted entities", addedCount, modifiedCount, deletedCount);
+            throw;
+        }
     }
 }

@@ -2,10 +2,12 @@
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.File;
 using CPG.Domain.SharedKernel.Minio;
+using CPG.Domain.SharedKernel.Logging;
 using CPG.Infrastructure.Logging;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http;
 using Minio;
 using Minio.DataModel.Args;
 using Minio.Exceptions;
@@ -20,6 +22,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace CPG.Infrastructure.Minio;
 public class MinioProvider : IMinioProvider
@@ -28,13 +31,22 @@ public class MinioProvider : IMinioProvider
     private readonly IConfiguration _configuration;
     private readonly IMinioClientFactory _minioClientFactory;
     private readonly ILogger<MinioProvider> _logger;
+    private readonly IAuditLogService _auditLogService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public MinioProvider(IConfiguration configuration, IMinioClientFactory minioClientFactory, ILogger<MinioProvider> logger)
+    public MinioProvider(
+        IConfiguration configuration,
+        IMinioClientFactory minioClientFactory,
+        ILogger<MinioProvider> logger,
+        IAuditLogService auditLogService,
+        IHttpContextAccessor httpContextAccessor)
     {
         _configuration = configuration;
         _minioClientFactory = minioClientFactory;
         _minioClient = _minioClientFactory.CreateClient();
         _logger = logger;
+        _auditLogService = auditLogService;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<List<string>> GetBucketNamesAsync(CancellationToken cancellationToken = default)
@@ -54,8 +66,34 @@ public class MinioProvider : IMinioProvider
         var objectName = $"{uploadFromEntityType}/{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid()}_{sanitizedFileName}";
 
         await file.ReadFile();
-
         file.Content.Seek(0, SeekOrigin.Begin);
+
+        var stopwatch = Stopwatch.StartNew();
+        var startTime = DateTime.UtcNow;
+
+        // Extract user context
+        var httpContext = _httpContextAccessor.HttpContext;
+        var correlationId = httpContext?.Items["CorrelationId"]?.ToString();
+        var requestId = httpContext?.Items["RequestId"]?.ToString();
+
+        long? userId = null;
+        long? companyId = null;
+        long? applicationId = null;
+
+        if (httpContext?.User?.Claims != null)
+        {
+            var userIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+            if (!string.IsNullOrEmpty(userIdClaim) && long.TryParse(userIdClaim, out var uid))
+                userId = uid;
+
+            var companyIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == "CompanyId")?.Value;
+            if (!string.IsNullOrEmpty(companyIdClaim) && long.TryParse(companyIdClaim, out var cid))
+                companyId = cid;
+
+            var appIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value;
+            if (!string.IsNullOrEmpty(appIdClaim) && long.TryParse(appIdClaim, out var aid))
+                applicationId = aid;
+        }
 
         try
         {
@@ -67,16 +105,57 @@ public class MinioProvider : IMinioProvider
                 .WithStreamData(file.Content);
 
             var response = await _minioClient.PutObjectAsync(putObjectArgs).ConfigureAwait(false);
+            stopwatch.Stop();
 
-            var resString = JsonConvert.SerializeObject(response);
-
-            _logger.LogWarning($"Response Minio : {resString}");
+            // Log successful MinIO operation
+            _auditLogService.LogMinioOperation(new MinioOperationLog
+            {
+                OperationType = "PutObject",
+                BucketName = bucketName,
+                ObjectName = objectName,
+                FileSizeBytes = file.Length,
+                ContentType = file.ContentType,
+                EntityType = uploadFromEntityType,
+                IsSuccess = true,
+                StartDateTime = startTime,
+                EndDateTime = startTime.AddMilliseconds(stopwatch.ElapsedMilliseconds),
+                DurationMs = stopwatch.ElapsedMilliseconds,
+                UserId = userId,
+                CompanyId = companyId,
+                ApplicationId = applicationId,
+                CorrelationId = correlationId,
+                RequestId = requestId
+            });
 
             return response.ObjectName;
         }
         catch (MinioException exc)
         {
-            _logger.LogError(exc, $"Request: Unhandled Exception for Request {nameof(PutObject)}{exc.Message} ");
+            stopwatch.Stop();
+
+            // Log failed MinIO operation
+            _auditLogService.LogMinioOperation(new MinioOperationLog
+            {
+                OperationType = "PutObject",
+                BucketName = bucketName,
+                ObjectName = objectName,
+                FileSizeBytes = file.Length,
+                ContentType = file.ContentType,
+                EntityType = uploadFromEntityType,
+                IsSuccess = false,
+                ErrorCode = exc.GetType().Name,
+                ErrorMessage = exc.Message,
+                StartDateTime = startTime,
+                EndDateTime = startTime.AddMilliseconds(stopwatch.ElapsedMilliseconds),
+                DurationMs = stopwatch.ElapsedMilliseconds,
+                UserId = userId,
+                CompanyId = companyId,
+                ApplicationId = applicationId,
+                CorrelationId = correlationId,
+                RequestId = requestId
+            });
+
+            _logger.LogError(exc, "Unhandled exception in MinIO operation {Operation}", nameof(PutObject));
             return exc.Message;
         }
     }
@@ -86,6 +165,32 @@ public class MinioProvider : IMinioProvider
         Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
 
         var bucketName = _configuration["Infrastructure:Minio:bucketName"];
+        var stopwatch = Stopwatch.StartNew();
+        var startTime = DateTime.UtcNow;
+
+        // Extract user context
+        var httpContext = _httpContextAccessor.HttpContext;
+        var correlationId = httpContext?.Items["CorrelationId"]?.ToString();
+        var requestId = httpContext?.Items["RequestId"]?.ToString();
+
+        long? userId = null;
+        long? companyId = null;
+        long? applicationId = null;
+
+        if (httpContext?.User?.Claims != null)
+        {
+            var userIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+            if (!string.IsNullOrEmpty(userIdClaim) && long.TryParse(userIdClaim, out var uid))
+                userId = uid;
+
+            var companyIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == "CompanyId")?.Value;
+            if (!string.IsNullOrEmpty(companyIdClaim) && long.TryParse(companyIdClaim, out var cid))
+                companyId = cid;
+
+            var appIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value;
+            if (!string.IsNullOrEmpty(appIdClaim) && long.TryParse(appIdClaim, out var aid))
+                applicationId = aid;
+        }
 
         try
         {
@@ -105,10 +210,51 @@ public class MinioProvider : IMinioProvider
             try
             {
                 _ = await _minioClient.GetObjectAsync(gArgs).ConfigureAwait(true);
+                stopwatch.Stop();
+
+                // Log successful MinIO operation
+                _auditLogService.LogMinioOperation(new MinioOperationLog
+                {
+                    OperationType = "GetObject",
+                    BucketName = bucketName,
+                    ObjectName = name,
+                    FileSizeBytes = objectInfo.Size,
+                    ContentType = objectInfo.ContentType,
+                    IsSuccess = true,
+                    StartDateTime = startTime,
+                    EndDateTime = startTime.AddMilliseconds(stopwatch.ElapsedMilliseconds),
+                    DurationMs = stopwatch.ElapsedMilliseconds,
+                    UserId = userId,
+                    CompanyId = companyId,
+                    ApplicationId = applicationId,
+                    CorrelationId = correlationId,
+                    RequestId = requestId
+                });
             }
             catch (Exception exc)
             {
-                _logger.LogError(exc, $"Request: Unhandled Exception for Request {nameof(GetObjectByName)}{exc.Message} ");
+                stopwatch.Stop();
+
+                // Log failed MinIO operation
+                _auditLogService.LogMinioOperation(new MinioOperationLog
+                {
+                    OperationType = "GetObject",
+                    BucketName = bucketName,
+                    ObjectName = name,
+                    IsSuccess = false,
+                    ErrorCode = exc.GetType().Name,
+                    ErrorMessage = exc.Message,
+                    StartDateTime = startTime,
+                    EndDateTime = startTime.AddMilliseconds(stopwatch.ElapsedMilliseconds),
+                    DurationMs = stopwatch.ElapsedMilliseconds,
+                    UserId = userId,
+                    CompanyId = companyId,
+                    ApplicationId = applicationId,
+                    CorrelationId = correlationId,
+                    RequestId = requestId
+                });
+
+                _logger.LogError(exc, "Unhandled exception in MinIO operation {Operation} for object {ObjectName}", nameof(GetObjectByName), name);
                 throw new Exception(GlobalResource.FileNotFound);
             }
 
@@ -122,7 +268,28 @@ public class MinioProvider : IMinioProvider
         }
         catch (MinioException exc)
         {
-            _logger.LogError(exc, $"Request: Unhandled Exception for Request {nameof(GetObjectByName)}{exc.Message} ");
+            stopwatch.Stop();
+
+            // Log failed MinIO operation
+            _auditLogService.LogMinioOperation(new MinioOperationLog
+            {
+                OperationType = "GetObject",
+                BucketName = bucketName,
+                ObjectName = name,
+                IsSuccess = false,
+                ErrorCode = exc.GetType().Name,
+                ErrorMessage = exc.Message,
+                StartDateTime = startTime,
+                EndDateTime = startTime.AddMilliseconds(stopwatch.ElapsedMilliseconds),
+                DurationMs = stopwatch.ElapsedMilliseconds,
+                UserId = userId,
+                CompanyId = companyId,
+                ApplicationId = applicationId,
+                CorrelationId = correlationId,
+                RequestId = requestId
+            });
+
+            _logger.LogError(exc, "MinIO exception in operation {Operation} for object {ObjectName}", nameof(GetObjectByName), name);
             throw new Exception($"{GlobalResource.MinioException} : {exc.Message}");
         }
     }
@@ -133,6 +300,32 @@ public class MinioProvider : IMinioProvider
 
         var bucketName = _configuration["Infrastructure:Minio:bucketName"];
         var serviceUrl = _configuration["ApiServerUrl"];
+        var stopwatch = Stopwatch.StartNew();
+        var startTime = DateTime.UtcNow;
+
+        // Extract user context
+        var httpContext = _httpContextAccessor.HttpContext;
+        var correlationId = httpContext?.Items["CorrelationId"]?.ToString();
+        var requestId = httpContext?.Items["RequestId"]?.ToString();
+
+        long? userId = null;
+        long? companyId = null;
+        long? applicationId = null;
+
+        if (httpContext?.User?.Claims != null)
+        {
+            var userIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+            if (!string.IsNullOrEmpty(userIdClaim) && long.TryParse(userIdClaim, out var uid))
+                userId = uid;
+
+            var companyIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == "CompanyId")?.Value;
+            if (!string.IsNullOrEmpty(companyIdClaim) && long.TryParse(companyIdClaim, out var cid))
+                companyId = cid;
+
+            var appIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value;
+            if (!string.IsNullOrEmpty(appIdClaim) && long.TryParse(appIdClaim, out var aid))
+                applicationId = aid;
+        }
 
         try
         {
@@ -156,11 +349,51 @@ public class MinioProvider : IMinioProvider
                 _ = await _minioClient.GetObjectAsync(getObjectArgs);
             }
 
+            stopwatch.Stop();
+
+            // Log successful MinIO operation
+            _auditLogService.LogMinioOperation(new MinioOperationLog
+            {
+                OperationType = "PresignedGetObject",
+                BucketName = bucketName,
+                ObjectName = objectName,
+                IsSuccess = true,
+                StartDateTime = startTime,
+                EndDateTime = startTime.AddMilliseconds(stopwatch.ElapsedMilliseconds),
+                DurationMs = stopwatch.ElapsedMilliseconds,
+                UserId = userId,
+                CompanyId = companyId,
+                ApplicationId = applicationId,
+                CorrelationId = correlationId,
+                RequestId = requestId
+            });
+
             return serviceUrl + objectName; // Path.Combine("wwwroot", objectName);
         }
         catch (Exception exc)
         {
-            _logger.LogError(exc, $"Request: Unhandled Exception for Request {nameof(PresignedGetObject)}{exc.Message} ");
+            stopwatch.Stop();
+
+            // Log failed MinIO operation
+            _auditLogService.LogMinioOperation(new MinioOperationLog
+            {
+                OperationType = "PresignedGetObject",
+                BucketName = bucketName,
+                ObjectName = objectName,
+                IsSuccess = false,
+                ErrorCode = exc.GetType().Name,
+                ErrorMessage = exc.Message,
+                StartDateTime = startTime,
+                EndDateTime = startTime.AddMilliseconds(stopwatch.ElapsedMilliseconds),
+                DurationMs = stopwatch.ElapsedMilliseconds,
+                UserId = userId,
+                CompanyId = companyId,
+                ApplicationId = applicationId,
+                CorrelationId = correlationId,
+                RequestId = requestId
+            });
+
+            _logger.LogError(exc, "Unhandled exception in MinIO operation {Operation} for object {ObjectName}", nameof(PresignedGetObject), objectName);
 
             throw new Exception($"{GlobalResource.MinioException} : {exc.Message}");
         }
