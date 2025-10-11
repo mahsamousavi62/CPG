@@ -22,6 +22,23 @@ public class LoggingMiddleware(RequestDelegate next, ILoggerFactory loggerFactor
 
         try
         {
+            // Extract or generate correlation_id and request_id at the start
+            var correlationId = httpContext.Request.Headers["X-Correlation-ID"].ToString();
+            if (string.IsNullOrEmpty(correlationId))
+            {
+                correlationId = httpContext.TraceIdentifier;
+            }
+
+            var requestId = httpContext.Request.Headers["X-Request-ID"].ToString();
+            if (string.IsNullOrEmpty(requestId))
+            {
+                requestId = Guid.NewGuid().ToString("N").Substring(0, 12);
+            }
+
+            // Store in HttpContext.Items for use by other components
+            httpContext.Items["CorrelationId"] = correlationId;
+            httpContext.Items["RequestId"] = requestId;
+
             httpContext.Request.EnableBuffering();
             RequestResponseLogModel log;
 

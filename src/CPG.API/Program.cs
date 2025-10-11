@@ -4,6 +4,7 @@ using CPG.Application;
 using CPG.Application.Shared;
 using CPG.Application.UseCases.PaymentRequests.Queries.Report;
 using CPG.Infrastructure;
+using CPG.Infrastructure.Logging.Enrichers;
 using CPG.Infrastructure.Persistence;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -64,8 +65,15 @@ builder.Services
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<PaymentFilterValidator>();
 
-builder.Host.UseSerilog((context, configuation) =>
-    configuation.ReadFrom.Configuration(context.Configuration));
+builder.Host.UseSerilog((context, services, configuration) =>
+{
+    configuration
+        .ReadFrom.Configuration(context.Configuration)
+        .ReadFrom.Services(services)
+        .Enrich.WithCorrelationIdEnricher(services)
+        .Enrich.WithRequestIdEnricher(services)
+        .Enrich.WithUserContextEnricher(services);
+});
 
 const string DefaultCorsPolicyName = "localhost";
 

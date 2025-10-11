@@ -62,6 +62,7 @@ public static class DependencyInjection
             .AddScoped<IIpgProvider, AsanPardakhtProvider>()
             .AddScoped<IDirectDebitProvider, VandarProvider>()
             .AddScoped<ILogService, LogService>()
+            .AddScoped<IAuditLogService, AuditLogService>()
             .AddTransient<ICurrentDateTime, CurrentDateTime>()
             .AddTransient<IHttpProvider, HttpProvider>()
             .AddDatabase(configuration)
