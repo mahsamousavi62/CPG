@@ -69,9 +69,9 @@ public class PollyLoggingHandlerTests
         var content = await response.Content.ReadAsStringAsync();
         content.Should().Contain("ABC123");
 
-        // LogProviderCallAsync should not be called for successful responses (no errors)
+        // LogProviderCall should not be called for successful responses (no errors)
         _auditLogServiceMock.Verify(
-            x => x.LogProviderCallAsync(It.IsAny<ProviderCallLog>()),
+            x => x.LogProviderCall(It.IsAny<ProviderCallLog>()),
             Times.Never);
     }
 
@@ -96,9 +96,9 @@ public class PollyLoggingHandlerTests
         await Assert.ThrowsAsync<TaskCanceledException>(async () =>
             await _httpClient.SendAsync(request));
 
-        // Verify LogProviderCallAsync was called for timeout
+        // Verify LogProviderCall was called for timeout
         _auditLogServiceMock.Verify(
-            x => x.LogProviderCallAsync(It.Is<ProviderCallLog>(log => log.IsTimeout == true)),
+            x => x.LogProviderCall(It.Is<ProviderCallLog>(log => log.IsTimeout == true)),
             Times.Once);
     }
 
@@ -123,9 +123,9 @@ public class PollyLoggingHandlerTests
         await Assert.ThrowsAsync<OperationCanceledException>(async () =>
             await _httpClient.SendAsync(request));
 
-        // Verify LogProviderCallAsync was called for timeout
+        // Verify LogProviderCall was called for timeout
         _auditLogServiceMock.Verify(
-            x => x.LogProviderCallAsync(It.Is<ProviderCallLog>(log => log.IsTimeout == true)),
+            x => x.LogProviderCall(It.Is<ProviderCallLog>(log => log.IsTimeout == true)),
             Times.Once);
     }
 
@@ -150,9 +150,9 @@ public class PollyLoggingHandlerTests
         await Assert.ThrowsAsync<TaskCanceledException>(async () =>
             await _httpClient.SendAsync(request, cts.Token));
 
-        // LogProviderCallAsync should NOT be called for user cancellation
+        // LogProviderCall should NOT be called for user cancellation
         _auditLogServiceMock.Verify(
-            x => x.LogProviderCallAsync(It.IsAny<ProviderCallLog>()),
+            x => x.LogProviderCall(It.IsAny<ProviderCallLog>()),
             Times.Never);
     }
 
@@ -162,9 +162,8 @@ public class PollyLoggingHandlerTests
         // Arrange
         long? capturedDuration = null;
         _auditLogServiceMock
-            .Setup(x => x.LogProviderCallAsync(It.IsAny<ProviderCallLog>()))
-            .Callback<ProviderCallLog>(log => capturedDuration = log.DurationMs)
-            .Returns(Task.CompletedTask);
+            .Setup(x => x.LogProviderCall(It.IsAny<ProviderCallLog>()))
+            .Callback<ProviderCallLog>(log => capturedDuration = log.DurationMs);
 
         _innerHandlerMock
             .Protected()
@@ -195,9 +194,8 @@ public class PollyLoggingHandlerTests
         // Arrange
         string capturedRequestBody = null;
         _auditLogServiceMock
-            .Setup(x => x.LogProviderCallAsync(It.IsAny<ProviderCallLog>()))
-            .Callback<ProviderCallLog>(log => capturedRequestBody = log.RequestBody)
-            .Returns(Task.CompletedTask);
+            .Setup(x => x.LogProviderCall(It.IsAny<ProviderCallLog>()))
+            .Callback<ProviderCallLog>(log => capturedRequestBody = log.RequestBody);
 
         _innerHandlerMock
             .Protected()
@@ -293,7 +291,7 @@ public class PollyLoggingHandlerTests
 
         // Should NOT log timeout for non-timeout exceptions
         _auditLogServiceMock.Verify(
-            x => x.LogProviderCallAsync(It.IsAny<ProviderCallLog>()),
+            x => x.LogProviderCall(It.IsAny<ProviderCallLog>()),
             Times.Never);
 
         actualException.Should().Be(expectedException);
@@ -327,7 +325,7 @@ public class PollyLoggingHandlerTests
 
         // Should not log provider call for successful responses
         _auditLogServiceMock.Verify(
-            x => x.LogProviderCallAsync(It.IsAny<ProviderCallLog>()),
+            x => x.LogProviderCall(It.IsAny<ProviderCallLog>()),
             Times.Never);
     }
 }
