@@ -106,6 +106,8 @@ public class Enums
         AyandehVerify = 21,
         GetAccountNumber = 22,
         GetIdpUserStatus = 23,
+        Http = 100,
+        Soap = 101,
     }
 
     public enum TransactionType : byte
@@ -179,6 +181,7 @@ public class Enums
 
     public enum ProviderTypeInLog
     {
+        Unknown = 0,
         Vandar = 1,
         AsanPardakht = 2,
         Sep = 3,

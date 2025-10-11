@@ -1,3 +1,4 @@
+using System;
 using Ardalis.GuardClauses;
 
 namespace CPG.Domain.AggregateModels.AuditLogAggregate;

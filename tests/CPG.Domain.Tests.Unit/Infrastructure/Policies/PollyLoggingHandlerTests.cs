@@ -1,6 +1,7 @@
 using CPG.Domain.SharedKernel.Logging;
 using CPG.Infrastructure.Policies;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Moq;
 using Moq.Protected;
 using System;
@@ -14,17 +15,19 @@ namespace CPG.Domain.Tests.Unit.Infrastructure.Policies;
 
 public class PollyLoggingHandlerTests
 {
-    private readonly Mock<ILogService> _logServiceMock;
+    private readonly Mock<IAuditLogService> _auditLogServiceMock;
+    private readonly Mock<IHttpContextAccessor> _httpContextAccessorMock;
     private readonly Mock<HttpMessageHandler> _innerHandlerMock;
     private readonly PollyLoggingHandler _sut;
     private readonly HttpClient _httpClient;
 
     public PollyLoggingHandlerTests()
     {
-        _logServiceMock = new Mock<ILogService>();
+        _auditLogServiceMock = new Mock<IAuditLogService>();
+        _httpContextAccessorMock = new Mock<IHttpContextAccessor>();
         _innerHandlerMock = new Mock<HttpMessageHandler>();
 
-        _sut = new PollyLoggingHandler(_logServiceMock.Object)
+        _sut = new PollyLoggingHandler(_auditLogServiceMock.Object, _httpContextAccessorMock.Object)
         {
             InnerHandler = _innerHandlerMock.Object
         };
@@ -33,10 +36,10 @@ public class PollyLoggingHandlerTests
     }
 
     [Fact]
-    public void PollyLoggingHandler_Should_Require_LogService()
+    public void PollyLoggingHandler_Should_Require_AuditLogService()
     {
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => new PollyLoggingHandler(null));
+        Assert.Throws<ArgumentNullException>(() => new PollyLoggingHandler(null, _httpContextAccessorMock.Object));
     }
 
     [Fact]
@@ -66,9 +69,9 @@ public class PollyLoggingHandlerTests
         var content = await response.Content.ReadAsStringAsync();
         content.Should().Contain("ABC123");
 
-        // AddTimeoutLog should not be called for successful responses
-        _logServiceMock.Verify(
-            x => x.AddTimeoutLog(It.IsAny<object>(), It.IsAny<Exception>(), It.IsAny<long>()),
+        // LogProviderCallAsync should not be called for successful responses (no errors)
+        _auditLogServiceMock.Verify(
+            x => x.LogProviderCallAsync(It.IsAny<ProviderCallLog>()),
             Times.Never);
     }
 
@@ -93,12 +96,9 @@ public class PollyLoggingHandlerTests
         await Assert.ThrowsAsync<TaskCanceledException>(async () =>
             await _httpClient.SendAsync(request));
 
-        // Verify AddTimeoutLog was called
-        _logServiceMock.Verify(
-            x => x.AddTimeoutLog(
-                It.IsAny<object>(),
-                It.IsAny<TaskCanceledException>(),
-                It.IsAny<long>()),
+        // Verify LogProviderCallAsync was called for timeout
+        _auditLogServiceMock.Verify(
+            x => x.LogProviderCallAsync(It.Is<ProviderCallLog>(log => log.IsTimeout == true)),
             Times.Once);
     }
 
@@ -123,12 +123,9 @@ public class PollyLoggingHandlerTests
         await Assert.ThrowsAsync<OperationCanceledException>(async () =>
             await _httpClient.SendAsync(request));
 
-        // Verify AddTimeoutLog was called
-        _logServiceMock.Verify(
-            x => x.AddTimeoutLog(
-                It.IsAny<object>(),
-                It.IsAny<OperationCanceledException>(),
-                It.IsAny<long>()),
+        // Verify LogProviderCallAsync was called for timeout
+        _auditLogServiceMock.Verify(
+            x => x.LogProviderCallAsync(It.Is<ProviderCallLog>(log => log.IsTimeout == true)),
             Times.Once);
     }
 
@@ -153,9 +150,9 @@ public class PollyLoggingHandlerTests
         await Assert.ThrowsAsync<TaskCanceledException>(async () =>
             await _httpClient.SendAsync(request, cts.Token));
 
-        // AddTimeoutLog should NOT be called for user cancellation
-        _logServiceMock.Verify(
-            x => x.AddTimeoutLog(It.IsAny<object>(), It.IsAny<Exception>(), It.IsAny<long>()),
+        // LogProviderCallAsync should NOT be called for user cancellation
+        _auditLogServiceMock.Verify(
+            x => x.LogProviderCallAsync(It.IsAny<ProviderCallLog>()),
             Times.Never);
     }
 
@@ -164,9 +161,10 @@ public class PollyLoggingHandlerTests
     {
         // Arrange
         long? capturedDuration = null;
-        _logServiceMock
-            .Setup(x => x.AddTimeoutLog(It.IsAny<object>(), It.IsAny<Exception>(), It.IsAny<long>()))
-            .Callback<object, Exception, long>((req, ex, duration) => capturedDuration = duration);
+        _auditLogServiceMock
+            .Setup(x => x.LogProviderCallAsync(It.IsAny<ProviderCallLog>()))
+            .Callback<ProviderCallLog>(log => capturedDuration = log.DurationMs)
+            .Returns(Task.CompletedTask);
 
         _innerHandlerMock
             .Protected()
@@ -195,10 +193,11 @@ public class PollyLoggingHandlerTests
     public async Task SendAsync_Should_Capture_Request_Body_For_Timeout_Log()
     {
         // Arrange
-        object capturedRequest = null;
-        _logServiceMock
-            .Setup(x => x.AddTimeoutLog(It.IsAny<object>(), It.IsAny<Exception>(), It.IsAny<long>()))
-            .Callback<object, Exception, long>((req, ex, duration) => capturedRequest = req);
+        string capturedRequestBody = null;
+        _auditLogServiceMock
+            .Setup(x => x.LogProviderCallAsync(It.IsAny<ProviderCallLog>()))
+            .Callback<ProviderCallLog>(log => capturedRequestBody = log.RequestBody)
+            .Returns(Task.CompletedTask);
 
         _innerHandlerMock
             .Protected()
@@ -219,7 +218,8 @@ public class PollyLoggingHandlerTests
             await _httpClient.SendAsync(request));
 
         // Assert
-        capturedRequest.Should().NotBeNull();
+        capturedRequestBody.Should().NotBeNullOrEmpty();
+        capturedRequestBody.Should().Contain("amount");
     }
 
     [Fact]
@@ -265,9 +265,9 @@ public class PollyLoggingHandlerTests
         await Assert.ThrowsAsync<TaskCanceledException>(async () =>
             await _httpClient.SendAsync(request));
 
-        // Should still log timeout
-        _logServiceMock.Verify(
-            x => x.AddTimeoutLog(It.IsAny<object>(), It.IsAny<Exception>(), It.IsAny<long>()),
+        // Should still log provider call for timeout
+        _auditLogServiceMock.Verify(
+            x => x.LogProviderCallAsync(It.Is<ProviderCallLog>(log => log.IsTimeout == true)),
             Times.Once);
     }
 
@@ -292,8 +292,8 @@ public class PollyLoggingHandlerTests
             await _httpClient.SendAsync(request));
 
         // Should NOT log timeout for non-timeout exceptions
-        _logServiceMock.Verify(
-            x => x.AddTimeoutLog(It.IsAny<object>(), It.IsAny<Exception>(), It.IsAny<long>()),
+        _auditLogServiceMock.Verify(
+            x => x.LogProviderCallAsync(It.IsAny<ProviderCallLog>()),
             Times.Never);
 
         actualException.Should().Be(expectedException);
@@ -325,9 +325,9 @@ public class PollyLoggingHandlerTests
         // Assert
         response.StatusCode.Should().Be(statusCode);
 
-        // Should not log timeout
-        _logServiceMock.Verify(
-            x => x.AddTimeoutLog(It.IsAny<object>(), It.IsAny<Exception>(), It.IsAny<long>()),
+        // Should not log provider call for successful responses
+        _auditLogServiceMock.Verify(
+            x => x.LogProviderCallAsync(It.IsAny<ProviderCallLog>()),
             Times.Never);
     }
 }

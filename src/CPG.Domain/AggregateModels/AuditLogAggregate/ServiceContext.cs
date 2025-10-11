@@ -1,5 +1,7 @@
+using System;
 using CPG.Domain.SharedKernel;
 using static CPG.Domain.SharedKernel.Enums;
+using static CPG.Domain.SharedKernel.EnumExtensions;
 
 namespace CPG.Domain.AggregateModels.AuditLogAggregate;
 
