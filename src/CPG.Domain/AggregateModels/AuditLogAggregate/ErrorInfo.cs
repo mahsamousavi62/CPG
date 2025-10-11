@@ -1,3 +1,5 @@
+using System;
+
 namespace CPG.Domain.AggregateModels.AuditLogAggregate;
 
 /// <summary>

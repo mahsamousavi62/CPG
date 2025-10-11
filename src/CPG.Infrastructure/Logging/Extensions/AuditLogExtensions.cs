@@ -1,6 +1,7 @@
 using CPG.Domain.AggregateModels.AuditLogAggregate;
 using Microsoft.Extensions.Logging;
 using Serilog.Context;
+using System;
 
 namespace CPG.Infrastructure.Logging.Extensions;
 
