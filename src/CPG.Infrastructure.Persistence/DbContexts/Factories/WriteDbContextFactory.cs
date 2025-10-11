@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using Moq;
 using System.IO;
 
 namespace CPG.Infrastructure.Persistence.DbContexts.Factories;
@@ -27,17 +26,18 @@ public class WriteDbContextFactory : IDesignTimeDbContextFactory<WriteDbContext>
         var optionsBuilder = new DbContextOptionsBuilder<WriteDbContext>();
         optionsBuilder.UseSqlServer(connectionString);
 
-        // Create mock/null implementations for design-time only
-        var mediatorMock = new Mock<IMediator>();
-        var loggerMock = new NullLogger<WriteDbContext>();
-        var auditLogServiceMock = new Mock<IAuditLogService>();
-        var httpContextAccessorMock = new Mock<IHttpContextAccessor>();
+        // Create null implementations for design-time only (migrations)
+        // These are never used during migrations, only constructor is needed
+        IMediator mediator = null!;
+        ILogger<WriteDbContext> logger = NullLogger<WriteDbContext>.Instance;
+        IAuditLogService auditLogService = null!;
+        IHttpContextAccessor httpContextAccessor = null!;
 
         return new WriteDbContext(
             optionsBuilder.Options,
-            mediatorMock.Object,
-            loggerMock,
-            auditLogServiceMock.Object,
-            httpContextAccessorMock.Object);
+            mediator,
+            logger,
+            auditLogService,
+            httpContextAccessor);
     }
 }
