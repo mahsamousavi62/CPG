@@ -4,6 +4,7 @@ using CPG.Domain.SharedKernel.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Serilog.Context;
 using System;
 using System.Linq;
@@ -11,7 +12,6 @@ using System.Net.Http;
 using System.Reactive.Joins;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-//using Microsoft.Extensions.Logging;
 
 namespace CPG.Infrastructure.Logging;
 
@@ -150,6 +150,76 @@ public partial class LogService(ILogger<LogService> logger, IHttpContextAccessor
         using (LogContext.PushProperty("CallLog", callLog, true))
         {
             _logger.LogError(exception, "[CallLog] TIMEOUT {@CallLog}", callLog);
+        }
+    }
+
+    public void AddSoapCallLog<TRequest, TResponse>(TRequest request, TResponse response, string serviceName, short status, string message)
+    {
+        string reqString = Newtonsoft.Json.JsonConvert.SerializeObject(request);
+        if (!string.IsNullOrEmpty(reqString))
+        {
+            reqString = MyRegex().Replace(reqString, Constants.Replaceformat);
+        }
+
+        string resString = Newtonsoft.Json.JsonConvert.SerializeObject(response);
+        if (!string.IsNullOrEmpty(resString))
+        {
+            resString = MyRegex().Replace(resString, Constants.Replaceformat);
+        }
+
+        _ = long.TryParse(_httpContextAccessor.HttpContext?.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value, out long UserId);
+
+        var callLog = new CallLogModel
+        {
+            RequestBody = reqString,
+            ResponseBody = resString,
+            ServiceCallDate = DateTime.Now,
+            ServiceCallUrl = serviceName,
+            ServiceCallStatus = status == 0,
+            ServiceType = ServiceType,
+            CreationDate = DateTime.Now,
+            CreationUserId = UserId == 0 ? 1 : UserId,
+            ErrorCode = status < 0 ? message : "",
+            ErrorType = status < 0 ? status.ToString() : "",
+            ProviderType = ProviderTypeInLog,
+            AuditType = Enums.AuditType.Provider
+        };
+
+        using (LogContext.PushProperty("CallLog", callLog, true))
+        {
+            _logger.LogInformation("[CallLog] {@CallLog}", callLog);
+        }
+    }
+
+    public void AddSoapTimeoutLog<TRequest>(TRequest request, string serviceName, Exception exception, long durationMs)
+    {
+        string reqString = Newtonsoft.Json.JsonConvert.SerializeObject(request);
+        if (!string.IsNullOrEmpty(reqString))
+        {
+            reqString = MyRegex().Replace(reqString, Constants.Replaceformat);
+        }
+
+        _ = long.TryParse(_httpContextAccessor.HttpContext?.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value, out long UserId);
+
+        var callLog = new CallLogModel
+        {
+            RequestBody = reqString,
+            ResponseBody = $"TIMEOUT after {durationMs}ms - {exception.Message}",
+            ServiceCallDate = DateTime.Now,
+            ServiceCallUrl = serviceName,
+            ServiceCallStatus = false,
+            ServiceType = ServiceType,
+            CreationDate = DateTime.Now,
+            CreationUserId = UserId == 0 ? 1 : UserId,
+            ErrorCode = "RequestTimeout",
+            ErrorType = "Timeout",
+            ProviderType = ProviderTypeInLog,
+            AuditType = Enums.AuditType.Provider
+        };
+
+        using (LogContext.PushProperty("CallLog", callLog, true))
+        {
+            _logger.LogError(exception, "[CallLog] SOAP TIMEOUT {@CallLog}", callLog);
         }
     }
 
