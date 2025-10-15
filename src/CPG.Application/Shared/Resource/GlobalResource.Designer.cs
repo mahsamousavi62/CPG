@@ -1672,7 +1672,7 @@ namespace CPG.Application.Shared.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to کاربر گرامی، نشانی پرداخت نامعتبر است.
+        ///   Looks up a localized string similar to شیس.
         /// </summary>
         public static string PaymentRequestCodeNotFound {
             get {

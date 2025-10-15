@@ -1,4 +1,5 @@
-﻿using CCPG.Domain.SharedKernel.Communication.Ipg;
+﻿using BehPardakhtServiceReference;
+using CCPG.Domain.SharedKernel.Communication.Ipg;
 using ConfirmPecServiceReference;
 using CPG.Application.UseCases.Ipg.Exception;
 using CPG.Domain.SharedKernel;
@@ -32,7 +33,7 @@ public class PecProvider(
     {
         var configViewModel = await _applicationSettingRepositoy.GetAllApplicationSettings();
 
-        var trackerId = RandomGenerator.GenerateRandomDigitNumber(16);
+        var trackerId = RandomGenerator.GenerateRandomDigitNumber(18);
 
         string callBack = CreateCallbackUrl((short)request.IpgRedirectionMethodType, request.SiteAddress,
             trackerId.ToString(), configViewModel);
@@ -96,10 +97,14 @@ public class PecProvider(
             {
                 _logService.AddSoapTimeoutLog(clientSaleRequestData, nameof(SaleServiceSoapClient.SalePaymentRequestAsync), ex, durationMs);
             }
-
-            throw;
-        }
-    }
+			throw;
+		}
+		catch (Exception exc)
+		{
+			_logger.LogError(exc, nameof(SaleServiceSoapClient.SalePaymentRequestAsync));
+        throw;
+		}
+	}
 
     public async Task<TransactionResultResponse> GetTransactionResult(TransactionResultRequest transactionResultRequest)
     {

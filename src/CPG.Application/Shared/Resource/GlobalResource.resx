@@ -625,7 +625,7 @@
     <value>کاربر گرامی، این نشانی قبلا یکبار استفاده شده است، در صورت نیاز مجددا عملیات را تکرار کنید</value>
   </data>
   <data name="PaymentRequestCodeNotFound" xml:space="preserve">
-    <value>کاربر گرامی، نشانی پرداخت نامعتبر است</value>
+    <value>شیس</value>
   </data>
   <data name="PaymentRequestCompanyInactive" xml:space="preserve">
     <value>شرکت مورد نظر غیرفعال است</value>

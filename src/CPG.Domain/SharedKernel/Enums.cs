@@ -108,7 +108,8 @@ public class Enums
         GetIdpUserStatus = 23,
         Http = 100,
         Soap = 101,
-    }
+		BehPardakhtSettle = 102,
+	}
 
     public enum TransactionType : byte
     {
