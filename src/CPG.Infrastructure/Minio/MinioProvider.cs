@@ -31,21 +31,21 @@ public class MinioProvider : IMinioProvider
     private readonly IConfiguration _configuration;
     private readonly IMinioClientFactory _minioClientFactory;
     private readonly ILogger<MinioProvider> _logger;
-    private readonly IAuditLogService _auditLogService;
+    private readonly ILogService _logService;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     public MinioProvider(
         IConfiguration configuration,
         IMinioClientFactory minioClientFactory,
         ILogger<MinioProvider> logger,
-        IAuditLogService auditLogService,
+        ILogService logService,
         IHttpContextAccessor httpContextAccessor)
     {
         _configuration = configuration;
         _minioClientFactory = minioClientFactory;
         _minioClient = _minioClientFactory.CreateClient();
         _logger = logger;
-        _auditLogService = auditLogService;
+        _logService = logService;
         _httpContextAccessor = httpContextAccessor;
     }
 
@@ -108,7 +108,7 @@ public class MinioProvider : IMinioProvider
             stopwatch.Stop();
 
             // Log successful MinIO operation
-            _auditLogService.LogMinioOperation(new MinioOperationLog
+            _logService.LogMinioOperation(new MinioOperationLog
             {
                 OperationType = "PutObject",
                 BucketName = bucketName,
@@ -134,7 +134,7 @@ public class MinioProvider : IMinioProvider
             stopwatch.Stop();
 
             // Log failed MinIO operation
-            _auditLogService.LogMinioOperation(new MinioOperationLog
+            _logService.LogMinioOperation(new MinioOperationLog
             {
                 OperationType = "PutObject",
                 BucketName = bucketName,
@@ -213,7 +213,7 @@ public class MinioProvider : IMinioProvider
                 stopwatch.Stop();
 
                 // Log successful MinIO operation
-                _auditLogService.LogMinioOperation(new MinioOperationLog
+                _logService.LogMinioOperation(new MinioOperationLog
                 {
                     OperationType = "GetObject",
                     BucketName = bucketName,
@@ -236,7 +236,7 @@ public class MinioProvider : IMinioProvider
                 stopwatch.Stop();
 
                 // Log failed MinIO operation
-                _auditLogService.LogMinioOperation(new MinioOperationLog
+                _logService.LogMinioOperation(new MinioOperationLog
                 {
                     OperationType = "GetObject",
                     BucketName = bucketName,
@@ -271,7 +271,7 @@ public class MinioProvider : IMinioProvider
             stopwatch.Stop();
 
             // Log failed MinIO operation
-            _auditLogService.LogMinioOperation(new MinioOperationLog
+            _logService.LogMinioOperation(new MinioOperationLog
             {
                 OperationType = "GetObject",
                 BucketName = bucketName,
@@ -352,7 +352,7 @@ public class MinioProvider : IMinioProvider
             stopwatch.Stop();
 
             // Log successful MinIO operation
-            _auditLogService.LogMinioOperation(new MinioOperationLog
+            _logService.LogMinioOperation(new MinioOperationLog
             {
                 OperationType = "PresignedGetObject",
                 BucketName = bucketName,
@@ -375,7 +375,7 @@ public class MinioProvider : IMinioProvider
             stopwatch.Stop();
 
             // Log failed MinIO operation
-            _auditLogService.LogMinioOperation(new MinioOperationLog
+            _logService.LogMinioOperation(new MinioOperationLog
             {
                 OperationType = "PresignedGetObject",
                 BucketName = bucketName,

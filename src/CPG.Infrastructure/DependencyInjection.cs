@@ -62,7 +62,6 @@ public static class DependencyInjection
             .AddScoped<IIpgProvider, AsanPardakhtProvider>()
             .AddScoped<IDirectDebitProvider, VandarProvider>()
             .AddScoped<ILogService, LogService>()
-            .AddScoped<IAuditLogService, AuditLogService>()
             .AddTransient<ICurrentDateTime, CurrentDateTime>()
             .AddTransient<IHttpProvider, HttpProvider>()
             .AddDatabase(configuration)
@@ -82,10 +81,6 @@ public static class DependencyInjection
 
         // Register Polly policy service
         services.AddSingleton<IPollyPolicyService, PollyPolicyService>();
-
-        // Register logging handlers for capturing request/response on timeout
-        services.AddTransient<PollyLoggingHandler>();
-        services.AddScoped<ISoapLoggingWrapper, SoapLoggingWrapper>();
 
         return services;
     }
@@ -145,7 +140,6 @@ public static class DependencyInjection
             // Default configuration for unnamed HttpClient
             client.Timeout = TimeSpan.FromSeconds(120); // Default timeout
         })
-        .AddHttpMessageHandler<PollyLoggingHandler>()
         .AddPolicyHandler(policyService.GetHttpPolicy("default"));
 
         return services;
@@ -166,7 +160,6 @@ public static class DependencyInjection
             c.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         })
-        .AddHttpMessageHandler<PollyLoggingHandler>()
         .AddPolicyHandler(policyService.GetHttpPolicy("charisPayClient"));
 
         services.AddHttpClient("idpClient", c =>
@@ -175,7 +168,6 @@ public static class DependencyInjection
             c.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         })
-        .AddHttpMessageHandler<PollyLoggingHandler>()
         .AddPolicyHandler(policyService.GetHttpPolicy("idpClient"));
 
         services.AddHttpClient("neoBankClient", c =>
@@ -184,7 +176,6 @@ public static class DependencyInjection
             c.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         })
-        .AddHttpMessageHandler<PollyLoggingHandler>()
         .AddPolicyHandler(policyService.GetHttpPolicy("neoBankClient"));
 
         services.AddHttpClient("asanpardakhtClient", c =>
@@ -192,7 +183,6 @@ public static class DependencyInjection
             c.BaseAddress = new Uri("https://ipgrest.asanpardakht.ir/");
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/plain"));
         })
-        .AddHttpMessageHandler<PollyLoggingHandler>()
         .AddPolicyHandler(policyService.GetHttpPolicy("asanpardakhtClient"));
 
         var charismaCardConfig = configuration.GetSection("Infrastructure:CharismaCard").Get<CharismaCardConfig>();
@@ -202,7 +192,6 @@ public static class DependencyInjection
             c.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         })
-        .AddHttpMessageHandler<PollyLoggingHandler>()
         .AddPolicyHandler(policyService.GetHttpPolicy("charismaCardClient"));
 
         return services;

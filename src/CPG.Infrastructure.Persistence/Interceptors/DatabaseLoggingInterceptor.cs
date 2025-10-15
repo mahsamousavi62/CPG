@@ -18,17 +18,17 @@ namespace CPG.Infrastructure.Persistence.Interceptors;
 /// </summary>
 public class DatabaseLoggingInterceptor : DbCommandInterceptor
 {
-    private readonly IAuditLogService _auditLogService;
+    private readonly ILogService _logService;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILogger<DatabaseLoggingInterceptor> _logger;
     private const int SlowQueryThresholdMs = 1000; // 1 second
 
     public DatabaseLoggingInterceptor(
-        IAuditLogService auditLogService,
+        ILogService logService,
         IHttpContextAccessor httpContextAccessor,
         ILogger<DatabaseLoggingInterceptor> logger)
     {
-        _auditLogService = auditLogService;
+        _logService = logService;
         _httpContextAccessor = httpContextAccessor;
         _logger = logger;
     }
@@ -179,7 +179,7 @@ public class DatabaseLoggingInterceptor : DbCommandInterceptor
             RequestId = requestId
         };
 
-        _auditLogService.LogDatabaseOperation(log);
+        _logService.LogDatabaseOperation(log);
     }
 
     private void LogCommandFailed(DbCommand command, CommandErrorEventData eventData)
@@ -230,7 +230,7 @@ public class DatabaseLoggingInterceptor : DbCommandInterceptor
             RequestId = requestId
         };
 
-        _auditLogService.LogDatabaseOperation(log);
+        _logService.LogDatabaseOperation(log);
     }
 
     private static string GetOperationType(DbCommand command)

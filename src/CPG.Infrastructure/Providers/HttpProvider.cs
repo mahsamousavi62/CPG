@@ -12,12 +12,9 @@ using System.Net.Http.Json;
 using Newtonsoft.Json;
 using MassTransit;
 using Microsoft.AspNetCore.WebUtilities;
-using System.Text.RegularExpressions;
-using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Logging;
 using CPG.Domain.SharedKernel.Communication.Idp.Models.UserProfile;
 using System.Diagnostics.CodeAnalysis;
-using CPG.Domain.SharedKernel.Interfaces;
 
 namespace CPG.Infrastructure.Providers;
 
@@ -26,7 +23,7 @@ public class HttpProvider : IHttpProvider
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<HttpProvider> _logger;
     private readonly ILogService _logService;
-    private readonly ICurrentUser _currentUser;
+
     public HttpProvider(IHttpClientFactory httpClientFactory, ILogger<HttpProvider> logger, ILogService logService)
     {
         _httpClientFactory = httpClientFactory;
@@ -571,34 +568,4 @@ public class HttpProvider : IHttpProvider
         return queryParams;
     }
 
-    private void AddServiceCallLog<TBody>(HttpProviderRequest<TBody> request, HttpResponseMessage response, string resString)
-    {
-        if (!string.IsNullOrEmpty(resString))
-        {
-            resString = Regex.Replace(resString, Constants.Pattern, Constants.Replaceformat);
-        }
-        string reqString = System.Text.Json.JsonSerializer.Serialize(request);
-        if (!string.IsNullOrEmpty(reqString))
-        {
-            reqString = Regex.Replace(reqString, Constants.Pattern, Constants.Replaceformat);
-        }
-        var callLog = new
-        {
-            RequestBody = reqString,
-            ResponseBody = resString,
-            ServiceCallDate = DateTime.Now,
-            ServiceCallUrl = request.Uri,
-            ServiceCallStatus = response.StatusCode == System.Net.HttpStatusCode.OK,
-            ServiceType = request.Service,
-            CreationDate = DateTime.Now,
-            //ToDo: Add current user id
-            CreationUserId = _currentUser.UserId,
-            ErrorCode = response.IsSuccessStatusCode ? null : ReasonPhrases.GetReasonPhrase((int)response.StatusCode),
-            ErrorType = response.IsSuccessStatusCode ? null : response.StatusCode.ToString(),
-            Provider = request.Provider,
-
-        };
-
-        _logger.LogInformation("CallLog: {@CallLog}", callLog);
-    }
 }

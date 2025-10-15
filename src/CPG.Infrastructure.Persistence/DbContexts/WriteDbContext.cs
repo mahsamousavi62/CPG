@@ -28,19 +28,19 @@ public class WriteDbContext : DbContext
 {
     private readonly IMediator _mediator;
     private readonly ILogger<WriteDbContext> _logger;
-    private readonly IAuditLogService _auditLogService;
+    private readonly ILogService _logService;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     public WriteDbContext(
         DbContextOptions<WriteDbContext> options,
         IMediator mediator,
         ILogger<WriteDbContext> logger,
-        IAuditLogService auditLogService,
+        ILogService logService,
         IHttpContextAccessor httpContextAccessor) : base(options)
     {
         _mediator = mediator;
         _logger = logger;
-        _auditLogService = auditLogService;
+        _logService = logService;
         _httpContextAccessor = httpContextAccessor;
     }
 
@@ -136,7 +136,7 @@ public class WriteDbContext : DbContext
             // Log successful SaveChanges operation
             if (addedCount > 0 || modifiedCount > 0 || deletedCount > 0)
             {
-                _auditLogService.LogDatabaseOperation(new DatabaseOperationLog
+                _logService.LogDatabaseOperation(new DatabaseOperationLog
                 {
                     OperationType = "SaveChanges",
                     ContextType = "WriteDbContext",
@@ -164,7 +164,7 @@ public class WriteDbContext : DbContext
             stopwatch.Stop();
 
             // Log failed SaveChanges operation
-            _auditLogService.LogDatabaseOperation(new DatabaseOperationLog
+            _logService.LogDatabaseOperation(new DatabaseOperationLog
             {
                 OperationType = "SaveChanges",
                 ContextType = "WriteDbContext",

@@ -30,14 +30,14 @@ public class WriteDbContextFactory : IDesignTimeDbContextFactory<WriteDbContext>
         // These are never used during migrations, only constructor is needed
         IMediator mediator = null!;
         ILogger<WriteDbContext> logger = NullLogger<WriteDbContext>.Instance;
-        IAuditLogService auditLogService = null!;
+        ILogService logService = null!;
         IHttpContextAccessor httpContextAccessor = null!;
 
         return new WriteDbContext(
             optionsBuilder.Options,
             mediator,
             logger,
-            auditLogService,
+            logService,
             httpContextAccessor);
     }
 }

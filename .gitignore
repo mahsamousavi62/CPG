@@ -23,3 +23,6 @@ VersionInfo.cs
 #logs
 **/App_Data/logs/*
 **/logs/*
+.claude-flow/metrics/performance.json
+.claude-flow/metrics/system-metrics.json
+.claude-flow/metrics/task-metrics.json
