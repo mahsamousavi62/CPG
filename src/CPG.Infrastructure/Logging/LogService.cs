@@ -102,7 +102,7 @@ public partial class LogService(ILogger<LogService> logger, IHttpContextAccessor
             ErrorCode = response.IsSuccessStatusCode ? null : ReasonPhrases.GetReasonPhrase((int)response.StatusCode),
             ErrorType = response.IsSuccessStatusCode ? null : response.StatusCode.ToString(),
             ProviderType = request.Provider,
-            ProviderName = request.Provider?.ToString(),
+            ProviderName = request.Provider.HasValue ? request.Provider.Value.ToString() : null,
             AuditType = Enums.AuditType.Provider
         };
 
@@ -127,7 +127,7 @@ public partial class LogService(ILogger<LogService> logger, IHttpContextAccessor
             ErrorCode = status < 0 ? message : null,
             ErrorType = status < 0 ? status.ToString() : null,
             ProviderType = ProviderTypeInLog,
-            ProviderName = ProviderTypeInLog?.ToString(),
+            ProviderName = ProviderTypeInLog.ToString(),
             AuditType = Enums.AuditType.Provider
         };
 
@@ -154,7 +154,7 @@ public partial class LogService(ILogger<LogService> logger, IHttpContextAccessor
             ErrorCode = response.IsSuccessStatusCode ? null : ReasonPhrases.GetReasonPhrase((int)response.StatusCode),
             ErrorType = response.IsSuccessStatusCode ? null : response.StatusCode.ToString(),
             ProviderType = request.ProviderTypeInLog,
-            ProviderName = request.ProviderTypeInLog?.ToString(),
+            ProviderName = request.ProviderTypeInLog.ToString(),
             AuditType = Enums.AuditType.Provider
         };
 
@@ -178,7 +178,7 @@ public partial class LogService(ILogger<LogService> logger, IHttpContextAccessor
             ErrorCode = "RequestTimeout",
             ErrorType = "Timeout",
             ProviderType = request.Provider,
-            ProviderName = request.Provider?.ToString(),
+            ProviderName = request.Provider.HasValue ? request.Provider.Value.ToString() : null,
             AuditType = Enums.AuditType.Provider,
             AuditLevel = "Error",
             StackTrace = exception.StackTrace
@@ -205,7 +205,7 @@ public partial class LogService(ILogger<LogService> logger, IHttpContextAccessor
             ErrorCode = status < 0 ? message : null,
             ErrorType = status < 0 ? status.ToString() : null,
             ProviderType = ProviderTypeInLog,
-            ProviderName = ProviderTypeInLog?.ToString(),
+            ProviderName = ProviderTypeInLog.ToString(),
             AuditType = Enums.AuditType.Provider
         };
 
@@ -229,7 +229,7 @@ public partial class LogService(ILogger<LogService> logger, IHttpContextAccessor
             ErrorCode = "RequestTimeout",
             ErrorType = "Timeout",
             ProviderType = ProviderTypeInLog,
-            ProviderName = ProviderTypeInLog?.ToString(),
+            ProviderName = ProviderTypeInLog.ToString(),
             AuditType = Enums.AuditType.Provider,
             AuditLevel = "Error",
             StackTrace = exception.StackTrace

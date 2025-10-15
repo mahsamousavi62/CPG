@@ -109,6 +109,8 @@ public class Enums
         Http = 100,
         Soap = 101,
 		BehPardakhtSettle = 102,
+        FileStorage = 103,
+        Database = 104,
 	}
 
     public enum TransactionType : byte
@@ -178,6 +180,7 @@ public class Enums
         Provider = 2,
         User = 3,
         Develop = 4,
+        Database = 5,
     }
 
     public enum ProviderTypeInLog
@@ -193,8 +196,9 @@ public class Enums
         Idp = 101,
         NeoBank = 102,
         CharisPay = 103,
-        CharismaCard = 104
-
+        CharismaCard = 104,
+        FileStorage = 105,
+        Database = 106,
     }
 
     public enum ValidityDuration
