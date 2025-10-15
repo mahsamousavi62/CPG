@@ -240,5 +240,8 @@ stack_trace
 
 
 
-
-
+من یه logservice دارم یکی هم تو نوشتی auditLog نمیخوام دو تا فایل باشه 
+همون logservice کافیه تغییرات رو اونجا بده که یکدستی باشه
+یه PollyLoggingHandler نوشتی
+ولی تو httpprovider خودیش  _logService.AddServiceCallLog(request, response, resString); استفاده کرده
+میشه همه رو یکپارچه کنی و از کلاس هایی که قبلا  بود استفاده کنی و تغییرات رو تو همو ها بدی
