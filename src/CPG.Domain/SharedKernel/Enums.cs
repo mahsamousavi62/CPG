@@ -109,8 +109,9 @@ public class Enums
         Http = 100,
         Soap = 101,
 		BehPardakhtSettle = 102,
-        FileStorage = 103,
-        Database = 104,
+		AsanPardakhtSettle = 103,
+        FileStorage = 104,
+        Database = 105,
 	}
 
     public enum TransactionType : byte

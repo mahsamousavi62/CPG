@@ -9,17 +9,17 @@
 ### Phase 1: Setup & Configuration
 *Foundation tasks - verify existing infrastructure and communication models*
 
-- [ ] **S001** Verify communication models exist
+- [x] **S001** Verify communication models exist
   - **Path**: `src/CPG.Domain/SharedKernel/Communication/Ipg/Models/`
   - **Dependencies**: None
   - **Action**: Check if SettleTransactionRequest, SettleTransactionResponse, AsanPardakhtSettleRequest models exist
-  - **Notes**: If missing, create minimal DTOs based on Tech.md specification (MerchantConfigurationId, PayGateTranId properties)
+  - **Notes**: ✅ SettleTransactionRequest and SettleTransactionResponse exist. Created AsanPardakhtSettleRequest model with MerchantConfigurationId and PayGateTranId properties following AsanPardakhtVerifyRequest pattern
 
-- [ ] **S002** Verify ServiceType enum includes AsanPardakhtSettle
+- [x] **S002** Verify ServiceType enum includes AsanPardakhtSettle
   - **Path**: `src/CPG.Domain/SharedKernel/Enums.cs`
   - **Dependencies**: None
   - **Action**: Check ServiceType enum for AsanPardakhtSettle value; add if missing
-  - **Notes**: Required for logging provider HTTP calls in PollyLoggingHandler
+  - **Notes**: ✅ Added AsanPardakhtSettle = 103 to ServiceType enum (adjusted FileStorage to 104, Database to 105)
 
 **🏁 MILESTONE: Prerequisites Verified**
 *Use Task tool with commit-changes agent to commit: "Verify AsanPardakht settlement prerequisites - models and enums"*
