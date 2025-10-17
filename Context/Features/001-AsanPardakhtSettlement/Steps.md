@@ -28,36 +28,36 @@
 *Core provider layer implementation with TDD approach*
 
 #### Test-First Implementation
-- [ ] **S003** [P] Create unit tests for SettleErrorHandler status code mapping
+- [x] **S003** [P] Create unit tests for SettleErrorHandler status code mapping
   - **Path**: `tests/CPG.Domain.Tests.Unit/Providers/Ipg/AsanPardakhtProviderTests.cs` (create if missing)
   - **Dependencies**: S001 (models exist)
   - **Action**: Test all status codes: 200, 474, 476 → SettlementSucceeded; 471, 472, 473, 475, 478 → SettlementFailed; unknown → SettlementFailed
-  - **Notes**: Follow existing test patterns for VerifyErrorHandler in same test file
+  - **Notes**: ✅ Created comprehensive test file with Theory tests for all status code mappings
 
-- [ ] **S004** [P] Create unit tests for AsanPardakhtProvider.Settle() method
+- [x] **S004** [P] Create unit tests for AsanPardakhtProvider.Settle() method
   - **Path**: `tests/CPG.Domain.Tests.Unit/Providers/Ipg/AsanPardakhtProviderTests.cs`
   - **Dependencies**: S001 (models exist)
   - **Action**: Mock IHttpProvider; verify correct request body (MerchantConfigurationId, PayGateTranId); verify headers (usr, pwd); test success/failure paths
-  - **Notes**: Mock GetDataFromJsonProvider() and GetHeaders() calls
+  - **Notes**: ✅ Added tests for HttpProvider calls, header validation, body construction, empty response handling, and invalid data exceptions
 
 #### Provider Implementation
-- [ ] **S005** Add settlement status code arrays to AsanPardakhtProvider
+- [x] **S005** Add settlement status code arrays to AsanPardakhtProvider
   - **Path**: `src/CPG.Infrastructure/Providers/Ipg/AsanPardakhtProvider.cs` (private fields section)
   - **Dependencies**: None
   - **Action**: Add `private short[] SettlementSucceededCodes = [200, 474, 476];` and `private short[] SettlementFailedCodes = [471, 472, 473, 475, 478];`
-  - **Notes**: Follow existing pattern with VerificationSucceededCodes array
+  - **Notes**: ✅ Added settlement status code arrays following existing pattern
 
-- [ ] **S006** Implement SettleErrorHandler method in AsanPardakhtProvider
+- [x] **S006** Implement SettleErrorHandler method in AsanPardakhtProvider
   - **Path**: `src/CPG.Infrastructure/Providers/Ipg/AsanPardakhtProvider.cs` (after VerifyErrorHandler)
   - **Dependencies**: S005 (status code arrays), S001 (models)
   - **Action**: Implement generic error handler using pattern matching with SettlementSucceededCodes/FailedCodes arrays
-  - **Notes**: Copy VerifyErrorHandler pattern; map to SettleTransactionResponse with appropriate IPGTransactionStatus
+  - **Notes**: ✅ Implemented SettleErrorHandler with pattern matching, maps to SettlementSucceeded (200/474/476) or SettlementFailed (471/472/473/475/478 and default)
 
-- [ ] **S007** Implement AsanPardakhtProvider.Settle() method
+- [x] **S007** Implement AsanPardakhtProvider.Settle() method
   - **Path**: `src/CPG.Infrastructure/Providers/Ipg/AsanPardakhtProvider.cs` (replace NotImplementedException at line 147-150)
   - **Dependencies**: S006 (SettleErrorHandler), S001 (models), S002 (ServiceType enum)
   - **Action**: Call GetDataFromJsonProvider; create AsanPardakhtSettleRequest; call httpProvider.PostAsync with "v1/Settlement" endpoint, SettleErrorHandler, and success response deserializer
-  - **Notes**: Follow Verify() method pattern exactly (lines 76-92 as reference); handle empty 200 response
+  - **Notes**: ✅ Implemented Settle() method following Verify() pattern: extracts credentials, builds AsanPardakhtSettleRequest with PayGateTranId and MerchantConfigurationId, calls v1/Settlement endpoint, handles empty 200 response
 
 **🏁 MILESTONE: Provider Implementation Complete**
 *Use Task tool with commit-changes agent to commit: "Implement AsanPardakht settlement provider integration"*

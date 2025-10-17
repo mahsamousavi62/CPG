@@ -33,6 +33,8 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
     private short[] VerificationFailedCodes = [471, 474, 476, 478];
     private short[] TransactionResultFetchingCodes = [400, 401, 471, 571, 504];
     private short[] TransactionResultFailedCodes = [472];
+    private short[] SettlementSucceededCodes = [200, 474, 476];
+    private short[] SettlementFailedCodes = [471, 472, 473, 475, 478];
 
     private void GetDataFromJsonProvider(string providerData)
     {
@@ -144,9 +146,32 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
         return response;
     }
 
-    public Task<SettleTransactionResponse> Settle(SettleTransactionRequest transactionResultRequest)
+    public async Task<SettleTransactionResponse> Settle(SettleTransactionRequest request)
     {
-        throw new NotImplementedException();
+        GetDataFromJsonProvider(request.ProviderData);
+        var headers = GetHeaders();
+
+        var response = await httpProvider.PostAsync<SettleTransactionRequest, SettleTransactionResponse,
+                                                    AsanPardakhtResponseBase, dynamic>(new HttpProviderRequest<dynamic>
+                                                    {
+                                                        Body = new AsanPardakhtSettleRequest
+                                                        {
+                                                            PayGateTranId = request.ProviderTrackerId,
+                                                            MerchantConfigurationId = merchantConfigurationId
+                                                        },
+                                                        BaseAddress = "https://ipgrest.asanpardakht.ir/",
+                                                        Uri = "v1/Settlement",
+                                                        HeaderParameters = headers,
+                                                        Provider = Enums.ProviderTypeInLog.AsanPardakht,
+                                                        Service = Enums.ServiceType.AsanPardakhtSettle,
+                                                    }, request, SettleErrorHandler, (string stringResponse) =>
+                                                    {
+                                                        if (string.IsNullOrEmpty(stringResponse))
+                                                            return new SettleTransactionResponse { Status = Enums.IPGTransactionStatus.SettlementSucceeded };
+
+                                                        return System.Text.Json.JsonSerializer.Deserialize<SettleTransactionResponse>(stringResponse);
+                                                    });
+        return response;
     }
 
     private string CreateAdditionalData(string nationalCode, string key, string iv)
@@ -206,6 +231,19 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
             _ when statusCode.IsIn(VerificationSucceededCodes) => new VerifyTransactionResponse { Status = Enums.IPGTransactionStatus.VerificationSucceeded } as TResponse,
             _ when statusCode.IsIn(VerificationFailedCodes) => new VerifyTransactionResponse { Status = Enums.IPGTransactionStatus.VerificationFailed } as TResponse,
             _ => new VerifyTransactionResponse { Status = Enums.IPGTransactionStatus.Verifying } as TResponse,
+        });
+    }
+
+    private async Task<TResponse?> SettleErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest? baseRequest, TResponse? response, TError? error, short statusCode)
+    where TResponse : SettleTransactionResponse
+    where TError : AsanPardakhtResponseBase
+    where TBaseRequest : SettleTransactionRequest
+    {
+        return await Task.FromResult(statusCode switch
+        {
+            _ when statusCode.IsIn(SettlementSucceededCodes) => new SettleTransactionResponse { Status = Enums.IPGTransactionStatus.SettlementSucceeded } as TResponse,
+            _ when statusCode.IsIn(SettlementFailedCodes) => new SettleTransactionResponse { Status = Enums.IPGTransactionStatus.SettlementFailed } as TResponse,
+            _ => new SettleTransactionResponse { Status = Enums.IPGTransactionStatus.SettlementFailed } as TResponse,
         });
     }
 
