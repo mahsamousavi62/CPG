@@ -79,17 +79,17 @@
   - **Notes**: Mock Settlement API HTTP responses; verify database persistence
 
 #### Query Handler Implementation
-- [ ] **S010** Add GetPredictedSettlementDateTimeForFailedSettlement helper method
+- [x] **S010** Add GetPredictedSettlementDateTimeForFailedSettlement helper method
   - **Path**: `src/CPG.Infrastructure.Persistence/QueryHandlers/Ipg/VerifyTransactionQueryHandler.cs` (after GetPredictedSettlementDateTime method)
   - **Dependencies**: None
   - **Action**: Implement static method with 20:40 time threshold logic (current time < 20:40: +1 day at 07:00, else +2 days at 07:00)
-  - **Notes**: Use DateTime.Now for consistency; copy GetPredictedSettlementDateTime pattern but with 20:40 threshold instead of 23:45
+  - **Notes**: ✅ Implemented helper method with TimeOnly(20, 40) threshold, mirrors GetPredictedSettlementDateTime() pattern
 
-- [ ] **S011** Add AsanPardakht settlement logic to VerifyTransactionQueryHandler
+- [x] **S011** Add AsanPardakht settlement logic to VerifyTransactionQueryHandler
   - **Path**: `src/CPG.Infrastructure.Persistence/QueryHandlers/Ipg/VerifyTransactionQueryHandler.cs` (after line 118, after BehPardakht settlement block)
   - **Dependencies**: S007 (Settle() method), S010 (helper method)
   - **Action**: Add `else if (providerType == ProviderType.AsanPardakht)` block; call ipg.Settle() with SettleTransactionRequest; update transaction.IPGTransaction.Status; calculate transaction.PredictedSettlementDateTime based on status (9 → 23:45 threshold, 10 → 20:40 threshold)
-  - **Notes**: Mirror BehPardakht pattern (lines 103-118); handle both SettlementSucceeded and SettlementFailed statuses
+  - **Notes**: ✅ Added AsanPardakht settlement block after line 118: calls Settle() with ProviderData and ProviderTrackerId, updates IPGTransaction.Status, calculates PredictedSettlementDateTime using GetPredictedSettlementDateTime() for success or GetPredictedSettlementDateTimeForFailedSettlement() for failure
 
 **🏁 MILESTONE: Settlement Orchestration Complete**
 *Use Task tool with commit-changes agent to commit: "Integrate AsanPardakht settlement into verification workflow"*
