@@ -12,21 +12,22 @@ The solution follows Clean Architecture principles with clear separation of conc
 
 ### Layer Dependencies (Inner to Outer)
 1. **CPG.Domain** - Core business logic and domain models (no dependencies)
-   - Contains Aggregate Models organized by business domain (Payment, Company, User, Bank, Provider, etc.)
+   - Contains Aggregate Models in AggregateModels/ organized by business domain (Application, Bank, Company, CompanyDeposit, CompanyIPG, DirectDebitGrant, IPGType, PaymentRequest, Provider, Transaction, User, AuditLog)
    - Uses DDD patterns: Entities, Value Objects, Domain Events, Aggregate Roots
-   - Shared Kernel contains base classes: Entity, AuditableEntity, IAggregateRoot
+   - Shared Kernel (SharedKernel/) contains base classes and common types: Entity, AuditableEntity, IAggregateRoot, ApplicationSettingsAggregate
 
 2. **CPG.Application** - Application business rules and use cases
-   - Organized by feature folders under UseCases/ (Applications, Auth, Banks, Companies, CompanyDeposits, CompanyIPGs, DirectDebit, Files, PaymentRequests, Providers, Users, etc.)
+   - Organized by feature folders under UseCases/ (Applications, Auth, Banks, CharismaCard, CharisPayServices, Companies, CompanyDeposits, CompanyIPGs, DirectDebit, Files, Ipg, IPGResult, IPGType, NeoBankServices, PaymentReceipt, PaymentRequests, Providers, Users, etc.)
    - Implements CQRS pattern with Commands and Queries
-   - Uses MediatR for request handling with Pipeline Behaviors (Authorization, UnhandledExceptions, Performance)
+   - Uses MediatR for request handling with Pipeline Behaviours in Shared/Behaviours/ (AuthorizationBehaviour, UnhandledExceptionBehaviour, PerformanceBehaviour)
    - Uses FluentValidation for request validation
    - Validation handlers organized using Chain of Responsibility pattern for complex validations
    - Depends only on Domain layer
 
 3. **CPG.Infrastructure** - External service integrations
    - Contains implementations for: Kafka, RabbitMQ, Masstransit, Minio, Cache, Logging, Time, File handling
-   - Provider integrations for external payment services
+   - Provider integrations in Providers/ for external payment services: CharismaCard, Charispay, DirectDebit, Idp, Ipg, NeoBank
+   - Polly resilience policies in Policies/: PollyPolicyService.cs, PolicyConfig.cs
    - Depends on Application and Domain
 
 4. **CPG.Infrastructure.Persistence** - Data access layer
@@ -34,7 +35,7 @@ The solution follows Clean Architecture principles with clear separation of conc
    - CQRS read/write separation: ReadDbContext (queries) and WriteDbContext (commands)
    - GraphQL support via HotChocolate for queries
    - Repository pattern with Specification pattern (Ardalis.Specification)
-   - Interceptors for AuditableEntity and Domain Events dispatching
+   - Interceptors in Interceptors/: AuditableEntityInterceptor, DispatchDomainEventsInterceptor, DatabaseLoggingInterceptor
    - Redis caching support
    - Depends on Application and Domain
 
@@ -66,8 +67,9 @@ The solution follows Clean Architecture principles with clear separation of conc
 
 ### Domain Model Organization
 
-Aggregate roots are organized by business domain:
+Aggregate roots in src/CPG.Domain/AggregateModels/ are organized by business domain:
 - **ApplicationAggregate**: OAuth applications and API clients
+- **AuditLogAggregate**: Audit logging for system events
 - **BankAggregate**: Bank information and direct debit settings
 - **CompanyAggregate**: Merchant companies and their payment methods
 - **CompanyDepositAggregate**: Company bank accounts/deposits (IBANs)
@@ -79,27 +81,41 @@ Aggregate roots are organized by business domain:
 - **TransactionAggregate**: Payment transactions (IPG, DirectDebit, CharismaCard, PaymentReceipt)
 - **UserAggregate**: System users with roles
 
+Shared kernel in src/CPG.Domain/SharedKernel/ contains:
+- Base classes and interfaces
+- ApplicationSettingsAggregate for configuration
+- Common types and enums
+
 ## Common Commands
 
 ### Build and Test
 ```bash
 # Clean solution
-dotnet clean
+dotnet clean CPG.sln
 
 # Restore dependencies
-dotnet restore --configfile nuget.config
+dotnet restore CPG.sln --configfile nuget.config
 
 # Build solution
-dotnet build --configuration Release
+dotnet build CPG.sln --configuration Release
 
-# Run unit tests
-dotnet test **/*.Tests.Unit.csproj --configuration Release
+# Run all tests
+dotnet test CPG.sln --configuration Release
 
-# Run integration tests (if available)
-dotnet test **/*.Integration.csproj --configuration Release
+# Run specific test project
+dotnet test tests/CPG.Domain.Tests.Unit/CPG.Domain.Tests.Unit.csproj --configuration Release
+
+# Run unit tests only
+dotnet test CPG.sln --filter FullyQualifiedName~Tests.Unit --configuration Release
 
 # Run architecture tests
 dotnet test tests/CPG.Architecture.Tests/CPG.Architecture.Tests.csproj
+
+# List tests in a specific project
+dotnet test tests/CPG.Domain.Tests.Unit/CPG.Domain.Tests.Unit.csproj --list-tests
+
+# Run a specific test by name
+dotnet test --filter "FullyQualifiedName~YourTestName"
 ```
 
 ### Database Migrations
