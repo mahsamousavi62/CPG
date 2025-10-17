@@ -274,6 +274,18 @@ SOAP service providers use `IPollyPolicyService.ExecuteWithPolicyAsync()`:
 - **PecProvider**: SaleServiceSoapClient, ConfirmServiceSoapClient
 - **BehPardakhtProvider**: PaymentGatewayClient
 
+### Settlement Integration Pattern
+
+**Post-Verification Settlement** (AsanPardakht and BehPardakht):
+- Settlement automatically called after successful transaction verification
+- Implemented in `VerifyTransactionQueryHandler` with provider-specific conditional logic
+- **BehPardakht**: Uses TrackId and ReferenceNumber for settlement
+- **AsanPardakht**: Uses ProviderTrackerId for settlement (added 2025-10-17)
+- Settlement status updates IPGTransaction.Status (9 = SettlementSucceeded, 10 = SettlementFailed)
+- PredictedSettlementDateTime calculated based on settlement status and time thresholds:
+  - Successful settlement (status 9): 23:45 time threshold
+  - Failed settlement (status 10): 20:40 time threshold
+
 Example usage:
 ```csharp
 return await _pollyPolicyService.ExecuteWithPolicyAsync(async () =>
