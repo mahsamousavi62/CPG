@@ -183,20 +183,51 @@ public class MinioProvider : IMinioProvider
 
     private CallLogModel CreateCallLogModel(string methodName, Exception exception, string responseBody, bool isSuccess)
     {
-        _ = long.TryParse(_httpContextAccessor.HttpContext?.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value, out long userId);
+        var httpContext = _httpContextAccessor.HttpContext;
+        _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value, out long userId);
+        _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out long applicationId);
+        _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "CompanyId")?.Value, out long companyId);
+
+        var callTime = DateTime.Now;
 
         return new CallLogModel
         {
+            // New fields (25 required fields)
+            CorrelationId = httpContext?.TraceIdentifier,
+            LogId = $"{Guid.NewGuid()} - Minio - {(isSuccess ? "Success" : exception?.GetType().Name)}",
+            RequestId = httpContext?.TraceIdentifier,
+            AuditLevel = isSuccess ? 1 : (exception != null ? 3 : 2),
+            AuditType = Enums.AuditType.Provider,
+            ServiceName = "Minio",
+            ProviderName = "MinioProvider",
+            RequestUri = methodName,
+            RequestHeader = null,
+            RequestBody = null,
+            ResponseStatusCode = isSuccess ? 200 : 500,
+            ResponseHeader = null,
+            ResponseBody = responseBody,
+            ApplicationId = applicationId == 0 ? null : applicationId,
+            UserId = userId == 0 ? null : userId,
+            Ip = httpContext?.Connection.RemoteIpAddress?.ToString(),
+            CompanyId = companyId == 0 ? null : companyId,
+            UserAgent = httpContext?.Request.Headers["User-Agent"].ToString(),
+            Response = responseBody,
+            ErrorCode = exception?.GetType().Name,
+            IsSucceeded = isSuccess,
+            StartDateTime = callTime,
+            EndDateTime = callTime,
+            DurationMs = 0,
+            StackTrace = exception?.StackTrace,
+
+            // Original fields (preserved)
             ServiceCallDate = DateTime.Now,
             ServiceCallUrl = methodName,
             ServiceCallStatus = isSuccess,
             ServiceType = Enums.ServiceType.Minio,
             CreationDate = DateTime.Now,
             CreationUserId = userId == 0 ? 1 : userId,
-            ErrorCode = exception?.GetType().Name,
             ErrorType = exception?.Message,
-            ResponseBody = responseBody,
-            AuditType = Enums.AuditType.Provider
+            CorrolationId = httpContext?.TraceIdentifier
         };
     }
 }

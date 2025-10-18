@@ -78,20 +78,45 @@ public class CacheService(IDistributedCache cache,
         {
             var callLog = new CallLogModel
             {
+                // New fields (25 required fields)
+                CorrelationId = null,
+                LogId = $"{Guid.NewGuid()} - Cache - {ex.GetType().Name}",
+                RequestId = null,
+                AuditLevel = 3, // Error
+                AuditType = Enums.AuditType.Develop,
+                ServiceName = "CacheService",
+                ProviderName = "Redis",
+                RequestUri = nameof(GetAllApplicationSettings),
+                RequestHeader = null,
                 RequestBody = "",
+                ResponseStatusCode = 500,
+                ResponseHeader = null,
                 ResponseBody = ex.Message,
+                ApplicationId = null,
+                UserId = null,
+                Ip = null,
+                CompanyId = null,
+                UserAgent = null,
+                Response = ex.Message,
+                ErrorCode = ex.GetType().Name,
+                IsSucceeded = false,
+                StartDateTime = DateTime.Now,
+                EndDateTime = DateTime.Now,
+                DurationMs = 0,
+                StackTrace = ex.StackTrace,
+
+                // Original fields (preserved)
                 ServiceCallDate = DateTime.Now,
                 ServiceCallUrl = nameof(GetAllApplicationSettings),
                 ServiceCallStatus = false,
                 ServiceType = Enums.ServiceType.Cache,
                 CreationDate = DateTime.Now,
                 CreationUserId = 1,
-                ErrorCode = ex.GetType().Name,
                 ErrorType = ex.Message,
                 ProviderType = Enums.ProviderTypeInLog.Internal,
-                AuditType = Enums.AuditType.Develop
+                CorrolationId = null
             };
-            logService.LogError(ex, "[CallLog] {@CallLog}", callLog);
+            logService.LogError(callLog);
             throw;
         }
     }
@@ -106,20 +131,45 @@ public class CacheService(IDistributedCache cache,
         {
             var callLog = new CallLogModel
             {
+                // New fields (25 required fields)
+                CorrelationId = null,
+                LogId = $"{Guid.NewGuid()} - Cache - {ex.GetType().Name}",
+                RequestId = null,
+                AuditLevel = 3, // Error
+                AuditType = Enums.AuditType.Develop,
+                ServiceName = "CacheService",
+                ProviderName = "Redis",
+                RequestUri = nameof(GetApplicationSettings),
+                RequestHeader = null,
                 RequestBody = "",
+                ResponseStatusCode = 500,
+                ResponseHeader = null,
                 ResponseBody = ex.Message,
+                ApplicationId = null,
+                UserId = null,
+                Ip = null,
+                CompanyId = null,
+                UserAgent = null,
+                Response = ex.Message,
+                ErrorCode = ex.GetType().Name,
+                IsSucceeded = false,
+                StartDateTime = DateTime.Now,
+                EndDateTime = DateTime.Now,
+                DurationMs = 0,
+                StackTrace = ex.StackTrace,
+
+                // Original fields (preserved)
                 ServiceCallDate = DateTime.Now,
                 ServiceCallUrl = nameof(GetApplicationSettings),
                 ServiceCallStatus = false,
                 ServiceType = Enums.ServiceType.Cache,
                 CreationDate = DateTime.Now,
                 CreationUserId = 1,
-                ErrorCode = ex.GetType().Name,
                 ErrorType = ex.Message,
                 ProviderType = Enums.ProviderTypeInLog.Internal,
-                AuditType = Enums.AuditType.Develop
+                CorrolationId = null
             };
-            logService.LogError(ex, "[CallLog] {@CallLog}", callLog);
+            logService.LogError(callLog);
             throw;
         }
     }
@@ -145,20 +195,45 @@ public class CacheService(IDistributedCache cache,
         {
             var callLog = new CallLogModel
             {
+                // New fields (25 required fields)
+                CorrelationId = null,
+                LogId = $"{Guid.NewGuid()} - Cache - {ex.GetType().Name}",
+                RequestId = null,
+                AuditLevel = 3, // Error
+                AuditType = Enums.AuditType.Develop,
+                ServiceName = "CacheService",
+                ProviderName = "Redis",
+                RequestUri = nameof(GetApplicationIdentifier),
+                RequestHeader = null,
                 RequestBody = "",
+                ResponseStatusCode = 500,
+                ResponseHeader = null,
                 ResponseBody = ex.Message,
+                ApplicationId = null,
+                UserId = null,
+                Ip = null,
+                CompanyId = null,
+                UserAgent = null,
+                Response = ex.Message,
+                ErrorCode = ex.GetType().Name,
+                IsSucceeded = false,
+                StartDateTime = DateTime.Now,
+                EndDateTime = DateTime.Now,
+                DurationMs = 0,
+                StackTrace = ex.StackTrace,
+
+                // Original fields (preserved)
                 ServiceCallDate = DateTime.Now,
                 ServiceCallUrl = nameof(GetApplicationIdentifier),
                 ServiceCallStatus = false,
                 ServiceType = Enums.ServiceType.Cache,
                 CreationDate = DateTime.Now,
                 CreationUserId = 1,
-                ErrorCode = ex.GetType().Name,
                 ErrorType = ex.Message,
                 ProviderType = Enums.ProviderTypeInLog.Internal,
-                AuditType = Enums.AuditType.Develop
+                CorrolationId = null
             };
-            logService.LogError(ex, "[CallLog] {@CallLog}", callLog);
+            logService.LogError(callLog);
             throw;
         }
     }
