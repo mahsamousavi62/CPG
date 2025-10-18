@@ -106,6 +106,11 @@ public class Enums
         AyandehVerify = 21,
         GetAccountNumber = 22,
         GetIdpUserStatus = 23,
+        Cache = 24,
+        Minio = 25,
+        ErrorHandling = 26,
+        Database = 27,
+        BehPardakhtSettle = 28,
     }
 
     public enum TransactionType : byte
@@ -189,8 +194,8 @@ public class Enums
         Idp = 101,
         NeoBank = 102,
         CharisPay = 103,
-        CharismaCard = 104
-
+        CharismaCard = 104,
+        Internal = 200,
     }
 
     public enum ValidityDuration

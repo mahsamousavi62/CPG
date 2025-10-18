@@ -33,18 +33,22 @@ namespace CPG.Infrastructure.Persistence
         {
             services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
             services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
+            services.AddScoped<IInterceptor, DatabaseLoggingInterceptor>();
 
             services
                 .AddDbContext<WriteDbContext>((sp, options) =>
                 {
                     options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
+                    options.AddInterceptors(sp.GetServices<IInterceptor>().OfType<DatabaseLoggingInterceptor>());
 
                     options.EnableDetailedErrors();
                     options.EnableSensitiveDataLogging()
                         .UseSqlServer(configuration.GetConnectionString(ConnectionStringConfigName));
                 })
-                .AddDbContext<ReadDbContext>(options =>
+                .AddDbContext<ReadDbContext>((sp, options) =>
                 {
+                    options.AddInterceptors(sp.GetServices<IInterceptor>().OfType<DatabaseLoggingInterceptor>());
+
                     options.EnableDetailedErrors();
                     options.UseSqlServer(configuration.GetConnectionString(ConnectionStringConfigName))
                     .EnableSensitiveDataLogging()
