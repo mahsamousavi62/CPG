@@ -1,7 +1,6 @@
 ﻿using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Logging;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using Serilog.Context;
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -11,10 +10,10 @@ using System.Threading.Tasks;
 
 namespace CPG.Infrastructure.Logging;
 
-public class LoggingMiddleware(RequestDelegate next, ILoggerFactory loggerFactory)
+public class LoggingMiddleware(RequestDelegate next, ILogService logService)
 {
     private readonly RequestDelegate next = next;
-    private readonly ILogger logger = loggerFactory.CreateLogger<LoggingMiddleware>();
+    private readonly ILogService _logService = logService;
 
     public async Task InvokeAsync([NotNull] HttpContext httpContext)
     {
@@ -100,7 +99,7 @@ public class LoggingMiddleware(RequestDelegate next, ILoggerFactory loggerFactor
 
             using (LogContext.PushProperty("CallLog", log, true))
             {
-                logger.LogInformation("[CallLog] {@CallLog}", log);
+                _logService.LogInformation("[CallLog] {@CallLog}", log);
             }
         }
         catch (Exception exc)
@@ -115,7 +114,7 @@ public class LoggingMiddleware(RequestDelegate next, ILoggerFactory loggerFactor
                 ErrorCode = (exc as dynamic)?.Code
             };
 
-            logger.LogError(exc, "Request: Unhandled Exception for Request {Name} {@log}", nameof(LoggingMiddleware), log);
+            _logService.LogError(exc, "Request: Unhandled Exception for Request {Name} {@log}", nameof(LoggingMiddleware), log);
             throw;
         }
     }

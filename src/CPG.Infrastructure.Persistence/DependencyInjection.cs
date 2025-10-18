@@ -118,8 +118,8 @@ namespace CPG.Infrastructure.Persistence
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
-                    var logger = services.GetRequiredService<ILogger<WriteDbContext>>();
-                    logger.LogError(ex, "An error occurred while migrating the database.");
+                    var logService = services.GetRequiredService<CPG.Domain.SharedKernel.Logging.ILogService>();
+                    logService.LogError(ex, "An error occurred while migrating the database.");
                 }
             }
 

@@ -2,10 +2,11 @@
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.File;
 using CPG.Domain.SharedKernel.Minio;
+using CPG.Domain.SharedKernel.Logging;
 using CPG.Infrastructure.Logging;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using Minio;
 using Minio.DataModel.Args;
 using Minio.Exceptions;
@@ -27,14 +28,16 @@ public class MinioProvider : IMinioProvider
     private readonly IMinioClient _minioClient;
     private readonly IConfiguration _configuration;
     private readonly IMinioClientFactory _minioClientFactory;
-    private readonly ILogger<MinioProvider> _logger;
+    private readonly ILogService _logService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public MinioProvider(IConfiguration configuration, IMinioClientFactory minioClientFactory, ILogger<MinioProvider> logger)
+    public MinioProvider(IConfiguration configuration, IMinioClientFactory minioClientFactory, ILogService logService, IHttpContextAccessor httpContextAccessor)
     {
         _configuration = configuration;
         _minioClientFactory = minioClientFactory;
         _minioClient = _minioClientFactory.CreateClient();
-        _logger = logger;
+        _logService = logService;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<List<string>> GetBucketNamesAsync(CancellationToken cancellationToken = default)
@@ -70,13 +73,15 @@ public class MinioProvider : IMinioProvider
 
             var resString = JsonConvert.SerializeObject(response);
 
-            _logger.LogWarning($"Response Minio : {resString}");
+            var callLog = CreateCallLogModel(nameof(PutObject), null, resString, true);
+            _logService.LogWarning(callLog);
 
             return response.ObjectName;
         }
         catch (MinioException exc)
         {
-            _logger.LogError(exc, $"Request: Unhandled Exception for Request {nameof(PutObject)}{exc.Message} ");
+            var callLog = CreateCallLogModel(nameof(PutObject), exc, exc.Message, false);
+            _logService.LogError(callLog);
             return exc.Message;
         }
     }
@@ -108,7 +113,8 @@ public class MinioProvider : IMinioProvider
             }
             catch (Exception exc)
             {
-                _logger.LogError(exc, $"Request: Unhandled Exception for Request {nameof(GetObjectByName)}{exc.Message} ");
+                var callLog = CreateCallLogModel(nameof(GetObjectByName), exc, exc.Message, false);
+                _logService.LogError(callLog);
                 throw new Exception(GlobalResource.FileNotFound);
             }
 
@@ -122,7 +128,8 @@ public class MinioProvider : IMinioProvider
         }
         catch (MinioException exc)
         {
-            _logger.LogError(exc, $"Request: Unhandled Exception for Request {nameof(GetObjectByName)}{exc.Message} ");
+            var callLog = CreateCallLogModel(nameof(GetObjectByName), exc, exc.Message, false);
+            _logService.LogError(callLog);
             throw new Exception($"{GlobalResource.MinioException} : {exc.Message}");
         }
     }
@@ -160,7 +167,8 @@ public class MinioProvider : IMinioProvider
         }
         catch (Exception exc)
         {
-            _logger.LogError(exc, $"Request: Unhandled Exception for Request {nameof(PresignedGetObject)}{exc.Message} ");
+            var callLog = CreateCallLogModel(nameof(PresignedGetObject), exc, exc.Message, false);
+            _logService.LogError(callLog);
 
             throw new Exception($"{GlobalResource.MinioException} : {exc.Message}");
         }
@@ -171,5 +179,24 @@ public class MinioProvider : IMinioProvider
         var directoryPath = Path.GetDirectoryName(destinationfilePath);
 
         return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot", directoryPath);
+    }
+
+    private CallLogModel CreateCallLogModel(string methodName, Exception exception, string responseBody, bool isSuccess)
+    {
+        _ = long.TryParse(_httpContextAccessor.HttpContext?.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value, out long userId);
+
+        return new CallLogModel
+        {
+            ServiceCallDate = DateTime.Now,
+            ServiceCallUrl = methodName,
+            ServiceCallStatus = isSuccess,
+            ServiceType = Enums.ServiceType.Minio,
+            CreationDate = DateTime.Now,
+            CreationUserId = userId == 0 ? 1 : userId,
+            ErrorCode = exception?.GetType().Name,
+            ErrorType = exception?.Message,
+            ResponseBody = responseBody,
+            AuditType = Enums.AuditType.Provider
+        };
     }
 }

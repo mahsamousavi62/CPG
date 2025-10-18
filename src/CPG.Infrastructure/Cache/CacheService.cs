@@ -2,8 +2,8 @@
 using CPG.Domain.AggregateModels.ApplicationAggregate.Specifications;
 using CPG.Domain.SharedKernel.ApplicationSettingsAggregate;
 using CPG.Domain.SharedKernel.Interfaces;
+using CPG.Domain.SharedKernel.Logging;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -19,7 +19,7 @@ namespace CPG.Infrastructure.Cache;
 public class CacheService(IDistributedCache cache,
                           IAggregateRepository<ApplicationSettings> applicationSettingsRepository,
                           IAggregateRepository<Domain.AggregateModels.ApplicationAggregate.Application> applicationRepository,
-                          ILogger<CacheService> logger) : ICacheService
+                          ILogService logService) : ICacheService
 {
     private const string ApplicationIdentifierKey = nameof(ApplicationIdentifier);
 
@@ -76,7 +76,22 @@ public class CacheService(IDistributedCache cache,
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, nameof(GetAllApplicationSettings));
+            var callLog = new CallLogModel
+            {
+                RequestBody = "",
+                ResponseBody = ex.Message,
+                ServiceCallDate = DateTime.Now,
+                ServiceCallUrl = nameof(GetAllApplicationSettings),
+                ServiceCallStatus = false,
+                ServiceType = Enums.ServiceType.Cache,
+                CreationDate = DateTime.Now,
+                CreationUserId = 1,
+                ErrorCode = ex.GetType().Name,
+                ErrorType = ex.Message,
+                ProviderType = Enums.ProviderTypeInLog.Internal,
+                AuditType = Enums.AuditType.Develop
+            };
+            logService.LogError(ex, "[CallLog] {@CallLog}", callLog);
             throw;
         }
     }
@@ -89,7 +104,22 @@ public class CacheService(IDistributedCache cache,
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, nameof(GetApplicationSettings));
+            var callLog = new CallLogModel
+            {
+                RequestBody = "",
+                ResponseBody = ex.Message,
+                ServiceCallDate = DateTime.Now,
+                ServiceCallUrl = nameof(GetApplicationSettings),
+                ServiceCallStatus = false,
+                ServiceType = Enums.ServiceType.Cache,
+                CreationDate = DateTime.Now,
+                CreationUserId = 1,
+                ErrorCode = ex.GetType().Name,
+                ErrorType = ex.Message,
+                ProviderType = Enums.ProviderTypeInLog.Internal,
+                AuditType = Enums.AuditType.Develop
+            };
+            logService.LogError(ex, "[CallLog] {@CallLog}", callLog);
             throw;
         }
     }
@@ -113,7 +143,22 @@ public class CacheService(IDistributedCache cache,
         }
         catch (Exception ex)
         {
-            logger.LogError(ex.Message);
+            var callLog = new CallLogModel
+            {
+                RequestBody = "",
+                ResponseBody = ex.Message,
+                ServiceCallDate = DateTime.Now,
+                ServiceCallUrl = nameof(GetApplicationIdentifier),
+                ServiceCallStatus = false,
+                ServiceType = Enums.ServiceType.Cache,
+                CreationDate = DateTime.Now,
+                CreationUserId = 1,
+                ErrorCode = ex.GetType().Name,
+                ErrorType = ex.Message,
+                ProviderType = Enums.ProviderTypeInLog.Internal,
+                AuditType = Enums.AuditType.Develop
+            };
+            logService.LogError(ex, "[CallLog] {@CallLog}", callLog);
             throw;
         }
     }

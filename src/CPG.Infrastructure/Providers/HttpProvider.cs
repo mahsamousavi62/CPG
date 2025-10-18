@@ -1,6 +1,5 @@
 ﻿using CPG.Domain.SharedKernel.Communication;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Globalization;
 using System.Linq;
@@ -24,14 +23,15 @@ namespace CPG.Infrastructure.Providers;
 public class HttpProvider : IHttpProvider
 {
     private readonly IHttpClientFactory _httpClientFactory;
-    private readonly ILogger<HttpProvider> _logger;
     private readonly ILogService _logService;
     private readonly ICurrentUser _currentUser;
-    public HttpProvider(IHttpClientFactory httpClientFactory, ILogger<HttpProvider> logger, ILogService logService)
+    private readonly IHttpContextAccessor _httpContextAccessor;
+
+    public HttpProvider(IHttpClientFactory httpClientFactory, ILogService logService, IHttpContextAccessor httpContextAccessor)
     {
         _httpClientFactory = httpClientFactory;
-        _logger = logger;
         _logService = logService;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<TResponse?> PostAsync<TBaseRequest, TResponse, TError, TBody>(HttpProviderRequest<TBody>? request, TBaseRequest? baseRequest, Func<TBaseRequest?, TResponse?, TError?, short, Task<TResponse?>>? errorHandler, Func<string, TResponse>? decoder = null)
@@ -97,8 +97,8 @@ public class HttpProvider : IHttpProvider
         }
         catch (Exception exc)
         {
-            _logger.LogError(exc, nameof(PostAsync));
-
+            var callLog = CreateErrorCallLogModel(nameof(PostAsync), exc, request?.Uri);
+            _logService.LogError(callLog);
             throw;
         }
     }
@@ -168,8 +168,8 @@ public class HttpProvider : IHttpProvider
         }
         catch (Exception exc)
         {
-            _logger.LogError(exc, nameof(PostAsync));
-
+            var callLog = CreateErrorCallLogModel(nameof(PostAsync3), exc, request?.Uri);
+            _logService.LogError(callLog);
             throw;
         }
     }
@@ -239,8 +239,8 @@ public class HttpProvider : IHttpProvider
         }
         catch (Exception exc)
         {
-            _logger.LogError(exc, nameof(PostAsync));
-
+            var callLog = CreateErrorCallLogModel(nameof(PostAsync4), exc, request?.Uri);
+            _logService.LogError(callLog);
             throw;
         }
     }
@@ -358,8 +358,8 @@ public class HttpProvider : IHttpProvider
         }
         catch (Exception exc)
         {
-            _logger.LogError(exc, nameof(PutAsync));
-
+            var callLog = CreateErrorCallLogModel(nameof(PutAsync), exc, request?.Uri);
+            _logService.LogError(callLog);
             throw;
         }
     }
@@ -427,8 +427,8 @@ public class HttpProvider : IHttpProvider
         }
         catch (Exception exc)
         {
-            _logger.LogError(exc, nameof(PostAsync));
-
+            var callLog = CreateErrorCallLogModel(nameof(PatchAsync), exc, request?.Uri);
+            _logService.LogError(callLog);
             throw;
         }
     }
@@ -497,8 +497,8 @@ public class HttpProvider : IHttpProvider
         }
         catch (Exception exc)
         {
-            _logger.LogError(exc, nameof(GetAsync));
-
+            var callLog = CreateErrorCallLogModel(nameof(GetAsync), exc, request?.Uri);
+            _logService.LogError(callLog);
             throw;
         }
     }
@@ -539,7 +539,8 @@ public class HttpProvider : IHttpProvider
         }
         catch (Exception exc)
         {
-            _logger.LogError(exc, nameof(GetAsync));
+            var callLog = CreateErrorCallLogModel(nameof(GetAsync), exc, request?.Uri);
+            _logService.LogError(callLog);
             throw;
         }
         finally
@@ -582,7 +583,10 @@ public class HttpProvider : IHttpProvider
         {
             reqString = Regex.Replace(reqString, Constants.Pattern, Constants.Replaceformat);
         }
-        var callLog = new
+
+        _ = long.TryParse(_httpContextAccessor.HttpContext?.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value, out long userId);
+
+        var callLog = new CallLogModel
         {
             RequestBody = reqString,
             ResponseBody = resString,
@@ -591,14 +595,31 @@ public class HttpProvider : IHttpProvider
             ServiceCallStatus = response.StatusCode == System.Net.HttpStatusCode.OK,
             ServiceType = request.Service,
             CreationDate = DateTime.Now,
-            //ToDo: Add current user id
-            CreationUserId = _currentUser.UserId,
+            CreationUserId = userId == 0 ? 1 : userId,
             ErrorCode = response.IsSuccessStatusCode ? null : ReasonPhrases.GetReasonPhrase((int)response.StatusCode),
             ErrorType = response.IsSuccessStatusCode ? null : response.StatusCode.ToString(),
-            Provider = request.Provider,
-
+            ProviderType = request.Provider,
+            AuditType = Enums.AuditType.Provider
         };
 
-        _logger.LogInformation("CallLog: {@CallLog}", callLog);
+        _logService.LogInformation(callLog);
+    }
+
+    private CallLogModel CreateErrorCallLogModel(string methodName, Exception exception, string url)
+    {
+        _ = long.TryParse(_httpContextAccessor.HttpContext?.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value, out long userId);
+
+        return new CallLogModel
+        {
+            ServiceCallDate = DateTime.Now,
+            ServiceCallUrl = url ?? methodName,
+            ServiceCallStatus = false,
+            CreationDate = DateTime.Now,
+            CreationUserId = userId == 0 ? 1 : userId,
+            ErrorCode = exception.GetType().Name,
+            ErrorType = exception.Message,
+            ResponseBody = exception.StackTrace,
+            AuditType = Enums.AuditType.Provider
+        };
     }
 }

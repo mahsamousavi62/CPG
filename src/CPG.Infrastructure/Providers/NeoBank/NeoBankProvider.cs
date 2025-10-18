@@ -28,7 +28,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.WebUtilities;
 using CPG.Application.Shared.Resource;
 using CPG.Application.UseCases.PaymentRequests.ViewModels;
-using Microsoft.Extensions.Logging;
 using Serilog;
 using CPG.Domain.AggregateModels.UserAggregate;
 using CPG.Domain.SharedKernel.Logging;
@@ -40,13 +39,13 @@ using CPG.Domain.SharedKernel.Interfaces;
 namespace CPG.Infrastructure.Providers.NeoBank;
 
 public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configuration, IAuthService authService,
-    IHttpContextAccessor httpContextAccessor, ILogger<NeoBankProvider> logger, ICurrentUser currentUser) : INeoBankService
+    IHttpContextAccessor httpContextAccessor, ILogService logService, ICurrentUser currentUser) : INeoBankService
 {
     private readonly IHttpClientFactory factory = factory;
     private readonly IConfiguration configuration = configuration;
     private readonly IAuthService authService = authService;
     private readonly IHttpContextAccessor httpContextAccessor = httpContextAccessor;
-    private readonly ILogger<NeoBankProvider> logger = logger;
+    private readonly ILogService _logService = logService;
     private readonly ICurrentUser currentUser = currentUser;
     public async Task<Result<ClientDirectDebitResponse>> ClientDirectDebit(ClientDirectDebitRequest model)
     {
@@ -91,10 +90,7 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
                 CorrolationId = neoBankCorroletionId,
             };
 
-            using (LogContext.PushProperty("CallLog", callLog, true))
-            {
-                logger.LogInformation("[CallLog] {@CallLog}", callLog);
-            }
+            _logService.LogInformation(callLog);
 
 
             switch (response.Data.ErrorCode)
@@ -111,7 +107,22 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, $"Request: Unhandled Exception for Request {nameof(ClientDirectDebit)}{ex.Message}");
+            var callLog = new CallLogModel
+            {
+                RequestBody = System.Text.Json.JsonSerializer.Serialize(model),
+                ResponseBody = ex.Message,
+                ServiceCallDate = DateTime.Now,
+                ServiceCallUrl = neobankConfig.ClientDirectDebit,
+                ServiceCallStatus = false,
+                ServiceType = Enums.ServiceType.ClientDirectDebit,
+                CreationDate = DateTime.Now,
+                CreationUserId = currentUser.UserId,
+                ErrorCode = ex.GetType().Name,
+                ErrorType = ex.Message,
+                ProviderType = Enums.ProviderTypeInLog.NeoBank,
+                AuditType = Enums.AuditType.Provider
+            };
+            _logService.LogError(callLog);
 
             return Result<ClientDirectDebitResponse>.Failure(new Error("2201000", GlobalResource.UnexpectedError));
         }
@@ -157,10 +168,7 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
                     AuditType = Enums.AuditType.Provider
                 };
 
-                using (LogContext.PushProperty("CallLog", callLog, true))
-                {
-                    logger.LogInformation("[CallLog] {@CallLog}", callLog);
-                }
+                _logService.LogInformation(callLog);
 
                 if (response.OperationResult == Enums.OperationResult.Succeeded)
                 {
@@ -178,19 +186,64 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
                 }
                 else
                 {
-                    logger.LogError($"Request: NeoBankService_GetUserDeposit {nameof(GetUserDepositBalance)} {response.Error}");
+                    var errorCallLog = new CallLogModel
+                    {
+                        RequestBody = "",
+                        ResponseBody = response.Error,
+                        ServiceCallDate = DateTime.Now,
+                        ServiceCallUrl = neobankConfig.UserDepositBalanceUrl,
+                        ServiceCallStatus = false,
+                        ServiceType = Enums.ServiceType.GetUserDepositBalance,
+                        CreationDate = DateTime.Now,
+                        CreationUserId = currentUser.UserId,
+                        ErrorCode = "ServiceError",
+                        ErrorType = response.Error,
+                        ProviderType = Enums.ProviderTypeInLog.NeoBank,
+                        AuditType = Enums.AuditType.Provider
+                    };
+                    _logService.LogError(errorCallLog);
                     return Result<UserDepositBalanceResponse>.Failure(new Error("2201000", response.Error));
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"Request: Unhandled Exception for Request {nameof(GetUserDepositBalance)}");
+                var callLog = new CallLogModel
+                {
+                    RequestBody = "",
+                    ResponseBody = ex.Message,
+                    ServiceCallDate = DateTime.Now,
+                    ServiceCallUrl = neobankConfig.UserDepositBalanceUrl,
+                    ServiceCallStatus = false,
+                    ServiceType = Enums.ServiceType.GetUserDepositBalance,
+                    CreationDate = DateTime.Now,
+                    CreationUserId = currentUser.UserId,
+                    ErrorCode = ex.GetType().Name,
+                    ErrorType = ex.Message,
+                    ProviderType = Enums.ProviderTypeInLog.NeoBank,
+                    AuditType = Enums.AuditType.Provider
+                };
+                _logService.LogError(callLog);
                 return Result<UserDepositBalanceResponse>.Failure(new Error("2201000", GlobalResource.UnexpectedError));
             }
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, $"Request: Unhandled Exception for Request {nameof(GetUserDepositBalance)}");
+            var callLog = new CallLogModel
+            {
+                RequestBody = "",
+                ResponseBody = ex.Message,
+                ServiceCallDate = DateTime.Now,
+                ServiceCallUrl = neobankConfig.UserDepositBalanceUrl,
+                ServiceCallStatus = false,
+                ServiceType = Enums.ServiceType.GetUserDepositBalance,
+                CreationDate = DateTime.Now,
+                CreationUserId = currentUser.UserId,
+                ErrorCode = ex.GetType().Name,
+                ErrorType = ex.Message,
+                ProviderType = Enums.ProviderTypeInLog.NeoBank,
+                AuditType = Enums.AuditType.Provider
+            };
+            _logService.LogError(callLog);
             return Result<UserDepositBalanceResponse>.Failure(new Error("2201000", GlobalResource.UnexpectedError));
         }
     }

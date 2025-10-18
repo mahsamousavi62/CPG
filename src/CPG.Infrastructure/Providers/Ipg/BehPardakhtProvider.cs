@@ -13,17 +13,15 @@ using System;
 using System.Net;
 using System.Threading.Tasks;
 using CPG.Domain.SharedKernel.Logging;
-using Microsoft.Extensions.Logging;
 using BehPardakhtServiceReference;
 
 namespace CPG.Infrastructure.Providers.Ipg;
 
 public class BehPardakhtProvider(
-    ReadDbContext context, IApplicationSettingsRepository applicationSettingsRepository, ILogService logService, ILogger<BehPardakhtProvider> logger) : IIpgProvider
+    ReadDbContext context, IApplicationSettingsRepository applicationSettingsRepository, ILogService logService) : IIpgProvider
 {
     private readonly IApplicationSettingsRepository _applicationSettingRepositoy = applicationSettingsRepository;
     private readonly ILogService _logService = logService;
-    private readonly ILogger<BehPardakhtProvider> _logger = logger;
     private readonly ReadDbContext context = context;
     private readonly byte serviceCallMaxTryCounter = 5;
     private byte tokenFailCounter = 0;
@@ -109,7 +107,22 @@ public class BehPardakhtProvider(
         }
         catch (Exception exc)
         {
-            _logger.LogError(exc, nameof(PaymentGatewayClient.bpPayRequestAsync));
+            var callLog = new CallLogModel
+            {
+                RequestBody = JsonConvert.SerializeObject(new { terminalId, userName, request.PaymentRequestAmount }),
+                ResponseBody = exc.Message,
+                ServiceCallDate = DateTime.Now,
+                ServiceCallUrl = nameof(PaymentGatewayClient.bpPayRequestAsync),
+                ServiceCallStatus = false,
+                ServiceType = Enums.ServiceType.BehPardakhtToken,
+                CreationDate = DateTime.Now,
+                CreationUserId = 1,
+                ErrorCode = exc.GetType().Name,
+                ErrorType = exc.Message,
+                ProviderType = Enums.ProviderTypeInLog.BehPardakht,
+                AuditType = Enums.AuditType.Provider
+            };
+            _logService.LogError(callLog);
 
             if (tokenFailCounter < serviceCallMaxTryCounter)
             {
@@ -169,7 +182,22 @@ public class BehPardakhtProvider(
         }
         catch (Exception exc)
         {
-            _logger.LogError(exc, nameof(PaymentGatewayClient.bpVerifyRequestAsync));
+            var callLog = new CallLogModel
+            {
+                RequestBody = JsonConvert.SerializeObject(new { terminalId, userName, request.TrackId }),
+                ResponseBody = exc.Message,
+                ServiceCallDate = DateTime.Now,
+                ServiceCallUrl = nameof(PaymentGatewayClient.bpVerifyRequestAsync),
+                ServiceCallStatus = false,
+                ServiceType = Enums.ServiceType.BehPardakhtVerify,
+                CreationDate = DateTime.Now,
+                CreationUserId = 1,
+                ErrorCode = exc.GetType().Name,
+                ErrorType = exc.Message,
+                ProviderType = Enums.ProviderTypeInLog.BehPardakht,
+                AuditType = Enums.AuditType.Provider
+            };
+            _logService.LogError(callLog);
 
             if (verifyFailCounter < serviceCallMaxTryCounter)
             {
@@ -224,7 +252,22 @@ public class BehPardakhtProvider(
         }
         catch (Exception exc)
         {
-            _logger.LogError(exc, nameof(PaymentGatewayClient.bpSettleRequestAsync));
+            var callLog = new CallLogModel
+            {
+                RequestBody = JsonConvert.SerializeObject(new { terminalId, userName, request.TrackId }),
+                ResponseBody = exc.Message,
+                ServiceCallDate = DateTime.Now,
+                ServiceCallUrl = nameof(PaymentGatewayClient.bpSettleRequestAsync),
+                ServiceCallStatus = false,
+                ServiceType = Enums.ServiceType.BehPardakhtSettle,
+                CreationDate = DateTime.Now,
+                CreationUserId = 1,
+                ErrorCode = exc.GetType().Name,
+                ErrorType = exc.Message,
+                ProviderType = Enums.ProviderTypeInLog.BehPardakht,
+                AuditType = Enums.AuditType.Provider
+            };
+            _logService.LogError(callLog);
 
             if (settleFailCounter < serviceCallMaxTryCounter)
             {

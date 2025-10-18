@@ -11,11 +11,9 @@ using CPG.Infrastructure.Providers.NeoBank;
 using HotChocolate.Execution.Processing;
 using IdentityModel.Client;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Serilog.Context;
 using Serilog.Core;
 using System;
 using System.Net.Http;
@@ -29,14 +27,14 @@ namespace CPG.Infrastructure.Providers.Charispay
     {
         public readonly IHttpClientFactory _factory;
         private readonly IConfiguration configuration;
-        private readonly ILogger<CharisPayProvider> _logger;
+        private readonly ILogService _logService;
         private readonly ICurrentUser _currentUser;
 
-        public CharisPayProvider(IHttpClientFactory factory, IConfiguration configuration, ILogger<CharisPayProvider> logger, ICurrentUser currentUser)
+        public CharisPayProvider(IHttpClientFactory factory, IConfiguration configuration, ILogService logService, ICurrentUser currentUser)
         {
             _factory = factory;
             this.configuration = configuration;
-            _logger = logger;
+            _logService = logService;
             _currentUser = currentUser;
         }
 
@@ -73,10 +71,7 @@ namespace CPG.Infrastructure.Providers.Charispay
                     AuditType = Enums.AuditType.Provider
                 };
 
-                using (LogContext.PushProperty("CallLog", callLog, true))
-                {
-                    _logger.LogInformation("[CallLog] {@CallLog}", callLog);
-                }
+                _logService.LogInformation(callLog);
 
 
                 var response = JsonConvert.DeserializeObject<CharispayResponseBase<InquiryIbanResponse>>(resultContent);
@@ -108,13 +103,43 @@ namespace CPG.Infrastructure.Providers.Charispay
             }
             catch (HttpRequestException ex)
             {
-                _logger.LogError(ex, $"Request: Unhandled HttpRequestException for Request {nameof(GetAccountNumber)}{ex.Message} ");
+                var callLog = new CallLogModel
+                {
+                    RequestBody = JsonConvert.SerializeObject(new { iban }),
+                    ResponseBody = ex.Message,
+                    ServiceCallDate = DateTime.Now,
+                    ServiceCallUrl = charisPayConfig.InqueryIbanUrl,
+                    ServiceCallStatus = false,
+                    ServiceType = Enums.ServiceType.GetAccountNumber,
+                    CreationDate = DateTime.Now,
+                    CreationUserId = _currentUser.UserId,
+                    ErrorCode = ex.GetType().Name,
+                    ErrorType = ex.Message,
+                    ProviderType = Enums.ProviderTypeInLog.CharisPay,
+                    AuditType = Enums.AuditType.Provider
+                };
+                _logService.LogError(callLog);
                 return Result<AccountNumberResponse>.Failure(new Error("2201000", GlobalResource.UnexpectedError));
             }
 
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Request: Unhandled Exception for Request {nameof(GetAccountNumber)}{ex.Message} ");
+                var callLog = new CallLogModel
+                {
+                    RequestBody = JsonConvert.SerializeObject(new { iban }),
+                    ResponseBody = ex.Message,
+                    ServiceCallDate = DateTime.Now,
+                    ServiceCallUrl = charisPayConfig.InqueryIbanUrl,
+                    ServiceCallStatus = false,
+                    ServiceType = Enums.ServiceType.GetAccountNumber,
+                    CreationDate = DateTime.Now,
+                    CreationUserId = _currentUser.UserId,
+                    ErrorCode = ex.GetType().Name,
+                    ErrorType = ex.Message,
+                    ProviderType = Enums.ProviderTypeInLog.CharisPay,
+                    AuditType = Enums.AuditType.Provider
+                };
+                _logService.LogError(callLog);
                 return Result<AccountNumberResponse>.Failure(new Error("2201000", GlobalResource.UnexpectedError));
             }
 

@@ -8,16 +8,17 @@ using System.Threading.Tasks;
 using CPG.Application.UseCases.Exceptions;
 using CPG.Domain.Exceptions;
 using CPG.Domain.SharedKernel;
+using CPG.Domain.SharedKernel.Logging;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Infrastructure.ErrorHandling;
 
-public class ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandlingMiddleware> logger)
+public class ErrorHandlingMiddleware(RequestDelegate next, ILogService logService)
 {
     private readonly RequestDelegate _next = next;
-    private readonly ILogger<ErrorHandlingMiddleware> _logger = logger;
+    private readonly ILogService _logService = logService;
 
     public async Task Invoke(HttpContext context)
     {
@@ -27,7 +28,23 @@ public class ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandling
         }
         catch (Exception ex)
         {
-            _logger.LogError("Error details: {@ex}", ex);
+            var callLog = new CallLogModel
+            {
+                RequestBody = context.Request.Path,
+                ResponseBody = ex.Message,
+                ServiceCallDate = DateTime.Now,
+                ServiceCallUrl = context.Request.Path,
+                ServiceCallStatus = false,
+                ServiceType = Enums.ServiceType.ErrorHandling,
+                CreationDate = DateTime.Now,
+                CreationUserId = 1,
+                ErrorCode = ex.GetType().Name,
+                ErrorType = ex.Message,
+                ProviderType = Enums.ProviderTypeInLog.Internal,
+                AuditType = Enums.AuditType.Develop,
+                StackTrace = ex.StackTrace
+            };
+            _logService.LogError(callLog);
             await HandleExceptionAsync(context, ex);
         }
     }

@@ -124,4 +124,102 @@ public partial class LogService(ILogger<LogService> logger, IHttpContextAccessor
 
     [GeneratedRegex(Constants.Pattern)]
     private static partial Regex MyRegex();
+
+    // New structured logging methods
+    public void LogInformation(CallLogModel callLog)
+    {
+        PrepareCallLog(callLog, 1); // 1 = Information
+        using (LogContext.PushProperty("CallLog", callLog, true))
+        {
+            _logger.LogInformation("[CallLog] {@CallLog}", callLog);
+        }
+    }
+
+    public void LogWarning(CallLogModel callLog)
+    {
+        PrepareCallLog(callLog, 2); // 2 = Warning
+        using (LogContext.PushProperty("CallLog", callLog, true))
+        {
+            _logger.LogWarning("[CallLog] {@CallLog}", callLog);
+        }
+    }
+
+    public void LogError(CallLogModel callLog)
+    {
+        PrepareCallLog(callLog, 3); // 3 = Error
+        using (LogContext.PushProperty("CallLog", callLog, true))
+        {
+            _logger.LogError("[CallLog] {@CallLog}", callLog);
+        }
+    }
+
+    public void LogDebug(CallLogModel callLog)
+    {
+        PrepareCallLog(callLog, 4); // 4 = Debug
+        using (LogContext.PushProperty("CallLog", callLog, true))
+        {
+            _logger.LogDebug("[CallLog] {@CallLog}", callLog);
+        }
+    }
+
+    private void PrepareCallLog(CallLogModel callLog, int auditLevel)
+    {
+        // Set audit level if not already set
+        if (callLog.AuditLevel == 0)
+        {
+            callLog.AuditLevel = auditLevel;
+        }
+
+        // Generate LogId if not set: {Id} - {Domain} - {Abbreviation of Exception}
+        if (string.IsNullOrEmpty(callLog.LogId))
+        {
+            var domain = callLog.ServiceName ?? "CPG";
+            var exceptionAbbr = GetExceptionAbbreviation(callLog.ErrorCode);
+            callLog.LogId = $"{Guid.NewGuid()} - {domain} - {exceptionAbbr}";
+        }
+
+        // Set EndDateTime and calculate Duration if not set
+        if (!callLog.EndDateTime.HasValue && callLog.StartDateTime != default)
+        {
+            callLog.EndDateTime = DateTime.Now;
+            callLog.DurationMs = (long)(callLog.EndDateTime.Value - callLog.StartDateTime).TotalMilliseconds;
+        }
+
+        // Get correlation ID and request ID from HTTP context if not set
+        var httpContext = _httpContextAccessor.HttpContext;
+        if (httpContext != null)
+        {
+            if (string.IsNullOrEmpty(callLog.CorrelationId))
+            {
+                callLog.CorrelationId = httpContext.TraceIdentifier;
+            }
+
+            if (string.IsNullOrEmpty(callLog.RequestId))
+            {
+                callLog.RequestId = httpContext.TraceIdentifier;
+            }
+
+            if (string.IsNullOrEmpty(callLog.Ip))
+            {
+                callLog.Ip = httpContext.Connection.RemoteIpAddress?.ToString();
+            }
+
+            if (string.IsNullOrEmpty(callLog.UserAgent))
+            {
+                callLog.UserAgent = httpContext.Request.Headers["User-Agent"].ToString();
+            }
+        }
+    }
+
+    private static string GetExceptionAbbreviation(string errorCode)
+    {
+        if (string.IsNullOrEmpty(errorCode))
+            return "OK";
+
+        // Extract abbreviation from exception type name
+        // e.g., "NullReferenceException" -> "NRE"
+        var words = System.Text.RegularExpressions.Regex.Split(errorCode, @"(?<!^)(?=[A-Z])");
+        var abbreviation = string.Join("", words.Select(w => w.Length > 0 ? w[0] : ' ').Take(3));
+        return abbreviation.ToUpper();
+    }
 }

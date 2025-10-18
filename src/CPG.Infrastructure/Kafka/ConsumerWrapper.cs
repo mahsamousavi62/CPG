@@ -1,5 +1,5 @@
 ﻿using Confluent.Kafka;
-using Microsoft.Extensions.Logging;
+using CPG.Domain.SharedKernel.Logging;
 using System;
 using System.Threading;
 
@@ -7,19 +7,39 @@ namespace CPG.Infrastructure.Kafka;
 
 public class ConsumerWrapper
 {
-    private readonly ILogger<ConsumerWrapper> _logger;
+    private readonly ILogService _logService;
     private readonly IConsumer<string, string> _consumer;
 
-    public ConsumerWrapper(ILogger<ConsumerWrapper> logger,
+    public ConsumerWrapper(ILogService logService,
                            ConsumerConfig config,
                            string topicName)
     {
-        _logger = logger;
+        _logService = logService;
         _consumer = new ConsumerBuilder<string, string>(config)
-          .SetErrorHandler((_, e) => _logger.LogError(e.Reason))
+          .SetErrorHandler((_, e) => LogKafkaError(e.Reason))
           .Build();
 
         _consumer.Subscribe(topicName);
+    }
+
+    private void LogKafkaError(string errorReason)
+    {
+        var callLog = new CallLogModel
+        {
+            RequestBody = "",
+            ResponseBody = errorReason,
+            ServiceCallDate = DateTime.Now,
+            ServiceCallUrl = "Kafka Consumer",
+            ServiceCallStatus = false,
+            ServiceType = Enums.ServiceType.Kafka,
+            CreationDate = DateTime.Now,
+            CreationUserId = 1,
+            ErrorCode = "KafkaError",
+            ErrorType = errorReason,
+            ProviderType = Enums.ProviderTypeInLog.Kafka,
+            AuditType = Enums.AuditType.Develop
+        };
+        _logService.LogError(callLog);
     }
 
     public string ReadMessages(CancellationToken cancellationToken)
@@ -37,7 +57,22 @@ public class ConsumerWrapper
                 }
                 catch (ConsumeException exc)
                 {
-                    _logger.LogError(exc.Error.Reason);
+                    var callLog = new CallLogModel
+                    {
+                        RequestBody = "",
+                        ResponseBody = exc.Error.Reason,
+                        ServiceCallDate = DateTime.Now,
+                        ServiceCallUrl = "Kafka Consumer",
+                        ServiceCallStatus = false,
+                        ServiceType = Enums.ServiceType.Kafka,
+                        CreationDate = DateTime.Now,
+                        CreationUserId = 1,
+                        ErrorCode = exc.Error.Code.ToString(),
+                        ErrorType = exc.Error.Reason,
+                        ProviderType = Enums.ProviderTypeInLog.Kafka,
+                        AuditType = Enums.AuditType.Develop
+                    };
+                    _logService.LogError(callLog);
                     continue;
                 }
 

@@ -4,17 +4,16 @@ using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Helper;
 using CPG.Domain.SharedKernel.Logging;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace CPG.Application.Shared.Behaviours;
 
-public class UnhandledExceptionBehaviour<TRequest, TResponse>(ILogger<TRequest> logger) : IPipelineBehavior<TRequest, TResponse>
+public class UnhandledExceptionBehaviour<TRequest, TResponse>(ILogService logService) : IPipelineBehavior<TRequest, TResponse>
     where TRequest : notnull
 {
-    private readonly ILogger<TRequest> _logger = logger;
+    private readonly ILogService _logService = logService;
 
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
@@ -55,6 +54,6 @@ public class UnhandledExceptionBehaviour<TRequest, TResponse>(ILogger<TRequest> 
             ErrorCode = hasCode ? (ex as dynamic)?.Code : string.Empty,
         };
 
-        _logger.LogError(ex, "Request: Unhandled Exception for Request {Name} {@log}", requestName, log);
+        _logService.LogError(ex, "Request: Unhandled Exception for Request {Name} {@log}", requestName, log);
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -14,10 +13,11 @@ using System.Linq;
 using CPG.Infrastructure.Authorization.Models;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.AggregateModels.ApplicationAggregate;
+using CPG.Domain.SharedKernel.Logging;
 
 namespace CPG.Infrastructure.Authorization;
 
-public class ExternalServicesMiddleware(RequestDelegate next, ILogger<ExternalServicesMiddleware> logger)
+public class ExternalServicesMiddleware(RequestDelegate next, ILogService logService)
 {
     private readonly List<string> anonymousApis = new List<string> { "api/common", "graphql", "hangfire", "ipgresult", "GetPaymentMethods", "CancelPaymentRequest", "CreateIPGJsonStr", "CreatePaymentReceiptRequest", "GetDepositsByPaymentCode", "AnonymousStatus" };
 
@@ -117,7 +117,7 @@ public class ExternalServicesMiddleware(RequestDelegate next, ILogger<ExternalSe
             ServiceCallUrl = httpContext.Request.Path.Value?.ToLower(),
             ServiceCallStatusCode = httpContext.Response.StatusCode,
         };
-        logger.LogInformation("[ExternalServiceCallLog] {@ExternalServiceCallLog}", externalServiceCallLog);
+        logService.LogInformation("[ExternalServiceCallLog] {@ExternalServiceCallLog}", externalServiceCallLog);
     }
 
     private static bool ContainsAny(string mainString, List<string> substrings)

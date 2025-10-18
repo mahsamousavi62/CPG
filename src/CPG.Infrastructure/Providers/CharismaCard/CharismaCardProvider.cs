@@ -6,12 +6,12 @@ using CPG.Domain.SharedKernel.Communication;
 using CPG.Domain.SharedKernel.Communication.CharismaCard;
 using CPG.Domain.SharedKernel.Communication.CharismaCard.Models;
 using CPG.Domain.SharedKernel.Interfaces;
+using CPG.Domain.SharedKernel.Logging;
 using IdentityModel;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -22,14 +22,14 @@ namespace CPG.Infrastructure.Providers.CharismaCard;
 
 public class CharismaCardProvider(IHttpProvider httpProvider,
 	   IHttpClientFactory factory, IConfiguration configuration, IAuthService authService,
-	IHttpContextAccessor httpContextAccessor, ILogger<CharismaCardProvider> logger, ICurrentUser currentUser) : ICharismaCardService
+	IHttpContextAccessor httpContextAccessor, ILogService logService, ICurrentUser currentUser) : ICharismaCardService
 {
 
 	private readonly IHttpClientFactory factory = factory;
 	private readonly IConfiguration configuration = configuration;
 	private readonly IAuthService authService = authService;
 	private readonly IHttpContextAccessor httpContextAccessor = httpContextAccessor;
-	private readonly ILogger<CharismaCardProvider> logger = logger;
+	private readonly ILogService _logService = logService;
 	private readonly ICurrentUser currentUser = currentUser;
 
 	public async Task<Result<CharismaCardUserDepositBalanceResponse>> GetUserDepositBalance(string nationalCode)
@@ -59,7 +59,22 @@ public class CharismaCardProvider(IHttpProvider httpProvider,
 		}
 		catch (Exception ex)
 		{
-			logger.LogError(ex, "Exception occurred while calling CharismaCard GetUserDepositBalance");
+			var callLog = new CallLogModel
+			{
+				RequestBody = System.Text.Json.JsonSerializer.Serialize(new { nationalCode }),
+				ResponseBody = ex.Message,
+				ServiceCallDate = DateTime.Now,
+				ServiceCallUrl = charismaCardConfig.GetUserDepositBalanceUrl,
+				ServiceCallStatus = false,
+				ServiceType = Enums.ServiceType.GetUserDepositBalance,
+				CreationDate = DateTime.Now,
+				CreationUserId = currentUser.UserId,
+				ErrorCode = ex.GetType().Name,
+				ErrorType = ex.Message,
+				ProviderType = Enums.ProviderTypeInLog.CharismaCard,
+				AuditType = Enums.AuditType.Provider
+			};
+			_logService.LogError(callLog);
 			return Result<CharismaCardUserDepositBalanceResponse>.Failure(new Error("2451000", GlobalResource.UnexpectedError));
 		}
 	}
@@ -128,7 +143,20 @@ public class CharismaCardProvider(IHttpProvider httpProvider,
 				request,
 				DirectDebitErrorHandler,
 				DirectDebitDecoder);
-			logger.LogInformation("CharismaCard DirectDebitRequest successful for user {UserId}. Response: {Response}", currentUser.UserId, directDebitResponse);
+			var successLog = new CallLogModel
+		{
+			RequestBody = System.Text.Json.JsonSerializer.Serialize(request),
+			ResponseBody = System.Text.Json.JsonSerializer.Serialize(directDebitResponse),
+			ServiceCallDate = DateTime.Now,
+			ServiceCallUrl = charismaCardConfig.DirectDebitRequestUrl,
+			ServiceCallStatus = true,
+			ServiceType = Enums.ServiceType.ClientDirectDebit,
+			CreationDate = DateTime.Now,
+			CreationUserId = currentUser.UserId,
+			ProviderType = Enums.ProviderTypeInLog.CharismaCard,
+			AuditType = Enums.AuditType.Provider
+		};
+		_logService.LogInformation(successLog);
 
 			if (directDebitResponse.IsSuccess)
 			{
@@ -142,7 +170,22 @@ public class CharismaCardProvider(IHttpProvider httpProvider,
 		}
 		catch (Exception ex)
 		{
-			logger.LogError(ex, "Exception occurred while calling CharismaCard DirectDebitRequest");
+			var callLog = new CallLogModel
+			{
+				RequestBody = System.Text.Json.JsonSerializer.Serialize(request),
+				ResponseBody = ex.Message,
+				ServiceCallDate = DateTime.Now,
+				ServiceCallUrl = charismaCardConfig.DirectDebitRequestUrl,
+				ServiceCallStatus = false,
+				ServiceType = Enums.ServiceType.ClientDirectDebit,
+				CreationDate = DateTime.Now,
+				CreationUserId = currentUser.UserId,
+				ErrorCode = ex.GetType().Name,
+				ErrorType = ex.Message,
+				ProviderType = Enums.ProviderTypeInLog.CharismaCard,
+				AuditType = Enums.AuditType.Provider
+			};
+			_logService.LogError(callLog);
 			return Result<DirectDebitResponse>.Failure(new Error("2452000", GlobalResource.UnexpectedError));
 		}
 	}
@@ -182,7 +225,22 @@ public class CharismaCardProvider(IHttpProvider httpProvider,
 		}
 		catch (Exception ex)
 		{
-			logger.LogError(ex, "Exception occurred while calling CharismaCard GetDirectDebitResult");
+			var callLog = new CallLogModel
+			{
+				RequestBody = System.Text.Json.JsonSerializer.Serialize(request),
+				ResponseBody = ex.Message,
+				ServiceCallDate = DateTime.Now,
+				ServiceCallUrl = charismaCardConfig.DirectDebitResultUrl,
+				ServiceCallStatus = false,
+				ServiceType = Enums.ServiceType.ClientDirectDebit,
+				CreationDate = DateTime.Now,
+				CreationUserId = currentUser.UserId,
+				ErrorCode = ex.GetType().Name,
+				ErrorType = ex.Message,
+				ProviderType = Enums.ProviderTypeInLog.CharismaCard,
+				AuditType = Enums.AuditType.Provider
+			};
+			_logService.LogError(callLog);
 			return Result<DirectDebitResultResponse>.Failure(new Error("2453000", GlobalResource.UnexpectedError));
 		}
 	}

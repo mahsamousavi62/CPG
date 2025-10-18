@@ -6,16 +6,15 @@ using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Interfaces;
 using CPG.Domain.SharedKernel.Logging;
 using MediatR;
-using Microsoft.Extensions.Logging;
 
 namespace CPG.Application.Shared.Behaviours;
 
 public class PerformanceBehaviour<TRequest, TResponse>(
-    ILogger<TRequest> logger,
+    ILogService logService,
     ICurrentUser user) : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
 {
     private readonly Stopwatch _timer = new();
-    private readonly ILogger<TRequest> _logger = logger;
+    private readonly ILogService _logService = logService;
     private readonly ICurrentUser _user = user;
 
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
@@ -44,7 +43,7 @@ public class PerformanceBehaviour<TRequest, TResponse>(
                 AuditType = Enums.AuditType.Develop
             };
 
-            _logger.LogWarning("Long Running Request {@log}", log);
+            _logService.LogWarning("Long Running Request {@log}", log);
 
         }
 

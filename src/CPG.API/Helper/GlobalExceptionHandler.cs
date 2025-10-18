@@ -7,9 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CPG.API.Helper;
 
-internal sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
+internal sealed class GlobalExceptionHandler(ILogService logService) : IExceptionHandler
 {
-    private readonly ILogger<GlobalExceptionHandler> _logger = logger;
+    private readonly ILogService _logService = logService;
 
     public async ValueTask<bool> TryHandleAsync(
         HttpContext httpContext,
@@ -31,7 +31,7 @@ internal sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> log
             IsSuccess = false,
             ErrorCode = code,
         };
-        _logger.LogError(exception, "Exception occurred: {log}", log);
+        _logService.LogError(exception, "Exception occurred: {log}", log);
 
         var problemDetails = new ProblemDetails
         {

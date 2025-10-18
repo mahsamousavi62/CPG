@@ -9,7 +9,6 @@ using CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
 using CPG.Domain.SharedKernel.Helper;
 using CPG.Domain.SharedKernel.Logging;
 using CPG.Infrastructure.Persistence.DbContexts;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PecServiceReference1;
@@ -19,11 +18,10 @@ using System.Threading.Tasks;
 namespace CPG.Infrastructure.Providers.Ipg;
 
 public class PecProvider(
-    ReadDbContext context, IApplicationSettingsRepository applicationSettingsRepository, ILogService logService, ILogger<PecProvider> logger) : IIpgProvider
+    ReadDbContext context, IApplicationSettingsRepository applicationSettingsRepository, ILogService logService) : IIpgProvider
 {
     private readonly IApplicationSettingsRepository _applicationSettingRepositoy = applicationSettingsRepository;
     private readonly ILogService _logService = logService;
-    private readonly ILogger<PecProvider> _logger = logger;
     private readonly ReadDbContext context = context;
 
     public async Task<PaymentTokenResponse> GetPaymentTokenAsync(PaymentTokenRequest request)
@@ -74,7 +72,22 @@ public class PecProvider(
         }
         catch (Exception exc)
         {
-            _logger.LogError(exc, nameof(SaleServiceSoapClient));
+            var callLog = new CallLogModel
+            {
+                RequestBody = JsonConvert.SerializeObject(new { request.PaymentRequestAmount, OrderId = trackerId }),
+                ResponseBody = exc.Message,
+                ServiceCallDate = DateTime.Now,
+                ServiceCallUrl = nameof(SaleServiceSoapClient),
+                ServiceCallStatus = false,
+                ServiceType = Enums.ServiceType.PecToken,
+                CreationDate = DateTime.Now,
+                CreationUserId = 1,
+                ErrorCode = exc.GetType().Name,
+                ErrorType = exc.Message,
+                ProviderType = Enums.ProviderTypeInLog.Pec,
+                AuditType = Enums.AuditType.Provider
+            };
+            _logService.LogError(callLog);
             throw;
         }
     }
@@ -107,7 +120,22 @@ public class PecProvider(
         }
         catch (Exception exc)
         {
-            _logger.LogError(exc, nameof(ConfirmServiceSoapClient));
+            var callLog = new CallLogModel
+            {
+                RequestBody = JsonConvert.SerializeObject(new { transactionResultRequest.Token }),
+                ResponseBody = exc.Message,
+                ServiceCallDate = DateTime.Now,
+                ServiceCallUrl = nameof(ConfirmServiceSoapClient),
+                ServiceCallStatus = false,
+                ServiceType = Enums.ServiceType.PecVerify,
+                CreationDate = DateTime.Now,
+                CreationUserId = 1,
+                ErrorCode = exc.GetType().Name,
+                ErrorType = exc.Message,
+                ProviderType = Enums.ProviderTypeInLog.Pec,
+                AuditType = Enums.AuditType.Provider
+            };
+            _logService.LogError(callLog);
             throw;
         }
     }

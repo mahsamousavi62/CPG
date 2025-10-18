@@ -5,24 +5,19 @@ using CPG.Domain.SharedKernel.Communication;
 using CPG.Domain.SharedKernel.Communication.Ipg;
 using CPG.Domain.SharedKernel.Logging;
 using CPG.Infrastructure.Persistence.DbContexts;
-using Microsoft.Extensions.Logging;
 
 namespace CPG.Infrastructure.Providers.Ipg
 {
     public class IpgFactory(IHttpProvider httpProvider,
         ILogService logService,
         IApplicationSettingsRepository applicationSettingsRepository,
-        ReadDbContext context,
-        ILogger<PecProvider> pecProviderLogger,
-        ILogger<BehPardakhtProvider> behPardakhtProviderLogger
+        ReadDbContext context
         ) : IIpgFactory
     {
         private readonly IHttpProvider _httpProvider = httpProvider;
         private readonly IApplicationSettingsRepository _applicationSettingsRepository = applicationSettingsRepository;
         private readonly ReadDbContext _context = context;
         private readonly ILogService _logService = logService;
-        private readonly ILogger<PecProvider> _pecProviderLogger = pecProviderLogger;
-        private readonly ILogger<BehPardakhtProvider> _behPardakhtProviderLogger = behPardakhtProviderLogger;
         public IIpgProvider GetInstance(Enums.ProviderType providerType)
         {
             switch (providerType)
@@ -37,11 +32,11 @@ namespace CPG.Infrastructure.Providers.Ipg
                     }
                 case Enums.ProviderType.Pec:
                     {
-                        return new PecProvider(_context, _applicationSettingsRepository, _logService, _pecProviderLogger);
+                        return new PecProvider(_context, _applicationSettingsRepository, _logService);
                     }
                 case Enums.ProviderType.BehPardakht:
                     {
-                        return new BehPardakhtProvider(_context, _applicationSettingsRepository, _logService, _behPardakhtProviderLogger);
+                        return new BehPardakhtProvider(_context, _applicationSettingsRepository, _logService);
                     }
                 case Enums.ProviderType.Ayandeh:
                     {

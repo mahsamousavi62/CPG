@@ -3,13 +3,12 @@ using System.Threading.Tasks;
 using CPG.Domain.SharedKernel.Logging;
 using CPG.Domain.SharedKernel;
 using MediatR.Pipeline;
-using Microsoft.Extensions.Logging;
 
 namespace CPG.Application.MediatorRequestPipelines;
 
-public class PreRequestLogger<TRequest>(ILogger<TRequest> logger) : IRequestPreProcessor<TRequest>
+public class PreRequestLogger<TRequest>(ILogService logService) : IRequestPreProcessor<TRequest>
 {
-    private readonly ILogger<TRequest> _logger = logger;
+    private readonly ILogService _logService = logService;
 
     public Task Process(TRequest request, CancellationToken cancellationToken = default)
     {
@@ -20,7 +19,7 @@ public class PreRequestLogger<TRequest>(ILogger<TRequest> logger) : IRequestPreP
             ServiceName = requestName
         };
 
-        _logger.LogInformation("Request started: {log}", log);
+        _logService.LogInformation("Request started: {log}", log);
 
         return Task.CompletedTask;
     }

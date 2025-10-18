@@ -10,22 +10,20 @@ using CPG.Application.Auth;
 using CPG.Domain.SharedKernel.Communication;
 using static CPG.Domain.SharedKernel.Enums;
 using System.Collections.Generic;
-using Microsoft.Extensions.Logging;
 using CPG.Domain.SharedKernel.Logging;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
-using Serilog.Context;
 using CPG.Domain.SharedKernel.Communication.Idp.Models.UserStatus;
 
 namespace CPG.Infrastructure.Providers.Idp;
 public class IdpProvider(
     IAuthService authService,
     IHttpProvider httpProvider,
-    ILogger<IdpProvider> logger,
+    ILogService logService,
     IHttpClientFactory httpClientFactory,
     IHttpContextAccessor httpContextAccessor) : IIdpProvider
 {
-    private readonly ILogger<IdpProvider> _logger = logger;
+    private readonly ILogService _logService = logService;
     private readonly IAuthService _authService = authService;
     private readonly IHttpProvider _httpProvider = httpProvider;
     public readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
@@ -80,6 +78,8 @@ public class IdpProvider(
     {
         var httpClient = _httpClientFactory.CreateClient("idpClient");
 
+        _ = long.TryParse(_httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value, out long UserId);
+
         var disco = await httpClient.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
         {
             Address = appConfig.Authority,
@@ -87,7 +87,22 @@ public class IdpProvider(
         });
         if (disco.IsError)
         {
-            _logger.LogError($"Error:{disco.Error} Exception:{disco.Exception}", nameof(GetClientCredentialsToken));
+            var callLog = new CallLogModel
+            {
+                RequestBody = System.Text.Json.JsonSerializer.Serialize(new { Address = appConfig.Authority }),
+                ResponseBody = disco.Error,
+                ServiceCallDate = DateTime.Now,
+                ServiceCallUrl = appConfig.Authority,
+                ServiceCallStatus = false,
+                ServiceType = Enums.ServiceType.GetIdpToken,
+                CreationDate = DateTime.Now,
+                CreationUserId = UserId == 0 ? 1 : UserId,
+                ErrorCode = disco.Exception?.GetType().Name,
+                ErrorType = disco.Error,
+                ProviderType = Enums.ProviderTypeInLog.Idp,
+                AuditType = Enums.AuditType.Provider
+            };
+            _logService.LogError(callLog);
             return new ResultData<string> { Error = disco.Error, OperationResult = Enums.OperationResult.Failed };
         }
 
@@ -99,8 +114,6 @@ public class IdpProvider(
             Scope = appConfig.ServerScope,
         };
         var tokenResponse = await httpClient.RequestClientCredentialsTokenAsync(tokenRequest);
-
-        _ = long.TryParse(_httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value, out long UserId);
 
         var callLog = new CallLogModel
         {
@@ -116,15 +129,26 @@ public class IdpProvider(
             AuditType = Enums.AuditType.Provider
         };
 
-        using (LogContext.PushProperty("CallLog", callLog, true))
-        {
-            _logger.LogInformation("[CallLog] {@CallLog}", callLog);
-        }
+        _logService.LogInformation(callLog);
 
         if (tokenResponse.IsError)
         {
-            _logger.LogError($"Error:{tokenResponse.Error} ErrorDescription:{tokenResponse.ErrorDescription}"
-                             , nameof(GetClientCredentialsToken));
+            var errorCallLog = new CallLogModel
+            {
+                RequestBody = System.Text.Json.JsonSerializer.Serialize(tokenRequest),
+                ResponseBody = $"Error:{tokenResponse.Error} ErrorDescription:{tokenResponse.ErrorDescription}",
+                ServiceCallDate = DateTime.Now,
+                ServiceCallUrl = disco.TokenEndpoint,
+                ServiceCallStatus = false,
+                ServiceType = Enums.ServiceType.GetIdpToken,
+                CreationDate = DateTime.Now,
+                CreationUserId = UserId == 0 ? 1 : UserId,
+                ErrorCode = "TokenError",
+                ErrorType = tokenResponse.Error,
+                ProviderType = Enums.ProviderTypeInLog.Idp,
+                AuditType = Enums.AuditType.Provider
+            };
+            _logService.LogError(errorCallLog);
             return new ResultData<string>
             {
                 Error = $"Error:{tokenResponse.Error} ErrorDescription:{tokenResponse.ErrorDescription}",

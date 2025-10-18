@@ -1,18 +1,19 @@
 ﻿using Charisma.MessagingContracts.UsersManagement.User;
 using MassTransit;
-using Microsoft.Extensions.Logging;
+using CPG.Domain.SharedKernel.Logging;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System;
 
 namespace CPG.Infrastructure.Masstransit.Consumer.UserRegistered
 {
     internal sealed class UserRegisteredFaultConsumer : IConsumer<Fault<IUserRegistered>>
     {
-        private readonly ILogger<FaultConsumer> _logger;
+        private readonly ILogService _logService;
 
-        public UserRegisteredFaultConsumer(ILogger<FaultConsumer> logger)
+        public UserRegisteredFaultConsumer(ILogService logService)
         {
-            _logger = logger;
+            _logService = logService;
         }
 
         public Task Consume(ConsumeContext<Fault<IUserRegistered>> context)
@@ -22,8 +23,22 @@ namespace CPG.Infrastructure.Masstransit.Consumer.UserRegistered
                 WriteIndented = true,
             });
 
-            _logger.LogError("Message consuming made a fault - {MessageId}, {CorrelationId}, {InitiatorId}, {ExceptionsInfo}",
-                context.MessageId, context.CorrelationId, context.InitiatorId, exceptions);
+            var callLog = new CallLogModel
+            {
+                RequestBody = $"MessageId: {context.MessageId}, CorrelationId: {context.CorrelationId}, InitiatorId: {context.InitiatorId}",
+                ResponseBody = exceptions,
+                ServiceCallDate = DateTime.Now,
+                ServiceCallUrl = "MassTransit UserRegistered Fault Consumer",
+                ServiceCallStatus = false,
+                ServiceType = Enums.ServiceType.MassTransit,
+                CreationDate = DateTime.Now,
+                CreationUserId = 1,
+                ErrorCode = "FaultMessage",
+                ErrorType = "Message consuming made a fault",
+                ProviderType = Enums.ProviderTypeInLog.MassTransit,
+                AuditType = Enums.AuditType.Develop
+            };
+            _logService.LogError(callLog);
 
             return Task.CompletedTask;
         }
