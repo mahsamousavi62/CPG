@@ -59,21 +59,18 @@ public class CharismaCardProvider(IHttpProvider httpProvider,
 		}
 		catch (Exception ex)
 		{
-			var callLog = new CallLogModel
-			{
-				RequestBody = System.Text.Json.JsonSerializer.Serialize(new { nationalCode }),
-				ResponseBody = ex.Message,
-				ServiceCallDate = DateTime.Now,
-				ServiceCallUrl = charismaCardConfig.GetUserDepositBalanceUrl,
-				ServiceCallStatus = false,
-				ServiceType = Enums.ServiceType.GetUserDepositBalance,
-				CreationDate = DateTime.Now,
-				CreationUserId = currentUser.UserId,
-				ErrorCode = ex.GetType().Name,
-				ErrorType = ex.Message,
-				ProviderType = Enums.ProviderTypeInLog.CharismaCard,
-				AuditType = Enums.AuditType.Provider
-			};
+			var callLog = CallLogModel.CreateError(
+				serviceName: "GetUserDepositBalance",
+				providerName: "CharismaCard",
+				requestUri: charismaCardConfig.GetUserDepositBalanceUrl,
+				requestBody: System.Text.Json.JsonSerializer.Serialize(new { nationalCode }),
+				responseBody: ex.Message,
+				exception: ex,
+				serviceType: Enums.ServiceType.GetUserDepositBalance,
+				providerType: Enums.ProviderTypeInLog.CharismaCard,
+				auditType: Enums.AuditType.Provider,
+				userId: currentUser.UserId
+			);
 			_logService.LogError(callLog);
 			return Result<CharismaCardUserDepositBalanceResponse>.Failure(new Error("2451000", GlobalResource.UnexpectedError));
 		}
@@ -143,20 +140,18 @@ public class CharismaCardProvider(IHttpProvider httpProvider,
 				request,
 				DirectDebitErrorHandler,
 				DirectDebitDecoder);
-			var successLog = new CallLogModel
-		{
-			RequestBody = System.Text.Json.JsonSerializer.Serialize(request),
-			ResponseBody = System.Text.Json.JsonSerializer.Serialize(directDebitResponse),
-			ServiceCallDate = DateTime.Now,
-			ServiceCallUrl = charismaCardConfig.DirectDebitRequestUrl,
-			ServiceCallStatus = true,
-			ServiceType = Enums.ServiceType.ClientDirectDebit,
-			CreationDate = DateTime.Now,
-			CreationUserId = currentUser.UserId,
-			ProviderType = Enums.ProviderTypeInLog.CharismaCard,
-			AuditType = Enums.AuditType.Provider
-		};
-		_logService.LogInformation(successLog);
+			var successLog = CallLogModel.CreateSuccess(
+				serviceName: "ClientDirectDebit",
+				providerName: "CharismaCard",
+				requestUri: charismaCardConfig.DirectDebitRequestUrl,
+				requestBody: System.Text.Json.JsonSerializer.Serialize(request),
+				responseBody: System.Text.Json.JsonSerializer.Serialize(directDebitResponse),
+				serviceType: Enums.ServiceType.ClientDirectDebit,
+				providerType: Enums.ProviderTypeInLog.CharismaCard,
+				auditType: Enums.AuditType.Provider,
+				userId: currentUser.UserId
+			);
+			_logService.LogInformation(successLog);
 
 			if (directDebitResponse.IsSuccess)
 			{
@@ -170,21 +165,18 @@ public class CharismaCardProvider(IHttpProvider httpProvider,
 		}
 		catch (Exception ex)
 		{
-			var callLog = new CallLogModel
-			{
-				RequestBody = System.Text.Json.JsonSerializer.Serialize(request),
-				ResponseBody = ex.Message,
-				ServiceCallDate = DateTime.Now,
-				ServiceCallUrl = charismaCardConfig.DirectDebitRequestUrl,
-				ServiceCallStatus = false,
-				ServiceType = Enums.ServiceType.ClientDirectDebit,
-				CreationDate = DateTime.Now,
-				CreationUserId = currentUser.UserId,
-				ErrorCode = ex.GetType().Name,
-				ErrorType = ex.Message,
-				ProviderType = Enums.ProviderTypeInLog.CharismaCard,
-				AuditType = Enums.AuditType.Provider
-			};
+			var callLog = CallLogModel.CreateError(
+				serviceName: "ClientDirectDebit",
+				providerName: "CharismaCard",
+				requestUri: charismaCardConfig.DirectDebitRequestUrl,
+				requestBody: System.Text.Json.JsonSerializer.Serialize(request),
+				responseBody: ex.Message,
+				exception: ex,
+				serviceType: Enums.ServiceType.ClientDirectDebit,
+				providerType: Enums.ProviderTypeInLog.CharismaCard,
+				auditType: Enums.AuditType.Provider,
+				userId: currentUser.UserId
+			);
 			_logService.LogError(callLog);
 			return Result<DirectDebitResponse>.Failure(new Error("2452000", GlobalResource.UnexpectedError));
 		}
@@ -225,21 +217,18 @@ public class CharismaCardProvider(IHttpProvider httpProvider,
 		}
 		catch (Exception ex)
 		{
-			var callLog = new CallLogModel
-			{
-				RequestBody = System.Text.Json.JsonSerializer.Serialize(request),
-				ResponseBody = ex.Message,
-				ServiceCallDate = DateTime.Now,
-				ServiceCallUrl = charismaCardConfig.DirectDebitResultUrl,
-				ServiceCallStatus = false,
-				ServiceType = Enums.ServiceType.ClientDirectDebit,
-				CreationDate = DateTime.Now,
-				CreationUserId = currentUser.UserId,
-				ErrorCode = ex.GetType().Name,
-				ErrorType = ex.Message,
-				ProviderType = Enums.ProviderTypeInLog.CharismaCard,
-				AuditType = Enums.AuditType.Provider
-			};
+			var callLog = CallLogModel.CreateError(
+				serviceName: "ClientDirectDebitInquiry",
+				providerName: "CharismaCard",
+				requestUri: charismaCardConfig.DirectDebitResultUrl,
+				requestBody: System.Text.Json.JsonSerializer.Serialize(request),
+				responseBody: ex.Message,
+				exception: ex,
+				serviceType: Enums.ServiceType.ClientDirectDebit,
+				providerType: Enums.ProviderTypeInLog.CharismaCard,
+				auditType: Enums.AuditType.Provider,
+				userId: currentUser.UserId
+			);
 			_logService.LogError(callLog);
 			return Result<DirectDebitResultResponse>.Failure(new Error("2453000", GlobalResource.UnexpectedError));
 		}

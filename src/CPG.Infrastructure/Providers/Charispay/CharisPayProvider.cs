@@ -57,19 +57,18 @@ namespace CPG.Infrastructure.Providers.Charispay
                 {
                     resultContent = resultContent.Replace("{\"result\":\"", "{\"errorResult\":\"");
                 }
-                var callLog = new CallLogModel
-                {
-                    RequestBody = json,
-                    ResponseBody = resultContent,
-                    ServiceCallDate = DateTime.Now,
-                    ServiceCallUrl = charisPayConfig.InqueryIbanUrl,
-                    ServiceCallStatus = result.StatusCode == System.Net.HttpStatusCode.OK,
-                    ServiceType = Enums.ServiceType.GetAccountNumber,
-                    CreationDate = DateTime.Now,
-                    CreationUserId = _currentUser.UserId,
-                    ProviderType = Enums.ProviderTypeInLog.CharisPay,
-                    AuditType = Enums.AuditType.Provider
-                };
+                var callLog = CallLogModel.CreateSuccess(
+                    serviceName: "GetAccountNumber",
+                    providerName: "CharisPay",
+                    requestUri: charisPayConfig.InqueryIbanUrl,
+                    requestBody: json,
+                    responseBody: resultContent,
+                    serviceType: Enums.ServiceType.GetAccountNumber,
+                    providerType: Enums.ProviderTypeInLog.CharisPay,
+                    auditType: Enums.AuditType.Provider,
+                    userId: _currentUser.UserId,
+                    responseStatusCode: (int)result.StatusCode
+                );
 
                 _logService.LogInformation(callLog);
 
@@ -103,42 +102,36 @@ namespace CPG.Infrastructure.Providers.Charispay
             }
             catch (HttpRequestException ex)
             {
-                var callLog = new CallLogModel
-                {
-                    RequestBody = JsonConvert.SerializeObject(new { iban }),
-                    ResponseBody = ex.Message,
-                    ServiceCallDate = DateTime.Now,
-                    ServiceCallUrl = charisPayConfig.InqueryIbanUrl,
-                    ServiceCallStatus = false,
-                    ServiceType = Enums.ServiceType.GetAccountNumber,
-                    CreationDate = DateTime.Now,
-                    CreationUserId = _currentUser.UserId,
-                    ErrorCode = ex.GetType().Name,
-                    ErrorType = ex.Message,
-                    ProviderType = Enums.ProviderTypeInLog.CharisPay,
-                    AuditType = Enums.AuditType.Provider
-                };
+                var callLog = CallLogModel.CreateError(
+                    serviceName: "GetAccountNumber",
+                    providerName: "CharisPay",
+                    requestUri: charisPayConfig.InqueryIbanUrl,
+                    requestBody: JsonConvert.SerializeObject(new { iban }),
+                    responseBody: ex.Message,
+                    exception: ex,
+                    serviceType: Enums.ServiceType.GetAccountNumber,
+                    providerType: Enums.ProviderTypeInLog.CharisPay,
+                    auditType: Enums.AuditType.Provider,
+                    userId: _currentUser.UserId
+                );
                 _logService.LogError(callLog);
                 return Result<AccountNumberResponse>.Failure(new Error("2201000", GlobalResource.UnexpectedError));
             }
 
             catch (Exception ex)
             {
-                var callLog = new CallLogModel
-                {
-                    RequestBody = JsonConvert.SerializeObject(new { iban }),
-                    ResponseBody = ex.Message,
-                    ServiceCallDate = DateTime.Now,
-                    ServiceCallUrl = charisPayConfig.InqueryIbanUrl,
-                    ServiceCallStatus = false,
-                    ServiceType = Enums.ServiceType.GetAccountNumber,
-                    CreationDate = DateTime.Now,
-                    CreationUserId = _currentUser.UserId,
-                    ErrorCode = ex.GetType().Name,
-                    ErrorType = ex.Message,
-                    ProviderType = Enums.ProviderTypeInLog.CharisPay,
-                    AuditType = Enums.AuditType.Provider
-                };
+                var callLog = CallLogModel.CreateError(
+                    serviceName: "GetAccountNumber",
+                    providerName: "CharisPay",
+                    requestUri: charisPayConfig.InqueryIbanUrl,
+                    requestBody: JsonConvert.SerializeObject(new { iban }),
+                    responseBody: ex.Message,
+                    exception: ex,
+                    serviceType: Enums.ServiceType.GetAccountNumber,
+                    providerType: Enums.ProviderTypeInLog.CharisPay,
+                    auditType: Enums.AuditType.Provider,
+                    userId: _currentUser.UserId
+                );
                 _logService.LogError(callLog);
                 return Result<AccountNumberResponse>.Failure(new Error("2201000", GlobalResource.UnexpectedError));
             }

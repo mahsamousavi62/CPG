@@ -24,21 +24,18 @@ public class ConsumerWrapper
 
     private void LogKafkaError(string errorReason)
     {
-        var callLog = new CallLogModel
-        {
-            RequestBody = "",
-            ResponseBody = errorReason,
-            ServiceCallDate = DateTime.Now,
-            ServiceCallUrl = "Kafka Consumer",
-            ServiceCallStatus = false,
-            ServiceType = Enums.ServiceType.Kafka,
-            CreationDate = DateTime.Now,
-            CreationUserId = 1,
-            ErrorCode = "KafkaError",
-            ErrorType = errorReason,
-            ProviderType = Enums.ProviderTypeInLog.Kafka,
-            AuditType = Enums.AuditType.Develop
-        };
+        var callLog = CallLogModel.CreateError(
+            serviceName: "KafkaConsumer",
+            providerName: "Kafka",
+            requestUri: "Kafka Consumer",
+            requestBody: "",
+            responseBody: errorReason,
+            exception: null,
+            serviceType: Enums.ServiceType.Kafka,
+            providerType: Enums.ProviderTypeInLog.Kafka,
+            auditType: Enums.AuditType.Develop,
+            userId: 1
+        );
         _logService.LogError(callLog);
     }
 
@@ -57,21 +54,18 @@ public class ConsumerWrapper
                 }
                 catch (ConsumeException exc)
                 {
-                    var callLog = new CallLogModel
-                    {
-                        RequestBody = "",
-                        ResponseBody = exc.Error.Reason,
-                        ServiceCallDate = DateTime.Now,
-                        ServiceCallUrl = "Kafka Consumer",
-                        ServiceCallStatus = false,
-                        ServiceType = Enums.ServiceType.Kafka,
-                        CreationDate = DateTime.Now,
-                        CreationUserId = 1,
-                        ErrorCode = exc.Error.Code.ToString(),
-                        ErrorType = exc.Error.Reason,
-                        ProviderType = Enums.ProviderTypeInLog.Kafka,
-                        AuditType = Enums.AuditType.Develop
-                    };
+                    var callLog = CallLogModel.CreateError(
+                        serviceName: "KafkaConsumer",
+                        providerName: "Kafka",
+                        requestUri: "Kafka Consumer",
+                        requestBody: "",
+                        responseBody: exc.Error.Reason,
+                        exception: exc,
+                        serviceType: Enums.ServiceType.Kafka,
+                        providerType: Enums.ProviderTypeInLog.Kafka,
+                        auditType: Enums.AuditType.Develop,
+                        userId: 1
+                    );
                     _logService.LogError(callLog);
                     continue;
                 }

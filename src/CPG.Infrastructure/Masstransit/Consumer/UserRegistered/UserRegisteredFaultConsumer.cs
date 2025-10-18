@@ -23,21 +23,19 @@ namespace CPG.Infrastructure.Masstransit.Consumer.UserRegistered
                 WriteIndented = true,
             });
 
-            var callLog = new CallLogModel
-            {
-                RequestBody = $"MessageId: {context.MessageId}, CorrelationId: {context.CorrelationId}, InitiatorId: {context.InitiatorId}",
-                ResponseBody = exceptions,
-                ServiceCallDate = DateTime.Now,
-                ServiceCallUrl = "MassTransit UserRegistered Fault Consumer",
-                ServiceCallStatus = false,
-                ServiceType = Enums.ServiceType.MassTransit,
-                CreationDate = DateTime.Now,
-                CreationUserId = 1,
-                ErrorCode = "FaultMessage",
-                ErrorType = "Message consuming made a fault",
-                ProviderType = Enums.ProviderTypeInLog.MassTransit,
-                AuditType = Enums.AuditType.Develop
-            };
+            var callLog = CallLogModel.CreateError(
+                serviceName: "UserRegisteredFaultConsumer",
+                providerName: "MassTransit",
+                requestUri: "MassTransit UserRegistered Fault Consumer",
+                requestBody: $"MessageId: {context.MessageId}, CorrelationId: {context.CorrelationId}, InitiatorId: {context.InitiatorId}",
+                responseBody: exceptions,
+                exception: null,
+                serviceType: Enums.ServiceType.MassTransit,
+                providerType: Enums.ProviderTypeInLog.MassTransit,
+                auditType: Enums.AuditType.Develop,
+                correlationId: context.CorrelationId?.ToString(),
+                userId: 1
+            );
             _logService.LogError(callLog);
 
             return Task.CompletedTask;
