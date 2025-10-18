@@ -107,20 +107,46 @@ public class BehPardakhtProvider(
         }
         catch (Exception exc)
         {
+            var errorTime = DateTime.Now;
             var callLog = new CallLogModel
             {
+                // New fields (25 required fields)
+                CorrelationId = null,
+                LogId = $"{Guid.NewGuid()} - BehPardakht - {exc.GetType().Name}",
+                RequestId = null,
+                AuditLevel = 3, // Error
+                AuditType = Enums.AuditType.Provider,
+                ServiceName = "BehPardakhtToken",
+                ProviderName = "BehPardakht",
+                RequestUri = nameof(PaymentGatewayClient.bpPayRequestAsync),
+                RequestHeader = null,
                 RequestBody = JsonConvert.SerializeObject(new { terminalId, userName, request.PaymentRequestAmount }),
+                ResponseStatusCode = 500,
+                ResponseHeader = null,
                 ResponseBody = exc.Message,
+                ApplicationId = null,
+                UserId = null,
+                Ip = null,
+                CompanyId = null,
+                UserAgent = null,
+                Response = exc.Message,
+                ErrorCode = exc.GetType().Name,
+                IsSucceeded = false,
+                StartDateTime = errorTime,
+                EndDateTime = errorTime,
+                DurationMs = 0,
+                StackTrace = exc.StackTrace,
+
+                // Original fields (preserved)
                 ServiceCallDate = DateTime.Now,
                 ServiceCallUrl = nameof(PaymentGatewayClient.bpPayRequestAsync),
                 ServiceCallStatus = false,
                 ServiceType = Enums.ServiceType.BehPardakhtToken,
                 CreationDate = DateTime.Now,
                 CreationUserId = 1,
-                ErrorCode = exc.GetType().Name,
                 ErrorType = exc.Message,
                 ProviderType = Enums.ProviderTypeInLog.BehPardakht,
-                AuditType = Enums.AuditType.Provider
+                CorrolationId = null
             };
             _logService.LogError(callLog);
 
@@ -182,20 +208,46 @@ public class BehPardakhtProvider(
         }
         catch (Exception exc)
         {
+            var errorTime = DateTime.Now;
             var callLog = new CallLogModel
             {
+                // New fields (25 required fields)
+                CorrelationId = null,
+                LogId = $"{Guid.NewGuid()} - BehPardakht - {exc.GetType().Name}",
+                RequestId = null,
+                AuditLevel = 3, // Error
+                AuditType = Enums.AuditType.Provider,
+                ServiceName = "BehPardakhtVerify",
+                ProviderName = "BehPardakht",
+                RequestUri = nameof(PaymentGatewayClient.bpVerifyRequestAsync),
+                RequestHeader = null,
                 RequestBody = JsonConvert.SerializeObject(new { terminalId, userName, request.TrackId }),
+                ResponseStatusCode = 500,
+                ResponseHeader = null,
                 ResponseBody = exc.Message,
+                ApplicationId = null,
+                UserId = null,
+                Ip = null,
+                CompanyId = null,
+                UserAgent = null,
+                Response = exc.Message,
+                ErrorCode = exc.GetType().Name,
+                IsSucceeded = false,
+                StartDateTime = errorTime,
+                EndDateTime = errorTime,
+                DurationMs = 0,
+                StackTrace = exc.StackTrace,
+
+                // Original fields (preserved)
                 ServiceCallDate = DateTime.Now,
                 ServiceCallUrl = nameof(PaymentGatewayClient.bpVerifyRequestAsync),
                 ServiceCallStatus = false,
                 ServiceType = Enums.ServiceType.BehPardakhtVerify,
                 CreationDate = DateTime.Now,
                 CreationUserId = 1,
-                ErrorCode = exc.GetType().Name,
                 ErrorType = exc.Message,
                 ProviderType = Enums.ProviderTypeInLog.BehPardakht,
-                AuditType = Enums.AuditType.Provider
+                CorrolationId = null
             };
             _logService.LogError(callLog);
 
@@ -252,20 +304,46 @@ public class BehPardakhtProvider(
         }
         catch (Exception exc)
         {
+            var errorTime = DateTime.Now;
             var callLog = new CallLogModel
             {
+                // New fields (25 required fields)
+                CorrelationId = null,
+                LogId = $"{Guid.NewGuid()} - BehPardakht - {exc.GetType().Name}",
+                RequestId = null,
+                AuditLevel = 3, // Error
+                AuditType = Enums.AuditType.Provider,
+                ServiceName = "BehPardakhtSettle",
+                ProviderName = "BehPardakht",
+                RequestUri = nameof(PaymentGatewayClient.bpSettleRequestAsync),
+                RequestHeader = null,
                 RequestBody = JsonConvert.SerializeObject(new { terminalId, userName, request.TrackId }),
+                ResponseStatusCode = 500,
+                ResponseHeader = null,
                 ResponseBody = exc.Message,
+                ApplicationId = null,
+                UserId = null,
+                Ip = null,
+                CompanyId = null,
+                UserAgent = null,
+                Response = exc.Message,
+                ErrorCode = exc.GetType().Name,
+                IsSucceeded = false,
+                StartDateTime = errorTime,
+                EndDateTime = errorTime,
+                DurationMs = 0,
+                StackTrace = exc.StackTrace,
+
+                // Original fields (preserved)
                 ServiceCallDate = DateTime.Now,
                 ServiceCallUrl = nameof(PaymentGatewayClient.bpSettleRequestAsync),
                 ServiceCallStatus = false,
                 ServiceType = Enums.ServiceType.BehPardakhtSettle,
                 CreationDate = DateTime.Now,
                 CreationUserId = 1,
-                ErrorCode = exc.GetType().Name,
                 ErrorType = exc.Message,
                 ProviderType = Enums.ProviderTypeInLog.BehPardakht,
-                AuditType = Enums.AuditType.Provider
+                CorrolationId = null
             };
             _logService.LogError(callLog);
 

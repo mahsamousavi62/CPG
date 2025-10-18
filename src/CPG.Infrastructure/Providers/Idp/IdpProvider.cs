@@ -87,20 +87,49 @@ public class IdpProvider(
         });
         if (disco.IsError)
         {
+            var httpContext = _httpContextAccessor.HttpContext;
+            _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out long applicationId);
+            _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "CompanyId")?.Value, out long companyId);
+
             var callLog = new CallLogModel
             {
+                // New fields (25 required fields)
+                CorrelationId = httpContext?.TraceIdentifier,
+                LogId = $"{Guid.NewGuid()} - Idp - {disco.Exception?.GetType().Name ?? "DiscoveryError"}",
+                RequestId = httpContext?.TraceIdentifier,
+                AuditLevel = 3, // Error
+                AuditType = Enums.AuditType.Provider,
+                ServiceName = "GetIdpToken",
+                ProviderName = "Idp",
+                RequestUri = appConfig.Authority,
+                RequestHeader = null,
                 RequestBody = System.Text.Json.JsonSerializer.Serialize(new { Address = appConfig.Authority }),
+                ResponseStatusCode = 500,
+                ResponseHeader = null,
                 ResponseBody = disco.Error,
+                ApplicationId = applicationId == 0 ? null : applicationId,
+                UserId = UserId == 0 ? null : UserId,
+                Ip = httpContext?.Connection.RemoteIpAddress?.ToString(),
+                CompanyId = companyId == 0 ? null : companyId,
+                UserAgent = httpContext?.Request.Headers["User-Agent"].ToString(),
+                Response = disco.Error,
+                ErrorCode = disco.Exception?.GetType().Name,
+                IsSucceeded = false,
+                StartDateTime = DateTime.Now,
+                EndDateTime = DateTime.Now,
+                DurationMs = 0,
+                StackTrace = disco.Exception?.StackTrace,
+
+                // Original fields (preserved)
                 ServiceCallDate = DateTime.Now,
                 ServiceCallUrl = appConfig.Authority,
                 ServiceCallStatus = false,
                 ServiceType = Enums.ServiceType.GetIdpToken,
                 CreationDate = DateTime.Now,
                 CreationUserId = UserId == 0 ? 1 : UserId,
-                ErrorCode = disco.Exception?.GetType().Name,
                 ErrorType = disco.Error,
                 ProviderType = Enums.ProviderTypeInLog.Idp,
-                AuditType = Enums.AuditType.Provider
+                CorrolationId = httpContext?.TraceIdentifier
             };
             _logService.LogError(callLog);
             return new ResultData<string> { Error = disco.Error, OperationResult = Enums.OperationResult.Failed };
@@ -115,18 +144,49 @@ public class IdpProvider(
         };
         var tokenResponse = await httpClient.RequestClientCredentialsTokenAsync(tokenRequest);
 
+        var httpContext = _httpContextAccessor.HttpContext;
+        _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out long applicationId);
+        _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "CompanyId")?.Value, out long companyId);
+
         var callLog = new CallLogModel
         {
+            // New fields (25 required fields)
+            CorrelationId = httpContext?.TraceIdentifier,
+            LogId = $"{Guid.NewGuid()} - Idp - {(tokenResponse is not null ? "TokenSuccess" : "TokenNull")}",
+            RequestId = httpContext?.TraceIdentifier,
+            AuditLevel = tokenResponse is not null ? 1 : 2, // Info or Warning
+            AuditType = Enums.AuditType.Provider,
+            ServiceName = "GetIdpToken",
+            ProviderName = "Idp",
+            RequestUri = disco.TokenEndpoint,
+            RequestHeader = null,
             RequestBody = System.Text.Json.JsonSerializer.Serialize(tokenRequest),
+            ResponseStatusCode = tokenResponse is not null ? 200 : 500,
+            ResponseHeader = null,
             ResponseBody = System.Text.Json.JsonSerializer.Serialize(tokenResponse),
+            ApplicationId = applicationId == 0 ? null : applicationId,
+            UserId = UserId == 0 ? null : UserId,
+            Ip = httpContext?.Connection.RemoteIpAddress?.ToString(),
+            CompanyId = companyId == 0 ? null : companyId,
+            UserAgent = httpContext?.Request.Headers["User-Agent"].ToString(),
+            Response = System.Text.Json.JsonSerializer.Serialize(tokenResponse),
+            ErrorCode = null,
+            IsSucceeded = tokenResponse is not null,
+            StartDateTime = DateTime.Now,
+            EndDateTime = DateTime.Now,
+            DurationMs = 0,
+            StackTrace = null,
+
+            // Original fields (preserved)
             ServiceCallDate = DateTime.Now,
             ServiceCallUrl = disco.TokenEndpoint,
             ServiceCallStatus = tokenResponse is not null ? true : false,
             ServiceType = Enums.ServiceType.GetIdpToken,
             CreationDate = DateTime.Now,
             CreationUserId = UserId == 0 ? 1 : UserId,
+            ErrorType = null,
             ProviderType = Enums.ProviderTypeInLog.Idp,
-            AuditType = Enums.AuditType.Provider
+            CorrolationId = httpContext?.TraceIdentifier
         };
 
         _logService.LogInformation(callLog);
@@ -135,18 +195,43 @@ public class IdpProvider(
         {
             var errorCallLog = new CallLogModel
             {
+                // New fields (25 required fields)
+                CorrelationId = httpContext?.TraceIdentifier,
+                LogId = $"{Guid.NewGuid()} - Idp - TokenError",
+                RequestId = httpContext?.TraceIdentifier,
+                AuditLevel = 3, // Error
+                AuditType = Enums.AuditType.Provider,
+                ServiceName = "GetIdpToken",
+                ProviderName = "Idp",
+                RequestUri = disco.TokenEndpoint,
+                RequestHeader = null,
                 RequestBody = System.Text.Json.JsonSerializer.Serialize(tokenRequest),
+                ResponseStatusCode = 500,
+                ResponseHeader = null,
                 ResponseBody = $"Error:{tokenResponse.Error} ErrorDescription:{tokenResponse.ErrorDescription}",
+                ApplicationId = applicationId == 0 ? null : applicationId,
+                UserId = UserId == 0 ? null : UserId,
+                Ip = httpContext?.Connection.RemoteIpAddress?.ToString(),
+                CompanyId = companyId == 0 ? null : companyId,
+                UserAgent = httpContext?.Request.Headers["User-Agent"].ToString(),
+                Response = $"Error:{tokenResponse.Error} ErrorDescription:{tokenResponse.ErrorDescription}",
+                ErrorCode = "TokenError",
+                IsSucceeded = false,
+                StartDateTime = DateTime.Now,
+                EndDateTime = DateTime.Now,
+                DurationMs = 0,
+                StackTrace = null,
+
+                // Original fields (preserved)
                 ServiceCallDate = DateTime.Now,
                 ServiceCallUrl = disco.TokenEndpoint,
                 ServiceCallStatus = false,
                 ServiceType = Enums.ServiceType.GetIdpToken,
                 CreationDate = DateTime.Now,
                 CreationUserId = UserId == 0 ? 1 : UserId,
-                ErrorCode = "TokenError",
                 ErrorType = tokenResponse.Error,
                 ProviderType = Enums.ProviderTypeInLog.Idp,
-                AuditType = Enums.AuditType.Provider
+                CorrolationId = httpContext?.TraceIdentifier
             };
             _logService.LogError(errorCallLog);
             return new ResultData<string>
