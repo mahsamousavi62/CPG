@@ -44,6 +44,7 @@ using CPG.Domain.SharedKernel.Interfaces;
 using CPG.Infrastructure.Cache;
 using CPG.Domain.SharedKernel.Communication.CharismaCard;
 using CPG.Infrastructure.Providers.CharismaCard;
+using CPG.Infrastructure.Policies;
 
 namespace CPG.Infrastructure;
 
@@ -61,6 +62,8 @@ public static class DependencyInjection
             .AddScoped<IIpgProvider, AsanPardakhtProvider>()
             .AddScoped<IDirectDebitProvider, VandarProvider>()
             .AddScoped<ILogService, LogService>()
+            .AddScoped<PollyLoggingHandler>()
+            .AddScoped<SoapLogger>()
             .AddTransient<ICurrentDateTime, CurrentDateTime>()
             .AddTransient<IHttpProvider, HttpProvider>()
             .AddDatabase(configuration)
@@ -70,6 +73,9 @@ public static class DependencyInjection
             .AddScoped<IMinioProvider, MinioProvider>()
             .AddMinio(configuration)
             .AddHttpClient()
+                .AddStandardRetryPolicy(maxRetryAttempts: 3)
+                .AddHttpMessageHandler<PollyLoggingHandler>()
+                .Services  // Return to IServiceCollection
             .AddConfigureHttpClientService(configuration);
 
     public static IServiceCollection AddMinio(this IServiceCollection services, IConfiguration configuration)
@@ -123,32 +129,41 @@ public static class DependencyInjection
         var jwtConfig = authService.GetJwtConfig();
         var charisPayConfig = configuration.GetSection("Infrastructure:CharisPay").Get<CharisPayConfig>();
         var neoBankConfig = configuration.GetSection("Infrastructure:NeoBank").Get<NeoBankConfig>();
+
         services.AddHttpClient("charisPayClient", c =>
         {
             c.BaseAddress = new Uri(charisPayConfig.BaseUrl);
             c.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        });
+        })
+        .AddStandardRetryPolicy(maxRetryAttempts: 3)
+        .AddHttpMessageHandler<PollyLoggingHandler>();
 
         services.AddHttpClient("idpClient", c =>
         {
             c.BaseAddress = new Uri(jwtConfig.Authority);
             c.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        });
+        })
+        .AddStandardRetryPolicy(maxRetryAttempts: 3)
+        .AddHttpMessageHandler<PollyLoggingHandler>();
 
         services.AddHttpClient("neoBankClient", c =>
         {
             c.BaseAddress = new Uri(neoBankConfig.BaseUrl);
             c.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        });
+        })
+        .AddStandardRetryPolicy(maxRetryAttempts: 3)
+        .AddHttpMessageHandler<PollyLoggingHandler>();
 
         services.AddHttpClient("asanpardakhtClient", c =>
         {
             c.BaseAddress = new Uri("https://ipgrest.asanpardakht.ir/");
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/plain"));
-        });
+        })
+        .AddStandardRetryPolicy(maxRetryAttempts: 5)  // AsanPardakht needs 5 retries
+        .AddHttpMessageHandler<PollyLoggingHandler>();
 
         var charismaCardConfig = configuration.GetSection("Infrastructure:CharismaCard").Get<CharismaCardConfig>();
         services.AddHttpClient("charismaCardClient", c =>
@@ -156,7 +171,9 @@ public static class DependencyInjection
             c.BaseAddress = new Uri(charismaCardConfig.BaseUrl);
             c.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        });
+        })
+        .AddStandardRetryPolicy(maxRetryAttempts: 3)
+        .AddHttpMessageHandler<PollyLoggingHandler>();
 
         return services;
     }

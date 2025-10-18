@@ -231,17 +231,19 @@
 
 *Attach Polly retry policies and logging handlers to all existing HttpClients*
 
-- [ ] **S014** Register PollyLoggingHandler and SoapLogger in DI
+- [x] **S014** Register PollyLoggingHandler and SoapLogger in DI
   - **Path**: `src/CPG.Infrastructure/DependencyInjection.cs`
   - **Dependencies**: S001-S003, S004-S007 (infrastructure classes created)
+  - **Completed**: 2025-10-18
   - **Notes**:
     - Add: `services.AddScoped<PollyLoggingHandler>();`
     - Add: `services.AddScoped<SoapLogger>();`
     - Register BEFORE HttpClient registrations
 
-- [ ] **S015** Add Polly retry policy to charisPayClient HttpClient
+- [x] **S015** Add Polly retry policy to charisPayClient HttpClient
   - **Path**: `src/CPG.Infrastructure/DependencyInjection.cs` (modify existing HttpClient registration)
   - **Dependencies**: S014
+  - **Completed**: 2025-10-18
   - **Notes**:
     - Find: `services.AddHttpClient("charisPayClient", c => { ... })`
     - Add after closing brace: `.AddStandardRetryPolicy(maxRetryAttempts: 3)`
@@ -253,39 +255,44 @@
           .AddHttpMessageHandler<PollyLoggingHandler>();
       ```
 
-- [ ] **S016** [P] Add Polly retry policy to idpClient HttpClient
+- [x] **S016** [P] Add Polly retry policy to idpClient HttpClient
   - **Path**: `src/CPG.Infrastructure/DependencyInjection.cs`
   - **Dependencies**: S014
+  - **Completed**: 2025-10-18
   - **Notes**:
     - Find: `services.AddHttpClient("idpClient", c => { ... })`
     - Add: `.AddStandardRetryPolicy(maxRetryAttempts: 3).AddHttpMessageHandler<PollyLoggingHandler>()`
     - Same pattern as S015
 
-- [ ] **S017** [P] Add Polly retry policy to neoBankClient HttpClient
+- [x] **S017** [P] Add Polly retry policy to neoBankClient HttpClient
   - **Path**: `src/CPG.Infrastructure/DependencyInjection.cs`
   - **Dependencies**: S014
+  - **Completed**: 2025-10-18
   - **Notes**:
     - Find: `services.AddHttpClient("neoBankClient", c => { ... })`
     - Add: `.AddStandardRetryPolicy(maxRetryAttempts: 3).AddHttpMessageHandler<PollyLoggingHandler>()`
 
-- [ ] **S018** [P] Add Polly retry policy to asanpardakhtClient HttpClient (5 retries)
+- [x] **S018** [P] Add Polly retry policy to asanpardakhtClient HttpClient (5 retries)
   - **Path**: `src/CPG.Infrastructure/DependencyInjection.cs`
   - **Dependencies**: S014
+  - **Completed**: 2025-10-18
   - **Notes**:
     - Find: `services.AddHttpClient("asanpardakhtClient", c => { ... })`
     - Add: `.AddStandardRetryPolicy(maxRetryAttempts: 5).AddHttpMessageHandler<PollyLoggingHandler>()`
     - NOTE: AsanPardakht requires 5 retries per existing code analysis
 
-- [ ] **S019** [P] Add Polly retry policy to charismaCardClient HttpClient
+- [x] **S019** [P] Add Polly retry policy to charismaCardClient HttpClient
   - **Path**: `src/CPG.Infrastructure/DependencyInjection.cs`
   - **Dependencies**: S014
+  - **Completed**: 2025-10-18
   - **Notes**:
     - Find: `services.AddHttpClient("charismaCardClient", c => { ... })`
     - Add: `.AddStandardRetryPolicy(maxRetryAttempts: 3).AddHttpMessageHandler<PollyLoggingHandler>()`
 
-- [ ] **S020** Verify default HttpClient also has retry policy (used by HttpProvider)
+- [x] **S020** Verify default HttpClient also has retry policy (used by HttpProvider)
   - **Path**: `src/CPG.Infrastructure/DependencyInjection.cs`
   - **Dependencies**: S014-S019
+  - **Completed**: 2025-10-18
   - **Notes**:
     - Check if there's a default HttpClient registration: `services.AddHttpClient()`
     - If exists, add: `.AddStandardRetryPolicy(maxRetryAttempts: 3).AddHttpMessageHandler<PollyLoggingHandler>()`
