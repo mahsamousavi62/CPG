@@ -80,15 +80,9 @@ public class CallLogModel
     // 25. stack_trace - استک تریس
     public string StackTrace { get; set; }
 
-    // Original fields
+    // Additional fields for backwards compatibility and enums
     public ServiceType? ServiceType { get; set; }
     public ProviderTypeInLog? ProviderType { get; set; }
-    public bool? ServiceCallStatus { get; set; }
-    public string ServiceCallUrl { get; set; }
-    public DateTime ServiceCallDate { get; set; }
-    public DateTime CreationDate { get; set; }
-    public long CreationUserId { get; set; }
-    public string CorrolationId { get; set; }
     public string ErrorType { get; set; }
 
     /// <summary>
@@ -141,16 +135,10 @@ public class CallLogModel
             DurationMs = 0,
             StackTrace = exception?.StackTrace,
 
-            // Original fields (preserved)
-            ServiceCallDate = DateTime.Now,
-            ServiceCallUrl = requestUri,
-            ServiceCallStatus = false,
+            // Additional fields
             ServiceType = serviceType,
-            CreationDate = DateTime.Now,
-            CreationUserId = userId == 0 ? 1 : (userId ?? 1),
-            ErrorType = exception?.Message ?? responseBody,
             ProviderType = providerType,
-            CorrolationId = correlationId
+            ErrorType = exception?.Message ?? responseBody
         };
     }
 
@@ -204,16 +192,10 @@ public class CallLogModel
             DurationMs = 0,
             StackTrace = null,
 
-            // Original fields (preserved)
-            ServiceCallDate = DateTime.Now,
-            ServiceCallUrl = requestUri,
-            ServiceCallStatus = true,
+            // Additional fields
             ServiceType = serviceType,
-            CreationDate = DateTime.Now,
-            CreationUserId = userId == 0 ? 1 : (userId ?? 1),
-            ErrorType = null,
             ProviderType = providerType,
-            CorrolationId = correlationId
+            ErrorType = null
         };
     }
 }

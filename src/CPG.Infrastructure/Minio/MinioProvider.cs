@@ -73,14 +73,53 @@ public class MinioProvider : IMinioProvider
 
             var resString = JsonConvert.SerializeObject(response);
 
-            var callLog = CreateCallLogModel(nameof(PutObject), null, resString, true);
+            var httpContext = _httpContextAccessor.HttpContext;
+            _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value, out long userId);
+            _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out long applicationId);
+            _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "CompanyId")?.Value, out long companyId);
+
+            var callLog = CallLogModel.CreateSuccess(
+                serviceName: "Minio",
+                providerName: "MinioProvider",
+                requestUri: nameof(PutObject),
+                requestBody: null,
+                responseBody: resString,
+                serviceType: Enums.ServiceType.Minio,
+                auditType: Enums.AuditType.Provider,
+                correlationId: httpContext?.TraceIdentifier,
+                userId: userId,
+                applicationId: applicationId,
+                companyId: companyId,
+                ip: httpContext?.Connection.RemoteIpAddress?.ToString(),
+                userAgent: httpContext?.Request.Headers["User-Agent"].ToString()
+            );
             _logService.LogWarning(callLog);
 
             return response.ObjectName;
         }
         catch (MinioException exc)
         {
-            var callLog = CreateCallLogModel(nameof(PutObject), exc, exc.Message, false);
+            var httpContext = _httpContextAccessor.HttpContext;
+            _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value, out long userId);
+            _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out long applicationId);
+            _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "CompanyId")?.Value, out long companyId);
+
+            var callLog = CallLogModel.CreateError(
+                serviceName: "Minio",
+                providerName: "MinioProvider",
+                requestUri: nameof(PutObject),
+                requestBody: null,
+                responseBody: exc.Message,
+                exception: exc,
+                serviceType: Enums.ServiceType.Minio,
+                auditType: Enums.AuditType.Provider,
+                correlationId: httpContext?.TraceIdentifier,
+                userId: userId,
+                applicationId: applicationId,
+                companyId: companyId,
+                ip: httpContext?.Connection.RemoteIpAddress?.ToString(),
+                userAgent: httpContext?.Request.Headers["User-Agent"].ToString()
+            );
             _logService.LogError(callLog);
             return exc.Message;
         }
@@ -113,7 +152,27 @@ public class MinioProvider : IMinioProvider
             }
             catch (Exception exc)
             {
-                var callLog = CreateCallLogModel(nameof(GetObjectByName), exc, exc.Message, false);
+                var httpContext = _httpContextAccessor.HttpContext;
+                _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value, out long userId);
+                _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out long applicationId);
+                _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "CompanyId")?.Value, out long companyId);
+
+                var callLog = CallLogModel.CreateError(
+                    serviceName: "Minio",
+                    providerName: "MinioProvider",
+                    requestUri: nameof(GetObjectByName),
+                    requestBody: null,
+                    responseBody: exc.Message,
+                    exception: exc,
+                    serviceType: Enums.ServiceType.Minio,
+                    auditType: Enums.AuditType.Provider,
+                    correlationId: httpContext?.TraceIdentifier,
+                    userId: userId,
+                    applicationId: applicationId,
+                    companyId: companyId,
+                    ip: httpContext?.Connection.RemoteIpAddress?.ToString(),
+                    userAgent: httpContext?.Request.Headers["User-Agent"].ToString()
+                );
                 _logService.LogError(callLog);
                 throw new Exception(GlobalResource.FileNotFound);
             }
@@ -128,7 +187,27 @@ public class MinioProvider : IMinioProvider
         }
         catch (MinioException exc)
         {
-            var callLog = CreateCallLogModel(nameof(GetObjectByName), exc, exc.Message, false);
+            var httpContext = _httpContextAccessor.HttpContext;
+            _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value, out long userId);
+            _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out long applicationId);
+            _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "CompanyId")?.Value, out long companyId);
+
+            var callLog = CallLogModel.CreateError(
+                serviceName: "Minio",
+                providerName: "MinioProvider",
+                requestUri: nameof(GetObjectByName),
+                requestBody: null,
+                responseBody: exc.Message,
+                exception: exc,
+                serviceType: Enums.ServiceType.Minio,
+                auditType: Enums.AuditType.Provider,
+                correlationId: httpContext?.TraceIdentifier,
+                userId: userId,
+                applicationId: applicationId,
+                companyId: companyId,
+                ip: httpContext?.Connection.RemoteIpAddress?.ToString(),
+                userAgent: httpContext?.Request.Headers["User-Agent"].ToString()
+            );
             _logService.LogError(callLog);
             throw new Exception($"{GlobalResource.MinioException} : {exc.Message}");
         }
@@ -167,7 +246,27 @@ public class MinioProvider : IMinioProvider
         }
         catch (Exception exc)
         {
-            var callLog = CreateCallLogModel(nameof(PresignedGetObject), exc, exc.Message, false);
+            var httpContext = _httpContextAccessor.HttpContext;
+            _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value, out long userId);
+            _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out long applicationId);
+            _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "CompanyId")?.Value, out long companyId);
+
+            var callLog = CallLogModel.CreateError(
+                serviceName: "Minio",
+                providerName: "MinioProvider",
+                requestUri: nameof(PresignedGetObject),
+                requestBody: null,
+                responseBody: exc.Message,
+                exception: exc,
+                serviceType: Enums.ServiceType.Minio,
+                auditType: Enums.AuditType.Provider,
+                correlationId: httpContext?.TraceIdentifier,
+                userId: userId,
+                applicationId: applicationId,
+                companyId: companyId,
+                ip: httpContext?.Connection.RemoteIpAddress?.ToString(),
+                userAgent: httpContext?.Request.Headers["User-Agent"].ToString()
+            );
             _logService.LogError(callLog);
 
             throw new Exception($"{GlobalResource.MinioException} : {exc.Message}");
@@ -179,55 +278,5 @@ public class MinioProvider : IMinioProvider
         var directoryPath = Path.GetDirectoryName(destinationfilePath);
 
         return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot", directoryPath);
-    }
-
-    private CallLogModel CreateCallLogModel(string methodName, Exception exception, string responseBody, bool isSuccess)
-    {
-        var httpContext = _httpContextAccessor.HttpContext;
-        _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value, out long userId);
-        _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out long applicationId);
-        _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "CompanyId")?.Value, out long companyId);
-
-        var callTime = DateTime.Now;
-
-        return new CallLogModel
-        {
-            // New fields (25 required fields)
-            CorrelationId = httpContext?.TraceIdentifier,
-            LogId = $"{Guid.NewGuid()} - Minio - {(isSuccess ? "Success" : exception?.GetType().Name)}",
-            RequestId = httpContext?.TraceIdentifier,
-            AuditLevel = isSuccess ? 1 : (exception != null ? 3 : 2),
-            AuditType = Enums.AuditType.Provider,
-            ServiceName = "Minio",
-            ProviderName = "MinioProvider",
-            RequestUri = methodName,
-            RequestHeader = null,
-            RequestBody = null,
-            ResponseStatusCode = isSuccess ? 200 : 500,
-            ResponseHeader = null,
-            ResponseBody = responseBody,
-            ApplicationId = applicationId == 0 ? null : applicationId,
-            UserId = userId == 0 ? null : userId,
-            Ip = httpContext?.Connection.RemoteIpAddress?.ToString(),
-            CompanyId = companyId == 0 ? null : companyId,
-            UserAgent = httpContext?.Request.Headers["User-Agent"].ToString(),
-            Response = responseBody,
-            ErrorCode = exception?.GetType().Name,
-            IsSucceeded = isSuccess,
-            StartDateTime = callTime,
-            EndDateTime = callTime,
-            DurationMs = 0,
-            StackTrace = exception?.StackTrace,
-
-            // Original fields (preserved)
-            ServiceCallDate = DateTime.Now,
-            ServiceCallUrl = methodName,
-            ServiceCallStatus = isSuccess,
-            ServiceType = Enums.ServiceType.Minio,
-            CreationDate = DateTime.Now,
-            CreationUserId = userId == 0 ? 1 : userId,
-            ErrorType = exception?.Message,
-            CorrolationId = httpContext?.TraceIdentifier
-        };
     }
 }

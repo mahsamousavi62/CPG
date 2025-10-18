@@ -76,46 +76,18 @@ public class CacheService(IDistributedCache cache,
         }
         catch (Exception ex)
         {
-            var callLog = new CallLogModel
-            {
-                // New fields (25 required fields)
-                CorrelationId = null,
-                LogId = $"{Guid.NewGuid()} - Cache - {ex.GetType().Name}",
-                RequestId = null,
-                AuditLevel = 3, // Error
-                AuditType = Enums.AuditType.Develop,
-                ServiceName = "CacheService",
-                ProviderName = "Redis",
-                RequestUri = nameof(GetAllApplicationSettings),
-                RequestHeader = null,
-                RequestBody = "",
-                ResponseStatusCode = 500,
-                ResponseHeader = null,
-                ResponseBody = ex.Message,
-                ApplicationId = null,
-                UserId = null,
-                Ip = null,
-                CompanyId = null,
-                UserAgent = null,
-                Response = ex.Message,
-                ErrorCode = ex.GetType().Name,
-                IsSucceeded = false,
-                StartDateTime = DateTime.Now,
-                EndDateTime = DateTime.Now,
-                DurationMs = 0,
-                StackTrace = ex.StackTrace,
-
-                // Original fields (preserved)
-                ServiceCallDate = DateTime.Now,
-                ServiceCallUrl = nameof(GetAllApplicationSettings),
-                ServiceCallStatus = false,
-                ServiceType = Enums.ServiceType.Cache,
-                CreationDate = DateTime.Now,
-                CreationUserId = 1,
-                ErrorType = ex.Message,
-                ProviderType = Enums.ProviderTypeInLog.Internal,
-                CorrolationId = null
-            };
+            var callLog = CallLogModel.CreateError(
+                serviceName: "CacheService",
+                providerName: "Redis",
+                requestUri: nameof(GetAllApplicationSettings),
+                requestBody: "",
+                responseBody: ex.Message,
+                exception: ex,
+                serviceType: Enums.ServiceType.Cache,
+                providerType: Enums.ProviderTypeInLog.Internal,
+                auditType: Enums.AuditType.Develop,
+                userId: 1
+            );
             logService.LogError(callLog);
             throw;
         }
@@ -129,46 +101,18 @@ public class CacheService(IDistributedCache cache,
         }
         catch (Exception ex)
         {
-            var callLog = new CallLogModel
-            {
-                // New fields (25 required fields)
-                CorrelationId = null,
-                LogId = $"{Guid.NewGuid()} - Cache - {ex.GetType().Name}",
-                RequestId = null,
-                AuditLevel = 3, // Error
-                AuditType = Enums.AuditType.Develop,
-                ServiceName = "CacheService",
-                ProviderName = "Redis",
-                RequestUri = nameof(GetApplicationSettings),
-                RequestHeader = null,
-                RequestBody = "",
-                ResponseStatusCode = 500,
-                ResponseHeader = null,
-                ResponseBody = ex.Message,
-                ApplicationId = null,
-                UserId = null,
-                Ip = null,
-                CompanyId = null,
-                UserAgent = null,
-                Response = ex.Message,
-                ErrorCode = ex.GetType().Name,
-                IsSucceeded = false,
-                StartDateTime = DateTime.Now,
-                EndDateTime = DateTime.Now,
-                DurationMs = 0,
-                StackTrace = ex.StackTrace,
-
-                // Original fields (preserved)
-                ServiceCallDate = DateTime.Now,
-                ServiceCallUrl = nameof(GetApplicationSettings),
-                ServiceCallStatus = false,
-                ServiceType = Enums.ServiceType.Cache,
-                CreationDate = DateTime.Now,
-                CreationUserId = 1,
-                ErrorType = ex.Message,
-                ProviderType = Enums.ProviderTypeInLog.Internal,
-                CorrolationId = null
-            };
+            var callLog = CallLogModel.CreateError(
+                serviceName: "CacheService",
+                providerName: "Redis",
+                requestUri: nameof(GetApplicationSettings),
+                requestBody: "",
+                responseBody: ex.Message,
+                exception: ex,
+                serviceType: Enums.ServiceType.Cache,
+                providerType: Enums.ProviderTypeInLog.Internal,
+                auditType: Enums.AuditType.Develop,
+                userId: 1
+            );
             logService.LogError(callLog);
             throw;
         }
@@ -193,46 +137,18 @@ public class CacheService(IDistributedCache cache,
         }
         catch (Exception ex)
         {
-            var callLog = new CallLogModel
-            {
-                // New fields (25 required fields)
-                CorrelationId = null,
-                LogId = $"{Guid.NewGuid()} - Cache - {ex.GetType().Name}",
-                RequestId = null,
-                AuditLevel = 3, // Error
-                AuditType = Enums.AuditType.Develop,
-                ServiceName = "CacheService",
-                ProviderName = "Redis",
-                RequestUri = nameof(GetApplicationIdentifier),
-                RequestHeader = null,
-                RequestBody = "",
-                ResponseStatusCode = 500,
-                ResponseHeader = null,
-                ResponseBody = ex.Message,
-                ApplicationId = null,
-                UserId = null,
-                Ip = null,
-                CompanyId = null,
-                UserAgent = null,
-                Response = ex.Message,
-                ErrorCode = ex.GetType().Name,
-                IsSucceeded = false,
-                StartDateTime = DateTime.Now,
-                EndDateTime = DateTime.Now,
-                DurationMs = 0,
-                StackTrace = ex.StackTrace,
-
-                // Original fields (preserved)
-                ServiceCallDate = DateTime.Now,
-                ServiceCallUrl = nameof(GetApplicationIdentifier),
-                ServiceCallStatus = false,
-                ServiceType = Enums.ServiceType.Cache,
-                CreationDate = DateTime.Now,
-                CreationUserId = 1,
-                ErrorType = ex.Message,
-                ProviderType = Enums.ProviderTypeInLog.Internal,
-                CorrolationId = null
-            };
+            var callLog = CallLogModel.CreateError(
+                serviceName: "CacheService",
+                providerName: "Redis",
+                requestUri: nameof(GetApplicationIdentifier),
+                requestBody: "",
+                responseBody: ex.Message,
+                exception: ex,
+                serviceType: Enums.ServiceType.Cache,
+                providerType: Enums.ProviderTypeInLog.Internal,
+                auditType: Enums.AuditType.Develop,
+                userId: 1
+            );
             logService.LogError(callLog);
             throw;
         }

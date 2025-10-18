@@ -589,49 +589,41 @@ public class HttpProvider : IHttpProvider
         _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out long applicationId);
         _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "CompanyId")?.Value, out long companyId);
 
-        var startTime = DateTime.Now;
-        var endTime = DateTime.Now;
-
-        var callLog = new CallLogModel
-        {
-            // New fields (25 required fields)
-            CorrelationId = httpContext?.TraceIdentifier,
-            LogId = $"{Guid.NewGuid()} - {request.Service} - {(response.IsSuccessStatusCode ? "Success" : response.StatusCode.ToString())}",
-            RequestId = httpContext?.TraceIdentifier,
-            AuditLevel = response.IsSuccessStatusCode ? 1 : (response.StatusCode == System.Net.HttpStatusCode.BadRequest ? 2 : 3),
-            AuditType = Enums.AuditType.Provider,
-            ServiceName = request.Service?.ToString() ?? "HttpProvider",
-            ProviderName = request.Provider?.ToString() ?? "Unknown",
-            RequestUri = request.Uri,
-            RequestHeader = request.HeaderParameters != null ? System.Text.Json.JsonSerializer.Serialize(request.HeaderParameters) : null,
-            RequestBody = reqString,
-            ResponseStatusCode = (int)response.StatusCode,
-            ResponseHeader = response.Headers != null ? System.Text.Json.JsonSerializer.Serialize(response.Headers) : null,
-            ResponseBody = resString,
-            ApplicationId = applicationId == 0 ? null : applicationId,
-            UserId = userId == 0 ? null : userId,
-            Ip = httpContext?.Connection.RemoteIpAddress?.ToString(),
-            CompanyId = companyId == 0 ? null : companyId,
-            UserAgent = httpContext?.Request.Headers["User-Agent"].ToString(),
-            Response = resString,
-            ErrorCode = response.IsSuccessStatusCode ? null : ReasonPhrases.GetReasonPhrase((int)response.StatusCode),
-            IsSucceeded = response.IsSuccessStatusCode,
-            StartDateTime = startTime,
-            EndDateTime = endTime,
-            DurationMs = (long)(endTime - startTime).TotalMilliseconds,
-            StackTrace = null,
-
-            // Original fields (preserved)
-            ServiceCallDate = DateTime.Now,
-            ServiceCallUrl = request.Uri,
-            ServiceCallStatus = response.StatusCode == System.Net.HttpStatusCode.OK,
-            ServiceType = request.Service,
-            CreationDate = DateTime.Now,
-            CreationUserId = userId == 0 ? 1 : userId,
-            ErrorType = response.IsSuccessStatusCode ? null : response.StatusCode.ToString(),
-            ProviderType = request.Provider,
-            CorrolationId = httpContext?.TraceIdentifier
-        };
+        var callLog = response.IsSuccessStatusCode
+            ? CallLogModel.CreateSuccess(
+                serviceName: request.Service?.ToString() ?? "HttpProvider",
+                providerName: request.Provider?.ToString() ?? "Unknown",
+                requestUri: request.Uri,
+                requestBody: reqString,
+                responseBody: resString,
+                serviceType: request.Service,
+                providerType: request.Provider,
+                auditType: Enums.AuditType.Provider,
+                correlationId: httpContext?.TraceIdentifier,
+                userId: userId,
+                applicationId: applicationId,
+                companyId: companyId,
+                ip: httpContext?.Connection.RemoteIpAddress?.ToString(),
+                userAgent: httpContext?.Request.Headers["User-Agent"].ToString(),
+                responseStatusCode: (int)response.StatusCode
+            )
+            : CallLogModel.CreateError(
+                serviceName: request.Service?.ToString() ?? "HttpProvider",
+                providerName: request.Provider?.ToString() ?? "Unknown",
+                requestUri: request.Uri,
+                requestBody: reqString,
+                responseBody: resString,
+                exception: null,
+                serviceType: request.Service,
+                providerType: request.Provider,
+                auditType: Enums.AuditType.Provider,
+                correlationId: httpContext?.TraceIdentifier,
+                userId: userId,
+                applicationId: applicationId,
+                companyId: companyId,
+                ip: httpContext?.Connection.RemoteIpAddress?.ToString(),
+                userAgent: httpContext?.Request.Headers["User-Agent"].ToString()
+            );
 
         _logService.LogInformation(callLog);
     }
@@ -643,45 +635,20 @@ public class HttpProvider : IHttpProvider
         _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out long applicationId);
         _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "CompanyId")?.Value, out long companyId);
 
-        var errorTime = DateTime.Now;
-
-        return new CallLogModel
-        {
-            // New fields (25 required fields)
-            CorrelationId = httpContext?.TraceIdentifier,
-            LogId = $"{Guid.NewGuid()} - HttpProvider - {exception.GetType().Name}",
-            RequestId = httpContext?.TraceIdentifier,
-            AuditLevel = 3, // Error level
-            AuditType = Enums.AuditType.Provider,
-            ServiceName = "HttpProvider",
-            ProviderName = methodName,
-            RequestUri = url ?? methodName,
-            RequestHeader = null,
-            RequestBody = null,
-            ResponseStatusCode = 500,
-            ResponseHeader = null,
-            ResponseBody = exception.StackTrace,
-            ApplicationId = applicationId == 0 ? null : applicationId,
-            UserId = userId == 0 ? null : userId,
-            Ip = httpContext?.Connection.RemoteIpAddress?.ToString(),
-            CompanyId = companyId == 0 ? null : companyId,
-            UserAgent = httpContext?.Request.Headers["User-Agent"].ToString(),
-            Response = exception.Message,
-            ErrorCode = exception.GetType().Name,
-            IsSucceeded = false,
-            StartDateTime = errorTime,
-            EndDateTime = errorTime,
-            DurationMs = 0,
-            StackTrace = exception.StackTrace,
-
-            // Original fields (preserved)
-            ServiceCallDate = DateTime.Now,
-            ServiceCallUrl = url ?? methodName,
-            ServiceCallStatus = false,
-            CreationDate = DateTime.Now,
-            CreationUserId = userId == 0 ? 1 : userId,
-            ErrorType = exception.Message,
-            CorrolationId = httpContext?.TraceIdentifier
-        };
+        return CallLogModel.CreateError(
+            serviceName: "HttpProvider",
+            providerName: methodName,
+            requestUri: url ?? methodName,
+            requestBody: null,
+            responseBody: exception.Message,
+            exception: exception,
+            auditType: Enums.AuditType.Provider,
+            correlationId: httpContext?.TraceIdentifier,
+            userId: userId,
+            applicationId: applicationId,
+            companyId: companyId,
+            ip: httpContext?.Connection.RemoteIpAddress?.ToString(),
+            userAgent: httpContext?.Request.Headers["User-Agent"].ToString()
+        );
     }
 }

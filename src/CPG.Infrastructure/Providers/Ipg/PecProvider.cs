@@ -72,47 +72,18 @@ public class PecProvider(
         }
         catch (Exception exc)
         {
-            var errorTime = DateTime.Now;
-            var callLog = new CallLogModel
-            {
-                // New fields (25 required fields)
-                CorrelationId = null,
-                LogId = $"{Guid.NewGuid()} - Pec - {exc.GetType().Name}",
-                RequestId = null,
-                AuditLevel = 3, // Error
-                AuditType = Enums.AuditType.Provider,
-                ServiceName = "PecToken",
-                ProviderName = "Pec",
-                RequestUri = nameof(SaleServiceSoapClient),
-                RequestHeader = null,
-                RequestBody = JsonConvert.SerializeObject(new { request.PaymentRequestAmount, OrderId = trackerId }),
-                ResponseStatusCode = 500,
-                ResponseHeader = null,
-                ResponseBody = exc.Message,
-                ApplicationId = null,
-                UserId = null,
-                Ip = null,
-                CompanyId = null,
-                UserAgent = null,
-                Response = exc.Message,
-                ErrorCode = exc.GetType().Name,
-                IsSucceeded = false,
-                StartDateTime = errorTime,
-                EndDateTime = errorTime,
-                DurationMs = 0,
-                StackTrace = exc.StackTrace,
-
-                // Original fields (preserved)
-                ServiceCallDate = DateTime.Now,
-                ServiceCallUrl = nameof(SaleServiceSoapClient),
-                ServiceCallStatus = false,
-                ServiceType = Enums.ServiceType.PecToken,
-                CreationDate = DateTime.Now,
-                CreationUserId = 1,
-                ErrorType = exc.Message,
-                ProviderType = Enums.ProviderTypeInLog.Pec,
-                CorrolationId = null
-            };
+            var callLog = CallLogModel.CreateError(
+                serviceName: "PecToken",
+                providerName: "Pec",
+                requestUri: nameof(SaleServiceSoapClient),
+                requestBody: JsonConvert.SerializeObject(new { request.PaymentRequestAmount, OrderId = trackerId }),
+                responseBody: exc.Message,
+                exception: exc,
+                serviceType: Enums.ServiceType.PecToken,
+                providerType: Enums.ProviderTypeInLog.Pec,
+                auditType: Enums.AuditType.Provider,
+                userId: 1
+            );
             _logService.LogError(callLog);
             throw;
         }
@@ -146,47 +117,18 @@ public class PecProvider(
         }
         catch (Exception exc)
         {
-            var errorTime = DateTime.Now;
-            var callLog = new CallLogModel
-            {
-                // New fields (25 required fields)
-                CorrelationId = null,
-                LogId = $"{Guid.NewGuid()} - Pec - {exc.GetType().Name}",
-                RequestId = null,
-                AuditLevel = 3, // Error
-                AuditType = Enums.AuditType.Provider,
-                ServiceName = "PecVerify",
-                ProviderName = "Pec",
-                RequestUri = nameof(ConfirmServiceSoapClient),
-                RequestHeader = null,
-                RequestBody = JsonConvert.SerializeObject(new { transactionResultRequest.Token }),
-                ResponseStatusCode = 500,
-                ResponseHeader = null,
-                ResponseBody = exc.Message,
-                ApplicationId = null,
-                UserId = null,
-                Ip = null,
-                CompanyId = null,
-                UserAgent = null,
-                Response = exc.Message,
-                ErrorCode = exc.GetType().Name,
-                IsSucceeded = false,
-                StartDateTime = errorTime,
-                EndDateTime = errorTime,
-                DurationMs = 0,
-                StackTrace = exc.StackTrace,
-
-                // Original fields (preserved)
-                ServiceCallDate = DateTime.Now,
-                ServiceCallUrl = nameof(ConfirmServiceSoapClient),
-                ServiceCallStatus = false,
-                ServiceType = Enums.ServiceType.PecVerify,
-                CreationDate = DateTime.Now,
-                CreationUserId = 1,
-                ErrorType = exc.Message,
-                ProviderType = Enums.ProviderTypeInLog.Pec,
-                CorrolationId = null
-            };
+            var callLog = CallLogModel.CreateError(
+                serviceName: "PecVerify",
+                providerName: "Pec",
+                requestUri: nameof(ConfirmServiceSoapClient),
+                requestBody: JsonConvert.SerializeObject(new { transactionResultRequest.Token }),
+                responseBody: exc.Message,
+                exception: exc,
+                serviceType: Enums.ServiceType.PecVerify,
+                providerType: Enums.ProviderTypeInLog.Pec,
+                auditType: Enums.AuditType.Provider,
+                userId: 1
+            );
             _logService.LogError(callLog);
             throw;
         }

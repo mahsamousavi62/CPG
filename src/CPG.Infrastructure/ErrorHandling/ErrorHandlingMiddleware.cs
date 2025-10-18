@@ -32,48 +32,23 @@ public class ErrorHandlingMiddleware(RequestDelegate next, ILogService logServic
             _ = long.TryParse(context.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out long applicationId);
             _ = long.TryParse(context.User.Claims.FirstOrDefault(c => c.Type == "CompanyId")?.Value, out long companyId);
 
-            var errorTime = DateTime.Now;
-
-            var callLog = new CallLogModel
-            {
-                // New fields (25 required fields)
-                CorrelationId = context.TraceIdentifier,
-                LogId = $"{Guid.NewGuid()} - ErrorHandling - {ex.GetType().Name}",
-                RequestId = context.TraceIdentifier,
-                AuditLevel = 3, // Error level
-                AuditType = Enums.AuditType.Develop,
-                ServiceName = "ErrorHandlingMiddleware",
-                ProviderName = "Internal",
-                RequestUri = context.Request.Path,
-                RequestHeader = context.Request.Headers != null ? System.Text.Json.JsonSerializer.Serialize(context.Request.Headers) : null,
-                RequestBody = context.Request.Path,
-                ResponseStatusCode = 500,
-                ResponseHeader = null,
-                ResponseBody = ex.Message,
-                ApplicationId = applicationId == 0 ? null : applicationId,
-                UserId = userId == 0 ? null : userId,
-                Ip = context.Connection.RemoteIpAddress?.ToString(),
-                CompanyId = companyId == 0 ? null : companyId,
-                UserAgent = context.Request.Headers["User-Agent"].ToString(),
-                Response = ex.Message,
-                ErrorCode = ex.GetType().Name,
-                IsSucceeded = false,
-                StartDateTime = errorTime,
-                EndDateTime = errorTime,
-                DurationMs = 0,
-                StackTrace = ex.StackTrace,
-
-                // Original fields (preserved)
-                ServiceCallDate = DateTime.Now,
-                ServiceCallUrl = context.Request.Path,
-                ServiceCallStatus = false,
-                ServiceType = Enums.ServiceType.ErrorHandling,
-                CreationDate = DateTime.Now,
-                CreationUserId = userId == 0 ? 1 : userId,
-                ErrorType = ex.Message,
-                ProviderType = Enums.ProviderTypeInLog.Internal,
-                CorrolationId = context.TraceIdentifier
-            };
+            var callLog = CallLogModel.CreateError(
+                serviceName: "ErrorHandlingMiddleware",
+                providerName: "Internal",
+                requestUri: context.Request.Path,
+                requestBody: context.Request.Path,
+                responseBody: ex.Message,
+                exception: ex,
+                serviceType: Enums.ServiceType.ErrorHandling,
+                providerType: Enums.ProviderTypeInLog.Internal,
+                auditType: Enums.AuditType.Develop,
+                correlationId: context.TraceIdentifier,
+                userId: userId,
+                applicationId: applicationId,
+                companyId: companyId,
+                ip: context.Connection.RemoteIpAddress?.ToString(),
+                userAgent: context.Request.Headers["User-Agent"].ToString()
+            );
             _logService.LogError(callLog);
             await HandleExceptionAsync(context, ex);
         }
