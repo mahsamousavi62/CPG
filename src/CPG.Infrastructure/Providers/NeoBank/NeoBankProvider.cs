@@ -80,15 +80,13 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
             {
                 RequestBody = System.Text.Json.JsonSerializer.Serialize(model),
                 ResponseBody = resultContent,
-                ServiceCallDate = DateTime.Now,
-                ServiceCallUrl = neobankConfig.UserDepositBalanceUrl,
-                ServiceCallStatus = result.StatusCode == System.Net.HttpStatusCode.OK,
+                StartDateTime = DateTime.Now,
+                RequestUri = neobankConfig.UserDepositBalanceUrl,
+                IsSucceeded = result.StatusCode == System.Net.HttpStatusCode.OK,
                 ServiceType = Enums.ServiceType.ClientDirectDebit,
-                CreationDate = DateTime.Now,
-                CreationUserId = currentUser.UserId,
+                UserId = currentUser.UserId,
                 ProviderType = Enums.ProviderTypeInLog.NeoBank,
                 AuditType = Enums.AuditType.Provider,
-                CorrolationId = neoBankCorroletionId,
             };
 
             using (LogContext.PushProperty("CallLog", callLog, true))
@@ -146,13 +144,11 @@ public class NeoBankProvider(IHttpClientFactory factory, IConfiguration configur
                 {
                     RequestBody = "",
                     ResponseBody = resultContent,
-                    ServiceCallDate = DateTime.Now,
-                    ServiceCallUrl = neobankConfig.UserDepositBalanceUrl,
-                    ServiceCallStatus = result.StatusCode == System.Net.HttpStatusCode.OK,
+                    RequestUri = neobankConfig.UserDepositBalanceUrl,
+                    IsSucceeded = result.StatusCode == System.Net.HttpStatusCode.OK,
                     ServiceType = Enums.ServiceType.GetUserDepositBalance,
-                    CreationDate = DateTime.Now,
-                    CreationUserId = currentUser.UserId,
-                    CorrolationId = neoBankCorroletionId,
+                    StartDateTime = DateTime.Now,
+                    UserId = currentUser.UserId,
                     ProviderType = Enums.ProviderTypeInLog.NeoBank,
                     AuditType = Enums.AuditType.Provider
                 };

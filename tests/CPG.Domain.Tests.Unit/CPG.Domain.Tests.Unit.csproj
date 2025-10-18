@@ -26,6 +26,8 @@
     <Folder Include="AggregateModels\BankAggregate\BankTests\" />
     <Folder Include="Guards\" />
     <Folder Include="Helpers\" />
+    <Folder Include="Infrastructure\" />
+    <Folder Include="SharedKernel\" />
   </ItemGroup>
 
   <ItemGroup>
