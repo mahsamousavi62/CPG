@@ -32,9 +32,10 @@
 
 *Create core Polly infrastructure classes and logging handlers*
 
-- [ ] **S001** Create PollyExtensions.cs with retry policy Extension methods
+- [x] **S001** Create PollyExtensions.cs with retry policy Extension methods
   - **Path**: `src/CPG.Infrastructure/Policies/PollyExtensions.cs`
   - **Dependencies**: None
+  - **Completed**: 2025-10-18
   - **Notes**:
     - Implement `AddStandardRetryPolicy(maxRetryAttempts)` extension for IHttpClientBuilder
     - Implement `ExecuteWithRetryAsync<T>` for manual SOAP/other usage
@@ -45,9 +46,10 @@
     - Handle HTTP: 5xx, 408 Request Timeout, 429 Too Many Requests
     - Log retry attempts with: RetryCount, Delay, ExceptionType, ServiceName
 
-- [ ] **S002** [P] Create PollyLoggingHandler.cs for HTTP request/response logging
+- [x] **S002** [P] Create PollyLoggingHandler.cs for HTTP request/response logging
   - **Path**: `src/CPG.Infrastructure/Policies/PollyLoggingHandler.cs`
   - **Dependencies**: None (parallel with S001)
+  - **Completed**: 2025-10-18
   - **Notes**:
     - Implement DelegatingHandler for HTTP pipeline
     - Inject: ILogger, ILogService, IHttpContextAccessor
@@ -58,9 +60,10 @@
     - Log timeout with: RequestId, Duration, Method, Uri, RequestBody
     - Call LogService.TruncateBody() and existing masking methods
 
-- [ ] **S003** [P] Create SoapLogger.cs for SOAP service logging
+- [x] **S003** [P] Create SoapLogger.cs for SOAP service logging
   - **Path**: `src/CPG.Infrastructure/Logging/SoapLogger.cs`
   - **Dependencies**: None (parallel with S001-S002)
+  - **Completed**: 2025-10-18
   - **Notes**:
     - Simple class (no interface) per project style
     - Inject: ILogger<SoapLogger>, ILogService
