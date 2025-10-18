@@ -90,4 +90,130 @@ public class CallLogModel
     public long CreationUserId { get; set; }
     public string CorrolationId { get; set; }
     public string ErrorType { get; set; }
+
+    /// <summary>
+    /// Factory method to create CallLogModel with comprehensive audit fields
+    /// </summary>
+    public static CallLogModel CreateError(
+        string serviceName,
+        string providerName,
+        string requestUri,
+        string requestBody,
+        string responseBody,
+        Exception exception = null,
+        ServiceType? serviceType = null,
+        ProviderTypeInLog? providerType = null,
+        AuditType? auditType = null,
+        string correlationId = null,
+        long? userId = null,
+        long? applicationId = null,
+        long? companyId = null,
+        string ip = null,
+        string userAgent = null)
+    {
+        var errorTime = DateTime.Now;
+        return new CallLogModel
+        {
+            // New fields (25 required fields)
+            CorrelationId = correlationId,
+            LogId = $"{Guid.NewGuid()} - {serviceName} - {exception?.GetType().Name ?? "Error"}",
+            RequestId = correlationId,
+            AuditLevel = 3, // Error level
+            AuditType = auditType ?? AuditType.Provider,
+            ServiceName = serviceName,
+            ProviderName = providerName,
+            RequestUri = requestUri,
+            RequestHeader = null,
+            RequestBody = requestBody,
+            ResponseStatusCode = 500,
+            ResponseHeader = null,
+            ResponseBody = responseBody,
+            ApplicationId = applicationId == 0 ? null : applicationId,
+            UserId = userId == 0 ? null : userId,
+            Ip = ip,
+            CompanyId = companyId == 0 ? null : companyId,
+            UserAgent = userAgent,
+            Response = responseBody,
+            ErrorCode = exception?.GetType().Name,
+            IsSucceeded = false,
+            StartDateTime = errorTime,
+            EndDateTime = errorTime,
+            DurationMs = 0,
+            StackTrace = exception?.StackTrace,
+
+            // Original fields (preserved)
+            ServiceCallDate = DateTime.Now,
+            ServiceCallUrl = requestUri,
+            ServiceCallStatus = false,
+            ServiceType = serviceType,
+            CreationDate = DateTime.Now,
+            CreationUserId = userId == 0 ? 1 : (userId ?? 1),
+            ErrorType = exception?.Message ?? responseBody,
+            ProviderType = providerType,
+            CorrolationId = correlationId
+        };
+    }
+
+    /// <summary>
+    /// Factory method to create CallLogModel for successful operations
+    /// </summary>
+    public static CallLogModel CreateSuccess(
+        string serviceName,
+        string providerName,
+        string requestUri,
+        string requestBody,
+        string responseBody,
+        ServiceType? serviceType = null,
+        ProviderTypeInLog? providerType = null,
+        AuditType? auditType = null,
+        string correlationId = null,
+        long? userId = null,
+        long? applicationId = null,
+        long? companyId = null,
+        string ip = null,
+        string userAgent = null,
+        int? responseStatusCode = null)
+    {
+        var callTime = DateTime.Now;
+        return new CallLogModel
+        {
+            // New fields (25 required fields)
+            CorrelationId = correlationId,
+            LogId = $"{Guid.NewGuid()} - {serviceName} - Success",
+            RequestId = correlationId,
+            AuditLevel = 1, // Information level
+            AuditType = auditType ?? AuditType.Provider,
+            ServiceName = serviceName,
+            ProviderName = providerName,
+            RequestUri = requestUri,
+            RequestHeader = null,
+            RequestBody = requestBody,
+            ResponseStatusCode = responseStatusCode ?? 200,
+            ResponseHeader = null,
+            ResponseBody = responseBody,
+            ApplicationId = applicationId == 0 ? null : applicationId,
+            UserId = userId == 0 ? null : userId,
+            Ip = ip,
+            CompanyId = companyId == 0 ? null : companyId,
+            UserAgent = userAgent,
+            Response = responseBody,
+            ErrorCode = null,
+            IsSucceeded = true,
+            StartDateTime = callTime,
+            EndDateTime = callTime,
+            DurationMs = 0,
+            StackTrace = null,
+
+            // Original fields (preserved)
+            ServiceCallDate = DateTime.Now,
+            ServiceCallUrl = requestUri,
+            ServiceCallStatus = true,
+            ServiceType = serviceType,
+            CreationDate = DateTime.Now,
+            CreationUserId = userId == 0 ? 1 : (userId ?? 1),
+            ErrorType = null,
+            ProviderType = providerType,
+            CorrolationId = correlationId
+        };
+    }
 }
