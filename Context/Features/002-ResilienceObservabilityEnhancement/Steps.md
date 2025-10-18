@@ -131,9 +131,10 @@
 
 *Add EF Core interceptor for database query logging with slow query detection*
 
-- [ ] **S008** Create DatabaseLoggingInterceptor.cs
+- [x] **S008** Create DatabaseLoggingInterceptor.cs
   - **Path**: `src/CPG.Infrastructure.Persistence/Interceptors/DatabaseLoggingInterceptor.cs`
   - **Dependencies**: S001-S007 (uses logging infrastructure)
+  - **Completed**: 2025-10-18
   - **Notes**:
     - Implement: `DbCommandInterceptor` from Microsoft.EntityFrameworkCore.Diagnostics
     - Inject: ILogger<DatabaseLoggingInterceptor>, IConfiguration
@@ -144,9 +145,10 @@
     - Override: `NonQueryExecutedAsync` - log NonQuery operations with duration and rows affected
     - QueryContext class: StartTime (DateTime), ContextType (string)
 
-- [ ] **S009** Register DatabaseLoggingInterceptor in Persistence DI
+- [x] **S009** Register DatabaseLoggingInterceptor in Persistence DI
   - **Path**: `src/CPG.Infrastructure.Persistence/DependencyInjection.cs` (or equivalent DI setup file)
   - **Dependencies**: S008
+  - **Completed**: 2025-10-18
   - **Notes**:
     - Add: `services.AddSingleton<DatabaseLoggingInterceptor>();`
     - Modify WriteDbContext registration to include interceptor:
@@ -159,9 +161,10 @@
     - Do the same for ReadDbContext registration if separate
     - Ensure interceptor is added AFTER existing interceptors
 
-- [ ] **S010** [P] Add database logging configuration to appsettings.json
+- [x] **S010** [P] Add database logging configuration to appsettings.json
   - **Path**: `src/CPG.API/appsettings.json` (or appsettings.Development.json)
   - **Dependencies**: None (parallel with S008-S009)
+  - **Completed**: 2025-10-18
   - **Notes**:
     - Add section:
       ```json
