@@ -39,6 +39,13 @@ public class HttpProvider : IHttpProvider
         where TError : ResponseBase
         where TBaseRequest : RequestBase
     {
+        // Serialize request body before try block for error logging
+        string requestBodyJson = null;
+        if (request?.Body != null)
+        {
+            requestBodyJson = System.Text.Json.JsonSerializer.Serialize(request.Body);
+        }
+
         try
         {
             if (request is null)
@@ -97,7 +104,7 @@ public class HttpProvider : IHttpProvider
         }
         catch (Exception exc)
         {
-            var callLog = CreateErrorCallLogModel(nameof(PostAsync), exc, request?.Uri);
+            var callLog = CreateErrorCallLogModel(nameof(PostAsync), exc, request?.Uri, requestBodyJson);
             _logService.LogError(callLog);
             throw;
         }
@@ -108,6 +115,13 @@ public class HttpProvider : IHttpProvider
         where TError : ResponseBase
         where TBaseRequest : RequestBase
     {
+        // Serialize request body before try block for error logging
+        string json = null;
+        if (request?.Body != null)
+        {
+            json = JsonConvert.SerializeObject(request.Body);
+        }
+
         try
         {
             if (request is null)
@@ -132,7 +146,6 @@ public class HttpProvider : IHttpProvider
                 request.Uri += "?" + queryParams;
             }
 
-            string json = JsonConvert.SerializeObject(request.Body);
             var content = new StringContent(json, null, "application/json-patch+json");
             var response = await client.PostAsync(request.Uri, content);
 
@@ -168,7 +181,7 @@ public class HttpProvider : IHttpProvider
         }
         catch (Exception exc)
         {
-            var callLog = CreateErrorCallLogModel(nameof(PostAsync3), exc, request?.Uri);
+            var callLog = CreateErrorCallLogModel(nameof(PostAsync3), exc, request?.Uri, json);
             _logService.LogError(callLog);
             throw;
         }
@@ -179,6 +192,13 @@ public class HttpProvider : IHttpProvider
         where TError : ResponseBase
         where TBaseRequest : RequestBase
     {
+        // Serialize request body before try block for error logging
+        string json = null;
+        if (request?.Body != null)
+        {
+            json = System.Text.Json.JsonSerializer.Serialize(request.Body);
+        }
+
         try
         {
             if (request is null)
@@ -203,7 +223,6 @@ public class HttpProvider : IHttpProvider
                 request.Uri += "?" + queryParams;
             }
 
-            string json = System.Text.Json.JsonSerializer.Serialize(request.Body);
             var content = new StringContent(json, null, "application/json");
             var response = await client.PostAsync(request.Uri, content);
 
@@ -239,7 +258,7 @@ public class HttpProvider : IHttpProvider
         }
         catch (Exception exc)
         {
-            var callLog = CreateErrorCallLogModel(nameof(PostAsync4), exc, request?.Uri);
+            var callLog = CreateErrorCallLogModel(nameof(PostAsync4), exc, request?.Uri, json);
             _logService.LogError(callLog);
             throw;
         }
@@ -314,6 +333,13 @@ public class HttpProvider : IHttpProvider
         where TError : ResponseBase
         where TBaseRequest : RequestBase
     {
+        // Serialize request body before try block for error logging
+        string requestBodyJson = null;
+        if (request?.Body != null)
+        {
+            requestBodyJson = System.Text.Json.JsonSerializer.Serialize(request.Body);
+        }
+
         try
         {
             if (request is null)
@@ -358,7 +384,7 @@ public class HttpProvider : IHttpProvider
         }
         catch (Exception exc)
         {
-            var callLog = CreateErrorCallLogModel(nameof(PutAsync), exc, request?.Uri);
+            var callLog = CreateErrorCallLogModel(nameof(PutAsync), exc, request?.Uri, requestBodyJson);
             _logService.LogError(callLog);
             throw;
         }
@@ -369,6 +395,13 @@ public class HttpProvider : IHttpProvider
         where TError : ResponseBase
         where TBaseRequest : RequestBase
     {
+        // Serialize request body before try block for error logging
+        string requestBodyJson = null;
+        if (request?.Body != null)
+        {
+            requestBodyJson = System.Text.Json.JsonSerializer.Serialize(request.Body);
+        }
+
         try
         {
             if (request is null)
@@ -427,7 +460,7 @@ public class HttpProvider : IHttpProvider
         }
         catch (Exception exc)
         {
-            var callLog = CreateErrorCallLogModel(nameof(PatchAsync), exc, request?.Uri);
+            var callLog = CreateErrorCallLogModel(nameof(PatchAsync), exc, request?.Uri, requestBodyJson);
             _logService.LogError(callLog);
             throw;
         }
@@ -446,6 +479,13 @@ public class HttpProvider : IHttpProvider
         where TError : ResponseBase
         where TBaseRequest : RequestBase
     {
+        // Serialize request body before try block for error logging
+        string requestBodyJson = null;
+        if (request?.Body != null)
+        {
+            requestBodyJson = System.Text.Json.JsonSerializer.Serialize(request.Body);
+        }
+
         try
         {
             if (request is null)
@@ -497,7 +537,7 @@ public class HttpProvider : IHttpProvider
         }
         catch (Exception exc)
         {
-            var callLog = CreateErrorCallLogModel(nameof(GetAsync), exc, request?.Uri);
+            var callLog = CreateErrorCallLogModel(nameof(GetAsync), exc, request?.Uri, requestBodyJson);
             _logService.LogError(callLog);
             throw;
         }
@@ -508,6 +548,13 @@ public class HttpProvider : IHttpProvider
                where TRequest : IHttpRequest
                where TResponse : IHttpResponse
     {
+        // Serialize request object before try block for error logging
+        string requestJson = null;
+        if (request?.Request != null)
+        {
+            requestJson = System.Text.Json.JsonSerializer.Serialize(request.Request);
+        }
+
         var client = _httpClientFactory.CreateClient();
         if (!string.IsNullOrEmpty(request.BaseAddress))
         {
@@ -539,7 +586,7 @@ public class HttpProvider : IHttpProvider
         }
         catch (Exception exc)
         {
-            var callLog = CreateErrorCallLogModel(nameof(GetAsync), exc, request?.Uri);
+            var callLog = CreateErrorCallLogModel(nameof(GetAsync), exc, request?.Uri, requestJson);
             _logService.LogError(callLog);
             throw;
         }
@@ -628,19 +675,33 @@ public class HttpProvider : IHttpProvider
         _logService.LogInformation(callLog);
     }
 
-    private CallLogModel CreateErrorCallLogModel(string methodName, Exception exception, string url)
+    private CallLogModel CreateErrorCallLogModel(string methodName, Exception exception, string url, string requestBody = null, string responseBody = null)
     {
         var httpContext = _httpContextAccessor.HttpContext;
         _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value, out long userId);
         _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out long applicationId);
         _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "CompanyId")?.Value, out long companyId);
 
+        // Apply PII masking to requestBody if provided
+        string maskedRequestBody = requestBody;
+        if (!string.IsNullOrEmpty(maskedRequestBody))
+        {
+            maskedRequestBody = Regex.Replace(maskedRequestBody, Constants.Pattern, Constants.Replaceformat);
+        }
+
+        // Apply PII masking to responseBody if provided
+        string maskedResponseBody = responseBody;
+        if (!string.IsNullOrEmpty(maskedResponseBody))
+        {
+            maskedResponseBody = Regex.Replace(maskedResponseBody, Constants.Pattern, Constants.Replaceformat);
+        }
+
         return CallLogModel.CreateError(
             serviceName: "HttpProvider",
             providerName: methodName,
             requestUri: url ?? methodName,
-            requestBody: null,
-            responseBody: exception.Message,
+            requestBody: maskedRequestBody,
+            responseBody: maskedResponseBody ?? exception.Message,
             exception: exception,
             auditType: Enums.AuditType.Provider,
             correlationId: httpContext?.TraceIdentifier,

@@ -33,11 +33,15 @@ public class PecProvider(
         string callBack = CreateCallbackUrl((short)request.IpgRedirectionMethodType, request.SiteAddress,
             trackerId.ToString(), configViewModel);
 
+        // Serialize full request object before try block for error logging
+        ClientSaleRequestData clientSaleRequestData = null;
+        string requestBodyJson = null;
+
         try
         {
             using (var SaleSvc = new SaleServiceSoapClient(SaleServiceSoapClient.EndpointConfiguration.SaleServiceSoap))
             {
-                var clientSaleRequestData = new ClientSaleRequestData()
+                clientSaleRequestData = new ClientSaleRequestData()
                 {
                     AdditionalData = request.NationalCodeMatchingRequied ?
                    CreateAdditionalData(request.NationalCode,
@@ -51,6 +55,14 @@ public class PecProvider(
                     OrderId = long.Parse(trackerId),
                     Originator = string.IsNullOrWhiteSpace(request.MobileNumber) ? null : request.MobileNumber.Trim(),
                 };
+
+                // Serialize and mask request body for error logging
+                requestBodyJson = JsonConvert.SerializeObject(clientSaleRequestData);
+                if (!string.IsNullOrEmpty(requestBodyJson))
+                {
+                    requestBodyJson = System.Text.RegularExpressions.Regex.Replace(requestBodyJson, Constants.Pattern, Constants.Replaceformat);
+                }
+
                 var response = await SaleSvc.SalePaymentRequestAsync(clientSaleRequestData);
 
                 int status = response.Body.SalePaymentRequestResult.Status;
@@ -76,7 +88,7 @@ public class PecProvider(
                 serviceName: "PecToken",
                 providerName: "Pec",
                 requestUri: nameof(SaleServiceSoapClient),
-                requestBody: JsonConvert.SerializeObject(new { request.PaymentRequestAmount, OrderId = trackerId }),
+                requestBody: requestBodyJson,
                 responseBody: exc.Message,
                 exception: exc,
                 serviceType: Enums.ServiceType.PecToken,
@@ -96,15 +108,27 @@ public class PecProvider(
 
     public async Task<VerifyTransactionResponse> Verify(VerifyTransactionRequest transactionResultRequest)
     {
+        // Serialize full request object before try block for error logging
+        ClientConfirmRequestData request = null;
+        string requestBodyJson = null;
+
         try
         {
             using (var confirmSvc = new ConfirmServiceSoapClient(ConfirmServiceSoapClient.EndpointConfiguration.ConfirmServiceSoap))
             {
-                var request = new ClientConfirmRequestData
+                request = new ClientConfirmRequestData
                 {
                     LoginAccount = GetDataFromJsonProvider(transactionResultRequest.ProviderData),
                     Token = long.Parse(transactionResultRequest.Token)
                 };
+
+                // Serialize and mask request body for error logging
+                requestBodyJson = JsonConvert.SerializeObject(request);
+                if (!string.IsNullOrEmpty(requestBodyJson))
+                {
+                    requestBodyJson = System.Text.RegularExpressions.Regex.Replace(requestBodyJson, Constants.Pattern, Constants.Replaceformat);
+                }
+
                 var confirm = await confirmSvc.ConfirmPaymentAsync(request);
                 CreateLog(request, confirm, nameof(ConfirmServiceSoapClient), confirm.Body.ConfirmPaymentResult.Status, string.Empty, Enums.ServiceType.PecVerify);
 
@@ -121,7 +145,7 @@ public class PecProvider(
                 serviceName: "PecVerify",
                 providerName: "Pec",
                 requestUri: nameof(ConfirmServiceSoapClient),
-                requestBody: JsonConvert.SerializeObject(new { transactionResultRequest.Token }),
+                requestBody: requestBodyJson,
                 responseBody: exc.Message,
                 exception: exc,
                 serviceType: Enums.ServiceType.PecVerify,

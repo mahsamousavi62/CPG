@@ -42,12 +42,20 @@ namespace CPG.Infrastructure.Providers.Charispay
         {
             var charisPayConfig = configuration.GetSection("Infrastructure:CharisPay").Get<CharisPayConfig>();
             ResultData<AccountNumberResponse> resultData = new();
+
+            // Serialize and mask request before try block for error logging
+            string json = JsonConvert.SerializeObject(new { iban });
+            string maskedJson = json;
+            if (!string.IsNullOrEmpty(maskedJson))
+            {
+                maskedJson = System.Text.RegularExpressions.Regex.Replace(maskedJson, Constants.Pattern, Constants.Replaceformat);
+            }
+
             try
             {
                 var client = _factory.CreateClient("charisPayClient");
                 client.SetBearerToken(charisPayConfig.Token);
                 client.DefaultRequestHeaders.Add("correlation-id", Guid.NewGuid().ToString());
-                string json = JsonConvert.SerializeObject(new { iban });
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 var result = await client.PostAsync(charisPayConfig.InqueryIbanUrl, content);
 
@@ -106,7 +114,7 @@ namespace CPG.Infrastructure.Providers.Charispay
                     serviceName: "GetAccountNumber",
                     providerName: "CharisPay",
                     requestUri: charisPayConfig.InqueryIbanUrl,
-                    requestBody: JsonConvert.SerializeObject(new { iban }),
+                    requestBody: maskedJson,
                     responseBody: ex.Message,
                     exception: ex,
                     serviceType: Enums.ServiceType.GetAccountNumber,
@@ -124,7 +132,7 @@ namespace CPG.Infrastructure.Providers.Charispay
                     serviceName: "GetAccountNumber",
                     providerName: "CharisPay",
                     requestUri: charisPayConfig.InqueryIbanUrl,
-                    requestBody: JsonConvert.SerializeObject(new { iban }),
+                    requestBody: maskedJson,
                     responseBody: ex.Message,
                     exception: ex,
                     serviceType: Enums.ServiceType.GetAccountNumber,

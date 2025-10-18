@@ -54,11 +54,15 @@ public class BehPardakhtProvider(
         var trackerId = RandomGenerator.GenerateRandomDigitNumber(16);
         string callBackUrl = CreateCallbackUrl((short)request.IpgRedirectionMethodType, request.SiteAddress, trackerId.ToString(), configViewModel.CPG_BackEnd);
 
+        // Serialize full request object before try block for error logging
+        bpPayRequest payRequest = null;
+        string requestBodyJson = null;
+
         try
         {
             using (var client = new PaymentGatewayClient(PaymentGatewayClient.EndpointConfiguration.PaymentGatewayImplPort))
             {
-                var payRequest = new bpPayRequest
+                payRequest = new bpPayRequest
                 {
                     Body = new bpPayRequestBody
                     {
@@ -79,6 +83,14 @@ public class BehPardakhtProvider(
                         additionalData = null,
                     }
                 };
+
+                // Serialize and mask request body for error logging
+                requestBodyJson = JsonConvert.SerializeObject(payRequest);
+                if (!string.IsNullOrEmpty(requestBodyJson))
+                {
+                    requestBodyJson = System.Text.RegularExpressions.Regex.Replace(requestBodyJson, Constants.Pattern, Constants.Replaceformat);
+                }
+
                 var response = await client.bpPayRequestAsync(payRequest.Body.terminalId, payRequest.Body.userName, payRequest.Body.userPassword,
                     payRequest.Body.orderId, payRequest.Body.amount, payRequest.Body.localDate, payRequest.Body.localTime, payRequest.Body.additionalData,
                     payRequest.Body.callBackUrl, payRequest.Body.payerId, payRequest.Body.mobileNo, payRequest.Body.encPan, payRequest.Body.panHiddenMode,
@@ -111,7 +123,7 @@ public class BehPardakhtProvider(
                 serviceName: "BehPardakhtToken",
                 providerName: "BehPardakht",
                 requestUri: nameof(PaymentGatewayClient.bpPayRequestAsync),
-                requestBody: JsonConvert.SerializeObject(new { terminalId, userName, request.PaymentRequestAmount }),
+                requestBody: requestBodyJson,
                 responseBody: exc.Message,
                 exception: exc,
                 serviceType: Enums.ServiceType.BehPardakhtToken,
@@ -142,12 +154,16 @@ public class BehPardakhtProvider(
 
     public async Task<VerifyTransactionResponse> Verify(VerifyTransactionRequest request)
     {
+        // Serialize full request object before try block for error logging
+        bpVerifyRequest verifyRequest = null;
+        string requestBodyJson = null;
+
         try
         {
             GetDataFromJsonProvider(request.ProviderData);
             using (var client = new PaymentGatewayClient(PaymentGatewayClient.EndpointConfiguration.PaymentGatewayImplPort))
             {
-                var verifyRequest = new bpVerifyRequest
+                verifyRequest = new bpVerifyRequest
                 {
                     Body = new bpVerifyRequestBody
                     {
@@ -159,6 +175,14 @@ public class BehPardakhtProvider(
                         saleReferenceId = long.Parse(request.ReferenceNumber),
                     }
                 };
+
+                // Serialize and mask request body for error logging
+                requestBodyJson = JsonConvert.SerializeObject(verifyRequest);
+                if (!string.IsNullOrEmpty(requestBodyJson))
+                {
+                    requestBodyJson = System.Text.RegularExpressions.Regex.Replace(requestBodyJson, Constants.Pattern, Constants.Replaceformat);
+                }
+
                 var response = await client.bpVerifyRequestAsync(verifyRequest.Body.terminalId, verifyRequest.Body.userName, verifyRequest.Body.userPassword,
                     verifyRequest.Body.orderId, verifyRequest.Body.saleOrderId, verifyRequest.Body.saleReferenceId);
 
@@ -183,7 +207,7 @@ public class BehPardakhtProvider(
                 serviceName: "BehPardakhtVerify",
                 providerName: "BehPardakht",
                 requestUri: nameof(PaymentGatewayClient.bpVerifyRequestAsync),
-                requestBody: JsonConvert.SerializeObject(new { terminalId, userName, request.TrackId }),
+                requestBody: requestBodyJson,
                 responseBody: exc.Message,
                 exception: exc,
                 serviceType: Enums.ServiceType.BehPardakhtVerify,
@@ -209,12 +233,16 @@ public class BehPardakhtProvider(
 
     public async Task<SettleTransactionResponse> Settle(SettleTransactionRequest request)
     {
+        // Serialize full request object before try block for error logging
+        bpSettleRequest settleRequest = null;
+        string requestBodyJson = null;
+
         try
         {
             GetDataFromJsonProvider(request.ProviderData);
             using (var client = new PaymentGatewayClient(PaymentGatewayClient.EndpointConfiguration.PaymentGatewayImplPort))
             {
-                var settleRequest = new bpSettleRequest
+                settleRequest = new bpSettleRequest
                 {
                     Body = new bpSettleRequestBody
                     {
@@ -226,6 +254,14 @@ public class BehPardakhtProvider(
                         saleReferenceId = long.Parse(request.ReferenceNumber),
                     }
                 };
+
+                // Serialize and mask request body for error logging
+                requestBodyJson = JsonConvert.SerializeObject(settleRequest);
+                if (!string.IsNullOrEmpty(requestBodyJson))
+                {
+                    requestBodyJson = System.Text.RegularExpressions.Regex.Replace(requestBodyJson, Constants.Pattern, Constants.Replaceformat);
+                }
+
                 var response = await client.bpSettleRequestAsync(settleRequest.Body.terminalId, settleRequest.Body.userName, settleRequest.Body.userPassword,
                     settleRequest.Body.orderId, settleRequest.Body.saleOrderId, settleRequest.Body.saleReferenceId);
 
@@ -250,7 +286,7 @@ public class BehPardakhtProvider(
                 serviceName: "BehPardakhtSettle",
                 providerName: "BehPardakht",
                 requestUri: nameof(PaymentGatewayClient.bpSettleRequestAsync),
-                requestBody: JsonConvert.SerializeObject(new { terminalId, userName, request.TrackId }),
+                requestBody: requestBodyJson,
                 responseBody: exc.Message,
                 exception: exc,
                 serviceType: Enums.ServiceType.BehPardakhtSettle,
