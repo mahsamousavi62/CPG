@@ -46,11 +46,7 @@ public class DatabaseLoggingInterceptor(
 
     private void LogCommand(DbCommand command, CommandExecutedEventData? executedEventData, Exception? exception)
     {
-        // Only log slow queries (> 1000ms) or errors to avoid excessive logging
         var duration = executedEventData?.Duration.TotalMilliseconds ?? 0;
-        if (exception == null && duration < 1000)
-            return;
-
         var httpContext = _httpContextAccessor.HttpContext;
         _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out long applicationId);
         _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "CompanyId")?.Value, out long companyId);
