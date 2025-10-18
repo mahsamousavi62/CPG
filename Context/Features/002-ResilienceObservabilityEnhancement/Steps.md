@@ -82,9 +82,10 @@
 
 *Extend existing LogService.cs with new methods for timeout logging and improved masking*
 
-- [ ] **S004** Extend LogService.cs with LogTimeout method
+- [x] **S004** Extend LogService.cs with LogTimeout method
   - **Path**: `src/CPG.Infrastructure/Logging/LogService.cs` (modify existing file)
   - **Dependencies**: S001-S003 (needs TruncateBody, GetCorrelationId)
+  - **Completed**: 2025-10-18
   - **Notes**:
     - Add method: `LogTimeout(serviceName, operationName, duration, requestBody, partialResponse)`
     - Create anonymous object with: ServiceName, OperationName, DurationMs, RequestBody (truncated/masked), PartialResponseBody, Timestamp, RequestId
@@ -92,27 +93,30 @@
     - Log at Error level with structured message
     - Call existing MaskSensitiveData() before truncating
 
-- [ ] **S005** [P] Add TruncateBody method to LogService.cs
+- [x] **S005** [P] Add TruncateBody method to LogService.cs
   - **Path**: `src/CPG.Infrastructure/Logging/LogService.cs` (modify existing file)
   - **Dependencies**: None (parallel with S004)
+  - **Completed**: 2025-10-18
   - **Notes**:
     - Public method: `TruncateBody(string body, int maxLength)`
     - Return original if null/empty or length <= maxLength
     - Otherwise: `body.Substring(0, maxLength) + $"... [بریده: {body.Length - maxLength} کاراکتر]"`
     - Used by PollyLoggingHandler, SoapLogger, and LogTimeout
 
-- [ ] **S006** [P] Add GetCorrelationId private method to LogService.cs
+- [x] **S006** [P] Add GetCorrelationId private method to LogService.cs
   - **Path**: `src/CPG.Infrastructure/Logging/LogService.cs` (modify existing file)
   - **Dependencies**: None (parallel with S004-S005)
+  - **Completed**: 2025-10-18
   - **Notes**:
     - Private method: `GetCorrelationId()`
     - Return: `_httpContextAccessor.HttpContext?.TraceIdentifier ?? Guid.NewGuid().ToString()`
     - Inject IHttpContextAccessor if not already injected (check constructor)
     - Used by LogTimeout method
 
-- [ ] **S007** Enhance MaskSensitiveData method with PCI-DSS compliance
+- [x] **S007** Enhance MaskSensitiveData method with PCI-DSS compliance
   - **Path**: `src/CPG.Infrastructure/Logging/LogService.cs` (modify existing method)
   - **Dependencies**: S004-S006 (same file modifications)
+  - **Completed**: 2025-10-18
   - **Notes**:
     - Keep existing MyRegex().Replace() call for current masking
     - Add PAN masking: Regex.Replace(@"\b(\d{12})(\d{4})\b", "************$2") - keep last 4 digits

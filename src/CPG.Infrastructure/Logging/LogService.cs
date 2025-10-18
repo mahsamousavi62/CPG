@@ -122,6 +122,70 @@ public partial class LogService(ILogger<LogService> logger, IHttpContextAccessor
         }
     }
 
+    // متد جدید: لاگ timeout با جزئیات کامل (S004)
+    public void LogTimeout(string serviceName, string operationName, TimeSpan duration,
+        string requestBody, string partialResponse)
+    {
+        var timeoutLog = new
+        {
+            ServiceName = serviceName,
+            OperationName = operationName,
+            DurationMs = (long)duration.TotalMilliseconds,
+            RequestBody = TruncateBody(MaskSensitiveData(requestBody), 3000),
+            PartialResponseBody = TruncateBody(MaskSensitiveData(partialResponse), 2000),
+            Timestamp = DateTime.UtcNow,
+            RequestId = GetCorrelationId()
+        };
+
+        using (LogContext.PushProperty("Timeout", timeoutLog, true))
+        {
+            _logger.LogError(
+                "[TIMEOUT] {ServiceName}.{OperationName} after {DurationMs}ms | RequestId: {RequestId}",
+                serviceName, operationName, timeoutLog.DurationMs, timeoutLog.RequestId);
+        }
+    }
+
+    // متد جدید: برش بدنه برای جلوگیری از لاگ زیاد (S005)
+    public string TruncateBody(string body, int maxLength)
+    {
+        if (string.IsNullOrEmpty(body) || body.Length <= maxLength)
+            return body;
+
+        return body.Substring(0, maxLength) + $"... [بریده: {body.Length - maxLength} کاراکتر]";
+    }
+
+    // متد جدید: گرفتن Correlation ID از HttpContext (S006)
+    private string GetCorrelationId()
+    {
+        return _httpContextAccessor.HttpContext?.TraceIdentifier ?? Guid.NewGuid().ToString();
+    }
+
+    // توسعه متد masking: PCI-DSS compliance (S007)
+    private string MaskSensitiveData(string content)
+    {
+        if (string.IsNullOrEmpty(content))
+            return content;
+
+        // استفاده از regex موجود
+        content = MyRegex().Replace(content, Constants.Replaceformat);
+
+        // اضافه کردن masking برای PAN (نگه داشتن 4 رقم آخر)
+        content = Regex.Replace(
+            content, @"\b(\d{12})(\d{4})\b", "************$2");
+
+        // CVV2 کامل پاک شود
+        content = Regex.Replace(
+            content, @"""cvv2?""\s*:\s*""\d{3,4}""", "\"cvv2\":\"***\"",
+            RegexOptions.IgnoreCase);
+
+        // Token ها رو به 10 کاراکتر اول برش بزن
+        content = Regex.Replace(
+            content, @"""(token|access_token)""\s*:\s*""([^""]{10})[^""]*""",
+            "\"$1\":\"$2...\"", RegexOptions.IgnoreCase);
+
+        return content;
+    }
+
     [GeneratedRegex(Constants.Pattern)]
     private static partial Regex MyRegex();
 }
