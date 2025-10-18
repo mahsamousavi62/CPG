@@ -98,7 +98,12 @@ public class DatabaseLoggingInterceptor(
                 userAgent: httpContext?.Request.Headers["User-Agent"].ToString(),
                 responseStatusCode: 200
             );
-            _logService.LogWarning(callLog); // Log as warning for slow queries
+
+            // Log as warning for slow queries (>1000ms), otherwise information
+            if (duration > 1000)
+                _logService.LogWarning(callLog);
+            else
+                _logService.LogInformation(callLog);
         }
     }
 }
