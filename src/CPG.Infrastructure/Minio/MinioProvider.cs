@@ -14,6 +14,7 @@ using Serilog;
 using Serilog.Core;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -57,6 +58,7 @@ public class MinioProvider : IMinioProvider
 
         file.Content.Seek(0, SeekOrigin.Begin);
 
+        var stopwatch = Stopwatch.StartNew();
         try
         {
             PutObjectArgs putObjectArgs = new PutObjectArgs()
@@ -67,16 +69,23 @@ public class MinioProvider : IMinioProvider
                 .WithStreamData(file.Content);
 
             var response = await _minioClient.PutObjectAsync(putObjectArgs).ConfigureAwait(false);
+            stopwatch.Stop();
 
-            var resString = JsonConvert.SerializeObject(response);
-
-            _logger.LogWarning($"Response Minio : {resString}");
+            // لاگ ساختاریافته - به جای LogWarning
+            _logger.LogInformation(
+                "[MinIO] PutObject succeeded in {DurationMs}ms | Bucket: {Bucket} | ObjectKey: {ObjectKey} | Size: {Size} bytes",
+                stopwatch.ElapsedMilliseconds, bucketName, objectName, file.Length);
 
             return response.ObjectName;
         }
         catch (MinioException exc)
         {
-            _logger.LogError(exc, $"Request: Unhandled Exception for Request {nameof(PutObject)}{exc.Message} ");
+            stopwatch.Stop();
+
+            _logger.LogError(exc,
+                "[MinIO] PutObject FAILED after {DurationMs}ms | Bucket: {Bucket} | ObjectKey: {ObjectKey} | Size: {Size} bytes",
+                stopwatch.ElapsedMilliseconds, bucketName, objectName, file.Length);
+
             return exc.Message;
         }
     }
@@ -87,6 +96,7 @@ public class MinioProvider : IMinioProvider
 
         var bucketName = _configuration["Infrastructure:Minio:bucketName"];
 
+        var stopwatch = Stopwatch.StartNew();
         try
         {
             var getStateArgs = new StatObjectArgs().WithBucket(bucketName).WithObject(name);
@@ -105,10 +115,20 @@ public class MinioProvider : IMinioProvider
             try
             {
                 _ = await _minioClient.GetObjectAsync(gArgs).ConfigureAwait(true);
+                stopwatch.Stop();
+
+                _logger.LogInformation(
+                    "[MinIO] GetObject succeeded in {DurationMs}ms | Bucket: {Bucket} | ObjectKey: {ObjectKey}",
+                    stopwatch.ElapsedMilliseconds, bucketName, name);
             }
             catch (Exception exc)
             {
-                _logger.LogError(exc, $"Request: Unhandled Exception for Request {nameof(GetObjectByName)}{exc.Message} ");
+                stopwatch.Stop();
+
+                _logger.LogError(exc,
+                    "[MinIO] GetObject FAILED after {DurationMs}ms | Bucket: {Bucket} | ObjectKey: {ObjectKey}",
+                    stopwatch.ElapsedMilliseconds, bucketName, name);
+
                 throw new Exception(GlobalResource.FileNotFound);
             }
 
@@ -122,7 +142,12 @@ public class MinioProvider : IMinioProvider
         }
         catch (MinioException exc)
         {
-            _logger.LogError(exc, $"Request: Unhandled Exception for Request {nameof(GetObjectByName)}{exc.Message} ");
+            stopwatch.Stop();
+
+            _logger.LogError(exc,
+                "[MinIO] GetObject MinioException after {DurationMs}ms | Bucket: {Bucket} | ObjectKey: {ObjectKey}",
+                stopwatch.ElapsedMilliseconds, bucketName, name);
+
             throw new Exception($"{GlobalResource.MinioException} : {exc.Message}");
         }
     }

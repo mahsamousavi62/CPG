@@ -186,9 +186,10 @@
 
 *Enhance existing MinioProvider with structured logging and duration tracking*
 
-- [ ] **S011** Add Stopwatch and structured logging to MinioProvider.PutObject
+- [x] **S011** Add Stopwatch and structured logging to MinioProvider.PutObject
   - **Path**: `src/CPG.Infrastructure/Minio/MinioProvider.cs` (modify existing method)
   - **Dependencies**: S004-S007 (LogService enhancements available)
+  - **Completed**: 2025-10-18
   - **Notes**:
     - Add: `var stopwatch = Stopwatch.StartNew();` before PutObjectAsync call
     - Add: `stopwatch.Stop();` after successful PutObjectAsync AND in catch block
@@ -205,17 +206,19 @@
           stopwatch.ElapsedMilliseconds, bucketName, objectName, file.Length);
       ```
 
-- [ ] **S012** [P] Add Stopwatch and structured logging to MinioProvider.GetObject (if exists)
-  - **Path**: `src/CPG.Infrastructure/Minio/MinioProvider.cs` (modify existing method)
+- [x] **S012** [P] Add Stopwatch and structured logging to MinioProvider.GetObject (if exists)
+  - **Path**: `src/CPG.Infrastructure/Minio/MinioProvider.cs` (modify existing method - GetObjectByName)
   - **Dependencies**: None (parallel with S011)
+  - **Completed**: 2025-10-18
   - **Notes**:
     - Follow same pattern as S011 for GetObject method
     - If GetObject doesn't exist, mark this task as complete with note "Method not present"
     - Log: "[MinIO] GetObject succeeded/FAILED in {DurationMs}ms | Bucket: {Bucket} | ObjectKey: {ObjectKey}"
 
-- [ ] **S013** [P] Add Stopwatch and structured logging to MinioProvider.DeleteObject (if exists)
+- [x] **S013** [P] Add Stopwatch and structured logging to MinioProvider.DeleteObject (if exists)
   - **Path**: `src/CPG.Infrastructure/Minio/MinioProvider.cs` (modify existing method)
   - **Dependencies**: None (parallel with S011-S012)
+  - **Completed**: 2025-10-18 - N/A (DeleteObject method not present in codebase)
   - **Notes**:
     - Follow same pattern as S011 for DeleteObject method
     - If DeleteObject doesn't exist, mark as complete with note "Method not present"
