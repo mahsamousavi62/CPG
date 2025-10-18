@@ -113,7 +113,7 @@ public class CallLogModel
             LogId = $"{Guid.NewGuid()} - {serviceName} - {exception?.GetType().Name ?? "Error"}",
             RequestId = correlationId,
             AuditLevel = 3, // Error level
-            AuditType = auditType ?? AuditType.Provider,
+            AuditType = auditType ?? Enums.AuditType.Provider,
             ServiceName = serviceName,
             ProviderName = providerName,
             RequestUri = requestUri,
@@ -170,7 +170,7 @@ public class CallLogModel
             LogId = $"{Guid.NewGuid()} - {serviceName} - Success",
             RequestId = correlationId,
             AuditLevel = 1, // Information level
-            AuditType = auditType ?? AuditType.Provider,
+            AuditType = auditType ?? Enums.AuditType.Provider,
             ServiceName = serviceName,
             ProviderName = providerName,
             RequestUri = requestUri,

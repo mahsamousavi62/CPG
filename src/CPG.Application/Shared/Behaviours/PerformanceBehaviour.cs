@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using CPG.Domain.AggregateModels.UserAggregate;
@@ -35,15 +36,22 @@ public class PerformanceBehaviour<TRequest, TResponse>(
             if (userId != 0) 
                 userName = await User.GetUserName(userId);
 
-            RequestResponseLogModel log = new()
-            {
-                RequestMethod = requestName,
-                UserId = userId,
-                DurationMs = elapsedMilliseconds,
-                AuditType = Enums.AuditType.Develop
-            };
+            var callLog = CallLogModel.CreateSuccess(
+                serviceName: requestName,
+                providerName: "MediatR",
+                requestUri: requestName,
+                requestBody: JsonSerializer.Serialize(request),
+                responseBody: $"Long running request completed in {elapsedMilliseconds}ms",
+                serviceType: null,
+                providerType: Enums.ProviderTypeInLog.Internal,
+                auditType: Enums.AuditType.Develop,
+                userId: userId == 0 ? null : userId,
+                responseStatusCode: 200
+            );
 
-            _logService.LogWarning("Long Running Request {@log}", log);
+            callLog.DurationMs = elapsedMilliseconds;
+
+            _logService.LogWarning(callLog);
 
         }
 

@@ -1,10 +1,11 @@
-﻿using CPG.Application.UseCases.Exceptions;
+using CPG.Application.UseCases.Exceptions;
 using CPG.Domain.Exceptions;
 using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Helper;
 using CPG.Domain.SharedKernel.Logging;
 using MediatR;
 using System;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -23,37 +24,38 @@ public class UnhandledExceptionBehaviour<TRequest, TResponse>(ILogService logSer
         }
         catch (DomainException exc)
         {
-            LogError(exc);
+            LogError(request, exc);
             return (TResponse)typeof(TResponse).GetMethod("Failure").Invoke(null, [new Error(exc.Code, exc.Message)]);
         }
         catch (AppException exc)
         {
-            LogError(exc);
+            LogError(request, exc);
             return (TResponse)typeof(TResponse).GetMethod("Failure").Invoke(null, [new Error(exc.Code, exc.Message)]);
         }
         catch (Exception exc)
         {
-            LogError(exc);
+            LogError(request, exc);
             return (TResponse)typeof(TResponse).GetMethod("Failure").Invoke(null, [new Error(exc.Source, exc.Message)]);
         }
     }
 
-    private void LogError(Exception ex)
+    private void LogError(TRequest request, Exception ex)
     {
         var requestName = typeof(TRequest).Name;
 
-        bool hasCode = ex.HasProperty("code");
+        var callLog = CallLogModel.CreateError(
+            serviceName: requestName,
+            providerName: "MediatR",
+            requestUri: requestName,
+            requestBody: JsonSerializer.Serialize(request),
+            responseBody: ex.Message,
+            exception: ex,
+            serviceType: Enums.ServiceType.ErrorHandling,
+            providerType: Enums.ProviderTypeInLog.Internal,
+            auditType: Enums.AuditType.Develop,
+            userId: 1
+        );
 
-        RequestResponseLogModel log = new()
-        {
-            AuditType = Enums.AuditType.Develop,
-            ServiceName = requestName,
-            StackTrace = ex.StackTrace,
-            ResponseBody = ex.Message,
-            IsSuccess = false,
-            ErrorCode = hasCode ? (ex as dynamic)?.Code : string.Empty,
-        };
-
-        _logService.LogError(ex, "Request: Unhandled Exception for Request {Name} {@log}", requestName, log);
+        _logService.LogError(callLog);
     }
 }

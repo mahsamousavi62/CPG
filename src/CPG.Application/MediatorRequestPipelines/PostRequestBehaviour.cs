@@ -13,13 +13,21 @@ public class PostRequestLogger<TRequest, TResponse>(ILogService logService) : IR
     public Task Process(TRequest request, TResponse response, CancellationToken cancellationToken)
     {
         var requestName = typeof(TRequest).Name;
-        RequestResponseLogModel log = new ()
-        {
-            AuditType = Enums.AuditType.Develop,
-            ServiceName = requestName,
-            ResponseBody = response
-        };
-        _logService.LogInformation("Request completed:{@log}", log);
+
+        var callLog = CallLogModel.CreateSuccess(
+            serviceName: requestName,
+            providerName: "MediatR",
+            requestUri: requestName,
+            requestBody: System.Text.Json.JsonSerializer.Serialize(request),
+            responseBody: System.Text.Json.JsonSerializer.Serialize(response),
+            serviceType: null,
+            providerType: Enums.ProviderTypeInLog.Internal,
+            auditType: Enums.AuditType.Develop,
+            userId: 1,
+            responseStatusCode: 200
+        );
+
+        _logService.LogInformation(callLog);
 
         return Task.CompletedTask;
     }
