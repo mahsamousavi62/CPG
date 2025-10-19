@@ -551,8 +551,8 @@ public class HttpProvider : IHttpProvider
 
     public async Task<TResponse?> GetAsync<TRequest, TResponse, TBody>([NotNull] HttpProviderRequest<TBody, TRequest> request, Func<HttpResponseMessage, Task>? postCallHandler = null,
                Func<HttpResponseMessage, Task<TResponse?>>? decodeHandler = null, Func<TRequest?, TResponse?, Task<TResponse?>>? failHandler = null)
-               where TRequest : IHttpRequest
-               where TResponse : IHttpResponse
+               where TRequest : class, IHttpRequest
+               where TResponse : class, IHttpResponse
                where TBody : class
     {
         // Serialize request object before try block for error logging
