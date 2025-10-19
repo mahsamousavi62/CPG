@@ -116,6 +116,25 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
                                     transaction.PredictedSettlementDateTime = GetPredictedSettlementDateTime();
                                 }
                             }
+                            else if (providerType == ProviderType.AsanPardakht)
+                            {
+                                var settlementResult = await ipg.Settle(new SettleTransactionRequest
+                                {
+                                    ProviderData = transaction.IPGTransaction.CompanyIPG.ProviderData,
+                                    ProviderTrackerId = transaction.IPGTransaction.ProviderTrackerId,
+                                });
+
+                                transaction.IPGTransaction.Status = settlementResult.Status;
+
+                                if (settlementResult.Status == IPGTransactionStatus.SettlementSucceeded)
+                                {
+                                    transaction.PredictedSettlementDateTime = GetPredictedSettlementDateTime();
+                                }
+                                else if (settlementResult.Status == IPGTransactionStatus.SettlementFailed)
+                                {
+                                    transaction.PredictedSettlementDateTime = GetPredictedSettlementDateTimeForFailedSettlement();
+                                }
+                            }
                             else if (providerType == ProviderType.Ayandeh)
                             {
                                 var date = DateTime.Now.AddDays(2);
@@ -203,6 +222,17 @@ public class VerifyTransactionQueryHandler(IIpgFactory ipgFactory,
     {
         var currentDateTime = DateTime.Now;
         var timeMargin = new TimeOnly(23, 45);
+        var currentTime = new TimeOnly(currentDateTime.Hour, currentDateTime.Minute);
+        var date = currentTime < timeMargin ?
+            new DateTime(currentDateTime.AddDays(1).Year, currentDateTime.AddDays(1).Month, currentDateTime.AddDays(1).Day, 7, 0, 0) :
+            new DateTime(currentDateTime.AddDays(2).Year, currentDateTime.AddDays(2).Month, currentDateTime.AddDays(2).Day, 7, 0, 0);
+        return date;
+    }
+
+    private static DateTime GetPredictedSettlementDateTimeForFailedSettlement()
+    {
+        var currentDateTime = DateTime.Now;
+        var timeMargin = new TimeOnly(20, 40);
         var currentTime = new TimeOnly(currentDateTime.Hour, currentDateTime.Minute);
         var date = currentTime < timeMargin ?
             new DateTime(currentDateTime.AddDays(1).Year, currentDateTime.AddDays(1).Month, currentDateTime.AddDays(1).Day, 7, 0, 0) :

@@ -113,6 +113,7 @@ public class Enums
         BehPardakhtSettle = 28,
         Kafka = 29,
         MassTransit = 30,
+        AsanPardakhtSettle = 31,
     }
 
     public enum TransactionType : byte
@@ -182,6 +183,7 @@ public class Enums
         Provider = 2,
         User = 3,
         Develop = 4,
+        Database = 5,
     }
 
     public enum ProviderTypeInLog
