@@ -7,6 +7,7 @@ param(
     [switch]$WhatIf = $false
 )
 
+$ErrorActionPreference = "Continue"
 $filesProcessed = 0
 $totalFiles = 0
 
@@ -36,21 +37,23 @@ foreach ($file in $csFiles) {
         $content = Get-Content -Path $file.FullName -Raw -Encoding UTF8
         $originalContent = $content
 
-        # Remove XML documentation comments (/// <summary>, /// <param>, etc.)
-        # This removes entire XML doc comment blocks
-        $content = $content -replace '(?m)^\s*///.*$\r?\n?', ''
+        # Step 1: Remove XML documentation comments (/// ...)
+        $content = $content -replace '(?m)^\s*///.*$', ''
 
-        # Remove multi-line comments (/* ... */)
-        # This handles multi-line and single-line /* */ comments
-        $content = $content -replace '/\*[\s\S]*?\*/', ''
+        # Step 2: Remove multi-line comments (/* ... */)
+        # Use non-greedy matching to handle multiple comments in one file
+        $content = $content -replace '(?s)/\*.*?\*/', ''
 
-        # Remove single-line comments (//)
+        # Step 3: Remove single-line comments (//)
         # But preserve URLs like http:// and https://
-        $content = $content -replace '(?<!:)//(?!/)[^\r\n]*', ''
+        # This regex looks for // that is NOT preceded by : (to keep URLs)
+        $content = $content -replace '(?m)(?<!:)//(?!/)[^\r\n]*', ''
 
-        # Remove empty lines that were left after comment removal
-        # Keep maximum of 2 consecutive empty lines
-        $content = $content -replace '(\r?\n){4,}', "`r`n`r`n`r`n"
+        # Step 4: Clean up empty lines (keep maximum of 2 consecutive empty lines)
+        $content = $content -replace '(?m)^\s*$(\r?\n^\s*$)+', "`r`n"
+
+        # Step 5: Remove trailing whitespace from each line
+        $content = $content -replace '(?m)[ \t]+$', ''
 
         # Only write if content changed
         if ($content -ne $originalContent) {
@@ -59,18 +62,18 @@ foreach ($file in $csFiles) {
                 $utf8NoBom = New-Object System.Text.UTF8Encoding $false
                 [System.IO.File]::WriteAllText($file.FullName, $content, $utf8NoBom)
 
-                Write-Host "  ✓ Comments removed" -ForegroundColor Green
+                Write-Host "  [OK] Comments removed" -ForegroundColor Green
                 $filesProcessed++
             } else {
-                Write-Host "  ➜ Would remove comments (WhatIf mode)" -ForegroundColor Yellow
+                Write-Host "  [WHATIF] Would remove comments" -ForegroundColor Yellow
                 $filesProcessed++
             }
         } else {
-            Write-Host "  - No comments found" -ForegroundColor DarkGray
+            Write-Host "  [SKIP] No comments found" -ForegroundColor DarkGray
         }
     }
     catch {
-        Write-Host "  ✗ Error processing file: $_" -ForegroundColor Red
+        Write-Host "  [ERROR] Failed to process file: $_" -ForegroundColor Red
     }
 }
 
@@ -87,5 +90,5 @@ if ($WhatIf) {
     Write-Host "This was a dry run. To actually remove comments, run without -WhatIf" -ForegroundColor Magenta
 } else {
     Write-Host "Done! All comments have been removed." -ForegroundColor Green
-    Write-Host "Do not forget to commit your changes to git!" -ForegroundColor Yellow
+    Write-Host "Remember to commit your changes to git!" -ForegroundColor Yellow
 }
