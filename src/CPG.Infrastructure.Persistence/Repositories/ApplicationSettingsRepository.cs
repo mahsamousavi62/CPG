@@ -27,7 +27,7 @@ namespace CPG.Infrastructure.Persistence.Repositories
         {
             _context = context;
             _cacheService = cacheService;
-            _logger = logService;
+            _logService = logService;
         }
 
         public async Task<ApplicationConfigViewModel> GetAllApplicationSettings()
@@ -51,7 +51,16 @@ namespace CPG.Infrastructure.Persistence.Repositories
             }
             catch (Exception ex)
             {
-                _logService.LogError($"convert Exception in appsettings:{ex.Message}");
+                var callLog = CallLogModel.CreateError(
+                    serviceName: "ApplicationSettings",
+                    providerName: "ApplicationSettingsRepository",
+                    requestUri: nameof(GetAllApplicationSettings),
+                    requestBody: null,
+                    responseBody: ex.Message,
+                    exception: ex,
+                    auditType: Enums.AuditType.Client
+                );
+                _logService.LogError(callLog);
             }
 
             _cacheService.SetData(CacheKey, cacheData);

@@ -117,7 +117,18 @@ public class ExternalServicesMiddleware(RequestDelegate next, ILogService logSer
             ServiceCallUrl = httpContext.Request.Path.Value?.ToLower(),
             ServiceCallStatusCode = httpContext.Response.StatusCode,
         };
-        logService.LogInformation("[ExternalServiceCallLog] {@ExternalServiceCallLog}", externalServiceCallLog);
+
+        var callLog = CallLogModel.CreateSuccess(
+            serviceName: "ExternalServices",
+            providerName: "ExternalServicesMiddleware",
+            requestUri: httpContext.Request.Path.Value?.ToLower(),
+            requestBody: requestBody,
+            responseBody: responseBody,
+            auditType: Enums.AuditType.Client,
+            userId: UserId,
+            responseStatusCode: httpContext.Response.StatusCode
+        );
+        logService.LogInformation(callLog);
     }
 
     private static bool ContainsAny(string mainString, List<string> substrings)

@@ -123,7 +123,16 @@ namespace CPG.Infrastructure.Persistence
                 {
                     Console.WriteLine(ex.Message);
                     var logService = services.GetRequiredService<CPG.Domain.SharedKernel.Logging.ILogService>();
-                    logService.LogError(ex, "An error occurred while migrating the database.");
+                    var callLog = CallLogModel.CreateError(
+                        serviceName: "Database",
+                        providerName: "MigrateDatabase",
+                        requestUri: "Database Migration",
+                        requestBody: null,
+                        responseBody: ex.Message,
+                        exception: ex,
+                        auditType: Enums.AuditType.Client
+                    );
+                    logService.LogError(callLog);
                 }
             }
 

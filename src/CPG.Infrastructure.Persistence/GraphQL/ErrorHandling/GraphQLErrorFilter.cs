@@ -11,7 +11,16 @@ public class GraphQLErrorFilter(ILogService logService) : IErrorFilter
     {
         var message = $"Error when executing GraphQL query: {error.Exception?.Message ?? error.Message}";
 			
-        _logService.LogError(message);
+        var callLog = CallLogModel.CreateError(
+            serviceName: "GraphQL",
+            providerName: "GraphQLErrorFilter",
+            requestUri: "GraphQL Query",
+            requestBody: null,
+            responseBody: message,
+            exception: error.Exception,
+            auditType: Enums.AuditType.Client
+        );
+        _logService.LogError(callLog);
 			
         return error.WithMessage(error.Exception?.Message ?? error.Message);
     }
