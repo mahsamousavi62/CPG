@@ -109,7 +109,9 @@ public class LoggingMiddleware(RequestDelegate next, ILogService logService)
                 companyId: log.CompanyId,
                 ip: log.IP,
                 userAgent: log.UserAgent,
-                responseStatusCode: httpContext.Response.StatusCode
+                responseStatusCode: httpContext.Response.StatusCode,
+                requestHeader: System.Text.Json.JsonSerializer.Serialize(httpContext.Request.Headers),
+                responseHeader: System.Text.Json.JsonSerializer.Serialize(httpContext.Response.Headers)
             );
             callLog.StartDateTime = log.StartDateTime;
             callLog.EndDateTime = log.EndDateTime;
@@ -129,7 +131,9 @@ public class LoggingMiddleware(RequestDelegate next, ILogService logService)
                 requestBody: null,
                 responseBody: exc.Message,
                 exception: exc,
-                auditType: Enums.AuditType.Develop
+                auditType: Enums.AuditType.Develop,
+                requestHeader: System.Text.Json.JsonSerializer.Serialize(httpContext.Request.Headers),
+                responseHeader: httpContext.Response?.Headers != null ? System.Text.Json.JsonSerializer.Serialize(httpContext.Response.Headers) : null
             );
             _logService.LogError(callLog);
             throw;

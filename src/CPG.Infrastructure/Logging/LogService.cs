@@ -42,6 +42,14 @@ public partial class LogService(ILogger<LogService> logger, IHttpContextAccessor
         _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out long applicationId);
         _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "CompanyId")?.Value, out long companyId);
 
+        // Serialize request headers
+        string requestHeaders = request.HeaderParameters != null
+            ? System.Text.Json.JsonSerializer.Serialize(request.HeaderParameters)
+            : null;
+
+        // Serialize response headers
+        string responseHeaders = System.Text.Json.JsonSerializer.Serialize(response.Headers.ToDictionary(h => h.Key, h => string.Join(", ", h.Value)));
+
         var callLog = response.IsSuccessStatusCode
             ? CallLogModel.CreateSuccess(
                 serviceName: request.Service.ToString(),
@@ -58,7 +66,9 @@ public partial class LogService(ILogger<LogService> logger, IHttpContextAccessor
                 companyId: companyId,
                 ip: httpContext?.Connection.RemoteIpAddress?.ToString(),
                 userAgent: httpContext?.Request.Headers["User-Agent"].ToString(),
-                responseStatusCode: (int)response.StatusCode
+                responseStatusCode: (int)response.StatusCode,
+                requestHeader: requestHeaders,
+                responseHeader: responseHeaders
             )
             : CallLogModel.CreateError(
                 serviceName: request.Service.ToString(),
@@ -75,7 +85,9 @@ public partial class LogService(ILogger<LogService> logger, IHttpContextAccessor
                 applicationId: applicationId,
                 companyId: companyId,
                 ip: httpContext?.Connection.RemoteIpAddress?.ToString(),
-                userAgent: httpContext?.Request.Headers["User-Agent"].ToString()
+                userAgent: httpContext?.Request.Headers["User-Agent"].ToString(),
+                requestHeader: requestHeaders,
+                responseHeader: responseHeaders
             );
 
         using (LogContext.PushProperty("CallLog", callLog, true))
@@ -151,6 +163,14 @@ public partial class LogService(ILogger<LogService> logger, IHttpContextAccessor
         _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out long applicationId);
         _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "CompanyId")?.Value, out long companyId);
 
+        // Serialize request headers
+        string requestHeaders = request.HeaderParameters != null
+            ? System.Text.Json.JsonSerializer.Serialize(request.HeaderParameters)
+            : null;
+
+        // Serialize response headers
+        string responseHeaders = System.Text.Json.JsonSerializer.Serialize(response.Headers.ToDictionary(h => h.Key, h => string.Join(", ", h.Value)));
+
         var callLog = response.IsSuccessStatusCode
             ? CallLogModel.CreateSuccess(
                 serviceName: request.Service?.ToString() ?? "Unknown",
@@ -167,7 +187,9 @@ public partial class LogService(ILogger<LogService> logger, IHttpContextAccessor
                 companyId: companyId,
                 ip: httpContext?.Connection.RemoteIpAddress?.ToString(),
                 userAgent: httpContext?.Request.Headers["User-Agent"].ToString(),
-                responseStatusCode: (int)response.StatusCode
+                responseStatusCode: (int)response.StatusCode,
+                requestHeader: requestHeaders,
+                responseHeader: responseHeaders
             )
             : CallLogModel.CreateError(
                 serviceName: request.Service?.ToString() ?? "Unknown",
@@ -184,7 +206,9 @@ public partial class LogService(ILogger<LogService> logger, IHttpContextAccessor
                 applicationId: applicationId,
                 companyId: companyId,
                 ip: httpContext?.Connection.RemoteIpAddress?.ToString(),
-                userAgent: httpContext?.Request.Headers["User-Agent"].ToString()
+                userAgent: httpContext?.Request.Headers["User-Agent"].ToString(),
+                requestHeader: requestHeaders,
+                responseHeader: responseHeaders
             );
 
         using (LogContext.PushProperty("CallLog", callLog, true))
