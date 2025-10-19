@@ -203,36 +203,16 @@ When using `ILogService`, these are automatically populated:
 
 ### Unified Configuration
 
-All retry policies (HTTP and SOAP) are configured in `appsettings.json` under `Infrastructure:Polly`:
+**One single retry policy for ALL services** (HTTP and SOAP) configured in `appsettings.json` under `Infrastructure:Polly`:
 
 ```json
 "Polly": {
   "Retry": {
-    "Soap": {
-      "MaxRetryAttempts": 3,
-      "BaseDelaySeconds": 2,
-      "UseJitter": true
-    },
-    "Http": {
-      "Default": {
-        "RetryCount": 3,
-        "BaseDelaySeconds": 1,
-        "UseExponentialBackoff": true,
-        "MaxJitterMilliseconds": 1000
-      },
-      "Services": {
-        "CharisPay": {
-          "RetryCount": 2,
-          "BaseDelaySeconds": 1,
-          "UseExponentialBackoff": false,
-          "MaxJitterMilliseconds": 500
-        },
-        "IdpClient": { ... },
-        "NeoBank": { ... },
-        "AsanPardakht": { ... },
-        "CharismaCard": { ... }
-      }
-    }
+    "MaxRetryAttempts": 3,
+    "BaseDelaySeconds": 1,
+    "UseExponentialBackoff": true,
+    "UseJitter": true,
+    "MaxJitterMilliseconds": 1000
   },
   "Timeout": {
     "SoapTimeoutSeconds": 45
@@ -240,21 +220,39 @@ All retry policies (HTTP and SOAP) are configured in `appsettings.json` under `I
 }
 ```
 
+**Configuration Properties:**
+- `MaxRetryAttempts`: Number of retry attempts (default: 3)
+- `BaseDelaySeconds`: Base delay between retries (default: 1 second)
+- `UseExponentialBackoff`:
+  - `true` = exponential backoff (1s, 2s, 4s...)
+  - `false` = linear backoff (1s, 2s, 3s...)
+- `UseJitter`: Add random jitter to prevent thundering herd (default: true)
+- `MaxJitterMilliseconds`: Maximum random jitter in milliseconds (default: 1000ms)
+
 ### HTTP REST API Calls
 
-HTTP clients automatically apply retry policies from configuration:
+All HTTP clients (named and unnamed) use the **same unified retry policy**:
 
-- **Default** (unnamed clients): 3 retries, exponential backoff (1s, 2s, 4s) + 1s jitter
-- **CharisPay/AsanPardakht**: 2 retries, linear backoff (1s, 2s) + 500ms jitter (payment safety)
-- **IdpClient**: 3 retries, exponential backoff (1s, 2s, 4s) + 1s jitter
-- **NeoBank**: 3 retries, exponential backoff (2s, 4s, 8s) + 2s jitter (financial systems)
-- **CharismaCard**: 2 retries, linear backoff (1s, 2s) + 500ms jitter
+```csharp
+// Automatically applied to all HTTP clients in DependencyInjection.cs
+services.AddHttpClient()
+    .ConfigureHttpClientDefaults(builder =>
+    {
+        builder.AddPolicyHandler(PollyRetryConfiguration.GetHttpRetryPolicy(policyConfig));
+    });
+```
 
-Policies are applied in `DependencyInjection.cs` via `PollyRetryConfiguration.GetHttpRetryPolicy()`.
+**Services using this policy:**
+- CharisPay
+- IdpClient
+- NeoBank
+- AsanPardakht
+- CharismaCard
+- All unnamed HttpClient instances (via HttpProvider)
 
 ### SOAP Service Calls
 
-SOAP services use `IPollyPolicyService` with configuration-driven retry:
+SOAP services use `IPollyPolicyService` with the **same unified retry configuration**:
 
 ```csharp
 // Inject IPollyPolicyService
@@ -273,29 +271,31 @@ return await _pollyPolicyService.ExecuteWithPolicyAsync(async () =>
 }, "ServiceName.MethodName");
 ```
 
-### Adding New Service-Specific Retry Configuration
+### Changing Retry Behavior
 
-To customize retry behavior for a new HTTP service:
+To adjust retry behavior for **all services at once**, simply edit `appsettings.json`:
 
-1. Add service entry to `appsettings.json`:
 ```json
-"Services": {
-  "NewService": {
-    "RetryCount": 3,
-    "BaseDelaySeconds": 1,
-    "UseExponentialBackoff": true,
-    "MaxJitterMilliseconds": 1000
-  }
+// Example: More aggressive retries with longer delays
+"Retry": {
+  "MaxRetryAttempts": 5,
+  "BaseDelaySeconds": 2,
+  "UseExponentialBackoff": true,
+  "UseJitter": true,
+  "MaxJitterMilliseconds": 2000
+}
+
+// Example: Conservative linear retries
+"Retry": {
+  "MaxRetryAttempts": 2,
+  "BaseDelaySeconds": 1,
+  "UseExponentialBackoff": false,
+  "UseJitter": false,
+  "MaxJitterMilliseconds": 0
 }
 ```
 
-2. Register HTTP client with service name:
-```csharp
-services.AddHttpClient("newServiceClient", c => { ... })
-    .AddPolicyHandler(PollyRetryConfiguration.GetHttpRetryPolicy(policyConfig, "NewService"));
-```
-
-If no service-specific config exists, the policy falls back to `Default` settings.
+No code changes required - configuration is applied at runtime.
 
 ## Configuration
 

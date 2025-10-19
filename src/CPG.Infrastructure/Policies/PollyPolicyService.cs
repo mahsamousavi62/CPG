@@ -36,11 +36,11 @@ public class PollyPolicyService : IPollyPolicyService
     }
 
     /// <summary>
-    /// Get retry policy for SOAP services
+    /// Get retry policy for SOAP services (uses unified retry configuration)
     /// </summary>
     public IAsyncPolicy GetSoapRetryPolicy(string serviceName = "soap")
     {
-        var retryConfig = _config.Retry.Soap;
+        var retryConfig = _config.Retry;
 
         return Policy
             .Handle<EndpointNotFoundException>() // SOAP service not available
@@ -53,12 +53,15 @@ public class PollyPolicyService : IPollyPolicyService
                 retryCount: retryConfig.MaxRetryAttempts,
                 sleepDurationProvider: retryAttempt =>
                 {
-                    var delay = TimeSpan.FromSeconds(Math.Pow(retryConfig.BaseDelaySeconds, retryAttempt));
+                    // Calculate base delay (exponential or linear)
+                    var delay = retryConfig.UseExponentialBackoff
+                        ? TimeSpan.FromSeconds(Math.Pow(2, retryAttempt - 1) * retryConfig.BaseDelaySeconds)
+                        : TimeSpan.FromSeconds(retryAttempt * retryConfig.BaseDelaySeconds);
 
-                    // Add jitter
+                    // Add jitter if enabled
                     if (retryConfig.UseJitter)
                     {
-                        var jitter = TimeSpan.FromMilliseconds(new Random().Next(0, 1000));
+                        var jitter = TimeSpan.FromMilliseconds(new Random().Next(0, retryConfig.MaxJitterMilliseconds));
                         delay = delay.Add(jitter);
                     }
 

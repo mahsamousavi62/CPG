@@ -7,34 +7,29 @@ using System.Net.Http;
 namespace CPG.Infrastructure.Configuration;
 
 /// <summary>
-/// Polly retry policy configuration for HTTP clients with exponential backoff and jitter.
-/// All policies are now configuration-driven from appsettings.json under Infrastructure:Polly:Retry:Http
+/// Polly retry policy configuration for HTTP clients.
+/// Uses unified configuration from appsettings.json under Infrastructure:Polly:Retry (same config for HTTP and SOAP)
 /// </summary>
 public static class PollyRetryConfiguration
 {
     /// <summary>
-    /// Gets HTTP retry policy from configuration for a specific service or uses default.
+    /// Gets HTTP retry policy from unified configuration (same policy used for SOAP).
     /// </summary>
     /// <param name="config">Policy configuration from appsettings.json</param>
-    /// <param name="serviceName">Optional service name (CharisPay, IdpClient, NeoBank, etc.). If null, uses Default settings.</param>
-    /// <returns>Configured retry policy for the specified service</returns>
-    public static IAsyncPolicy<HttpResponseMessage> GetHttpRetryPolicy(PolicyConfig config, string serviceName = null)
+    /// <returns>Configured retry policy applied to all HTTP services</returns>
+    public static IAsyncPolicy<HttpResponseMessage> GetHttpRetryPolicy(PolicyConfig config)
     {
         if (config == null)
             throw new ArgumentNullException(nameof(config));
 
-        // Get service-specific settings or fall back to default
-        var settings = serviceName != null && config.Retry.Http.Services.ContainsKey(serviceName)
-            ? config.Retry.Http.Services[serviceName]
-            : config.Retry.Http.Default;
-
+        var settings = config.Retry;
         var jitterer = new Random();
 
         return HttpPolicyExtensions
             .HandleTransientHttpError() // Handles HttpRequestException, 5XX and 408
             .OrResult(msg => !msg.IsSuccessStatusCode && (int)msg.StatusCode >= 500)
             .WaitAndRetryAsync(
-                retryCount: settings.RetryCount,
+                retryCount: settings.MaxRetryAttempts,
                 sleepDurationProvider: retryAttempt =>
                 {
                     // Calculate base delay (exponential or linear)
@@ -42,12 +37,17 @@ public static class PollyRetryConfiguration
                         ? TimeSpan.FromSeconds(Math.Pow(2, retryAttempt - 1) * settings.BaseDelaySeconds)
                         : TimeSpan.FromSeconds(retryAttempt * settings.BaseDelaySeconds);
 
-                    // Add jitter to prevent thundering herd
-                    return delay + TimeSpan.FromMilliseconds(jitterer.Next(0, settings.MaxJitterMilliseconds));
+                    // Add jitter to prevent thundering herd if enabled
+                    if (settings.UseJitter)
+                    {
+                        delay += TimeSpan.FromMilliseconds(jitterer.Next(0, settings.MaxJitterMilliseconds));
+                    }
+
+                    return delay;
                 },
                 onRetry: (outcome, timespan, retryCount, context) =>
                 {
-                    LogRetryAttempt(serviceName ?? "Default", outcome, timespan, retryCount, context);
+                    LogRetryAttempt("HttpClient", outcome, timespan, retryCount, context);
                 });
     }
 
