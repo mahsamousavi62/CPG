@@ -111,6 +111,8 @@ public class Enums
         ErrorHandling = 26,
         Database = 27,
         BehPardakhtSettle = 28,
+        Kafka = 29,
+        MassTransit = 30,
     }
 
     public enum TransactionType : byte
@@ -195,6 +197,8 @@ public class Enums
         NeoBank = 102,
         CharisPay = 103,
         CharismaCard = 104,
+        Kafka = 105,
+        MassTransit = 106,
         Internal = 200,
     }
 

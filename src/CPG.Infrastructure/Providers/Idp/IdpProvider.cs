@@ -78,7 +78,10 @@ public class IdpProvider(
     {
         var httpClient = _httpClientFactory.CreateClient("idpClient");
 
-        _ = long.TryParse(_httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value, out long UserId);
+        var httpContext = _httpContextAccessor.HttpContext;
+        _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value, out long UserId);
+        _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out long applicationId);
+        _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "CompanyId")?.Value, out long companyId);
 
         var disco = await httpClient.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
         {
@@ -87,10 +90,6 @@ public class IdpProvider(
         });
         if (disco.IsError)
         {
-            var httpContext = _httpContextAccessor.HttpContext;
-            _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out long applicationId);
-            _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "CompanyId")?.Value, out long companyId);
-
             var callLog = CallLogModel.CreateError(
                 serviceName: "GetIdpToken",
                 providerName: "Idp",
@@ -121,11 +120,7 @@ public class IdpProvider(
         };
         var tokenResponse = await httpClient.RequestClientCredentialsTokenAsync(tokenRequest);
 
-        var httpContext = _httpContextAccessor.HttpContext;
-        _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out long applicationId);
-        _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "CompanyId")?.Value, out long companyId);
-
-        var callLog = CallLogModel.CreateSuccess(
+        var successCallLog = CallLogModel.CreateSuccess(
             serviceName: "GetIdpToken",
             providerName: "Idp",
             requestUri: disco.TokenEndpoint,
@@ -143,7 +138,7 @@ public class IdpProvider(
             responseStatusCode: tokenResponse is not null ? 200 : 500
         );
 
-        _logService.LogInformation(callLog);
+        _logService.LogInformation(successCallLog);
 
         if (tokenResponse.IsError)
         {

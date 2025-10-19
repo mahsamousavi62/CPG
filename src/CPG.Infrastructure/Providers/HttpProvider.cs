@@ -638,8 +638,8 @@ public class HttpProvider : IHttpProvider
 
         var callLog = response.IsSuccessStatusCode
             ? CallLogModel.CreateSuccess(
-                serviceName: request.Service?.ToString() ?? "HttpProvider",
-                providerName: request.Provider?.ToString() ?? "Unknown",
+                serviceName: request.Service.ToString(),
+                providerName: request.Provider.ToString(),
                 requestUri: request.Uri,
                 requestBody: reqString,
                 responseBody: resString,
@@ -655,8 +655,8 @@ public class HttpProvider : IHttpProvider
                 responseStatusCode: (int)response.StatusCode
             )
             : CallLogModel.CreateError(
-                serviceName: request.Service?.ToString() ?? "HttpProvider",
-                providerName: request.Provider?.ToString() ?? "Unknown",
+                serviceName: request.Service.ToString(),
+                providerName: request.Provider.ToString(),
                 requestUri: request.Uri,
                 requestBody: reqString,
                 responseBody: resString,

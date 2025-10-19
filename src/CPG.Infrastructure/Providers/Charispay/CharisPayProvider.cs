@@ -48,7 +48,7 @@ namespace CPG.Infrastructure.Providers.Charispay
             string maskedJson = json;
             if (!string.IsNullOrEmpty(maskedJson))
             {
-                maskedJson = System.Text.RegularExpressions.Regex.Replace(maskedJson, Constants.Pattern, Constants.Replaceformat);
+                maskedJson = System.Text.RegularExpressions.Regex.Replace(maskedJson, CPG.Domain.SharedKernel.Constants.Pattern, CPG.Domain.SharedKernel.Constants.Replaceformat);
             }
 
             try

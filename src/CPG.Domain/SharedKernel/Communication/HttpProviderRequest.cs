@@ -3,7 +3,7 @@ using static CPG.Domain.SharedKernel.Enums;
 
 namespace CPG.Domain.SharedKernel.Communication;
 
-public class HttpProviderRequest<T> : RequestBase
+public class HttpProviderRequest<T> : RequestBase where T : class
 {
     public string BaseAddress { get; set; }
     public string Uri { get; set; }
@@ -14,7 +14,7 @@ public class HttpProviderRequest<T> : RequestBase
 }
 
 
-public sealed class HttpProviderRequest<TBody, TRequest>
+public sealed class HttpProviderRequest<TBody, TRequest> where TBody : class where TRequest : class
 {
     public required TRequest? Request { get; init; }
 
