@@ -60,7 +60,7 @@ public static class DependencyInjection
             .AddScoped<IDirectDebitFactory, DirectDebitFactory>()
             .AddScoped<IIpgProvider, AsanPardakhtProvider>()
             .AddScoped<IDirectDebitProvider, VandarProvider>()
-            .AddScoped<ILogService, LogService>()
+            .AddSingleton<ILogService, LogService>()
             .AddTransient<ICurrentDateTime, CurrentDateTime>()
             .AddTransient<IHttpProvider, HttpProvider>()
             .AddDatabase(configuration)
