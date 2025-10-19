@@ -1,5 +1,6 @@
 ﻿using CPG.Domain.AggregateModels.ApplicationAggregate;
 using CPG.Domain.AggregateModels.ApplicationAggregate.Specifications;
+using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.ApplicationSettingsAggregate;
 using CPG.Domain.SharedKernel.Interfaces;
 using CPG.Domain.SharedKernel.Logging;

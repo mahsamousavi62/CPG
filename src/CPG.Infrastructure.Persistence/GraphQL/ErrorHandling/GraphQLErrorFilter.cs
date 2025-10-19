@@ -1,4 +1,5 @@
 ﻿using HotChocolate;
+using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Logging;
 
 namespace CPG.Infrastructure.Persistence.GraphQL.ErrorHandling;

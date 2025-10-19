@@ -12,27 +12,32 @@ namespace CPG.Domain.SharedKernel.Communication
         Task<TResponse?> PostAsync<TBaseRequest, TResponse, TError, TBody>(HttpProviderRequest<TBody>? request, TBaseRequest? baseRequest, Func<TBaseRequest?, TResponse?, TError?, short, Task<TResponse?>>? errorHandler, Func<string, TResponse>? decoder = null)
            where TResponse : ResponseBase
            where TError : ResponseBase
-           where TBaseRequest : RequestBase;
+           where TBaseRequest : RequestBase
+           where TBody : class;
 
         Task<TResponse?> PostAsync3<TBaseRequest, TResponse, TError, TBody>(HttpProviderRequest<TBody>? request, TBaseRequest? baseRequest, Func<TBaseRequest?, TResponse?, TError?, short, Task<TResponse?>>? errorHandler, Func<string, TResponse>? decoder = null)
            where TResponse : ResponseBase
            where TError : ResponseBase
-           where TBaseRequest : RequestBase;
+           where TBaseRequest : RequestBase
+           where TBody : class;
 
         Task<TResponse?> PostAsync4<TBaseRequest, TResponse, TError, TBody>(HttpProviderRequest<TBody>? request, TBaseRequest? baseRequest, Func<TBaseRequest?, TResponse?, TError?, short, Task<TResponse?>>? errorHandler, Func<string, TResponse>? decoder = null)
           where TResponse : ResponseBase
           where TError : ResponseBase
-          where TBaseRequest : RequestBase;
+          where TBaseRequest : RequestBase
+          where TBody : class;
 
         Task<TResponse?> PutAsync<TBaseRequest, TResponse, TError, TBody>(HttpProviderRequest<TBody>? request, TBaseRequest? baseRequest, Func<TBaseRequest?, TResponse?, TError?, short, Task<TResponse?>>? errorHandler, Func<string, TResponse>? decoder = null)
             where TResponse : ResponseBase?
             where TError : ResponseBase
-            where TBaseRequest : RequestBase;
+            where TBaseRequest : RequestBase
+            where TBody : class;
 
         Task<TResponse?> PatchAsync<TBaseRequest, TResponse, TError, TBody>(HttpProviderRequest<TBody>? request, TBaseRequest? baseRequest, Func<TBaseRequest?, TResponse?, TError?, short, Task<TResponse?>>? errorHandler, Func<string, TResponse>? decoder = null)
             where TResponse : ResponseBase?
             where TError : ResponseBase
-            where TBaseRequest : RequestBase;
+            where TBaseRequest : RequestBase
+            where TBody : class;
 
         Task<TResponse?> GetAsync<TBaseRequest, TResponse, TError>(HttpProviderRequest<dynamic>? request, TBaseRequest? baseRequest, Func<TBaseRequest?, TResponse?, TError?, short, Task<TResponse?>>? errorHandler, Func<string, TResponse>? decoder = null)
             where TResponse : ResponseBase
@@ -42,11 +47,13 @@ namespace CPG.Domain.SharedKernel.Communication
         Task<TResponse?> GetAsync<TBaseRequest, TResponse, TError, TBody>(HttpProviderRequest<TBody>? request, TBaseRequest? baseRequest, Func<TBaseRequest?, TResponse?, TError?, short, Task<TResponse?>>? errorHandler, Func<string, TResponse>? decoder = null)
             where TResponse : ResponseBase
             where TError : ResponseBase
-            where TBaseRequest : RequestBase;
+            where TBaseRequest : RequestBase
+            where TBody : class;
 
         Task<TResponse?> GetAsync<TRequest, TResponse, TBody>([NotNull] HttpProviderRequest<TBody, TRequest> request, Func<HttpResponseMessage, Task>? postCallHandler = null,
                  Func<HttpResponseMessage, Task<TResponse?>>? decodeHandler = null, Func<TRequest?, TResponse?, Task<TResponse?>>? failHandler = null)
                  where TRequest : IHttpRequest
-                 where TResponse : IHttpResponse;
+                 where TResponse : IHttpResponse
+                 where TBody : class;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using MassTransit;
+using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Logging;
 using System.Text.Json;
 using System.Threading.Tasks;

@@ -1,4 +1,5 @@
 ﻿using Confluent.Kafka;
+using CPG.Domain.SharedKernel;
 using CPG.Domain.SharedKernel.Logging;
 using System;
 using System.Threading;

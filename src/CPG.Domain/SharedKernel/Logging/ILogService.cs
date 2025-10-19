@@ -13,8 +13,8 @@ public interface ILogService
 
     // Service call logging methods (Legacy - use new methods instead)
     void AddServiceCallLog(string request, string response, short status, string message);
-    Task AddServiceCallLogAsync<TBody, TRequest>(HttpProviderRequest<TBody, TRequest> request, HttpResponseMessage response);
-    void AddServiceCallLog<TBody>(HttpProviderRequest<TBody> request, HttpResponseMessage response, string resString);
+    Task AddServiceCallLogAsync<TBody, TRequest>(HttpProviderRequest<TBody, TRequest> request, HttpResponseMessage response) where TBody : class where TRequest : class;
+    void AddServiceCallLog<TBody>(HttpProviderRequest<TBody> request, HttpResponseMessage response, string resString) where TBody : class;
 
     // New structured logging methods - accept CallLogModel directly
     void LogInformation(CallLogModel callLog);
