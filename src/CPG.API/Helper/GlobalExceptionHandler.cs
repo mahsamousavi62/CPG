@@ -23,15 +23,19 @@ internal sealed class GlobalExceptionHandler(ILogService logService) : IExceptio
             code = (exception as dynamic).Code;
         }
 
-        RequestResponseLogModel log = new ()
-        {
-            AuditType = Enums.AuditType.Develop,
-            StackTrace = exception.StackTrace,
-            ResponseBody = exception.Message,
-            IsSuccess = false,
-            ErrorCode = code,
-        };
-        _logService.LogError(exception, "Exception occurred: {log}", log);
+        var callLog = CallLogModel.CreateError(
+            serviceName: "GlobalExceptionHandler",
+            providerName: "API",
+            requestUri: httpContext.Request.Path.ToString(),
+            requestBody: null,
+            responseBody: exception.Message,
+            exception: exception,
+            auditType: Enums.AuditType.Develop
+        );
+        callLog.ErrorCode = code;
+        callLog.StackTrace = exception.StackTrace;
+
+        _logService.LogError(callLog);
 
         var problemDetails = new ProblemDetails
         {
