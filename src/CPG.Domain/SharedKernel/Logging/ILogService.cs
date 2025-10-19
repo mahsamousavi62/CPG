@@ -16,6 +16,10 @@ public interface ILogService
     Task AddServiceCallLogAsync<TBody, TRequest>(HttpProviderRequest<TBody, TRequest> request, HttpResponseMessage response) where TBody : class where TRequest : class;
     void AddServiceCallLog<TBody>(HttpProviderRequest<TBody> request, HttpResponseMessage response, string resString) where TBody : class;
 
+    // SOAP service call logging methods
+    void AddSoapCallLog<TRequest, TResponse>(TRequest request, TResponse response, string serviceName, short status, string message);
+    void AddSoapTimeoutLog<TRequest>(TRequest request, string serviceName, Exception exception, long durationMs);
+
     // New structured logging methods - accept CallLogModel directly
     void LogInformation(CallLogModel callLog);
     void LogWarning(CallLogModel callLog);

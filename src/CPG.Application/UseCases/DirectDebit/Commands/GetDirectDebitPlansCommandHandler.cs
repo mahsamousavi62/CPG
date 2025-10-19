@@ -12,7 +12,6 @@ using System.Linq;
 using CPG.Domain.AggregateModels.DirectDebitGrantAggregate.Specifications;
 using CPG.Application.UseCases.Banks.Exceptions;
 using CPG.Domain.SharedKernel.Interfaces;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using System.Security.Claims;
 using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Token;
@@ -24,6 +23,8 @@ using System.Numerics;
 using static CPG.Domain.SharedKernel.Enums;
 using CPG.Domain.SharedKernel.Helper;
 using System.Globalization;
+using CPG.Domain.SharedKernel.Logging;
+using CPG.Domain.SharedKernel;
 
 namespace CPG.Application.UseCases.DirectDebit.Commands;
 
@@ -31,7 +32,7 @@ public class GetDirectDebitPlansCommandHandler(IDirectDebitFactory directDebitFa
     IAggregateRepository<Bank> bankRepository,
     IAggregateRepository<DirectDebitPlan> planRepository,
     IAggregateRepository<DirectDebitGrant> grantRepository,
-    ILogger<GetDirectDebitPlansCommandHandler> logger,
+    ILogService logService,
     IAggregateRepository<Provider> providerRepository,
     IAuthenticationService authenticationService,
     ICurrentUser user
@@ -41,7 +42,7 @@ public class GetDirectDebitPlansCommandHandler(IDirectDebitFactory directDebitFa
     private readonly IAggregateRepository<Bank> _bankRepository = bankRepository;
     private readonly IAggregateRepository<DirectDebitPlan> _directDebitPlanRepository = planRepository;
     private readonly IAggregateRepository<DirectDebitGrant> _directDebitGrantRepository = grantRepository;
-    private readonly ILogger<GetDirectDebitPlansCommandHandler> _logger = logger;
+    private readonly ILogService _logService = logService;
     private readonly IAggregateRepository<Provider> _providerRepository = providerRepository;
     private readonly IAuthenticationService _authenticationService = authenticationService;
     private readonly ICurrentUser _user = user;
@@ -139,7 +140,19 @@ public class GetDirectDebitPlansCommandHandler(IDirectDebitFactory directDebitFa
         }
         catch (Exception exc)
         {
-            _logger.LogError(exc.Message, exc);
+            var callLog = CallLogModel.CreateError(
+                serviceName: nameof(GetDirectDebitPlansCommandHandler),
+                providerName: "DirectDebit",
+                requestUri: nameof(GetDirectDebitPlansCommand),
+                requestBody: Newtonsoft.Json.JsonConvert.SerializeObject(request),
+                responseBody: exc.Message,
+                exception: exc,
+                serviceType: Enums.ServiceType.DirectDebit,
+                providerType: Enums.ProviderTypeInLog.Vandar,
+                auditType: Enums.AuditType.Application,
+                userId: 1
+            );
+            _logService.LogError(callLog);
             return Result<PlanViewModel>.Failure(new Error(exc.Source, exc.Message));
         }
     }

@@ -95,6 +95,141 @@ Current providers:
 - CharismaCard
 - NeoBank
 
+## Logging Standards
+
+**CRITICAL: This project uses a custom logging system. NEVER use `ILogger<T>` directly.**
+
+### Mandatory Logging Pattern
+
+All logging MUST be done through `ILogService` with structured `CallLogModel`:
+
+```csharp
+// ✅ CORRECT - Use ILogService with CallLogModel
+private readonly ILogService _logService;
+
+var callLog = CallLogModel.CreateError(
+    serviceName: "ServiceName",
+    providerName: "ProviderName",
+    requestUri: "endpoint",
+    requestBody: jsonRequest,
+    responseBody: jsonResponse,
+    exception: exc,
+    serviceType: Enums.ServiceType.SomeType,
+    providerType: Enums.ProviderTypeInLog.SomeProvider,
+    auditType: Enums.AuditType.Provider,
+    userId: userId
+);
+_logService.LogError(callLog);
+
+// ❌ WRONG - DO NOT use ILogger directly
+private readonly ILogger<MyClass> _logger;  // FORBIDDEN
+_logger.LogError(exc, "Error message");     // FORBIDDEN
+```
+
+### Logging Methods Available
+
+**For HTTP/REST API Calls:**
+- `_logService.AddServiceCallLog<TBody>(HttpProviderRequest, HttpResponseMessage, string)`
+- Automatically creates `CallLogModel` with proper formatting
+
+**For SOAP Service Calls:**
+- `_logService.AddSoapCallLog<TRequest, TResponse>(request, response, serviceName, status, message)`
+- `_logService.AddSoapTimeoutLog<TRequest>(request, serviceName, exception, durationMs)`
+
+**For Custom Structured Logs:**
+- `_logService.LogInformation(CallLogModel)` - Success/info logs
+- `_logService.LogWarning(CallLogModel)` - Warning logs
+- `_logService.LogError(CallLogModel)` - Error logs
+- `_logService.LogDebug(CallLogModel)` - Debug logs
+
+### CallLogModel Factory Methods
+
+Use these static methods to create properly formatted logs:
+
+```csharp
+// Success logs
+var successLog = CallLogModel.CreateSuccess(
+    serviceName: "ServiceName",
+    providerName: "ProviderName",
+    requestUri: "/api/endpoint",
+    requestBody: requestJson,
+    responseBody: responseJson,
+    serviceType: Enums.ServiceType.SomeType,
+    providerType: Enums.ProviderTypeInLog.SomeProvider,
+    auditType: Enums.AuditType.Provider,
+    userId: userId,
+    responseStatusCode: 200
+);
+
+// Error logs
+var errorLog = CallLogModel.CreateError(
+    serviceName: "ServiceName",
+    providerName: "ProviderName",
+    requestUri: "/api/endpoint",
+    requestBody: requestJson,
+    responseBody: errorMessage,
+    exception: exc,
+    serviceType: Enums.ServiceType.SomeType,
+    providerType: Enums.ProviderTypeInLog.SomeProvider,
+    auditType: Enums.AuditType.Provider,
+    userId: userId
+);
+```
+
+### Why This Pattern?
+
+1. **Consistent Format**: All logs follow the same structure for Elasticsearch indexing
+2. **PII Protection**: Automatic masking of sensitive data (passwords, keys, etc.)
+3. **Traceability**: Built-in correlation IDs, user tracking, and audit trails
+4. **Performance**: Optimized for high-volume financial transaction logging
+5. **Compliance**: Meets audit and regulatory requirements
+
+### Log Properties Automatically Captured
+
+When using `ILogService`, these are automatically populated:
+- Correlation ID (from HTTP context)
+- User ID, Application ID, Company ID
+- IP Address and User Agent
+- Start/End timestamps and duration
+- Request/Response headers (with PII masking)
+
+**NEVER bypass ILogService for application logging.**
+
+## Retry Policies
+
+### HTTP REST API Calls
+
+All HTTP clients (both named and unnamed) use Polly retry policies configured in `Infrastructure.RetryPolicy` section of appsettings.json:
+
+- **Default Retry**: 3 attempts with exponential backoff (1s, 2s, 4s) + jitter
+- **Service-Specific**: Each external service has customized retry configuration
+- Automatically applied via `PollyRetryConfiguration.cs`
+
+### SOAP Service Calls
+
+SOAP services use Polly retry policies via `IPollyPolicyService`:
+
+```csharp
+// Inject IPollyPolicyService
+private readonly IPollyPolicyService _pollyPolicyService;
+
+// Wrap SOAP calls with retry policy
+return await _pollyPolicyService.ExecuteWithPolicyAsync(async () =>
+{
+    using var soapClient = new SomeServiceSoapClient(...);
+    var response = await soapClient.SomeMethodAsync(request);
+
+    // Log the call
+    _logService.AddSoapCallLog(request, response, "SomeMethod", status, message);
+
+    return response;
+}, "ServiceName.MethodName");
+```
+
+Configuration in `appsettings.json` under `Infrastructure.Polly`:
+- Retry count, base delay, and jitter settings
+- Timeout configuration for SOAP calls (default: 45 seconds)
+
 ## Configuration
 
 ### Development Settings

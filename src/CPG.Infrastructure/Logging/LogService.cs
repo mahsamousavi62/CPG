@@ -220,6 +220,111 @@ public partial class LogService(ILogger<LogService> logger, IHttpContextAccessor
     [GeneratedRegex("(usr|pwd|merchantConfigurationId|key|iv|userPassword)\\\"\\s*(:)\\s*\"([^\"]*)\"")]
     private static partial Regex MyRegex();
 
+    // SOAP service call logging methods
+    public void AddSoapCallLog<TRequest, TResponse>(TRequest request, TResponse response, string serviceName, short status, string message)
+    {
+        string requestJson = Newtonsoft.Json.JsonConvert.SerializeObject(request);
+        string responseJson = Newtonsoft.Json.JsonConvert.SerializeObject(response);
+
+        // Apply PII masking
+        if (!string.IsNullOrEmpty(requestJson))
+        {
+            requestJson = MyRegex().Replace(requestJson, Constants.Replaceformat);
+        }
+        if (!string.IsNullOrEmpty(responseJson))
+        {
+            responseJson = MyRegex().Replace(responseJson, Constants.Replaceformat);
+        }
+
+        var httpContext = _httpContextAccessor.HttpContext;
+        _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value, out long userId);
+        _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out long applicationId);
+        _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "CompanyId")?.Value, out long companyId);
+
+        var callLog = status == 0
+            ? CallLogModel.CreateSuccess(
+                serviceName: serviceName,
+                providerName: ProviderTypeInLog.ToString(),
+                requestUri: serviceName,
+                requestBody: requestJson,
+                responseBody: responseJson,
+                serviceType: ServiceType,
+                providerType: ProviderTypeInLog,
+                auditType: Enums.AuditType.Provider,
+                correlationId: httpContext?.TraceIdentifier,
+                userId: userId == 0 ? 1 : userId,
+                applicationId: applicationId,
+                companyId: companyId,
+                ip: httpContext?.Connection.RemoteIpAddress?.ToString(),
+                userAgent: httpContext?.Request.Headers["User-Agent"].ToString(),
+                responseStatusCode: 200
+            )
+            : CallLogModel.CreateError(
+                serviceName: serviceName,
+                providerName: ProviderTypeInLog.ToString(),
+                requestUri: serviceName,
+                requestBody: requestJson,
+                responseBody: responseJson,
+                exception: null,
+                serviceType: ServiceType,
+                providerType: ProviderTypeInLog,
+                auditType: Enums.AuditType.Provider,
+                correlationId: httpContext?.TraceIdentifier,
+                userId: userId == 0 ? 1 : userId,
+                applicationId: applicationId,
+                companyId: companyId,
+                ip: httpContext?.Connection.RemoteIpAddress?.ToString(),
+                userAgent: httpContext?.Request.Headers["User-Agent"].ToString()
+            );
+
+        using (LogContext.PushProperty("CallLog", callLog, true))
+        {
+            _logger.LogInformation("[SOAP CallLog] {@CallLog}", callLog);
+        }
+    }
+
+    public void AddSoapTimeoutLog<TRequest>(TRequest request, string serviceName, Exception exception, long durationMs)
+    {
+        string requestJson = Newtonsoft.Json.JsonConvert.SerializeObject(request);
+
+        // Apply PII masking
+        if (!string.IsNullOrEmpty(requestJson))
+        {
+            requestJson = MyRegex().Replace(requestJson, Constants.Replaceformat);
+        }
+
+        var httpContext = _httpContextAccessor.HttpContext;
+        _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value, out long userId);
+        _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "ApplicationId")?.Value, out long applicationId);
+        _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "CompanyId")?.Value, out long companyId);
+
+        var callLog = CallLogModel.CreateError(
+            serviceName: serviceName,
+            providerName: ProviderTypeInLog.ToString(),
+            requestUri: serviceName,
+            requestBody: requestJson,
+            responseBody: $"Timeout after {durationMs}ms: {exception.Message}",
+            exception: exception,
+            serviceType: ServiceType,
+            providerType: ProviderTypeInLog,
+            auditType: Enums.AuditType.Provider,
+            correlationId: httpContext?.TraceIdentifier,
+            userId: userId == 0 ? 1 : userId,
+            applicationId: applicationId,
+            companyId: companyId,
+            ip: httpContext?.Connection.RemoteIpAddress?.ToString(),
+            userAgent: httpContext?.Request.Headers["User-Agent"].ToString()
+        );
+
+        // Manually set duration
+        callLog.DurationMs = durationMs;
+
+        using (LogContext.PushProperty("CallLog", callLog, true))
+        {
+            _logger.LogError("[SOAP Timeout] {@CallLog}", callLog);
+        }
+    }
+
     // New structured logging methods
     public void LogInformation(CallLogModel callLog)
     {

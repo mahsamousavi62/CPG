@@ -44,6 +44,8 @@ using CPG.Domain.SharedKernel.Interfaces;
 using CPG.Infrastructure.Cache;
 using CPG.Domain.SharedKernel.Communication.CharismaCard;
 using CPG.Infrastructure.Providers.CharismaCard;
+using CPG.Infrastructure.Configuration;
+using CPG.Infrastructure.Policies;
 
 namespace CPG.Infrastructure;
 
@@ -69,8 +71,20 @@ public static class DependencyInjection
             //.AddMasstransitInfrastructure(configuration)
             .AddScoped<IMinioProvider, MinioProvider>()
             .AddMinio(configuration)
-            .AddHttpClient()
+            .AddPollyPolicies(configuration)
+            .AddHttpClientWithRetryPolicies()
             .AddConfigureHttpClientService(configuration);
+
+    public static IServiceCollection AddPollyPolicies(this IServiceCollection services, IConfiguration configuration)
+    {
+        // Register Polly policy configuration
+        services.Configure<PolicyConfig>(configuration.GetSection(PolicyConfig.SectionName));
+
+        // Register Polly policy service
+        services.AddSingleton<IPollyPolicyService, PollyPolicyService>();
+
+        return services;
+    }
 
     public static IServiceCollection AddMinio(this IServiceCollection services, IConfiguration configuration)
     {
@@ -116,6 +130,19 @@ public static class DependencyInjection
         return services;
     }
 
+    public static IServiceCollection AddHttpClientWithRetryPolicies(this IServiceCollection services)
+    {
+        // Add HttpClient with default retry policy for all unnamed clients
+        services.AddHttpClient()
+            .ConfigureHttpClientDefaults(builder =>
+            {
+                // Apply default retry policy to all unnamed HTTP clients (used by HttpProvider)
+                builder.AddPolicyHandler(PollyRetryConfiguration.GetDefaultRetryPolicy());
+            });
+
+        return services;
+    }
+
     public static IServiceCollection AddConfigureHttpClientService(this IServiceCollection services, IConfiguration configuration)
     {
         var serviceProvider = services.BuildServiceProvider();
@@ -128,27 +155,31 @@ public static class DependencyInjection
             c.BaseAddress = new Uri(charisPayConfig.BaseUrl);
             c.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        });
+        })
+        .AddPolicyHandler(PollyRetryConfiguration.GetPaymentProviderRetryPolicy());
 
         services.AddHttpClient("idpClient", c =>
         {
             c.BaseAddress = new Uri(jwtConfig.Authority);
             c.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        });
+        })
+        .AddPolicyHandler(PollyRetryConfiguration.GetIdentityProviderRetryPolicy());
 
         services.AddHttpClient("neoBankClient", c =>
         {
             c.BaseAddress = new Uri(neoBankConfig.BaseUrl);
             c.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        });
+        })
+        .AddPolicyHandler(PollyRetryConfiguration.GetFinancialServiceRetryPolicy());
 
         services.AddHttpClient("asanpardakhtClient", c =>
         {
             c.BaseAddress = new Uri("https://ipgrest.asanpardakht.ir/");
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/plain"));
-        });
+        })
+        .AddPolicyHandler(PollyRetryConfiguration.GetPaymentProviderRetryPolicy());
 
         var charismaCardConfig = configuration.GetSection("Infrastructure:CharismaCard").Get<CharismaCardConfig>();
         services.AddHttpClient("charismaCardClient", c =>
@@ -156,7 +187,8 @@ public static class DependencyInjection
             c.BaseAddress = new Uri(charismaCardConfig.BaseUrl);
             c.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        });
+        })
+        .AddPolicyHandler(PollyRetryConfiguration.GetCharismaCardRetryPolicy());
 
         return services;
     }

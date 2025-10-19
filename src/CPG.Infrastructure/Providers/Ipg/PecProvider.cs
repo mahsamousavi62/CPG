@@ -9,6 +9,7 @@ using CPG.Domain.SharedKernel.Communication.Ipg.Models.Verify;
 using CPG.Domain.SharedKernel.Helper;
 using CPG.Domain.SharedKernel.Logging;
 using CPG.Infrastructure.Persistence.DbContexts;
+using CPG.Infrastructure.Policies;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PecServiceReference1;
@@ -18,11 +19,15 @@ using System.Threading.Tasks;
 namespace CPG.Infrastructure.Providers.Ipg;
 
 public class PecProvider(
-    ReadDbContext context, IApplicationSettingsRepository applicationSettingsRepository, ILogService logService) : IIpgProvider
+    ReadDbContext context,
+    IApplicationSettingsRepository applicationSettingsRepository,
+    ILogService logService,
+    IPollyPolicyService pollyPolicyService) : IIpgProvider
 {
     private readonly IApplicationSettingsRepository _applicationSettingRepositoy = applicationSettingsRepository;
     private readonly ILogService _logService = logService;
     private readonly ReadDbContext context = context;
+    private readonly IPollyPolicyService _pollyPolicyService = pollyPolicyService;
 
     public async Task<PaymentTokenResponse> GetPaymentTokenAsync(PaymentTokenRequest request)
     {
@@ -33,62 +38,76 @@ public class PecProvider(
         string callBack = CreateCallbackUrl((short)request.IpgRedirectionMethodType, request.SiteAddress,
             trackerId.ToString(), configViewModel);
 
-        // Serialize full request object before try block for error logging
         ClientSaleRequestData clientSaleRequestData = null;
-        string requestBodyJson = null;
+        var startTime = DateTime.Now;
 
         try
         {
-            using (var SaleSvc = new SaleServiceSoapClient(SaleServiceSoapClient.EndpointConfiguration.SaleServiceSoap))
+            return await _pollyPolicyService.ExecuteWithPolicyAsync(async () =>
             {
-                clientSaleRequestData = new ClientSaleRequestData()
+                using (var SaleSvc = new SaleServiceSoapClient(SaleServiceSoapClient.EndpointConfiguration.SaleServiceSoap))
                 {
-                    AdditionalData = request.NationalCodeMatchingRequied ?
-                   CreateAdditionalData(request.NationalCode,
-                                         request.ShaparakKey,
-                                         request.ShaparakIv,
-                                         request.ThirdPartyCode,
-                                         request.PaymentIdentifier) : JsonConvert.SerializeObject(new { Data = request.PaymentIdentifier }),
-                    Amount = (long)request.PaymentRequestAmount,
-                    CallBackUrl = callBack,
-                    LoginAccount = GetDataFromJsonProvider(request.ProviderData),
-                    OrderId = long.Parse(trackerId),
-                    Originator = string.IsNullOrWhiteSpace(request.MobileNumber) ? null : request.MobileNumber.Trim(),
-                };
+                    clientSaleRequestData = new ClientSaleRequestData()
+                    {
+                        AdditionalData = request.NationalCodeMatchingRequied ?
+                       CreateAdditionalData(request.NationalCode,
+                                             request.ShaparakKey,
+                                             request.ShaparakIv,
+                                             request.ThirdPartyCode,
+                                             request.PaymentIdentifier) : JsonConvert.SerializeObject(new { Data = request.PaymentIdentifier }),
+                        Amount = (long)request.PaymentRequestAmount,
+                        CallBackUrl = callBack,
+                        LoginAccount = GetDataFromJsonProvider(request.ProviderData),
+                        OrderId = long.Parse(trackerId),
+                        Originator = string.IsNullOrWhiteSpace(request.MobileNumber) ? null : request.MobileNumber.Trim(),
+                    };
 
-                // Serialize and mask request body for error logging
-                requestBodyJson = JsonConvert.SerializeObject(clientSaleRequestData);
-                if (!string.IsNullOrEmpty(requestBodyJson))
-                {
-                    requestBodyJson = System.Text.RegularExpressions.Regex.Replace(requestBodyJson, Constants.Pattern, Constants.Replaceformat);
+                    var response = await SaleSvc.SalePaymentRequestAsync(clientSaleRequestData);
+
+                    int status = response.Body.SalePaymentRequestResult.Status;
+                    long token = response.Body.SalePaymentRequestResult.Token;
+
+                    PaymentTokenResponse paymentResponse = new PaymentTokenResponse
+                    {
+                        Token = token.ToString(),
+                        StatusCode = status == 0 && token > 0 ? (short)HttpStatusCode.OK : (short)status,
+                        Message = response.Body.SalePaymentRequestResult.Message,
+                        IpgBaseUrl = request.IpgBaseUrl,
+                        TrackerId = trackerId.ToString(),
+                    };
+
+                    _logService.ServiceName = nameof(SaleServiceSoapClient.SalePaymentRequestAsync);
+                    _logService.ServiceType = Enums.ServiceType.PecToken;
+                    _logService.ProviderTypeInLog = Enums.ProviderTypeInLog.Pec;
+                    _logService.AddSoapCallLog(clientSaleRequestData, response, nameof(SaleServiceSoapClient.SalePaymentRequestAsync),
+                        (short)status, response.Body.SalePaymentRequestResult.Message);
+
+                    return paymentResponse;
                 }
+            }, "PecProvider.GetPaymentToken");
+        }
+        catch (Exception ex) when (ex is TimeoutException || ex.Message.Contains("timeout", StringComparison.OrdinalIgnoreCase))
+        {
+            var durationMs = (long)(DateTime.Now - startTime).TotalMilliseconds;
 
-                var response = await SaleSvc.SalePaymentRequestAsync(clientSaleRequestData);
+            _logService.ServiceName = nameof(SaleServiceSoapClient.SalePaymentRequestAsync);
+            _logService.ServiceType = Enums.ServiceType.PecToken;
+            _logService.ProviderTypeInLog = Enums.ProviderTypeInLog.Pec;
 
-                int status = response.Body.SalePaymentRequestResult.Status;
-                long token = response.Body.SalePaymentRequestResult.Token;
-
-                PaymentTokenResponse paymentResponse = new PaymentTokenResponse
-                {
-                    Token = token.ToString(),
-                    StatusCode = status == 0 && token > 0 ? (short)HttpStatusCode.OK : (short)status,
-                    Message = response.Body.SalePaymentRequestResult.Message,
-                    IpgBaseUrl = request.IpgBaseUrl,
-                    TrackerId = trackerId.ToString(),
-                };
-
-                CreateLog(clientSaleRequestData, response, nameof(SaleServiceSoapClient), response.Body.SalePaymentRequestResult.Status,
-                          response.Body.SalePaymentRequestResult.Message, Enums.ServiceType.PecToken);
-                return paymentResponse;
+            if (clientSaleRequestData != null)
+            {
+                _logService.AddSoapTimeoutLog(clientSaleRequestData, nameof(SaleServiceSoapClient.SalePaymentRequestAsync), ex, durationMs);
             }
+
+            throw;
         }
         catch (Exception exc)
         {
             var callLog = CallLogModel.CreateError(
-                serviceName: "PecToken",
+                serviceName: nameof(SaleServiceSoapClient.SalePaymentRequestAsync),
                 providerName: "Pec",
-                requestUri: nameof(SaleServiceSoapClient),
-                requestBody: requestBodyJson,
+                requestUri: nameof(SaleServiceSoapClient.SalePaymentRequestAsync),
+                requestBody: clientSaleRequestData != null ? Newtonsoft.Json.JsonConvert.SerializeObject(clientSaleRequestData) : null,
                 responseBody: exc.Message,
                 exception: exc,
                 serviceType: Enums.ServiceType.PecToken,
@@ -108,44 +127,59 @@ public class PecProvider(
 
     public async Task<VerifyTransactionResponse> Verify(VerifyTransactionRequest transactionResultRequest)
     {
-        // Serialize full request object before try block for error logging
-        ClientConfirmRequestData request = null;
-        string requestBodyJson = null;
+        ClientConfirmRequestData confirmRequest = null;
+        var startTime = DateTime.Now;
 
         try
         {
-            using (var confirmSvc = new ConfirmServiceSoapClient(ConfirmServiceSoapClient.EndpointConfiguration.ConfirmServiceSoap))
+            return await _pollyPolicyService.ExecuteWithPolicyAsync(async () =>
             {
-                request = new ClientConfirmRequestData
+                using (var confirmSvc = new ConfirmServiceSoapClient(ConfirmServiceSoapClient.EndpointConfiguration.ConfirmServiceSoap))
                 {
-                    LoginAccount = GetDataFromJsonProvider(transactionResultRequest.ProviderData),
-                    Token = long.Parse(transactionResultRequest.Token)
-                };
+                    confirmRequest = new ClientConfirmRequestData
+                    {
+                        LoginAccount = GetDataFromJsonProvider(transactionResultRequest.ProviderData),
+                        Token = long.Parse(transactionResultRequest.Token)
+                    };
 
-                // Serialize and mask request body for error logging
-                requestBodyJson = JsonConvert.SerializeObject(request);
-                if (!string.IsNullOrEmpty(requestBodyJson))
-                {
-                    requestBodyJson = System.Text.RegularExpressions.Regex.Replace(requestBodyJson, Constants.Pattern, Constants.Replaceformat);
+                    var confirm = await confirmSvc.ConfirmPaymentAsync(confirmRequest);
+
+                    _logService.ServiceName = nameof(ConfirmServiceSoapClient.ConfirmPaymentAsync);
+                    _logService.ServiceType = Enums.ServiceType.PecVerify;
+                    _logService.ProviderTypeInLog = Enums.ProviderTypeInLog.Pec;
+                    _logService.AddSoapCallLog(confirmRequest, confirm, nameof(ConfirmServiceSoapClient.ConfirmPaymentAsync),
+                        confirm.Body.ConfirmPaymentResult.Status, string.Empty);
+
+                    var CardNumberMasked = confirm.Body.ConfirmPaymentResult.CardNumberMasked;
+                    var RRN = confirm.Body.ConfirmPaymentResult.RRN.ToString();
+                    var Token = confirm.Body.ConfirmPaymentResult.Token;
+                    var Status = confirm.Body.ConfirmPaymentResult.Status;
+                    return ResponseModel(Status, RRN);
                 }
+            }, "PecProvider.Verify");
+        }
+        catch (Exception ex) when (ex is TimeoutException || ex.Message.Contains("timeout", StringComparison.OrdinalIgnoreCase))
+        {
+            var durationMs = (long)(DateTime.Now - startTime).TotalMilliseconds;
 
-                var confirm = await confirmSvc.ConfirmPaymentAsync(request);
-                CreateLog(request, confirm, nameof(ConfirmServiceSoapClient), confirm.Body.ConfirmPaymentResult.Status, string.Empty, Enums.ServiceType.PecVerify);
+            _logService.ServiceName = nameof(ConfirmServiceSoapClient.ConfirmPaymentAsync);
+            _logService.ServiceType = Enums.ServiceType.PecVerify;
+            _logService.ProviderTypeInLog = Enums.ProviderTypeInLog.Pec;
 
-                var CardNumberMasked = confirm.Body.ConfirmPaymentResult.CardNumberMasked;
-                var RRN = confirm.Body.ConfirmPaymentResult.RRN.ToString();
-                var Token = confirm.Body.ConfirmPaymentResult.Token;
-                var Status = confirm.Body.ConfirmPaymentResult.Status;
-                return ResponseModel(Status, RRN);
+            if (confirmRequest != null)
+            {
+                _logService.AddSoapTimeoutLog(confirmRequest, nameof(ConfirmServiceSoapClient.ConfirmPaymentAsync), ex, durationMs);
             }
+
+            throw;
         }
         catch (Exception exc)
         {
             var callLog = CallLogModel.CreateError(
-                serviceName: "PecVerify",
+                serviceName: nameof(ConfirmServiceSoapClient.ConfirmPaymentAsync),
                 providerName: "Pec",
-                requestUri: nameof(ConfirmServiceSoapClient),
-                requestBody: requestBodyJson,
+                requestUri: nameof(ConfirmServiceSoapClient.ConfirmPaymentAsync),
+                requestBody: confirmRequest != null ? Newtonsoft.Json.JsonConvert.SerializeObject(confirmRequest) : null,
                 responseBody: exc.Message,
                 exception: exc,
                 serviceType: Enums.ServiceType.PecVerify,
@@ -190,15 +224,7 @@ public class PecProvider(
             RRN = rrn
         };
     }
-    private void CreateLog<T1, T2>(T1 request, T2 response, string serviceName, short status, string message, Enums.ServiceType serviceType)
-    {
-        _logService.ServiceName = serviceName;
-        _logService.ServiceType = serviceType;
-        _logService.ProviderTypeInLog = Enums.ProviderTypeInLog.Pec;
 
-        _logService.AddServiceCallLog(JsonConvert.SerializeObject(request),
-            JsonConvert.SerializeObject(response), status, message);
-    }
     private string CreateAdditionalData(string nationalCode, string key, string iv, int? thirdParty, string paymentIdenetifier)
     {
         string hexString = Guid.NewGuid().ToString("N");

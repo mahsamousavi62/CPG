@@ -6,7 +6,6 @@ using CPG.Domain.AggregateModels.DirectDebitGrantAggregate;
 using CPG.Domain.SharedKernel.Communication.DirectDebit;
 using CPG.Domain.SharedKernel.Interfaces;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading;
@@ -20,6 +19,8 @@ using Newtonsoft.Json.Linq;
 using CPG.Domain.AggregateModels.ProviderAggregate;
 using CPG.Domain.SharedKernel.Communication.DirectDebit.Models.Token;
 using CPG.Application.UseCases.DirectDebit.ViewModels;
+using CPG.Domain.SharedKernel.Logging;
+using CPG.Domain.SharedKernel;
 
 namespace CPG.Application.UseCases.DirectDebit.Commands;
 
@@ -28,7 +29,7 @@ public class SetUserDirectDebitPlanCommandHandler(IDirectDebitFactory DirectDebi
     IAggregateRepository<Provider> providerRepository,
     IAggregateRepository<DirectDebitPlan> planRepository,
     IAggregateRepository<DirectDebitGrant> grantRepository,
-    ILogger<GetUserPhoneNumbersCommandHandler> logger,
+    ILogService logService,
     IAuthenticationService authenticationService,
     ICurrentUser user,
     IDirectDebitFactory directDebitFactory
@@ -38,7 +39,7 @@ public class SetUserDirectDebitPlanCommandHandler(IDirectDebitFactory DirectDebi
     private readonly IAggregateRepository<Provider> _providerRepository = providerRepository;
     private readonly IAggregateRepository<DirectDebitPlan> _DirectDebitPlanRepository = planRepository;
     private readonly IAggregateRepository<DirectDebitGrant> _DirectDebitGrantRepository = grantRepository;
-    private readonly ILogger<GetUserPhoneNumbersCommandHandler> _logger = logger;
+    private readonly ILogService _logService = logService;
     private readonly IAuthenticationService _authenticationService = authenticationService;
     private readonly ICurrentUser _user = user;
     private readonly IDirectDebitFactory _directDebitFactory = directDebitFactory;
@@ -132,17 +133,53 @@ public class SetUserDirectDebitPlanCommandHandler(IDirectDebitFactory DirectDebi
         }
         catch (DomainException exc)
         {
-            _logger.LogError(exc.Message, exc);
+            var callLog = CallLogModel.CreateError(
+                serviceName: nameof(SetUserDirectDebitPlanCommandHandler),
+                providerName: "DirectDebit",
+                requestUri: nameof(ConfirmGrantCommand),
+                requestBody: Newtonsoft.Json.JsonConvert.SerializeObject(request),
+                responseBody: exc.Message,
+                exception: exc,
+                serviceType: Enums.ServiceType.DirectDebit,
+                providerType: Enums.ProviderTypeInLog.Vandar,
+                auditType: Enums.AuditType.Application,
+                userId: 1
+            );
+            _logService.LogError(callLog);
             return Result<ConfirmGrantResponseViewModel>.Failure(new Error(exc.Code, exc.Message));
         }
         catch (AppException exc)
         {
-            _logger.LogError(exc.Message, exc);
+            var callLog = CallLogModel.CreateError(
+                serviceName: nameof(SetUserDirectDebitPlanCommandHandler),
+                providerName: "DirectDebit",
+                requestUri: nameof(ConfirmGrantCommand),
+                requestBody: Newtonsoft.Json.JsonConvert.SerializeObject(request),
+                responseBody: exc.Message,
+                exception: exc,
+                serviceType: Enums.ServiceType.DirectDebit,
+                providerType: Enums.ProviderTypeInLog.Vandar,
+                auditType: Enums.AuditType.Application,
+                userId: 1
+            );
+            _logService.LogError(callLog);
             return Result<ConfirmGrantResponseViewModel>.Failure(new Error(exc.Code, exc.Message));
         }
         catch (Exception exc)
         {
-            _logger.LogError(exc.Message, exc);
+            var callLog = CallLogModel.CreateError(
+                serviceName: nameof(SetUserDirectDebitPlanCommandHandler),
+                providerName: "DirectDebit",
+                requestUri: nameof(ConfirmGrantCommand),
+                requestBody: Newtonsoft.Json.JsonConvert.SerializeObject(request),
+                responseBody: exc.Message,
+                exception: exc,
+                serviceType: Enums.ServiceType.DirectDebit,
+                providerType: Enums.ProviderTypeInLog.Vandar,
+                auditType: Enums.AuditType.Application,
+                userId: 1
+            );
+            _logService.LogError(callLog);
             return Result<ConfirmGrantResponseViewModel>.Failure(new Error("1009000", GlobalResource.UnexpectedError));
         }
     }

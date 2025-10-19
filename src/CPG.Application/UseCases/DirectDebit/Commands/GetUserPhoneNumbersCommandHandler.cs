@@ -7,7 +7,6 @@ using CPG.Domain.AggregateModels.DirectDebitGrantAggregate;
 using CPG.Domain.SharedKernel.Communication.DirectDebit;
 using CPG.Domain.SharedKernel.Interfaces;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading;
@@ -15,6 +14,8 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using CPG.Application.UseCases.DirectDebit.Exceptions;
 using System.Security.Claims;
+using CPG.Domain.SharedKernel.Logging;
+using CPG.Domain.SharedKernel;
 
 namespace CPG.Application.UseCases.DirectDebit.Commands;
 
@@ -22,7 +23,7 @@ public class GetUserPhoneNumbersCommandHandler(IDirectDebitFactory DirectDebitFa
     IAggregateRepository<Bank> bankRepository,
     IAggregateRepository<DirectDebitPlan> planRepository,
     IAggregateRepository<DirectDebitGrant> grantRepository,
-    ILogger<GetUserPhoneNumbersCommandHandler> logger,
+    ILogService logService,
     IAuthenticationService authenticationService,
     ICurrentUser user
     ) : IRequestHandler<GetUserPhoneNumbersCommand, Result<IReadOnlyCollection<UserPhoneNumberViewModel>>>
@@ -30,7 +31,7 @@ public class GetUserPhoneNumbersCommandHandler(IDirectDebitFactory DirectDebitFa
     private readonly IAggregateRepository<Bank> _bankRepository = bankRepository;
     private readonly IAggregateRepository<DirectDebitPlan> _DirectDebitPlanRepository = planRepository;
     private readonly IAggregateRepository<DirectDebitGrant> _DirectDebitGrantRepository = grantRepository;
-    private readonly ILogger<GetUserPhoneNumbersCommandHandler> _logger = logger;
+    private readonly ILogService _logService = logService;
     private readonly IAuthenticationService _authenticationService = authenticationService;
     private readonly ICurrentUser _user = user;
 
@@ -71,7 +72,19 @@ public class GetUserPhoneNumbersCommandHandler(IDirectDebitFactory DirectDebitFa
         }
         catch (Exception exc)
         {
-            _logger.LogError(exc.Message, exc);
+            var callLog = CallLogModel.CreateError(
+                serviceName: nameof(GetUserPhoneNumbersCommandHandler),
+                providerName: "DirectDebit",
+                requestUri: nameof(GetUserPhoneNumbersCommand),
+                requestBody: Newtonsoft.Json.JsonConvert.SerializeObject(request),
+                responseBody: exc.Message,
+                exception: exc,
+                serviceType: Enums.ServiceType.DirectDebit,
+                providerType: Enums.ProviderTypeInLog.Vandar,
+                auditType: Enums.AuditType.Application,
+                userId: 1
+            );
+            _logService.LogError(callLog);
             return Result<IReadOnlyCollection<UserPhoneNumberViewModel>>.Failure(new Error(exc.Source, exc.Message));
         }
     }

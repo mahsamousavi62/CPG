@@ -1,7 +1,6 @@
 ﻿using CPG.Domain.AggregateModels.DirectDebitGrantAggregate.Specifications;
 using CPG.Domain.AggregateModels.DirectDebitGrantAggregate;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,6 +17,8 @@ using CPG.Application.UseCases.DirectDebit.ViewModels;
 using CPG.Application.Shared.Interfaces;
 using CPG.Application.Shared;
 using CPG.Domain.SharedKernel.Interfaces;
+using CPG.Domain.SharedKernel.Logging;
+using CPG.Domain.SharedKernel;
 
 namespace CPG.Application.UseCases.DirectDebit.Commands;
 
@@ -25,14 +26,14 @@ public class SetVandarWithdrawalDataCommandHandler(
     IAggregateRepository<Transaction> transactionRepository,
     IAggregateRepository<PaymentRequest> paymentRequestRepository,
     IAggregateRepository<DirectDebitGrant> grantRepository,
-    ILogger<GetDirectDebitPlansCommandHandler> logger,
+    ILogService logService,
     IHubContext<NotificationHub, INotificationHub> notificationHub
     ) : IRequestHandler<SetVandarWithdrawalDataCommand>
 {
     private readonly IAggregateRepository<Transaction> _transactionRepository = transactionRepository;
     private readonly IAggregateRepository<PaymentRequest> _paymentRequestRepository = paymentRequestRepository;
     private readonly IAggregateRepository<DirectDebitGrant> _directDebitGrantRepository = grantRepository;
-    private readonly ILogger<GetDirectDebitPlansCommandHandler> _logger = logger;
+    private readonly ILogService _logService = logService;
     private readonly IHubContext<NotificationHub, INotificationHub> _notificationHub = notificationHub;
     private readonly List<string> failedStatusArray = ["FAILED", "CANCELED", "REVERSED"];
     private readonly string SuccessStatus = "DONE";
@@ -117,7 +118,19 @@ public class SetVandarWithdrawalDataCommandHandler(
         }
         catch (Exception exc)
         {
-            _logger.LogError(exc.Message, exc);
+            var callLog = CallLogModel.CreateError(
+                serviceName: nameof(SetVandarWithdrawalDataCommandHandler),
+                providerName: "DirectDebit",
+                requestUri: nameof(SetVandarWithdrawalDataCommand),
+                requestBody: JsonSerializer.Serialize(request),
+                responseBody: exc.Message,
+                exception: exc,
+                serviceType: Enums.ServiceType.DirectDebit,
+                providerType: Enums.ProviderTypeInLog.Vandar,
+                auditType: Enums.AuditType.Application,
+                userId: 1
+            );
+            _logService.LogError(callLog);
         }
     }
 

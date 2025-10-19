@@ -85,6 +85,11 @@ public class CallLogModel
     public ProviderTypeInLog? ProviderType { get; set; }
     public string ErrorType { get; set; }
 
+    /// <summary>
+    /// Number of retry attempts made by Polly retry policy (0 = no retry, 1+ = retried)
+    /// </summary>
+    public int? RetryCount { get; set; }
+
 
 
 
