@@ -33,9 +33,28 @@ foreach ($file in $csFiles) {
     try {
         Write-Host "Processing: $($file.Name)" -ForegroundColor Gray
 
-        # Read file content
-        $content = Get-Content -Path $file.FullName -Raw -Encoding UTF8
+        # Read file content with original encoding
+        $bytes = [System.IO.File]::ReadAllBytes($file.FullName)
+        $content = [System.Text.Encoding]::UTF8.GetString($bytes)
         $originalContent = $content
+
+        # First, check if file has any comments at all
+        $hasXmlComments = $content -match '(?m)^\s*///'
+        $hasMultiLineComments = $content -match '(?s)/\*.*?\*/'
+        $hasSingleLineComments = $content -match '(?m)(?<!:)//(?!/)'
+
+        $hasAnyComments = $hasXmlComments -or $hasMultiLineComments -or $hasSingleLineComments
+
+        if (-not $hasAnyComments) {
+            Write-Host "  [SKIP] No comments found" -ForegroundColor DarkGray
+            continue
+        }
+
+        # Detect line ending style from original file
+        $lineEnding = "`r`n"  # Default to Windows
+        if ($content -match '(?<!\r)\n') {
+            $lineEnding = "`n"  # Unix/Linux style
+        }
 
         # Step 1: Remove XML documentation comments (/// ...)
         $content = $content -replace '(?m)^\s*///.*$', ''
@@ -50,17 +69,20 @@ foreach ($file in $csFiles) {
         $content = $content -replace '(?m)(?<!:)//(?!/)[^\r\n]*', ''
 
         # Step 4: Clean up empty lines (keep maximum of 2 consecutive empty lines)
-        $content = $content -replace '(?m)^\s*$(\r?\n^\s*$)+', "`r`n"
+        # Preserve original line ending style
+        $content = $content -replace '(?m)^\s*$(\r?\n^\s*$)+', $lineEnding
 
         # Step 5: Remove trailing whitespace from each line
         $content = $content -replace '(?m)[ \t]+$', ''
 
-        # Only write if content changed
-        if ($content -ne $originalContent) {
+        # Only write if content actually changed (binary comparison to avoid encoding issues)
+        $newBytes = [System.Text.UTF8Encoding]::new($false).GetBytes($content)
+        $contentChanged = -not (Compare-Object -ReferenceObject $bytes -DifferenceObject $newBytes -SyncWindow 0)
+
+        if ($contentChanged) {
             if (-not $WhatIf) {
                 # Save the file with UTF-8 encoding (without BOM)
-                $utf8NoBom = New-Object System.Text.UTF8Encoding $false
-                [System.IO.File]::WriteAllText($file.FullName, $content, $utf8NoBom)
+                [System.IO.File]::WriteAllBytes($file.FullName, $newBytes)
 
                 Write-Host "  [OK] Comments removed" -ForegroundColor Green
                 $filesProcessed++
@@ -69,7 +91,7 @@ foreach ($file in $csFiles) {
                 $filesProcessed++
             }
         } else {
-            Write-Host "  [SKIP] No comments found" -ForegroundColor DarkGray
+            Write-Host "  [SKIP] No changes needed" -ForegroundColor DarkGray
         }
     }
     catch {
