@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Polly;
 using Polly.Extensions.Http;
 using System;
@@ -160,36 +158,4 @@ public static class PollyRetryConfiguration
         }
     }
 
-    /// <summary>
-    /// Extension method to add retry policy configuration from appsettings.json.
-    /// This will be used in Task 5 when configuration is added.
-    /// </summary>
-    public static IAsyncPolicy<HttpResponseMessage> GetRetryPolicyFromConfiguration(
-        IConfiguration configuration,
-        string serviceName)
-    {
-        var retryCount = configuration.GetValue<int>($"Infrastructure:RetryPolicy:ServiceSpecific:{serviceName}:RetryCount", 3);
-        var baseDelaySeconds = configuration.GetValue<int>($"Infrastructure:RetryPolicy:ServiceSpecific:{serviceName}:BaseDelaySeconds", 1);
-        var maxJitterMs = configuration.GetValue<int>($"Infrastructure:RetryPolicy:ServiceSpecific:{serviceName}:MaxJitterMilliseconds", 1000);
-        var useExponential = configuration.GetValue<bool>($"Infrastructure:RetryPolicy:Default:UseExponentialBackoff", true);
-
-        var jitterer = new Random();
-
-        return HttpPolicyExtensions
-            .HandleTransientHttpError()
-            .OrResult(msg => !msg.IsSuccessStatusCode && (int)msg.StatusCode >= 500)
-            .WaitAndRetryAsync(
-                retryCount: retryCount,
-                sleepDurationProvider: retryAttempt =>
-                {
-                    var delay = useExponential
-                        ? TimeSpan.FromSeconds(Math.Pow(2, retryAttempt - 1) * baseDelaySeconds)
-                        : TimeSpan.FromSeconds(retryAttempt * baseDelaySeconds);
-                    return delay + TimeSpan.FromMilliseconds(jitterer.Next(0, maxJitterMs));
-                },
-                onRetry: (outcome, timespan, retryCount, context) =>
-                {
-                    LogRetryAttempt(serviceName, outcome, timespan, retryCount, context);
-                });
-    }
 }

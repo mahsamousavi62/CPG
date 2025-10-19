@@ -199,17 +199,23 @@ When using `ILogService`, these are automatically populated:
 
 ## Retry Policies
 
+**⚠️ IMPORTANT: All retry logic uses ONLY Polly policies. Manual retry counters are forbidden.**
+
 ### HTTP REST API Calls
 
-All HTTP clients (both named and unnamed) use Polly retry policies configured in `Infrastructure.RetryPolicy` section of appsettings.json:
+HTTP clients use hardcoded Polly retry policies defined in `PollyRetryConfiguration.cs`:
 
-- **Default Retry**: 3 attempts with exponential backoff (1s, 2s, 4s) + jitter
-- **Service-Specific**: Each external service has customized retry configuration
-- Automatically applied via `PollyRetryConfiguration.cs`
+- **Default (unnamed clients)**: 3 retries, exponential backoff (1s, 2s, 4s) + jitter
+- **Payment providers** (CharisPay, AsanPardakht): 2 retries, linear backoff (1s, 2s) + 500ms jitter
+- **Identity provider** (IDP): 3 retries, exponential backoff (1s, 2s, 4s) + jitter
+- **Financial services** (NeoBank): 3 retries, exponential backoff (2s, 4s, 8s) + 2s jitter
+- **CharismaCard**: 2 retries, linear backoff (1s, 2s) + 500ms jitter
+
+These policies are applied automatically in `DependencyInjection.cs` via `.AddPolicyHandler()`.
 
 ### SOAP Service Calls
 
-SOAP services use Polly retry policies via `IPollyPolicyService`:
+SOAP services use Polly retry policies via `IPollyPolicyService` with configuration from `appsettings.json`:
 
 ```csharp
 // Inject IPollyPolicyService
@@ -228,9 +234,19 @@ return await _pollyPolicyService.ExecuteWithPolicyAsync(async () =>
 }, "ServiceName.MethodName");
 ```
 
-Configuration in `appsettings.json` under `Infrastructure.Polly`:
-- Retry count, base delay, and jitter settings
-- Timeout configuration for SOAP calls (default: 45 seconds)
+SOAP configuration in `appsettings.json` under `Infrastructure.Polly`:
+```json
+"Polly": {
+  "Retry": {
+    "MaxRetryAttempts": 3,
+    "BaseDelaySeconds": 2,
+    "UseJitter": true
+  },
+  "Timeout": {
+    "SoapTimeoutSeconds": 45
+  }
+}
+```
 
 ## Configuration
 
