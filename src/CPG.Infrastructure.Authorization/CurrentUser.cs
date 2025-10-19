@@ -17,12 +17,17 @@ public class CurrentUser(IHttpContextAccessor httpContextAccessor) : ICurrentUse
     private long GetUserId()
     {
        // var subid = await _authenticationService.GetDataFromClaim<string>("sub");
-      
-        //TODO: select userid from user where idpuserid=sub
-        var claims = _httpContextAccessor.HttpContext?.User.Claims
-                     ?? throw new ArgumentException("Cannot obtain UserId value from JWT token.");
 
-        var userId = claims.FirstOrDefault(x => x.Type == "UserId")?.Value?? "1";
+        //TODO: select userid from user where idpuserid=sub
+
+        // Return default UserId (1) if no HttpContext or authenticated user
+        var claims = _httpContextAccessor.HttpContext?.User?.Claims;
+        if (claims == null || !claims.Any())
+        {
+            return 1; // Default system user for unauthenticated scenarios (startup, migrations, health checks)
+        }
+
+        var userId = claims.FirstOrDefault(x => x.Type == "UserId")?.Value ?? "1";
 
         return long.Parse(userId);
     }
