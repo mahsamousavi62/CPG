@@ -27,14 +27,6 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
     private readonly IRedisCacheService _cacheService = cacheService;
     private readonly IHttpProvider _httpProvider = httpProvider;
     private readonly ReadDbContext context = context;
-    private readonly byte serviceCallMaxTryCounter = 5;
-    private byte tokenFailCounter = 0;
-    private byte storeFailCounter = 0;
-    private byte showFailCounter = 0;
-    private byte withdrawalFailCounter = 0;
-    private byte getUserGrantsFailCounter = 0;
-    private byte verifyFailCounter = 0;
-    private byte transactionResultFailCounter = 0;
     private string refreshToken;
     private string businessData;
     private string notifyUrl;
@@ -292,23 +284,13 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
             401 => await GetToken(),
             422 => throw new Exception(GlobalResource.EmptyRefreshToken),
             101 => throw new Exception(GlobalResource.InvalidRefreshToken),
-            _ => await Retry()
+            _ => BaseErrorHandler<TResponse, TError, TBaseRequest>(error)
         };
 
         async Task<TResponse> GetToken()
         {
             _cacheService.SetData<VandarTokenResponse?>(tokenCacheKey, null);
             return await GetTokenAsync(baseRequest) as TResponse;
-        }
-
-        async Task<TResponse> Retry()
-        {
-            if (tokenFailCounter < serviceCallMaxTryCounter)
-            {
-                tokenFailCounter++;
-                return await GetTokenAsync(baseRequest) as TResponse;
-            }
-            return await Task.FromResult(BaseErrorHandler<TResponse, TError, TBaseRequest>(error));
         }
     }
 
@@ -320,23 +302,13 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
         return error.StatusCode switch
         {
             401 => await GetToken(),
-            _ => await Retry()
+            _ => BaseErrorHandler<TResponse, TError, TBaseRequest>(error)
         };
 
         async Task<TResponse> GetToken()
         {
             _cacheService.SetData<VandarTokenResponse?>(tokenCacheKey, null);
             return await GetTokenAsync(new TokenRequest { ProviderData = baseRequest.ProviderData }) as TResponse;
-        }
-
-        async Task<TResponse> Retry()
-        {
-            if (storeFailCounter < serviceCallMaxTryCounter)
-            {
-                storeFailCounter++;
-                return await StoreAsync(baseRequest) as TResponse;
-            }
-            return await Task.FromResult(BaseErrorHandler<TResponse, TError, TBaseRequest>(error));
         }
     }
 
@@ -348,23 +320,13 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
         return error.StatusCode switch
         {
             401 => await GetToken(),
-            _ => await Retry()
+            _ => BaseErrorHandler<TResponse, TError, TBaseRequest>(error)
         };
 
         async Task<TResponse> GetToken()
         {
             _cacheService.SetData<VandarTokenResponse?>(tokenCacheKey, null);
             return await GetTokenAsync(new TokenRequest { ProviderData = baseRequest.ProviderData }) as TResponse;
-        }
-
-        async Task<TResponse> Retry()
-        {
-            if (withdrawalFailCounter < serviceCallMaxTryCounter)
-            {
-                withdrawalFailCounter++;
-                return await WithdrawAsync(baseRequest) as TResponse;
-            }
-            return await Task.FromResult(BaseErrorHandler<TResponse, TError, TBaseRequest>(error));
         }
     }
 
@@ -376,23 +338,13 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
         return error.StatusCode switch
         {
             401 => await GetToken(),
-            _ => await Retry()
+            _ => BaseErrorHandler<TResponse, TError, TBaseRequest>(error)
         };
 
         async Task<TResponse> GetToken()
         {
             _cacheService.SetData<VandarTokenResponse?>(tokenCacheKey, null);
             return await GetTokenAsync(new TokenRequest { ProviderData = baseRequest.ProviderData }) as TResponse;
-        }
-
-        async Task<TResponse> Retry()
-        {
-            if (showFailCounter < serviceCallMaxTryCounter)
-            {
-                showFailCounter++;
-                return await ShowAsync(baseRequest) as TResponse;
-            }
-            return await Task.FromResult(BaseErrorHandler<TResponse, TError, TBaseRequest>(error));
         }
     }
 
@@ -404,23 +356,13 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
         return error.StatusCode switch
         {
             401 => await GetToken(),
-            _ => await Retry()
+            _ => BaseErrorHandler<TResponse, TError, TBaseRequest>(error)
         };
 
         async Task<TResponse> GetToken()
         {
             _cacheService.SetData<VandarTokenResponse?>(tokenCacheKey, null);
             return await GetTokenAsync(new TokenRequest { ProviderData = baseRequest.ProviderData }) as TResponse;
-        }
-
-        async Task<TResponse> Retry()
-        {
-            if (getUserGrantsFailCounter < serviceCallMaxTryCounter)
-            {
-                getUserGrantsFailCounter++;
-                return await GetUserGrants(baseRequest) as TResponse;
-            }
-            return await Task.FromResult(BaseErrorHandler<TResponse, TError, TBaseRequest>(error));
         }
     }
 
@@ -433,23 +375,13 @@ internal class VandarProvider(IHttpProvider httpProvider, ReadDbContext context,
         {
             0 => new VandarVerifyResponse { Status = error.Status, Message = error.Message } as TResponse,
             401 => await GetToken(),
-            _ => await Retry()
+            _ => BaseErrorHandler<TResponse, TError, TBaseRequest>(error)
         };
 
         async Task<TResponse> GetToken()
         {
             _cacheService.SetData<VandarTokenResponse?>(tokenCacheKey, null);
             return await GetTokenAsync(new TokenRequest { ProviderData = baseRequest.ProviderData }) as TResponse;
-        }
-
-        async Task<TResponse> Retry()
-        {
-            if (verifyFailCounter < serviceCallMaxTryCounter)
-            {
-                verifyFailCounter++;
-                return await VerifyAsync(baseRequest) as TResponse;
-            }
-            return await Task.FromResult(BaseErrorHandler<TResponse, TError, TBaseRequest>(error));
         }
     }
 

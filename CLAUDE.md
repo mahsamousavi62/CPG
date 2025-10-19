@@ -23,9 +23,11 @@ The solution follows Clean Architecture with clear separation:
 
 ## Common Development Commands
 
+**⚠️ CRITICAL: NEVER run `dotnet build` or any build commands in this project. The user will test and build manually.**
+
 ### Build and Run
 ```bash
-# Build the solution
+# Build the solution (DO NOT RUN THIS - USER WILL BUILD MANUALLY)
 dotnet build
 
 # Run the API locally

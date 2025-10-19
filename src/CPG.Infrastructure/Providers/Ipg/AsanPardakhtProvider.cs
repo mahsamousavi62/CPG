@@ -25,10 +25,6 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
     public IApplicationSettingsRepository _applicationSettingRepositoy = applicationSettingsRepository;
     private readonly IHttpProvider httpProvider = httpProvider;
     private readonly ReadDbContext context = context;
-    private readonly byte serviceCallMaxTryCounter = 5;
-    private byte tokenFailCounter = 0;
-    private byte verifyFailCounter = 0;
-    private byte transactionResultFailCounter = 0;
     private string userName;
     private string password;
     private int merchantConfigurationId;
@@ -178,70 +174,43 @@ public class AsanPardakhtProvider(IHttpProvider httpProvider, ReadDbContext cont
         _ => string.Empty,
     };
 
-    private async Task<TResponse?> PaymentTokenErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest? baseRequest, TResponse? response, TError? error, short statusCode)
+    private Task<TResponse?> PaymentTokenErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest? baseRequest, TResponse? response, TError? error, short statusCode)
       where TResponse : AsanPardakhtTokenResponse
       where TError : AsanPardakhtResponseBase
       where TBaseRequest : PaymentTokenRequest
     {
-        if (tokenFailCounter < serviceCallMaxTryCounter)
-        {
-            tokenFailCounter++;
-            return await GetPaymentTokenAsync(baseRequest) as TResponse;
-        }
-        return await Task.FromResult(BaseErrorHandler<TResponse, TError, TBaseRequest>(error));
+        return Task.FromResult<TResponse?>(BaseErrorHandler<TResponse, TError, TBaseRequest>(error));
     }
 
-    private async Task<TResponse?> TransactionResultErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest? baseRequest, TResponse? response, TError? error, short statusCode)
+    private Task<TResponse?> TransactionResultErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest? baseRequest, TResponse? response, TError? error, short statusCode)
     where TResponse : TransactionResultResponse
     where TError : AsanPardakhtResponseBase
     where TBaseRequest : TransactionResultRequest
     {
-        return statusCode switch
+        var result = statusCode switch
         {
-            _ when statusCode.IsIn(TransactionResultFetchingCodes) => await FetchingAction(),
+            _ when statusCode.IsIn(TransactionResultFetchingCodes) => new TransactionResultResponse { Status = 1 } as TResponse,
             _ when statusCode.IsIn(TransactionResultFailedCodes) => new TransactionResultResponse { Status = 3 } as TResponse,
             _ => new TransactionResultResponse { Status = 1 } as TResponse,
         };
 
-        async Task<TResponse> Retry()
-        {
-            transactionResultFailCounter++;
-            return await GetTransactionResult(baseRequest) as TResponse;
-        }
-
-        async Task<TResponse> FetchingAction()
-        {
-            return transactionResultFailCounter < serviceCallMaxTryCounter ?
-                await Retry() :
-                new TransactionResultResponse { Status = 1 } as TResponse;
-        }
+        return Task.FromResult<TResponse?>(result);
     }
 
-    private async Task<TResponse?> VerifyErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest? baseRequest, TResponse? response, TError? error, short statusCode)
+    private Task<TResponse?> VerifyErrorHandler<TBaseRequest, TResponse, TError>(TBaseRequest? baseRequest, TResponse? response, TError? error, short statusCode)
     where TResponse : VerifyTransactionResponse
     where TError : AsanPardakhtResponseBase
     where TBaseRequest : VerifyTransactionRequest
     {
-        return statusCode switch
+        var result = statusCode switch
         {
-            _ when statusCode.IsIn(VerificationVerifyingCodes) => await VerifyingAction(),
+            _ when statusCode.IsIn(VerificationVerifyingCodes) => new VerifyTransactionResponse { Status = Enums.IPGTransactionStatus.Verifying } as TResponse,
             _ when statusCode.IsIn(VerificationSucceededCodes) => new VerifyTransactionResponse { Status = Enums.IPGTransactionStatus.VerificationSucceeded } as TResponse,
             _ when statusCode.IsIn(VerificationFailedCodes) => new VerifyTransactionResponse { Status = Enums.IPGTransactionStatus.VerificationFailed } as TResponse,
             _ => new VerifyTransactionResponse { Status = Enums.IPGTransactionStatus.Verifying } as TResponse,
         };
 
-        async Task<TResponse> Retry()
-        {
-            verifyFailCounter++;
-            return await Verify(baseRequest) as TResponse;
-        }
-
-        async Task<TResponse> VerifyingAction()
-        {
-            return verifyFailCounter < serviceCallMaxTryCounter ?
-                await Retry() :
-                new VerifyTransactionResponse { Status = Enums.IPGTransactionStatus.Verifying } as TResponse;
-        }
+        return Task.FromResult<TResponse?>(result);
     }
 
     private TResponse BaseErrorHandler<TResponse, TError, TBaseRequest>(AsanPardakhtResponseBase? error)
