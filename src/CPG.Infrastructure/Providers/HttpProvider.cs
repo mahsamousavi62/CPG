@@ -644,12 +644,12 @@ public class HttpProvider : IHttpProvider
         _ = long.TryParse(httpContext?.User.Claims.FirstOrDefault(c => c.Type == "CompanyId")?.Value, out long companyId);
 
         // Serialize request headers
-        string requestHeaders = request.HeaderParameters != null
+        string requestHeader = request.HeaderParameters != null
             ? System.Text.Json.JsonSerializer.Serialize(request.HeaderParameters)
             : null;
 
         // Serialize response headers
-        string responseHeaders = System.Text.Json.JsonSerializer.Serialize(response.Headers.ToDictionary(h => h.Key, h => string.Join(", ", h.Value)));
+        string responseHeader = System.Text.Json.JsonSerializer.Serialize(response.Headers.ToDictionary(h => h.Key, h => string.Join(", ", h.Value)));
 
         var callLog = response.IsSuccessStatusCode
             ? CallLogModel.CreateSuccess(
@@ -668,8 +668,8 @@ public class HttpProvider : IHttpProvider
                 ip: httpContext?.Connection.RemoteIpAddress?.ToString(),
                 userAgent: httpContext?.Request.Headers["User-Agent"].ToString(),
                 responseStatusCode: (int)response.StatusCode,
-                requestHeader: requestHeaders,
-                responseHeader: responseHeaders
+                requestHeader: requestHeader,
+                responseHeader: responseHeader
             )
             : CallLogModel.CreateError(
                 serviceName: request.Service.ToString(),
@@ -687,8 +687,8 @@ public class HttpProvider : IHttpProvider
                 companyId: companyId,
                 ip: httpContext?.Connection.RemoteIpAddress?.ToString(),
                 userAgent: httpContext?.Request.Headers["User-Agent"].ToString(),
-                requestHeader: requestHeaders,
-                responseHeader: responseHeaders
+                requestHeader: requestHeader,
+                responseHeader: responseHeader
             );
 
         _logService.LogInformation(callLog);
