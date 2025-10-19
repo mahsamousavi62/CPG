@@ -38,6 +38,7 @@ public class HttpProvider : IHttpProvider
         where TResponse : ResponseBase
         where TError : ResponseBase
         where TBaseRequest : RequestBase
+        where TBody : class
     {
         // Serialize request body before try block for error logging
         string requestBodyJson = null;
@@ -114,6 +115,7 @@ public class HttpProvider : IHttpProvider
         where TResponse : ResponseBase
         where TError : ResponseBase
         where TBaseRequest : RequestBase
+        where TBody : class
     {
         // Serialize request body before try block for error logging
         string json = null;
@@ -191,6 +193,7 @@ public class HttpProvider : IHttpProvider
         where TResponse : ResponseBase
         where TError : ResponseBase
         where TBaseRequest : RequestBase
+        where TBody : class
     {
         // Serialize request body before try block for error logging
         string json = null;
@@ -332,6 +335,7 @@ public class HttpProvider : IHttpProvider
         where TResponse : ResponseBase?
         where TError : ResponseBase
         where TBaseRequest : RequestBase
+        where TBody : class
     {
         // Serialize request body before try block for error logging
         string requestBodyJson = null;
@@ -394,6 +398,7 @@ public class HttpProvider : IHttpProvider
         where TResponse : ResponseBase
         where TError : ResponseBase
         where TBaseRequest : RequestBase
+        where TBody : class
     {
         // Serialize request body before try block for error logging
         string requestBodyJson = null;
@@ -478,6 +483,7 @@ public class HttpProvider : IHttpProvider
         where TResponse : ResponseBase
         where TError : ResponseBase
         where TBaseRequest : RequestBase
+        where TBody : class
     {
         // Serialize request body before try block for error logging
         string requestBodyJson = null;
@@ -547,6 +553,7 @@ public class HttpProvider : IHttpProvider
                Func<HttpResponseMessage, Task<TResponse?>>? decodeHandler = null, Func<TRequest?, TResponse?, Task<TResponse?>>? failHandler = null)
                where TRequest : IHttpRequest
                where TResponse : IHttpResponse
+               where TBody : class
     {
         // Serialize request object before try block for error logging
         string requestJson = null;
@@ -619,7 +626,7 @@ public class HttpProvider : IHttpProvider
         return queryParams;
     }
 
-    private void AddServiceCallLog<TBody>(HttpProviderRequest<TBody> request, HttpResponseMessage response, string resString)
+    private void AddServiceCallLog<TBody>(HttpProviderRequest<TBody> request, HttpResponseMessage response, string resString) where TBody : class
     {
         if (!string.IsNullOrEmpty(resString))
         {
