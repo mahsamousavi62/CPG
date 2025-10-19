@@ -26,7 +26,7 @@ namespace CPG.Infrastructure.Persistence.Redis
         }
 
 
-        public void SetData<T>(string key, T data)
+        public void SetData<T>(string key, T value)
         {
            
             var cacheDuration = TimeSpan.FromSeconds(int.Parse(configuration["Redis:CacheDurationSeconds"]));
@@ -34,7 +34,7 @@ namespace CPG.Infrastructure.Persistence.Redis
             {
                 AbsoluteExpirationRelativeToNow = cacheDuration
             };
-            var jsonData = JsonSerializer.Serialize(data);
+            var jsonData = JsonSerializer.Serialize(value);
             _cache.SetString(key, jsonData, options);
 
            

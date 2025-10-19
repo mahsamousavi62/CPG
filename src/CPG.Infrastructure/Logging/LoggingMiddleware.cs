@@ -97,24 +97,41 @@ public class LoggingMiddleware(RequestDelegate next, ILogService logService)
                 await responseBody.CopyToAsync(originalBodyStream);
             }
 
-            using (LogContext.PushProperty("CallLog", log, true))
+            var callLog = CallLogModel.CreateSuccess(
+                serviceName: log.ServiceName ?? "Unknown",
+                providerName: "Logging",
+                requestUri: httpContext.Request.Path.ToString(),
+                requestBody: log.RequestBody,
+                responseBody: log.ResponseBody,
+                auditType: log.AuditType,
+                userId: log.UserId,
+                applicationId: log.ApplicationId,
+                companyId: log.CompanyId,
+                ip: log.IP,
+                userAgent: log.UserAgent,
+                responseStatusCode: httpContext.Response.StatusCode
+            );
+            callLog.StartDateTime = log.StartDateTime;
+            callLog.EndDateTime = log.EndDateTime;
+            callLog.DurationMs = log.DurationMs;
+
+            using (LogContext.PushProperty("CallLog", callLog, true))
             {
-                _logService.LogInformation("[CallLog] {@CallLog}", log);
+                _logService.LogInformation(callLog);
             }
         }
         catch (Exception exc)
         {
-            RequestResponseLogModel log = new()
-            {
-                AuditType = Enums.AuditType.Develop,
-                ServiceName = nameof(LoggingMiddleware),
-                StackTrace = exc.StackTrace,
-                ResponseBody = exc.Message,
-                IsSuccess = false,
-                ErrorCode = (exc as dynamic)?.Code
-            };
-
-            _logService.LogError(exc, "Request: Unhandled Exception for Request {Name} {@log}", nameof(LoggingMiddleware), log);
+            var callLog = CallLogModel.CreateError(
+                serviceName: nameof(LoggingMiddleware),
+                providerName: "Logging",
+                requestUri: httpContext.Request.Path.ToString(),
+                requestBody: null,
+                responseBody: exc.Message,
+                exception: exc,
+                auditType: Enums.AuditType.Develop
+            );
+            _logService.LogError(callLog);
             throw;
         }
     }

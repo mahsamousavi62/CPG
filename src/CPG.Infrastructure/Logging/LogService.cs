@@ -44,8 +44,8 @@ public partial class LogService(ILogger<LogService> logger, IHttpContextAccessor
 
         var callLog = response.IsSuccessStatusCode
             ? CallLogModel.CreateSuccess(
-                serviceName: request.Service?.ToString() ?? "Unknown",
-                providerName: request.Provider?.ToString() ?? "Unknown",
+                serviceName: request.Service.ToString(),
+                providerName: request.Provider.ToString(),
                 requestUri: request.Uri,
                 requestBody: reqString,
                 responseBody: resString,
@@ -61,8 +61,8 @@ public partial class LogService(ILogger<LogService> logger, IHttpContextAccessor
                 responseStatusCode: (int)response.StatusCode
             )
             : CallLogModel.CreateError(
-                serviceName: request.Service?.ToString() ?? "Unknown",
-                providerName: request.Provider?.ToString() ?? "Unknown",
+                serviceName: request.Service.ToString(),
+                providerName: request.Provider.ToString(),
                 requestUri: request.Uri,
                 requestBody: reqString,
                 responseBody: resString,
@@ -94,7 +94,7 @@ public partial class LogService(ILogger<LogService> logger, IHttpContextAccessor
         var callLog = status == 0
             ? CallLogModel.CreateSuccess(
                 serviceName: ServiceName ?? "Unknown",
-                providerName: ProviderTypeInLog?.ToString() ?? "Unknown",
+                providerName: ProviderTypeInLog.ToString(),
                 requestUri: ServiceName,
                 requestBody: request,
                 responseBody: response,
@@ -111,7 +111,7 @@ public partial class LogService(ILogger<LogService> logger, IHttpContextAccessor
             )
             : CallLogModel.CreateError(
                 serviceName: ServiceName ?? "Unknown",
-                providerName: ProviderTypeInLog?.ToString() ?? "Unknown",
+                providerName: ProviderTypeInLog.ToString(),
                 requestUri: ServiceName,
                 requestBody: request,
                 responseBody: response,
