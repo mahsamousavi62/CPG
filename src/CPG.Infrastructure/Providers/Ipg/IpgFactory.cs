@@ -5,19 +5,22 @@ using CPG.Domain.SharedKernel.Communication;
 using CPG.Domain.SharedKernel.Communication.Ipg;
 using CPG.Domain.SharedKernel.Logging;
 using CPG.Infrastructure.Persistence.DbContexts;
+using CPG.Infrastructure.Policies;
 
 namespace CPG.Infrastructure.Providers.Ipg
 {
     public class IpgFactory(IHttpProvider httpProvider,
         ILogService logService,
         IApplicationSettingsRepository applicationSettingsRepository,
-        ReadDbContext context
+        ReadDbContext context,
+        IPollyPolicyService pollyPolicyService
         ) : IIpgFactory
     {
         private readonly IHttpProvider _httpProvider = httpProvider;
         private readonly IApplicationSettingsRepository _applicationSettingsRepository = applicationSettingsRepository;
         private readonly ReadDbContext _context = context;
         private readonly ILogService _logService = logService;
+        private readonly IPollyPolicyService _pollyPolicyService = pollyPolicyService;
         public IIpgProvider GetInstance(Enums.ProviderType providerType)
         {
             switch (providerType)
@@ -32,11 +35,11 @@ namespace CPG.Infrastructure.Providers.Ipg
                     }
                 case Enums.ProviderType.Pec:
                     {
-                        return new PecProvider(_context, _applicationSettingsRepository, _logService);
+                        return new PecProvider(_context, _applicationSettingsRepository, _logService, _pollyPolicyService);
                     }
                 case Enums.ProviderType.BehPardakht:
                     {
-                        return new BehPardakhtProvider(_context, _applicationSettingsRepository, _logService);
+                        return new BehPardakhtProvider(_context, _applicationSettingsRepository, _logService, _pollyPolicyService);
                     }
                 case Enums.ProviderType.Ayandeh:
                     {

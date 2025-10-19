@@ -140,9 +140,9 @@ public class SetUserDirectDebitPlanCommandHandler(IDirectDebitFactory DirectDebi
                 requestBody: Newtonsoft.Json.JsonConvert.SerializeObject(request),
                 responseBody: exc.Message,
                 exception: exc,
-                serviceType: Enums.ServiceType.DirectDebit,
+                serviceType: Enums.ServiceType.VandarStore,
                 providerType: Enums.ProviderTypeInLog.Vandar,
-                auditType: Enums.AuditType.Application,
+                auditType: Enums.AuditType.Client,
                 userId: 1
             );
             _logService.LogError(callLog);
@@ -157,9 +157,9 @@ public class SetUserDirectDebitPlanCommandHandler(IDirectDebitFactory DirectDebi
                 requestBody: Newtonsoft.Json.JsonConvert.SerializeObject(request),
                 responseBody: exc.Message,
                 exception: exc,
-                serviceType: Enums.ServiceType.DirectDebit,
+                serviceType: Enums.ServiceType.VandarStore,
                 providerType: Enums.ProviderTypeInLog.Vandar,
-                auditType: Enums.AuditType.Application,
+                auditType: Enums.AuditType.Client,
                 userId: 1
             );
             _logService.LogError(callLog);
@@ -174,9 +174,9 @@ public class SetUserDirectDebitPlanCommandHandler(IDirectDebitFactory DirectDebi
                 requestBody: Newtonsoft.Json.JsonConvert.SerializeObject(request),
                 responseBody: exc.Message,
                 exception: exc,
-                serviceType: Enums.ServiceType.DirectDebit,
+                serviceType: Enums.ServiceType.VandarStore,
                 providerType: Enums.ProviderTypeInLog.Vandar,
-                auditType: Enums.AuditType.Application,
+                auditType: Enums.AuditType.Client,
                 userId: 1
             );
             _logService.LogError(callLog);
