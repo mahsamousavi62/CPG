@@ -1,3 +1,4 @@
+using CPG.Infrastructure.Policies;
 using Polly;
 using Polly.Extensions.Http;
 using System;
@@ -7,120 +8,46 @@ namespace CPG.Infrastructure.Configuration;
 
 /// <summary>
 /// Polly retry policy configuration for HTTP clients with exponential backoff and jitter.
-/// Provides factory methods for creating retry policies for different service types.
+/// All policies are now configuration-driven from appsettings.json under Infrastructure:Polly:Retry:Http
 /// </summary>
 public static class PollyRetryConfiguration
 {
     /// <summary>
-    /// Gets the default retry policy for unnamed HTTP clients.
-    /// Applies 3 retries with exponential backoff (1s, 2s, 4s) and up to 1s jitter.
+    /// Gets HTTP retry policy from configuration for a specific service or uses default.
     /// </summary>
-    public static IAsyncPolicy<HttpResponseMessage> GetDefaultRetryPolicy()
+    /// <param name="config">Policy configuration from appsettings.json</param>
+    /// <param name="serviceName">Optional service name (CharisPay, IdpClient, NeoBank, etc.). If null, uses Default settings.</param>
+    /// <returns>Configured retry policy for the specified service</returns>
+    public static IAsyncPolicy<HttpResponseMessage> GetHttpRetryPolicy(PolicyConfig config, string serviceName = null)
     {
+        if (config == null)
+            throw new ArgumentNullException(nameof(config));
+
+        // Get service-specific settings or fall back to default
+        var settings = serviceName != null && config.Retry.Http.Services.ContainsKey(serviceName)
+            ? config.Retry.Http.Services[serviceName]
+            : config.Retry.Http.Default;
+
         var jitterer = new Random();
 
         return HttpPolicyExtensions
             .HandleTransientHttpError() // Handles HttpRequestException, 5XX and 408
             .OrResult(msg => !msg.IsSuccessStatusCode && (int)msg.StatusCode >= 500)
             .WaitAndRetryAsync(
-                retryCount: 3,
+                retryCount: settings.RetryCount,
                 sleepDurationProvider: retryAttempt =>
-                    TimeSpan.FromSeconds(Math.Pow(2, retryAttempt - 1)) // 1s, 2s, 4s
-                    + TimeSpan.FromMilliseconds(jitterer.Next(0, 1000)),
+                {
+                    // Calculate base delay (exponential or linear)
+                    var delay = settings.UseExponentialBackoff
+                        ? TimeSpan.FromSeconds(Math.Pow(2, retryAttempt - 1) * settings.BaseDelaySeconds)
+                        : TimeSpan.FromSeconds(retryAttempt * settings.BaseDelaySeconds);
+
+                    // Add jitter to prevent thundering herd
+                    return delay + TimeSpan.FromMilliseconds(jitterer.Next(0, settings.MaxJitterMilliseconds));
+                },
                 onRetry: (outcome, timespan, retryCount, context) =>
                 {
-                    // Logging will be handled by LogRetryAttempt if ILogService is available
-                    LogRetryAttempt("DefaultClient", outcome, timespan, retryCount, context);
-                });
-    }
-
-    /// <summary>
-    /// Gets retry policy for payment providers (CharisPay, AsanPardakht, CharismaCard).
-    /// Applies 2 retries with linear backoff (1s, 2s) and up to 500ms jitter.
-    /// Payment operations require fewer retries to avoid duplicate transactions.
-    /// </summary>
-    public static IAsyncPolicy<HttpResponseMessage> GetPaymentProviderRetryPolicy()
-    {
-        var jitterer = new Random();
-
-        return HttpPolicyExtensions
-            .HandleTransientHttpError()
-            .OrResult(msg => !msg.IsSuccessStatusCode && (int)msg.StatusCode >= 500)
-            .WaitAndRetryAsync(
-                retryCount: 2,
-                sleepDurationProvider: retryAttempt =>
-                    TimeSpan.FromSeconds(retryAttempt) // 1s, 2s
-                    + TimeSpan.FromMilliseconds(jitterer.Next(0, 500)),
-                onRetry: (outcome, timespan, retryCount, context) =>
-                {
-                    LogRetryAttempt("PaymentProvider", outcome, timespan, retryCount, context);
-                });
-    }
-
-    /// <summary>
-    /// Gets retry policy for identity provider (IDP).
-    /// Applies 3 retries with exponential backoff (1s, 2s, 4s) and up to 1s jitter.
-    /// </summary>
-    public static IAsyncPolicy<HttpResponseMessage> GetIdentityProviderRetryPolicy()
-    {
-        var jitterer = new Random();
-
-        return HttpPolicyExtensions
-            .HandleTransientHttpError()
-            .OrResult(msg => !msg.IsSuccessStatusCode && (int)msg.StatusCode >= 500)
-            .WaitAndRetryAsync(
-                retryCount: 3,
-                sleepDurationProvider: retryAttempt =>
-                    TimeSpan.FromSeconds(Math.Pow(2, retryAttempt - 1)) // 1s, 2s, 4s
-                    + TimeSpan.FromMilliseconds(jitterer.Next(0, 1000)),
-                onRetry: (outcome, timespan, retryCount, context) =>
-                {
-                    LogRetryAttempt("IdentityProvider", outcome, timespan, retryCount, context);
-                });
-    }
-
-    /// <summary>
-    /// Gets retry policy for financial services (NeoBank).
-    /// Applies 3 retries with exponential backoff (2s, 4s, 8s) and up to 2s jitter.
-    /// Financial operations need longer delays for external systems to stabilize.
-    /// </summary>
-    public static IAsyncPolicy<HttpResponseMessage> GetFinancialServiceRetryPolicy()
-    {
-        var jitterer = new Random();
-
-        return HttpPolicyExtensions
-            .HandleTransientHttpError()
-            .OrResult(msg => !msg.IsSuccessStatusCode && (int)msg.StatusCode >= 500)
-            .WaitAndRetryAsync(
-                retryCount: 3,
-                sleepDurationProvider: retryAttempt =>
-                    TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)) // 2s, 4s, 8s
-                    + TimeSpan.FromMilliseconds(jitterer.Next(0, 2000)),
-                onRetry: (outcome, timespan, retryCount, context) =>
-                {
-                    LogRetryAttempt("FinancialService", outcome, timespan, retryCount, context);
-                });
-    }
-
-    /// <summary>
-    /// Gets retry policy for CharismaCard services.
-    /// Applies 2 retries with linear backoff (1s, 2s) and up to 500ms jitter.
-    /// </summary>
-    public static IAsyncPolicy<HttpResponseMessage> GetCharismaCardRetryPolicy()
-    {
-        var jitterer = new Random();
-
-        return HttpPolicyExtensions
-            .HandleTransientHttpError()
-            .OrResult(msg => !msg.IsSuccessStatusCode && (int)msg.StatusCode >= 500)
-            .WaitAndRetryAsync(
-                retryCount: 2,
-                sleepDurationProvider: retryAttempt =>
-                    TimeSpan.FromSeconds(retryAttempt) // 1s, 2s
-                    + TimeSpan.FromMilliseconds(jitterer.Next(0, 500)),
-                onRetry: (outcome, timespan, retryCount, context) =>
-                {
-                    LogRetryAttempt("CharismaCard", outcome, timespan, retryCount, context);
+                    LogRetryAttempt(serviceName ?? "Default", outcome, timespan, retryCount, context);
                 });
     }
 

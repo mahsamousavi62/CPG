@@ -72,7 +72,7 @@ public static class DependencyInjection
             .AddScoped<IMinioProvider, MinioProvider>()
             .AddMinio(configuration)
             .AddPollyPolicies(configuration)
-            .AddHttpClientWithRetryPolicies()
+            .AddHttpClientWithRetryPolicies(configuration)
             .AddConfigureHttpClientService(configuration);
 
     public static IServiceCollection AddPollyPolicies(this IServiceCollection services, IConfiguration configuration)
@@ -130,14 +130,17 @@ public static class DependencyInjection
         return services;
     }
 
-    public static IServiceCollection AddHttpClientWithRetryPolicies(this IServiceCollection services)
+    public static IServiceCollection AddHttpClientWithRetryPolicies(this IServiceCollection services, IConfiguration configuration)
     {
+        // Get Polly configuration
+        var policyConfig = configuration.GetSection(PolicyConfig.SectionName).Get<PolicyConfig>() ?? new PolicyConfig();
+
         // Add HttpClient with default retry policy for all unnamed clients
         services.AddHttpClient()
             .ConfigureHttpClientDefaults(builder =>
             {
                 // Apply default retry policy to all unnamed HTTP clients (used by HttpProvider)
-                builder.AddPolicyHandler(PollyRetryConfiguration.GetDefaultRetryPolicy());
+                builder.AddPolicyHandler(PollyRetryConfiguration.GetHttpRetryPolicy(policyConfig, serviceName: null));
             });
 
         return services;
@@ -145,18 +148,23 @@ public static class DependencyInjection
 
     public static IServiceCollection AddConfigureHttpClientService(this IServiceCollection services, IConfiguration configuration)
     {
+        // Get Polly configuration
+        var policyConfig = configuration.GetSection(PolicyConfig.SectionName).Get<PolicyConfig>() ?? new PolicyConfig();
+
         var serviceProvider = services.BuildServiceProvider();
         var authService = serviceProvider.GetRequiredService<IAuthService>();
         var jwtConfig = authService.GetJwtConfig();
         var charisPayConfig = configuration.GetSection("Infrastructure:CharisPay").Get<CharisPayConfig>();
         var neoBankConfig = configuration.GetSection("Infrastructure:NeoBank").Get<NeoBankConfig>();
+        var charismaCardConfig = configuration.GetSection("Infrastructure:CharismaCard").Get<CharismaCardConfig>();
+
         services.AddHttpClient("charisPayClient", c =>
         {
             c.BaseAddress = new Uri(charisPayConfig.BaseUrl);
             c.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         })
-        .AddPolicyHandler(PollyRetryConfiguration.GetPaymentProviderRetryPolicy());
+        .AddPolicyHandler(PollyRetryConfiguration.GetHttpRetryPolicy(policyConfig, "CharisPay"));
 
         services.AddHttpClient("idpClient", c =>
         {
@@ -164,7 +172,7 @@ public static class DependencyInjection
             c.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         })
-        .AddPolicyHandler(PollyRetryConfiguration.GetIdentityProviderRetryPolicy());
+        .AddPolicyHandler(PollyRetryConfiguration.GetHttpRetryPolicy(policyConfig, "IdpClient"));
 
         services.AddHttpClient("neoBankClient", c =>
         {
@@ -172,23 +180,22 @@ public static class DependencyInjection
             c.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         })
-        .AddPolicyHandler(PollyRetryConfiguration.GetFinancialServiceRetryPolicy());
+        .AddPolicyHandler(PollyRetryConfiguration.GetHttpRetryPolicy(policyConfig, "NeoBank"));
 
         services.AddHttpClient("asanpardakhtClient", c =>
         {
             c.BaseAddress = new Uri("https://ipgrest.asanpardakht.ir/");
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/plain"));
         })
-        .AddPolicyHandler(PollyRetryConfiguration.GetPaymentProviderRetryPolicy());
+        .AddPolicyHandler(PollyRetryConfiguration.GetHttpRetryPolicy(policyConfig, "AsanPardakht"));
 
-        var charismaCardConfig = configuration.GetSection("Infrastructure:CharismaCard").Get<CharismaCardConfig>();
         services.AddHttpClient("charismaCardClient", c =>
         {
             c.BaseAddress = new Uri(charismaCardConfig.BaseUrl);
             c.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         })
-        .AddPolicyHandler(PollyRetryConfiguration.GetCharismaCardRetryPolicy());
+        .AddPolicyHandler(PollyRetryConfiguration.GetHttpRetryPolicy(policyConfig, "CharismaCard"));
 
         return services;
     }

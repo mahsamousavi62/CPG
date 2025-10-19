@@ -40,7 +40,7 @@ public class PollyPolicyService : IPollyPolicyService
     /// </summary>
     public IAsyncPolicy GetSoapRetryPolicy(string serviceName = "soap")
     {
-        var retryConfig = _config.Retry;
+        var retryConfig = _config.Retry.Soap;
 
         return Policy
             .Handle<EndpointNotFoundException>() // SOAP service not available
