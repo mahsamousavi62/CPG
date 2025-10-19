@@ -87,5 +87,5 @@ if ($WhatIf) {
     Write-Host "This was a dry run. To actually remove comments, run without -WhatIf" -ForegroundColor Magenta
 } else {
     Write-Host "Done! All comments have been removed." -ForegroundColor Green
-    Write-Host "Don't forget to commit your changes to git!" -ForegroundColor Yellow
+    Write-Host "Do not forget to commit your changes to git!" -ForegroundColor Yellow
 }
