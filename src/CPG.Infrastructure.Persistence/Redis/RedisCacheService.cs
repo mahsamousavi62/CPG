@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace CPG.Infrastructure.Persistence.Redis
 {
-    public class RedisCacheService: IRedisCacheService
+    public class RedisCacheService : IRedisCacheService
     {
         private readonly IDistributedCache _cache;
         private readonly IConfiguration configuration;

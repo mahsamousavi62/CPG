@@ -25,7 +25,7 @@ public partial class LogService(ILogger<LogService> logger, IHttpContextAccessor
     public Enums.ServiceType ServiceType { get; set; }
     public Enums.ProviderTypeInLog ProviderTypeInLog { get; set; }
 
-    public void AddServiceCallLog<TBody>(HttpProviderRequest<TBody> request, HttpResponseMessage response, string resString)
+    public void AddServiceCallLog<TBody>(HttpProviderRequest<TBody> request, HttpResponseMessage response, string resString) where TBody : class
     {
         if (!string.IsNullOrEmpty(resString))
         {
@@ -133,7 +133,7 @@ public partial class LogService(ILogger<LogService> logger, IHttpContextAccessor
         }
     }
 
-    public async Task AddServiceCallLogAsync<TBody, TRequest>(HttpProviderRequest<TBody, TRequest> request, HttpResponseMessage response)
+    public async Task AddServiceCallLogAsync<TBody, TRequest>(HttpProviderRequest<TBody, TRequest> request, HttpResponseMessage response) where TBody : class where TRequest : class
     {
         string resString = await response.Content.ReadAsStringAsync();
         if (!string.IsNullOrEmpty(resString))
